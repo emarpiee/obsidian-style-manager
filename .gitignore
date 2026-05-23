@@ -1,0 +1,42 @@
+# Obsidian Plugin: .gitignore
+
+# Dependencies
+node_modules/
+yarn.lock
+
+
+# Build Artifacts
+main.js
+main.css
+styles.css
+*.js.map
+*.css.map
+
+# Local Data/Settings
+data.json
+data.json.bak
+.hotreload
+.env
+
+# IDE Settings
+.vscode/
+.idea/
+*.iml
+
+# OS Metadata
+.DS_Store
+Thumbs.db
+*.tmp
+.syncthing.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+temp/
+todo/
+coverage/
+.agents/
+
+.agents

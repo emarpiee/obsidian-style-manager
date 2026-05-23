@@ -1,0 +1,337 @@
+/*
+    Style Manager - Obsidian Plugin
+    Copyright (c) 2023 mgmeyers
+    Copyright (c) 2026 emarpiee
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
+import { Menu, Notice, Setting, setIcon, setTooltip } from 'obsidian';
+
+import { addApplyOptionsToMenu } from './PresetMenuHelper';
+
+import {
+	ACCENT_COLOR_KEY,
+	APPEARANCE_KEY,
+	SNIPPETS_KEY,
+	THEME_KEY,
+} from '../../../application/SettingsService';
+import StyleManagerPlugin from '../../../main';
+import { Preset } from '../../../types';
+import { formatPresetDate } from '../../../utils/CommonUtils';
+import {
+	renderAppearanceBadge,
+	renderCountBadge,
+	renderSnippetBadge,
+	renderThemeBadge,
+} from '../../components/fields/BadgeRenderer';
+import { ConfirmModal } from '../../modals/ConfirmModal';
+import { PresetPreviewModal } from '../../modals/PresetPreviewModal';
+import { RenameModal } from '../../modals/RenameModal';
+
+export class PresetItem {
+	constructor(
+		private containerEl: HTMLElement,
+		private preset: Preset,
+		private plugin: StyleManagerPlugin,
+		private isSelected: boolean,
+		private lastSelectedIndex: number | null,
+		private index: number,
+		private onSelectionChange: (
+			e: MouseEvent | KeyboardEvent,
+			forceToggle?: boolean
+		) => void,
+		private onRefresh: () => void
+	) {}
+
+	render(): void {
+		const { preset, plugin, isSelected } = this;
+		const count = plugin.settingsService.countModifiedEntries(preset.data);
+
+		const row = new Setting(this.containerEl)
+			.setClass('style-manager-item-row')
+			.setClass('style-manager-preset-item')
+			.setName(preset.name)
+			.setDesc(
+				`Created: ${
+					preset.created
+						? formatPresetDate(
+								preset.created,
+								plugin.settingsService.settings[
+									'__style_manager_created_date_format'
+								] as string
+							)
+						: 'Unknown Date'
+				}`
+			);
+
+		// Badges for occupancy (mobile request)
+		const badgesContainer = row.nameEl.createDiv(
+			'style-manager-preset-badges mod-left'
+		);
+
+		// 1. Count Badge
+		renderCountBadge(badgesContainer, count);
+
+		// 2. Theme Badge
+		const theme = preset.data[THEME_KEY] as string | undefined;
+		if (theme && theme !== 'default') {
+			renderThemeBadge(
+				badgesContainer,
+				theme,
+				preset.data[ACCENT_COLOR_KEY] as string
+			);
+		}
+
+		// 3. Appearance Badge
+		const appearance = preset.data[APPEARANCE_KEY] as string | undefined;
+		if (appearance) {
+			renderAppearanceBadge(badgesContainer, appearance);
+		}
+
+		// Snippets Badge
+		renderSnippetBadge(
+			badgesContainer,
+			plugin,
+			preset.data[SNIPPETS_KEY] as string[]
+		);
+
+		const starIcon = document.createElement('div');
+		starIcon.classList.add('clickable-icon', 'style-manager-preset-star-icon');
+		if (preset.isFavorite) starIcon.addClass('is-favorite');
+		setIcon(starIcon, preset.isFavorite ? 'star' : 'star');
+		setTooltip(
+			starIcon,
+			preset.isFavorite ? 'Remove from favorites' : 'Add to favorites'
+		);
+		starIcon.onclick = async (e: MouseEvent): Promise<void> => {
+			e.stopPropagation();
+			preset.isFavorite = !preset.isFavorite;
+			await plugin.presetService.savePresets();
+			this.onRefresh();
+		};
+		row.settingEl.prepend(starIcon);
+
+		row.addExtraButton((btn) => {
+			btn
+				.setIcon('more-vertical')
+				.setTooltip('More Options')
+				.onClick(() => {
+					const menu = new Menu();
+
+					// Apply Options
+					addApplyOptionsToMenu(menu, plugin, preset, {
+						onApplied: () => this.onRefresh(),
+					});
+
+					menu.addSeparator();
+
+					// Management Options
+					menu.addItem((item) =>
+						item
+							.setTitle('Rename Preset')
+							.setIcon('pencil')
+							.onClick(() => {
+								new RenameModal(
+									plugin.app,
+									'Rename Preset',
+									preset.name,
+									async (newName: string) => {
+										preset.name = newName.trim() || preset.name;
+										await plugin.presetService.savePresets();
+										this.onRefresh();
+									}
+								).open();
+							})
+					);
+
+					menu.addItem((item) =>
+						item
+							.setTitle('Export to Vault')
+							.setIcon('download')
+							.onClick(() => {
+								const performExport = async (
+									includeSnippets = false
+								): Promise<void> => {
+									try {
+										const preferredExtension =
+											(plugin.settingsService.settings[
+												'__style_manager_export_extension'
+											] as string) || '.json';
+
+										const extension: string = includeSnippets
+											? '.zip'
+											: preferredExtension;
+
+										const safeName = preset.name
+											.replace(/[^a-z0-9]/gi, '-')
+											.toLowerCase();
+										const timestamp =
+											plugin.presetService.getFormattedTimestamp(
+												plugin.settingsService.settings[
+													'__style_manager_export_date_format'
+												] as string
+											);
+										const timestampPart = timestamp ? `-${timestamp}` : '';
+										const filename = `${safeName}-style-manager${timestampPart}${extension}`;
+
+										if (includeSnippets) {
+											const data = await plugin.bundleService.createBundle(
+												preset,
+												preferredExtension
+											);
+											await plugin.presetService.saveFileToVault(
+												filename,
+												data
+											);
+										} else {
+											const content = JSON.stringify(preset.data, null, 2);
+											await plugin.presetService.saveFileToVault(
+												filename,
+												content
+											);
+										}
+									} catch (err) {
+										console.error('Style Manager | Export failed:', err);
+										new Notice(
+											`Export failed: ${err instanceof Error ? err.message : String(err)}`
+										);
+									}
+								};
+
+								const preferredExtension =
+									(plugin.settingsService.settings[
+										'__style_manager_export_extension'
+									] as string) || '.json';
+
+								const snippetList =
+									(preset.data[SNIPPETS_KEY] as string[]) || [];
+								if (snippetList.length > 0) {
+									new ConfirmModal(
+										plugin.app,
+										'Export Preset Bundle',
+										`This preset has ${snippetList.length} enabled snippet(s). Do you want to include the snippet files in a ZIP bundle?`,
+										'Include Snippets (ZIP)',
+										false,
+										() => performExport(true),
+										`Preset Only (${preferredExtension})`,
+										() => performExport(false)
+									).open();
+								} else {
+									if (
+										plugin.settingsService.settings[
+											'__style_manager_skip_export_confirm'
+										]
+									) {
+										performExport(false);
+									} else {
+										new ConfirmModal(
+											plugin.app,
+											'Export Preset',
+											`Are you sure you want to export the preset "${preset.name}" to your vault?`,
+											`Export (${preferredExtension})`,
+											false,
+											() => performExport(false)
+										).open();
+									}
+								}
+							})
+					);
+
+					menu.addSeparator();
+
+					// Delete Option
+					menu.addItem((item) =>
+						item
+							.setTitle('Delete Preset')
+							.setIcon('trash')
+							.setWarning(true)
+							.onClick(() => {
+								const performDelete = async (): Promise<void> => {
+									await plugin.presetService.trashPresets([preset]);
+
+									const indexInPresets = plugin.presetService.presets.findIndex(
+										(p) => p.id === preset.id
+									);
+									if (indexInPresets !== -1) {
+										plugin.presetService.presets.splice(indexInPresets, 1);
+										await plugin.presetService.savePresets();
+										this.onRefresh();
+									}
+								};
+
+								if (
+									plugin.settingsService.settings[
+										'__style_manager_skip_delete_confirm'
+									]
+								) {
+									performDelete();
+								} else {
+									new ConfirmModal(
+										plugin.app,
+										'Delete Preset',
+										`Are you sure you want to delete the preset "${preset.name}"? This action cannot be undone.`,
+										'Delete',
+										true,
+										performDelete
+									).open();
+								}
+							})
+					);
+
+					const rect = btn.extraSettingsEl.getBoundingClientRect();
+					menu.showAtPosition({ x: rect.left, y: rect.bottom });
+				});
+		});
+
+		const selectIcon = document.createElement('div');
+		selectIcon.classList.add(
+			'clickable-icon',
+			'style-manager-item-select-icon'
+		);
+
+		if (isSelected) {
+			row.settingEl.addClass('is-selected');
+			setIcon(selectIcon, 'check-circle');
+			selectIcon.style.color = 'var(--interactive-accent)';
+		} else {
+			row.settingEl.removeClass('is-selected');
+			setIcon(selectIcon, 'circle');
+			selectIcon.style.color = 'var(--text-faint)';
+		}
+
+		setTooltip(selectIcon, isSelected ? 'Deselect preset' : 'Select preset');
+
+		selectIcon.onclick = (e: MouseEvent): void => {
+			e.stopPropagation();
+			this.onSelectionChange(e, true);
+		};
+
+		row.settingEl.addEventListener('click', (e) => {
+			if (
+				(e.target as HTMLElement).closest(
+					'.setting-item-control, .style-manager-item-select-icon'
+				)
+			) {
+				return;
+			}
+			if (!e.shiftKey && !e.ctrlKey && !e.metaKey) {
+				new PresetPreviewModal(plugin.app, plugin, preset).open();
+				return;
+			}
+			this.onSelectionChange(e);
+		});
+
+		row.controlEl.appendChild(selectIcon);
+	}
+}

@@ -1,0 +1,10 @@
+{
+	"id": "style-manager",
+	"name": "Style Manager",
+	"version": "1.1.0",
+	"minAppVersion": "1.0.0",
+	"description": "Offers controls for adjusting theme, plugin, and snippet CSS variables.",
+	"author": "emarpiee",
+	"authorUrl": "https://github.com/emarpiee",
+	"isDesktopOnly": false
+}

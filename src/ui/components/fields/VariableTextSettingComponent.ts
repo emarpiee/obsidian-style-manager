@@ -1,0 +1,102 @@
+/*
+    Style Manager - Obsidian Plugin
+    Copyright (c) 2023 mgmeyers
+    Copyright (c) 2026 emarpiee
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
+import { Setting, TextComponent, debounce } from 'obsidian';
+
+import { t } from '../../../infrastructure/lang/helpers';
+import { VariableText, resetTooltip } from '../../../types';
+import {
+	getDescription,
+	getTitle,
+	sanitizeText,
+} from '../../../utils/CommonUtils';
+import { createDescription } from '../../../utils/UIUtils';
+import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
+
+export class VariableTextSettingComponent extends AbstractSettingComponent {
+	settingEl: Setting;
+	textComponent: TextComponent;
+	setting: VariableText;
+
+	render(): void {
+		if (!this.containerEl) return;
+		const title = getTitle(this.setting);
+		const description = getDescription(this.setting);
+
+		if (typeof this.setting.default !== 'string') {
+			return console.error(
+				`${t('Error:')} ${title} ${t('missing default value')}`
+			);
+		}
+
+		this.settingEl = new Setting(this.containerEl);
+		this.settingEl.setName(title);
+		this.settingEl.setDesc(
+			createDescription(description, this.setting.default)
+		);
+
+		this.settingEl.addText((text) => {
+			let value = this.settingsService.getSetting(
+				this.sectionId,
+				this.setting.id
+			);
+
+			const onChange = debounce(
+				(value: string) => {
+					this.settingsService.setSetting(
+						this.sectionId,
+						this.setting.id,
+						sanitizeText(value),
+						{ silentUI: true }
+					);
+					this.updateModifiedClass();
+				},
+				250,
+				true
+			);
+
+			if (this.setting.quotes && value === `""`) {
+				value = ``;
+			}
+
+			text.setValue(value ? value.toString() : this.setting.default);
+			text.onChange(onChange);
+
+			this.textComponent = text;
+		});
+
+		this.settingEl.addExtraButton((b) => {
+			b.setIcon('reset');
+			b.onClick(() => {
+				this.textComponent.setValue(this.setting.default);
+				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+					silentUI: true,
+				});
+				this.updateModifiedClass();
+			});
+			b.setTooltip(resetTooltip);
+		});
+
+		this.settingEl.settingEl.dataset.id = this.setting.id;
+		this.updateModifiedClass();
+	}
+
+	destroy(): void {
+		this.settingEl?.settingEl.remove();
+	}
+}

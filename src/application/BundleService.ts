@@ -1,0 +1,156 @@
+/*
+    Style Manager - Obsidian Plugin
+    Copyright (c) 2023 mgmeyers
+    Copyright (c) 2026 emarpiee
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
+import JSZip from 'jszip';
+
+import { SNIPPETS_KEY } from '../constants';
+import { Preset } from '../types';
+
+import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
+
+export interface BundleData {
+	presets: Preset[];
+	snippets: { name: string; content: string }[];
+}
+
+/**
+ * Service for creating and extracting preset bundles (ZIP files).
+ */
+export class BundleService {
+	constructor(private bridge: ObsidianBridge) {}
+
+	/**
+	 * Creates a ZIP bundle containing preset data and associated CSS snippets.
+	 * Supports both a single preset and an array of presets.
+	 */
+	async createBundle(
+		input: Preset | Preset[],
+		preferredExtension: string = '.json',
+		separatePresets: boolean = false
+	): Promise<Uint8Array> {
+		const zip = new JSZip();
+		const presets = Array.isArray(input) ? input : [input];
+
+		// 1. Add preset data
+		const ext = preferredExtension.startsWith('.')
+			? preferredExtension
+			: `.${preferredExtension}`;
+
+		if (presets.length === 1) {
+			zip.file(`preset${ext}`, JSON.stringify(presets[0], null, 2));
+		} else if (separatePresets) {
+			// Save each preset in its own file within a presets/ folder
+			const presetsFolder = zip.folder('presets');
+			if (presetsFolder) {
+				for (const preset of presets) {
+					const safeName = preset.name.replace(/[:/\\?%*|"<>]/g, '-');
+					presetsFolder.file(
+						`${safeName}${ext}`,
+						JSON.stringify(preset, null, 2)
+					);
+				}
+			}
+		} else {
+			zip.file(`presets${ext}`, JSON.stringify(presets, null, 2));
+		}
+
+		// 2. Collect unique snippets across all presets
+		const allSnippetNames = new Set<string>();
+		for (const preset of presets) {
+			const enabledSnippets = (preset.data[SNIPPETS_KEY] as string[]) || [];
+			enabledSnippets.forEach((name) => allSnippetNames.add(name));
+		}
+
+		// 3. Add snippets to bundle
+		if (allSnippetNames.size > 0) {
+			const snippetsFolder = zip.folder('snippets');
+			if (snippetsFolder) {
+				for (const name of allSnippetNames) {
+					const content = await this.bridge.readSnippet(name);
+					if (content !== null) {
+						snippetsFolder.file(`${name}.css`, content);
+					}
+				}
+			}
+		}
+
+		return await zip.generateAsync({
+			type: 'uint8array',
+			compression: 'DEFLATE',
+			compressionOptions: { level: 6 },
+		});
+	}
+
+	/**
+	 * Extracts preset data and snippet contents from a ZIP bundle.
+	 * Supports single preset or bulk presets with various extensions.
+	 */
+	async extractBundle(data: ArrayBuffer): Promise<BundleData> {
+		const zip = await JSZip.loadAsync(data);
+		let presets: Preset[] = [];
+
+		// Flexible search for preset data (preset.json, preset.md, preset.txt, etc.)
+		const allFiles = Object.keys(zip.files);
+
+		const singleFileKey = allFiles.find((f) =>
+			/^preset\.(json|md|txt)$/.test(f)
+		);
+		const bulkFileKey = allFiles.find((f) =>
+			/^presets\.(json|md|txt)$/.test(f)
+		);
+
+		if (singleFileKey) {
+			const content = await zip.file(singleFileKey)!.async('string');
+			presets.push(JSON.parse(content));
+		} else if (bulkFileKey) {
+			const content = await zip.file(bulkFileKey)!.async('string');
+			presets = JSON.parse(content);
+		} else {
+			// Fallback: check presets/ folder
+			const presetsFolder = zip.folder('presets');
+			if (presetsFolder) {
+				const files = presetsFolder.filter((path) =>
+					/\.(json|md|txt)$/.test(path)
+				);
+				for (const file of files) {
+					const content = await file.async('string');
+					presets.push(JSON.parse(content));
+				}
+			}
+		}
+
+		if (presets.length === 0) {
+			throw new Error('Invalid bundle: No preset data found.');
+		}
+
+		const snippets: { name: string; content: string }[] = [];
+		const snippetsFolder = zip.folder('snippets');
+		if (snippetsFolder) {
+			const files = snippetsFolder.filter((path) => path.endsWith('.css'));
+			for (const file of files) {
+				const name = file.name.replace(/^snippets\//, '').replace(/\.css$/, '');
+				if (!name) continue;
+
+				const content = await file.async('string');
+				snippets.push({ name, content });
+			}
+		}
+
+		return { presets, snippets };
+	}
+}

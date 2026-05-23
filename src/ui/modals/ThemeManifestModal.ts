@@ -1,0 +1,216 @@
+/*
+    Style Manager - Obsidian Plugin
+    Copyright (c) 2023 mgmeyers
+    Copyright (c) 2026 emarpiee
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
+import { App, Modal, Setting } from 'obsidian';
+
+import { CSSEditorModal } from './CSSEditorModal';
+
+import {
+	ThemeBuilderService,
+	ThemeManifest,
+} from '../../application/ThemeBuilderService';
+import StyleManagerPlugin from '../../main';
+
+export class ThemeManifestModal extends Modal {
+	private manifest: ThemeManifest;
+
+	constructor(
+		app: App,
+		private plugin: StyleManagerPlugin,
+		private service: ThemeBuilderService,
+		private onSave: () => void,
+		private themeId?: string,
+		initialManifest?: ThemeManifest
+	) {
+		super(app);
+		this.manifest = initialManifest
+			? { ...initialManifest }
+			: {
+					name: '',
+					author: '',
+					version: '1.0.0',
+					minAppVersion: '0.15.0',
+				};
+	}
+
+	onOpen(): void {
+		const { contentEl, modalEl } = this;
+		modalEl.addClass('modal-style-manager');
+		modalEl.addClass('style-manager-create-theme-modal');
+
+		contentEl.createEl('h2', {
+			text: this.themeId ? 'Edit Theme Manifest' : 'Create New Theme',
+			cls: 'style-manager-modal-title',
+		});
+
+		new Setting(contentEl)
+			.setName('Theme Name (required)')
+			.setDesc('The display name of your theme.')
+			.addText((text) =>
+				text
+					.setPlaceholder('My Awesome Theme')
+					.setValue(this.manifest.name)
+					.onChange((val) => (this.manifest.name = val.trim()))
+			);
+
+		new Setting(contentEl)
+			.setName('Author (required)')
+			.setDesc("The author's name.")
+			.addText((text) =>
+				text
+					.setPlaceholder('emarpiee')
+					.setValue(this.manifest.author)
+					.onChange((val) => (this.manifest.author = val.trim()))
+			);
+
+		new Setting(contentEl)
+			.setName('Version (required)')
+			.setDesc('The version, using Semantic Versioning in the format x.y.z.')
+			.addText((text) =>
+				text
+					.setPlaceholder('1.0.0')
+					.setValue(this.manifest.version)
+					.onChange((val) => (this.manifest.version = val.trim()))
+			);
+
+		new Setting(contentEl)
+			.setName('Min App Version (required)')
+			.setDesc('The minimum required Obsidian version.')
+			.addText((text) =>
+				text
+					.setPlaceholder('0.15.0')
+					.setValue(this.manifest.minAppVersion)
+					.onChange((val) => (this.manifest.minAppVersion = val.trim()))
+			);
+
+		new Setting(contentEl)
+			.setName('Author URL')
+			.setDesc("A URL to the author's website.")
+			.addText((text) =>
+				text
+					.setPlaceholder('https://example.com')
+					.setValue(this.manifest.authorUrl || '')
+					.onChange((val) => (this.manifest.authorUrl = val.trim()))
+			);
+
+		new Setting(contentEl)
+			.setName('Funding URL')
+			.setDesc(
+				'A single URL, or multiple links (one per line, e.g. "Patreon: https://...")'
+			)
+			.addTextArea((text) => {
+				text
+					.setPlaceholder(
+						'https://buymeacoffee.com/\nOR\nPatreon: https://patreon.com/...\nBuy Me a Coffee: https://buymeacoffee.com/...'
+					)
+					.setValue(this.getFundingString())
+					.onChange((val) => {
+						this.manifest.fundingUrl = this.parseFundingString(val);
+					});
+				text.inputEl.rows = 4;
+				text.inputEl.style.width = '100%';
+			});
+
+		new Setting(contentEl)
+			.setClass('style-manager-modal-buttons')
+			.addButton((btn) =>
+				btn
+					.setButtonText(this.themeId ? 'Save Changes' : 'Create Theme')
+					.setCta()
+					.onClick(async () => {
+						if (
+							!this.manifest.name ||
+							!this.manifest.author ||
+							!this.manifest.version ||
+							!this.manifest.minAppVersion
+						) {
+							this.plugin.settingsService.notifications.error(
+								'All required fields must be filled.'
+							);
+							return;
+						}
+
+						try {
+							if (this.themeId) {
+								await this.service.updateThemeManifest(
+									this.themeId,
+									this.manifest
+								);
+							} else {
+								const themeId = await this.service.createTheme(this.manifest);
+								// Automatically open the CSS editor for the new theme
+								new CSSEditorModal(this.app, this.plugin, {
+									type: 'Theme',
+									id: themeId,
+								}).open();
+							}
+							this.onSave();
+							this.close();
+						} catch (e) {
+							console.error('Failed to save theme manifest:', e);
+							const message = e instanceof Error ? e.message : 'Unknown error';
+							this.plugin.settingsService.notifications.error(
+								`Failed to save theme manifest: ${message}`
+							);
+						}
+					})
+			)
+			.addButton((btn) =>
+				btn.setButtonText('Cancel').onClick(() => this.close())
+			);
+	}
+
+	private getFundingString(): string {
+		if (!this.manifest.fundingUrl) return '';
+		if (typeof this.manifest.fundingUrl === 'string')
+			return this.manifest.fundingUrl;
+
+		return Object.entries(this.manifest.fundingUrl)
+			.map(([label, url]) => `${label}: ${url}`)
+			.join('\n');
+	}
+
+	private parseFundingString(val: string): string | Record<string, string> {
+		const lines = val
+			.split('\n')
+			.map((l) => l.trim())
+			.filter((l) => l !== '');
+		if (lines.length === 0) return '';
+		if (lines.length === 1 && !lines[0].includes(': ')) return lines[0];
+
+		const obj: Record<string, string> = {};
+		lines.forEach((line) => {
+			const splitIdx = line.indexOf(': ');
+			if (splitIdx !== -1) {
+				const label = line.substring(0, splitIdx).trim();
+				const url = line.substring(splitIdx + 2).trim();
+				if (label && url) {
+					obj[label] = url;
+				}
+			} else if (line.startsWith('http')) {
+				obj[line] = line; // Use URL as label if no colon
+			}
+		});
+
+		return Object.keys(obj).length > 0 ? obj : val.trim();
+	}
+
+	onClose(): void {
+		this.contentEl.empty();
+	}
+}

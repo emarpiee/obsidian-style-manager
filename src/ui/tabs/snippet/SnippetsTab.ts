@@ -1,0 +1,316 @@
+/*
+    Style Manager - Obsidian Plugin
+    Copyright (c) 2023 mgmeyers
+    Copyright (c) 2026 emarpiee
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
+import { App, ButtonComponent, Component, Setting, debounce } from 'obsidian';
+
+import { SnippetSettingComponent } from './SnippetSettingComponent';
+
+import { OPEN_MODAL_ON_CREATE_KEY, SNIPPETS_KEY } from '../../../constants';
+import StyleManagerPlugin from '../../../main';
+import { CSSEditorModal } from '../../modals/CSSEditorModal';
+import { ConfirmModal } from '../../modals/ConfirmModal';
+
+/**
+ * Renders the Snippets tab: search, folder actions, and the list of snippets.
+ */
+export class SnippetsTab {
+	private snippetComponents: SnippetSettingComponent[] = [];
+	private filterString: string = '';
+	private listContainer: HTMLElement;
+
+	constructor(
+		private containerEl: HTMLElement,
+		private app: App,
+		private plugin: StyleManagerPlugin,
+		private onRerender: () => void,
+		private addChild: (child: Component) => Component
+	) {}
+
+	render(): void {
+		const searchRow = this.containerEl.createDiv('style-manager-search-row');
+		searchRow.addClass('style-manager-snippets-search-row');
+
+		new Setting(searchRow)
+			.setClass('style-manager-search-container')
+			.setClass('style-manager-snippets-filter')
+			.addSearch((search) => {
+				search
+					.setPlaceholder('Search snippets...')
+					.setValue(this.filterString)
+					.onChange(
+						debounce((value) => {
+							this.filterString = value.toLowerCase();
+							this.applyFilter();
+						}, 250)
+					);
+			})
+			.addExtraButton((btn) => {
+				btn
+					.setIcon('plus')
+					.setTooltip('Create snippet')
+					.onClick(async () => {
+						const id =
+							await this.plugin.settingsService.snippetService.createSnippet();
+
+						const openModal = this.plugin.settingsService.settings[
+							OPEN_MODAL_ON_CREATE_KEY
+						] as boolean;
+						if (openModal) {
+							new CSSEditorModal(this.app, this.plugin, {
+								type: 'Snippet',
+								id,
+							}).open();
+						}
+
+						this.onRerender();
+					});
+			})
+			.addExtraButton((btn) => {
+				btn
+					.setIcon('folder')
+					.setTooltip('Open snippets folder')
+					.onClick(() => {
+						const customCss = (
+							this.app as unknown as {
+								customCss?: { openSnippetsFolder?: () => void };
+							}
+						).customCss;
+						if (customCss && customCss.openSnippetsFolder) {
+							customCss.openSnippetsFolder();
+						} else {
+							// Robust fallback: show the snippets folder by targeting its path
+							(
+								this.app as unknown as { showInFolder?: (path: string) => void }
+							).showInFolder?.('.obsidian/snippets');
+						}
+					});
+			});
+
+		this.listContainer = this.containerEl.createDiv(
+			'style-manager-snippets-list'
+		);
+		this.renderSnippetList();
+		this.renderBulkActions();
+	}
+
+	private renderSnippetList(): void {
+		const customCss = (
+			this.app as unknown as { customCss?: { snippets?: string[] } }
+		).customCss;
+		if (!customCss) return;
+
+		const snippets = customCss.snippets || [];
+
+		if (snippets.length === 0) {
+			this.listContainer.createDiv({
+				cls: 'style-manager-empty',
+				text: 'No snippets found in vault',
+			});
+			return;
+		}
+
+		snippets.forEach((id: string, index: number) => {
+			const isSelected = this.plugin.selectedSnippets.has(id);
+			const metadata = this.plugin.snippetMetadataMap.get(id);
+			const comp = new SnippetSettingComponent(
+				this.app,
+				this.listContainer,
+				this.plugin,
+				id,
+				isSelected,
+				(e, forceToggle) =>
+					this.handleSelectionChange(e, id, index, forceToggle),
+				metadata
+			);
+			this.snippetComponents.push(comp);
+			this.addChild(comp);
+		});
+
+		if (this.filterString) {
+			this.applyFilter();
+		}
+	}
+
+	private applyFilter(): void {
+		this.snippetComponents.forEach((comp) => {
+			const displayName = comp.snippetId + '.css';
+			const matches =
+				comp.snippetId.toLowerCase().includes(this.filterString) ||
+				displayName.toLowerCase().includes(this.filterString);
+			comp.setVisibility(matches);
+		});
+	}
+
+	private handleSelectionChange(
+		e: MouseEvent | KeyboardEvent,
+		id: string,
+		index: number,
+		forceToggle?: boolean
+	): void {
+		if (e.shiftKey && this.plugin.lastSnippetSelectedIndex !== null) {
+			const start = Math.min(this.plugin.lastSnippetSelectedIndex, index);
+			const end = Math.max(this.plugin.lastSnippetSelectedIndex, index);
+
+			const customCss = (
+				this.app as unknown as { customCss?: { snippets?: string[] } }
+			).customCss;
+			const snippets = customCss.snippets || [];
+
+			for (let i = start; i <= end; i++) {
+				this.plugin.selectedSnippets.add(snippets[i]);
+			}
+		} else if (e.ctrlKey || e.metaKey || forceToggle) {
+			if (this.plugin.selectedSnippets.has(id)) {
+				this.plugin.selectedSnippets.delete(id);
+			} else {
+				this.plugin.selectedSnippets.add(id);
+			}
+			this.plugin.lastSnippetSelectedIndex = index;
+		}
+
+		this.onRerender();
+	}
+
+	private renderBulkActions(): void {
+		if (this.plugin.selectedSnippets.size === 0) {
+			this.listContainer.removeClass('has-bulk-actions');
+			return;
+		}
+
+		this.listContainer.addClass('has-bulk-actions');
+		const bulkContainer = this.containerEl.createDiv(
+			'style-manager-bulk-actions'
+		);
+
+		const info = bulkContainer.createDiv('style-manager-bulk-info');
+		info.setText(`${this.plugin.selectedSnippets.size} selected`);
+
+		const actions = bulkContainer.createDiv('style-manager-bulk-buttons');
+
+		new ButtonComponent(actions).setButtonText('Select All').onClick(() => {
+			const customCss = (
+				this.app as unknown as { customCss?: { snippets?: string[] } }
+			).customCss;
+			const snippets = customCss.snippets || [];
+			snippets.forEach((id: string) => this.plugin.selectedSnippets.add(id));
+			this.onRerender();
+		});
+
+		new ButtonComponent(actions)
+			.setButtonText('Duplicate')
+			.onClick(() => this.bulkDuplicate());
+
+		new ButtonComponent(actions)
+			.setButtonText('Toggle All')
+			.setCta()
+			.onClick(() => {
+				this.toggleAllSelected();
+			});
+
+		new ButtonComponent(actions)
+			.setButtonText('Delete')
+			.setWarning()
+			.onClick(() => this.bulkDelete());
+
+		new ButtonComponent(actions)
+			.setIcon('cross')
+			.setTooltip('Clear selection')
+			.onClick(() => {
+				this.plugin.selectedSnippets.clear();
+				this.onRerender();
+			});
+	}
+
+	private async toggleAllSelected(): Promise<void> {
+		const lockerEnabled =
+			(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+		const isEnabled = (id: string): boolean => lockerEnabled.includes(id);
+
+		// Determine target state: if any selected is disabled, enable all. Otherwise disable all.
+		let targetState = false;
+		for (const id of this.plugin.selectedSnippets) {
+			if (!isEnabled(id)) {
+				targetState = true;
+				break;
+			}
+		}
+
+		const snippets = new Set(lockerEnabled);
+		for (const id of this.plugin.selectedSnippets) {
+			if (targetState) snippets.add(id);
+			else snippets.delete(id);
+		}
+
+		await this.plugin.settingsService.setSetting(
+			SNIPPETS_KEY,
+			Array.from(snippets)
+		);
+		this.plugin.settingsService.notifications.snippet(
+			`${targetState ? 'Enabled' : 'Disabled'} ${this.plugin.selectedSnippets.size} snippets`
+		);
+		this.onRerender();
+	}
+
+	private async bulkDelete(): Promise<void> {
+		const count = this.plugin.selectedSnippets.size;
+		new ConfirmModal(
+			this.app,
+			'Delete Snippets',
+			`Are you sure you want to delete ${count} selected snippets? This action cannot be undone.`,
+			'Delete All',
+			true,
+			async () => {
+				const selectedIds = Array.from(this.plugin.selectedSnippets);
+				for (const snippetId of selectedIds) {
+					try {
+						await this.plugin.settingsService.snippetService.deleteSnippet(
+							snippetId
+						);
+					} catch (err) {
+						console.error(`Failed to delete snippet ${snippetId}:`, err);
+					}
+				}
+
+				this.plugin.selectedSnippets.clear();
+				this.plugin.settingsService.notifications.snippet(
+					`Deleted ${count} snippets`
+				);
+				this.onRerender();
+			}
+		).open();
+	}
+
+	private async bulkDuplicate(): Promise<void> {
+		const count = this.plugin.selectedSnippets.size;
+		const selectedIds = Array.from(this.plugin.selectedSnippets);
+
+		for (const id of selectedIds) {
+			try {
+				await this.plugin.settingsService.snippetService.duplicateSnippet(id);
+			} catch (err) {
+				console.error(`Failed to duplicate snippet ${id}:`, err);
+			}
+		}
+
+		this.plugin.settingsService.notifications.snippet(
+			`Duplicated ${count} snippets`
+		);
+		this.plugin.selectedSnippets.clear();
+		this.onRerender();
+	}
+}
