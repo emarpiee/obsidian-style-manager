@@ -6,7 +6,7 @@
   "scripts": {
     "typecheck": "tsc --noemit",
     "dev": "node esbuild.config.mjs",
-    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production && obsidian plugin:reload id=style-manager",
+    "build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
     "lint": "eslint ./src",
     "lint:fix": "eslint ./src/**/*.ts --fix",
     "prettier": "prettier --write \"./src/**/*.{ts,tsx}\"",
