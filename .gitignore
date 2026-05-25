@@ -7,7 +7,6 @@ yarn.lock
 
 # Build Artifacts
 main.js
-main.css
 styles.css
 *.js.map
 *.css.map

@@ -59,7 +59,8 @@ export class ThemeManifestModal extends Modal {
 		});
 
 		new Setting(contentEl)
-			.setName('Theme Name (required)')
+			.setClass('style-manager-required-setting')
+			.setName('Theme Name')
 			.setDesc('The display name of your theme.')
 			.addText((text) =>
 				text
@@ -69,17 +70,19 @@ export class ThemeManifestModal extends Modal {
 			);
 
 		new Setting(contentEl)
-			.setName('Author (required)')
+			.setClass('style-manager-required-setting')
+			.setName('Author')
 			.setDesc("The author's name.")
 			.addText((text) =>
 				text
-					.setPlaceholder('emarpiee')
+					.setPlaceholder('Your Name')
 					.setValue(this.manifest.author)
 					.onChange((val) => (this.manifest.author = val.trim()))
 			);
 
 		new Setting(contentEl)
-			.setName('Version (required)')
+			.setClass('style-manager-required-setting')
+			.setName('Version')
 			.setDesc('The version, using Semantic Versioning in the format x.y.z.')
 			.addText((text) =>
 				text
@@ -89,7 +92,8 @@ export class ThemeManifestModal extends Modal {
 			);
 
 		new Setting(contentEl)
-			.setName('Min App Version (required)')
+			.setClass('style-manager-required-setting')
+			.setName('Min App Version')
 			.setDesc('The minimum required Obsidian version.')
 			.addText((text) =>
 				text
