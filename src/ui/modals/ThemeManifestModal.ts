@@ -57,6 +57,11 @@ export class ThemeManifestModal extends Modal {
 			text: this.themeId ? 'Edit Theme Manifest' : 'Create New Theme',
 			cls: 'style-manager-modal-title',
 		});
+		contentEl.createEl('p', {
+			text: '⚠️ Modifying a community theme’s manifest may break its connection to the gallery.',
+			cls: 'style-manager-theme-manifest-warning',
+		});
+		// Insert warning before the first setting
 
 		new Setting(contentEl)
 			.setClass('style-manager-required-setting')
