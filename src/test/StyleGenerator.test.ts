@@ -31,7 +31,7 @@ describe('StyleGenerator', () => {
 		vi.clearAllMocks();
 		document.body.className = '';
 		document.body.innerHTML = '';
-		
+
 		// Clean up existing style elements
 		const oldStyle = document.getElementById('style-manager-styles');
 		oldStyle?.remove();
@@ -69,7 +69,12 @@ describe('StyleGenerator', () => {
 	it('should add/remove classes to document body based on configuration', () => {
 		generator.config = {
 			sectionA: {
-				toggle1: { id: 'class-tg-1', type: SettingType.CLASS_TOGGLE, default: true, title: 'Toggle Test' },
+				toggle1: {
+					id: 'class-tg-1',
+					type: SettingType.CLASS_TOGGLE,
+					default: true,
+					title: 'Toggle Test',
+				},
 				select1: {
 					id: 'class-sel-1',
 					type: SettingType.CLASS_SELECT,
@@ -131,7 +136,12 @@ describe('StyleGenerator', () => {
 			'sec@@num1': 2,
 		};
 
-		const [vars] = generator.generateVariableArrays(settingsStore, config as any, {}, mockBridge);
+		const [vars] = generator.generateVariableArrays(
+			settingsStore,
+			config as any,
+			{},
+			mockBridge
+		);
 
 		// Expect format rgb and hex alt format
 		expect(vars).toContainEqual({ key: 'c1', value: 'rgb(0 255 0)' });
@@ -194,7 +204,12 @@ describe('StyleGenerator', () => {
 	it('should inject variables and apply styles successfully', () => {
 		generator.config = {
 			sec: {
-				num: { id: 'num-var', type: SettingType.VARIABLE_NUMBER, default: 12, title: 'Number Test' },
+				num: {
+					id: 'num-var',
+					type: SettingType.VARIABLE_NUMBER,
+					default: 12,
+					title: 'Number Test',
+				},
 			},
 		};
 
@@ -202,7 +217,9 @@ describe('StyleGenerator', () => {
 
 		const styleTag = document.getElementById('style-manager-styles');
 		expect(styleTag?.textContent).toContain('--num-var: 12 !important;');
-		expect(mockBridge.triggerEvent).toHaveBeenCalledWith('css-change', { source: 'style-manager' });
+		expect(mockBridge.triggerEvent).toHaveBeenCalledWith('css-change', {
+			source: 'style-manager',
+		});
 	});
 
 	it('should clean up stylesheets on destroy', () => {

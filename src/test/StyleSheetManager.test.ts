@@ -31,11 +31,17 @@ describe('StyleSheetManager', () => {
 		mockBridge = {
 			getActiveTheme: vi.fn().mockReturnValue('minimal'),
 			getInstalledThemes: vi.fn().mockReturnValue(['minimal', 'custom']),
-			getThemePath: vi.fn().mockImplementation((t) => `.obsidian/themes/${t}/theme.css`),
+			getThemePath: vi
+				.fn()
+				.mockImplementation((t) => `.obsidian/themes/${t}/theme.css`),
 			getInstalledPlugins: vi.fn().mockReturnValue(['plugin-a']),
-			getPluginPath: vi.fn().mockImplementation((p) => `.obsidian/plugins/${p}/styles.css`),
+			getPluginPath: vi
+				.fn()
+				.mockImplementation((p) => `.obsidian/plugins/${p}/styles.css`),
 			getAllSnippets: vi.fn().mockReturnValue(['snippet-1.css']),
-			getSnippetPath: vi.fn().mockImplementation((s) => `.obsidian/snippets/${s}.css`),
+			getSnippetPath: vi
+				.fn()
+				.mockImplementation((s) => `.obsidian/snippets/${s}.css`),
 			app: {
 				customCss: {
 					theme: 'minimal',
@@ -44,7 +50,11 @@ describe('StyleSheetManager', () => {
 					adapter: {
 						exists: vi.fn().mockResolvedValue(true),
 						stat: vi.fn().mockResolvedValue({ mtime: 1000 }),
-						read: vi.fn().mockResolvedValue('/* @settings\nname: Test Section\nid: test-id\nsettings:\n  - id: s1\n    type: class-toggle\n    title: S1\n*/'),
+						read: vi
+							.fn()
+							.mockResolvedValue(
+								'/* @settings\nname: Test Section\nid: test-id\nsettings:\n  - id: s1\n    type: class-toggle\n    title: S1\n*/'
+							),
 					},
 				},
 			},
@@ -55,7 +65,9 @@ describe('StyleSheetManager', () => {
 
 	it('should create light and dark elements and add class on init', () => {
 		expect(document.body.classList.contains('style-manager-css')).toBe(true);
-		const lightEl = document.body.querySelector('.theme-light.style-manager-ref');
+		const lightEl = document.body.querySelector(
+			'.theme-light.style-manager-ref'
+		);
 		const darkEl = document.body.querySelector('.theme-dark.style-manager-ref');
 		expect(lightEl).not.toBeNull();
 		expect(darkEl).not.toBeNull();

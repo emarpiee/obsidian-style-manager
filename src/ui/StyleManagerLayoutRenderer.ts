@@ -38,14 +38,6 @@ export type ActiveTab =
 	| 'theme'
 	| 'isolate'
 	| 'preferences';
-const TAB_ORDER: ActiveTab[] = [
-	'styles',
-	'snippets',
-	'theme',
-	'presets',
-	'isolate',
-	'preferences',
-];
 
 export class StyleManagerLayoutRenderer extends Component {
 	app: App;
