@@ -45,7 +45,7 @@ body {
 	--sm-container-item-border-color: var(--background-modifier-border);
 
 	/* --- State/Mode Badge (.style-manager-badge) --- */
-	--sm-badge-bg-active: rgba(var(--color-green-rgb), 0.08);
+	--sm-badge-bg-active: color-mix(in oklch, var(--text-success), transparent 92%);
 	--sm-badge-color-active: var(--text-success);
 	--sm-badge-border-color-active: var(--text-success);
 	--sm-badge-bg-inactive: var(--background-primary-alt);
@@ -58,28 +58,28 @@ body {
 	--sm-preset-badge-border-color: var(--text-muted);
 	--sm-preset-badge-border-size: 1px;
 	--sm-preset-badge-radius: 12px;
-	--sm-preset-badge-theme-bg: rgba(var(--interactive-accent-rgb), 0.1);
+	--sm-preset-badge-theme-bg: color-mix(in oklch, var(--text-accent), transparent 90%);
 	--sm-preset-badge-theme-color: var(--text-accent);
 	--sm-preset-badge-theme-border-color: var(--text-accent);
-	--sm-preset-badge-appearance-dark-bg: rgba(168, 131, 255, 0.1);
+	--sm-preset-badge-appearance-dark-bg: oklch(72% 0.16 295 / 0.1);
 	--sm-preset-badge-appearance-dark-color: #a883ff;
-	--sm-preset-badge-appearance-light-bg: rgba(180, 83, 9, 0.15);
+	--sm-preset-badge-appearance-light-bg: oklch(60% 0.18 45 / 0.15);
 	--sm-preset-badge-appearance-light-color: #b45309;
 
 	/* --- Source Type Badge (Plugin / Theme / Snippet) --- */
 	/* Light Mode */
-	--sm-source-badge-plugin-bg-light: rgba(5, 150, 105, 0.12);
+	--sm-source-badge-plugin-bg-light: oklch(65% 0.17 155 / 0.12);
 	--sm-source-badge-plugin-color-light: #047857;
-	--sm-source-badge-theme-bg-light: rgba(var(--interactive-accent-rgb), 0.12);
+	--sm-source-badge-theme-bg-light: color-mix(in oklch, var(--text-accent), transparent 88%);
 	--sm-source-badge-theme-color-light: var(--text-accent);
-	--sm-source-badge-snippet-bg-light: rgba(180, 83, 9, 0.12);
+	--sm-source-badge-snippet-bg-light: oklch(60% 0.18 45 / 0.12);
 	--sm-source-badge-snippet-color-light: #b45309;
 	/* Dark Mode */
-	--sm-source-badge-plugin-bg-dark: rgba(16, 185, 129, 0.15);
+	--sm-source-badge-plugin-bg-dark: oklch(73% 0.18 160 / 0.15);
 	--sm-source-badge-plugin-color-dark: #10b981;
-	--sm-source-badge-theme-bg-dark: rgba(var(--interactive-accent-rgb), 0.15);
+	--sm-source-badge-theme-bg-dark: color-mix(in oklch, var(--text-accent), transparent 85%);
 	--sm-source-badge-theme-color-dark: var(--text-accent);
-	--sm-source-badge-snippet-bg-dark: rgba(245, 158, 11, 0.15);
+	--sm-source-badge-snippet-bg-dark: oklch(75% 0.18 45 / 0.15);
 	--sm-source-badge-snippet-color-dark: #f59e0b;
 
 	/* --- Tabs --- */
@@ -232,8 +232,8 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 /* Shadow when "stuck" (using a subtle top shadow to simulate depth when others scroll under) */
 .style-manager-heading:not(.is-collapsed) {
 	box-shadow:
-		0 4px 6px -1px rgba(0, 0, 0, 0.05),
-		0 2px 4px -1px rgba(0, 0, 0, 0.03);
+		0 4px 6px -1px oklch(0% 0 0 / 0.05),
+		0 2px 4px -1px oklch(0% 0 0 / 0.03);
 }
 
 .style-manager-heading:hover {
@@ -477,7 +477,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 .style-manager-error {
 	font-size: var(--font-ui-small);
 	border-radius: var(--radius-m);
-	background: rgba(var(--background-modifier-error-rgb), 0.2);
+	background: color-mix(in oklch, var(--text-error), transparent 80%);
 	color: var(--text-error);
 	padding: var(--size-4-3);
 	margin-bottom: var(--size-4-4);
@@ -693,36 +693,36 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 /* Light picker container - forced light background */
 .themed-color-wrapper > div.theme-light {
 	background: #ffffff !important;
-	border-color: rgba(0, 0, 0, 0.1) !important;
+	border-color: oklch(0% 0 0 / 0.1) !important;
 }
 
 /* Force dark icon/border on reset button inside the light container */
 .themed-color-wrapper > div.theme-light .pickr-reset > button {
 	color: #444444 !important;
-	border-color: rgba(0, 0, 0, 0.15) !important;
+	border-color: oklch(0% 0 0 / 0.15) !important;
 }
 
 .themed-color-wrapper > div.theme-light .pickr-reset > button:hover {
-	background: rgba(0, 0, 0, 0.05) !important;
+	background: oklch(0% 0 0 / 0.05) !important;
 	color: #000000 !important;
 }
 
 /* Dark picker container - visually darker */
 .themed-color-wrapper > div.theme-dark {
 	background: #1a1a1a !important;
-	border-color: rgba(255, 255, 255, 0.15) !important;
+	border-color: oklch(100% 0 0 / 0.15) !important;
 }
 
 /* Force light icon/border on reset button inside the dark container */
 .themed-color-wrapper > div.theme-dark .pickr-reset > button {
-	color: rgba(255, 255, 255, 0.75) !important;
-	border-color: rgba(255, 255, 255, 0.2) !important;
+	color: oklch(100% 0 0 / 0.75) !important;
+	border-color: oklch(100% 0 0 / 0.2) !important;
 }
 
 .themed-color-wrapper > div.theme-dark .pickr-reset > button:hover {
 	color: #ffffff !important;
-	border-color: rgba(255, 255, 255, 0.5) !important;
-	background: rgba(255, 255, 255, 0.08) !important;
+	border-color: oklch(100% 0 0 / 0.5) !important;
+	background: oklch(100% 0 0 / 0.08) !important;
 }
 
 /*! --- Third-Party: Pickr 1.9.1 --- */
@@ -2424,8 +2424,8 @@ body.is-mobile .style-manager-editor-footer {
 	margin-left: var(--size-4-2);
 	padding: 1px 6px;
 	border-radius: var(--radius-s);
-	background-color: rgba(239, 68, 68, 0.08);
+	background-color: oklch(65% 0.22 25 / 0.08);
 	color: var(--text-error);
-	border: 1px solid rgba(239, 68, 68, 0.2);
+	border: 1px solid oklch(65% 0.22 25 / 0.2);
 	line-height: 1.2;
 }
