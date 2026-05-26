@@ -17,50 +17,6 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-body:not(.is-phone) .vertical-tab-content:has(.style-manager-wrapper),
-body:not(.is-phone) .view-content:has(.style-manager-wrapper) {
-	padding: 0;
-}
-
-body.is-phone .vertical-tab-content:has(.style-manager-wrapper) {
-	padding-inline: 0 !important;
-}
-
-body.is-phone .modal:has(.style-manager-wrapper).mod-settings .modal-header {
-	background: var(--background-primary);
-}
-
-body.is-phone .modal:has(.style-manager-wrapper) .vertical-tab-content {
-	padding-top: var(--modal-header-height) !important;
-}
-
-body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
-	display: none;
-}
-
-.style-manager-wrapper {
-	display: flex;
-	flex-direction: column;
-	min-height: 100%;
-	width: 100%;
-	box-sizing: border-box;
-	position: relative;
-	background: var(--settings-background) !important;
-}
-
-.style-manager-wrapper .search-input-container {
-	width: 100%;
-}
-
-.style-manager-section {
-	position: relative;
-	width: 100%;
-}
-
-.style-manager-heading-group {
-	display: contents;
-}
-
 body {
 	--sm-sticky-tabs-height: 48px;
 	/* Height of the tab bar */
@@ -77,11 +33,6 @@ body.is-phone {
 	--sm-sticky-tabs-height: 104px;
 }
 
-/* ============================================================
-   Style Manager Custom Properties
-   Theme developers can override these variables to customize
-   the Style Manager's appearance without touching selectors.
-   ============================================================ */
 body {
 	/* --- Heading --- */
 	--sm-heading-bg: var(--background-primary);
@@ -171,6 +122,50 @@ body {
 	/* --- Bulk Actions Bar --- */
 	--sm-bulk-actions-bg: var(--background-primary-alt);
 	--sm-bulk-actions-border-color: var(--background-modifier-border);
+}
+
+body:not(.is-phone) .vertical-tab-content:has(.style-manager-wrapper),
+body:not(.is-phone) .view-content:has(.style-manager-wrapper) {
+	padding: 0;
+}
+
+body.is-phone .vertical-tab-content:has(.style-manager-wrapper) {
+	padding-inline: 0 !important;
+}
+
+body.is-phone .modal:has(.style-manager-wrapper).mod-settings .modal-header {
+	background: var(--background-primary);
+}
+
+body.is-phone .modal:has(.style-manager-wrapper) .vertical-tab-content {
+	padding-top: var(--modal-header-height) !important;
+}
+
+body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
+	display: none;
+}
+
+.style-manager-wrapper {
+	display: flex;
+	flex-direction: column;
+	min-height: 100%;
+	width: 100%;
+	box-sizing: border-box;
+	position: relative;
+	background: var(--settings-background) !important;
+}
+
+.style-manager-wrapper .search-input-container {
+	width: 100%;
+}
+
+.style-manager-section {
+	position: relative;
+	width: 100%;
+}
+
+.style-manager-heading-group {
+	display: contents;
 }
 
 .style-manager-heading {
@@ -464,7 +459,6 @@ body {
 .style-manager-collapse-indicator > svg {
 	height: 10px;
 	width: 10px;
-	width: 10px;
 }
 
 .style-manager-heading.is-collapsed .style-manager-collapse-indicator > svg {
@@ -559,7 +553,6 @@ body {
 /* Modal Utility Classes */
 .modal-style-manager {
 	max-height: 85vh;
-	max-height: 85dvh;
 	display: flex;
 	flex-direction: column;
 	padding: var(--size-4-4) !important;
@@ -763,7 +756,6 @@ body {
 	background-color: transparent !important;
 	background-image: url('data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%202%202%22%3E%3Cpath%20fill%3D%22white%22%20d%3D%22M1%2C0H2V1H1V0ZM0,1H1V2H0V1Z"/><path fill="gray" d="M0,0H1V1H0V0ZM1,1H2V2H1V1Z"/></svg>') !important;
 	background-size: 0.5em !important;
-	background-size: 0.5em !important;
 }
 
 .pickr .pcr-button::before {
@@ -828,7 +820,6 @@ body {
 	background: var(--background-primary);
 	opacity: 0;
 	visibility: hidden;
-	box-shadow: var(--shadow-s);
 	box-shadow: var(--shadow-s);
 	left: 0;
 	top: 0;
@@ -1020,14 +1011,12 @@ body {
 	user-select: none;
 	display: flex;
 	flex-direction: column;
-	cursor: grab;
 	cursor: -webkit-grab;
 }
 
 .pcr-app .pcr-selection .pcr-color-palette:active,
 .pcr-app .pcr-selection .pcr-color-chooser:active,
 .pcr-app .pcr-selection .pcr-color-opacity:active {
-	cursor: grabbing;
 	cursor: -webkit-grabbing;
 }
 
@@ -1499,7 +1488,6 @@ button.style-manager-icon-button {
 	padding: calc(var(--size-4-2) + 2px) var(--size-4-3);
 	cursor: pointer;
 	border-bottom: 1px solid var(--background-modifier-border);
-	border-bottom: 1px solid var(--background-modifier-border);
 }
 
 .style-manager-reset-item:last-child {
@@ -1852,7 +1840,6 @@ body.is-phone .style-manager-isolate-badge {
 .style-manager-preset-star-icon {
 	margin-right: var(--size-4-2);
 	color: var(--text-faint);
-	cursor: pointer;
 	cursor: pointer;
 }
 
