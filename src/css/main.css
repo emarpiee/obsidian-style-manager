@@ -34,6 +34,9 @@ body.is-phone {
 }
 
 body {
+	/* Style Manager Main Wrapper */
+	--sm-wrapper-bg: var(--settings-background);
+
 	/* --- Heading --- */
 	--sm-heading-bg: var(--background-primary);
 	--sm-heading-border-color: var(--background-modifier-border);
@@ -168,7 +171,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	width: 100%;
 	box-sizing: border-box;
 	position: relative;
-	background: var(--settings-background);
+	background: var(--sm-wrapper-bg);
 }
 
 .style-manager-wrapper .search-input-container {
