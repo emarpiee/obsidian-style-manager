@@ -69,12 +69,13 @@ describe('StyleGenerator', () => {
 	it('should add/remove classes to document body based on configuration', () => {
 		generator.config = {
 			sectionA: {
-				toggle1: { id: 'class-tg-1', type: SettingType.CLASS_TOGGLE, default: true },
+				toggle1: { id: 'class-tg-1', type: SettingType.CLASS_TOGGLE, default: true, title: 'Toggle Test' },
 				select1: {
 					id: 'class-sel-1',
 					type: SettingType.CLASS_SELECT,
 					default: 'opt-a',
 					options: ['opt-a', 'opt-b'],
+					title: 'Select Test',
 				},
 			},
 		};
@@ -193,7 +194,7 @@ describe('StyleGenerator', () => {
 	it('should inject variables and apply styles successfully', () => {
 		generator.config = {
 			sec: {
-				num: { id: 'num-var', type: SettingType.VARIABLE_NUMBER, default: 12 },
+				num: { id: 'num-var', type: SettingType.VARIABLE_NUMBER, default: 12, title: 'Number Test' },
 			},
 		};
 

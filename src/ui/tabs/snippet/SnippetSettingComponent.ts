@@ -123,7 +123,7 @@ export class SnippetSettingComponent extends Component {
 			});
 			this.setting.nameEl.createSpan({
 				cls: 'style-manager-item-title-description',
-				text: this.metadata.author,
+				text: `by ${this.metadata.author}`,
 			});
 		}
 

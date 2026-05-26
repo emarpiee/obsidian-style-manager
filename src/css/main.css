@@ -124,8 +124,8 @@ body {
 	--sm-bulk-actions-border-color: var(--background-modifier-border);
 }
 
-body:not(.is-phone) .vertical-tab-content:has(.style-manager-wrapper),
-body:not(.is-phone) .view-content:has(.style-manager-wrapper) {
+body .vertical-tab-content:has(.style-manager-wrapper),
+body .view-content:has(.style-manager-wrapper) {
 	padding: 0;
 }
 
@@ -152,7 +152,6 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	width: 100%;
 	box-sizing: border-box;
 	position: relative;
-	background: var(--settings-background) !important;
 }
 
 .style-manager-wrapper .search-input-container {
@@ -1425,16 +1424,6 @@ button.style-manager-icon-button {
 	box-shadow: none;
 }
 
-.is-mobile .style-manager-item-row .setting-item-control {
-	display: flex;
-	flex-wrap: wrap;
-	width: auto;
-	gap: 4px;
-	padding-top: 0;
-	flex: 0;
-	margin-left: var(--size-4-1);
-}
-
 .is-mobile .style-manager-tab {
 	flex: 1;
 	text-align: center;
@@ -1948,6 +1937,7 @@ body.is-phone .style-manager-item-row .setting-item-control {
 	padding: 0 !important;
 	margin: 0 !important;
 	display: flex !important;
+	flex: 0 !important;
 	flex-direction: row !important;
 	flex-wrap: nowrap !important;
 	gap: var(--size-4-1);
