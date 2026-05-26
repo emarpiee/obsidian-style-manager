@@ -45,7 +45,11 @@ body {
 	--sm-container-item-border-color: var(--background-modifier-border);
 
 	/* --- State/Mode Badge (.style-manager-badge) --- */
-	--sm-badge-bg-active: color-mix(in oklch, var(--text-success), transparent 92%);
+	--sm-badge-bg-active: color-mix(
+		in oklch,
+		var(--text-success),
+		transparent 92%
+	);
 	--sm-badge-color-active: var(--text-success);
 	--sm-badge-border-color-active: var(--text-success);
 	--sm-badge-bg-inactive: var(--background-primary-alt);
@@ -58,7 +62,11 @@ body {
 	--sm-preset-badge-border-color: var(--text-muted);
 	--sm-preset-badge-border-size: 1px;
 	--sm-preset-badge-radius: 12px;
-	--sm-preset-badge-theme-bg: color-mix(in oklch, var(--text-accent), transparent 90%);
+	--sm-preset-badge-theme-bg: color-mix(
+		in oklch,
+		var(--text-accent),
+		transparent 90%
+	);
 	--sm-preset-badge-theme-color: var(--text-accent);
 	--sm-preset-badge-theme-border-color: var(--text-accent);
 	--sm-preset-badge-appearance-dark-bg: oklch(72% 0.16 295 / 0.1);
@@ -70,14 +78,22 @@ body {
 	/* Light Mode */
 	--sm-source-badge-plugin-bg-light: oklch(65% 0.17 155 / 0.12);
 	--sm-source-badge-plugin-color-light: #047857;
-	--sm-source-badge-theme-bg-light: color-mix(in oklch, var(--text-accent), transparent 88%);
+	--sm-source-badge-theme-bg-light: color-mix(
+		in oklch,
+		var(--text-accent),
+		transparent 88%
+	);
 	--sm-source-badge-theme-color-light: var(--text-accent);
 	--sm-source-badge-snippet-bg-light: oklch(60% 0.18 45 / 0.12);
 	--sm-source-badge-snippet-color-light: #b45309;
 	/* Dark Mode */
 	--sm-source-badge-plugin-bg-dark: oklch(73% 0.18 160 / 0.15);
 	--sm-source-badge-plugin-color-dark: #10b981;
-	--sm-source-badge-theme-bg-dark: color-mix(in oklch, var(--text-accent), transparent 85%);
+	--sm-source-badge-theme-bg-dark: color-mix(
+		in oklch,
+		var(--text-accent),
+		transparent 85%
+	);
 	--sm-source-badge-theme-color-dark: var(--text-accent);
 	--sm-source-badge-snippet-bg-dark: oklch(75% 0.18 45 / 0.15);
 	--sm-source-badge-snippet-color-dark: #f59e0b;
@@ -152,6 +168,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	width: 100%;
 	box-sizing: border-box;
 	position: relative;
+	background: var(--settings-background);
 }
 
 .style-manager-wrapper .search-input-container {
