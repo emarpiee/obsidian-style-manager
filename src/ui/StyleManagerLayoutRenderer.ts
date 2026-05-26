@@ -24,7 +24,6 @@ import { ErrorList, ParsedCSSSettings } from '../types';
 import { HeadingSettingComponent } from './components/fields/HeadingSettingComponent';
 import { IsolateModeHeader } from './components/layout/IsolateModeHeader';
 import { SettingsHeaderComponent } from './components/layout/SettingsHeaderComponent';
-import { GestureHelper } from './helpers/GestureHelper';
 import { IsolateTab } from './tabs/IsolateTab';
 import { PreferencesTab } from './tabs/PreferencesTab';
 import { StylesTab } from './tabs/StylesTab';
@@ -148,12 +147,6 @@ export class StyleManagerLayoutRenderer extends Component {
 
 		this.cleanup();
 		this.displayErrors(masterContainer);
-		GestureHelper.installTabSwipeGestures(
-			masterContainer,
-			TAB_ORDER,
-			this.activeTab,
-			(newTab) => this.openTab(newTab as ActiveTab)
-		);
 
 		const header = new SettingsHeaderComponent(
 			this.app,
