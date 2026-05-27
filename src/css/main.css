@@ -2108,7 +2108,7 @@ body.is-phone .style-manager-heading .style-manager-preset-badges.mod-right {
 	opacity: 0.6;
 }
 
-.style-manager-item-title-description {
+.style-manager-item-title-author {
 	color: var(--text-muted);
 	font-size: 0.8em;
 	font-weight: var(--font-normal);

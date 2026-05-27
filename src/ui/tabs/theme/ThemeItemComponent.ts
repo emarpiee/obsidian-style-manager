@@ -101,7 +101,7 @@ export class ThemeItemComponent extends Component {
 				text: ' • ',
 			});
 			this.setting.nameEl.createSpan({
-				cls: 'style-manager-item-title-description',
+				cls: 'style-manager-item-title-author',
 				text: `by ${this.manifest.author}`,
 			});
 		}
@@ -124,15 +124,29 @@ export class ThemeItemComponent extends Component {
 			const fieldEl = metadataEl.createDiv('style-manager-metadata-field');
 			const iconEl = fieldEl.createDiv('style-manager-metadata-icon');
 			setIcon(iconEl, 'tag');
-			fieldEl.createSpan({ text: `v${this.manifest.version}` });
+			fieldEl.createSpan({
+				cls: 'style-manager-metadata-label',
+				text: `Version: `,
+			});
+			fieldEl.createSpan({
+				cls: 'style-manager-metadata-value',
+				text: `${this.manifest.version}`,
+			});
 		}
 
 		// Min App Version
 		if (this.manifest.minAppVersion) {
 			const fieldEl = metadataEl.createDiv('style-manager-metadata-field');
 			const iconEl = fieldEl.createDiv('style-manager-metadata-icon');
-			setIcon(iconEl, 'monitor');
-			fieldEl.createSpan({ text: `Min App: ${this.manifest.minAppVersion}` });
+			setIcon(iconEl, 'rocket');
+			fieldEl.createSpan({
+				cls: 'style-manager-metadata-label',
+				text: `Min App: `,
+			});
+			fieldEl.createSpan({
+				cls: 'style-manager-metadata-value',
+				text: `${this.manifest.minAppVersion}`,
+			});
 		}
 
 		// Author URL
@@ -140,6 +154,10 @@ export class ThemeItemComponent extends Component {
 			const fieldEl = metadataEl.createDiv('style-manager-metadata-field');
 			const iconEl = fieldEl.createDiv('style-manager-metadata-icon');
 			setIcon(iconEl, 'link');
+			fieldEl.createSpan({
+				cls: 'style-manager-metadata-label',
+				text: `Author URL: `,
+			});
 			fieldEl.createEl('a', {
 				text: this.manifest.authorUrl.replace(/^https?:\/\/(www\.)?/, ''),
 				href: this.manifest.authorUrl,

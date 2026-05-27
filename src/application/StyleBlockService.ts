@@ -47,8 +47,8 @@ export class StyleBlockService {
 description: 
 author: 
 version: 1.0.0
+authorUrl 
 license: 
-repo: 
 */`,
 		},
 		{
@@ -81,7 +81,7 @@ settings:
         title: 
         description: 
         type: heading
-        level: 2
+        level: 1
         collapsed: false`,
 		},
 		{

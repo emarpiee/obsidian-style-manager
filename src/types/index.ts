@@ -198,8 +198,8 @@ export interface SnippetMetadata {
 	description?: string;
 	author?: string;
 	version?: string;
+	authorUrl?: string;
 	license?: string;
-	repo?: string;
 }
 
 export interface ParsedCSSSettings {

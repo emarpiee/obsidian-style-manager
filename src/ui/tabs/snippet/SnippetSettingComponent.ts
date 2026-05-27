@@ -122,7 +122,7 @@ export class SnippetSettingComponent extends Component {
 				text: ' • ',
 			});
 			this.setting.nameEl.createSpan({
-				cls: 'style-manager-item-title-description',
+				cls: 'style-manager-item-title-author',
 				text: `by ${this.metadata.author}`,
 			});
 		}
@@ -186,10 +186,10 @@ export class SnippetSettingComponent extends Component {
 			label: string;
 			icon: string;
 		}> = [
-			{ key: 'description', label: 'Description', icon: 'info' },
+			{ key: 'description', label: 'Description', icon: 'badge-info' },
 			{ key: 'version', label: 'Version', icon: 'tag' },
+			{ key: 'authorUrl', label: 'Author Url', icon: 'link' },
 			{ key: 'license', label: 'License', icon: 'scale' },
-			{ key: 'repo', label: 'Repository', icon: 'github' },
 		];
 
 		fields.forEach(({ key, label, icon }) => {
@@ -207,7 +207,7 @@ export class SnippetSettingComponent extends Component {
 				});
 
 				if (
-					key === 'repo' &&
+					key === 'authorUrl' &&
 					typeof value === 'string' &&
 					value.startsWith('http')
 				) {
