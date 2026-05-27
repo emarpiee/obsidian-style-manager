@@ -189,7 +189,7 @@ export class ResetSettingsModal extends Modal {
 			}
 
 			const badgesContainer = textContainer.createDiv(
-				'style-manager-preset-badges'
+				'style-manager-badge-container'
 			);
 
 			// Identity Badges (Consistent with CreatePresetModal)

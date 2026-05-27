@@ -308,7 +308,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 
 /* Locker-Specific Styles */
 
-.style-manager-preset-badges {
+.style-manager-badge-container {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 6px;
@@ -316,11 +316,11 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	vertical-align: middle;
 }
 
-.style-manager-preset-badges.mod-left {
+.style-manager-badge-container.mod-left {
 	margin-left: 8px;
 }
 
-.style-manager-preset-badges.mod-right {
+.style-manager-badge-container.mod-right {
 	margin-right: 12px;
 }
 
@@ -428,7 +428,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 }
 
 /* In modals and locker list, we want counts visible even without .is-visible, but NEVER if empty */
-.style-manager-preset-badges .style-manager-preset-badge.count:not(:empty),
+.style-manager-badge-container .style-manager-preset-badge.count:not(:empty),
 .style-manager-locker-meta-row .style-manager-preset-badge.count:not(:empty) {
 	display: inline-flex;
 }
@@ -1939,14 +1939,14 @@ body.is-phone .style-manager-item-row .setting-item-info {
 	flex: 1;
 }
 
-body.is-phone .style-manager-preset-badges {
+body.is-phone .style-manager-badge-container {
 	margin-left: 0;
 	margin-top: 6px;
 	width: 100%;
 }
 
 /* Ensure badges in Reset/Save modals stay on the right on mobile */
-body.is-phone .style-manager-reset-item .style-manager-preset-badges {
+body.is-phone .style-manager-reset-item .style-manager-badge-container {
 	width: auto !important;
 	margin-top: 0 !important;
 	margin-left: 8px !important;
@@ -2007,8 +2007,8 @@ body.is-phone .style-manager-heading .setting-item-name {
 	flex-wrap: nowrap !important;
 }
 
-body.is-phone .style-manager-heading .style-manager-preset-badges.mod-left,
-body.is-phone .style-manager-heading .style-manager-preset-badges.mod-right {
+body.is-phone .style-manager-heading .style-manager-badge-container.mod-left,
+body.is-phone .style-manager-heading .style-manager-badge-container.mod-right {
 	width: auto !important;
 	margin-top: 0 !important;
 	margin-left: 8px !important;

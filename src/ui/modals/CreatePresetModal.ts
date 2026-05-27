@@ -253,7 +253,7 @@ export class CreatePresetModal extends Modal {
 			}
 
 			const badgesContainer = textContainer.createDiv(
-				'style-manager-preset-badges'
+				'style-manager-badge-container'
 			);
 
 			if (isTheme || isAppearance || isSnippets || isAccent) {
