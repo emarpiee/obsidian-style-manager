@@ -106,7 +106,7 @@ export class CSSEditorModal extends Modal {
 
 		if (this.source.type !== 'Snippet') {
 			nameInput.setDisabled(true);
-			nameInput.inputEl.style.opacity = '0.7';
+			nameInput.inputEl.addClass('style-manager-editor-disabled-input');
 		}
 
 		nameInput.inputEl.addEventListener('keydown', (e) => {
@@ -297,7 +297,7 @@ export class CSSEditorModal extends Modal {
 							menu.showAtPosition({ x: rect.right, y: rect.top });
 						});
 				} else {
-					btn.buttonEl.style.display = 'none';
+					btn.buttonEl.addClass('style-manager-hidden');
 				}
 			});
 

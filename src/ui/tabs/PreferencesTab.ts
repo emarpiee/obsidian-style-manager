@@ -60,9 +60,6 @@ export class PreferencesTab {
 		const headerEl = containerEl.createEl('h3', {
 			cls: 'style-manager-settings-tab-title',
 		});
-		headerEl.style.display = 'flex';
-		headerEl.style.alignItems = 'center';
-		headerEl.style.gap = 'var(--size-4-2)';
 		const iconEl = headerEl.createSpan({
 			cls: 'style-manager-settings-tab-icon',
 		});

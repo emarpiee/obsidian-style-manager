@@ -303,11 +303,9 @@ export class PresetItem {
 		if (isSelected) {
 			row.settingEl.addClass('is-selected');
 			setIcon(selectIcon, 'check-circle');
-			selectIcon.style.color = 'var(--interactive-accent)';
 		} else {
 			row.settingEl.removeClass('is-selected');
 			setIcon(selectIcon, 'circle');
-			selectIcon.style.color = 'var(--text-faint)';
 		}
 
 		setTooltip(selectIcon, isSelected ? 'Deselect preset' : 'Select preset');

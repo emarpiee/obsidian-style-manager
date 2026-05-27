@@ -211,6 +211,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	background-color: var(--sm-heading-bg);
 	border-bottom: var(--sm-heading-border-size) dashed
 		var(--sm-heading-border-color);
+	cursor: pointer;
 }
 
 .style-manager-heading[data-level='0'] {
@@ -1790,6 +1791,9 @@ body.is-phone .style-manager-isolate-badge {
 }
 
 .style-manager-settings-tab-title {
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
 	margin: var(--size-4-6) 0 var(--size-4-4) 0 !important;
 	padding: 0 var(--size-4-6) !important;
 	font-size: var(--font-ui-large);
@@ -2409,6 +2413,7 @@ body.is-mobile .style-manager-editor-footer {
 }
 
 .style-manager-conflict-rename-row {
+	display: flex;
 	border: none !important;
 	padding: 8px 0 0 0 !important;
 }
@@ -2443,4 +2448,52 @@ body.is-mobile .style-manager-editor-footer {
 	color: var(--text-error);
 	border: 1px solid oklch(65% 0.22 25 / 0.2);
 	line-height: 1.2;
+}
+
+.is-clickable {
+	cursor: pointer;
+}
+
+.style-manager-item-select-icon {
+	color: var(--text-faint);
+}
+
+.style-manager-item-row.is-selected .style-manager-item-select-icon {
+	color: var(--interactive-accent);
+}
+
+.style-manager-modal-textarea {
+	width: 100%;
+}
+
+.style-manager-hidden {
+	display: none !important;
+}
+
+.style-manager-device-list {
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.style-manager-editor-disabled-input {
+	opacity: 0.7;
+}
+
+.style-manager-ref {
+	display: none;
+}
+
+
+.style-manager-modal-input {
+	width: 100%;
+	margin-bottom: 20px;
+}
+
+.style-manager-device-list {
+	max-height: 400px;
+	overflow-y: auto;
+}
+
+.style-manager-editor-disabled-input {
+	opacity: 0.7;
 }

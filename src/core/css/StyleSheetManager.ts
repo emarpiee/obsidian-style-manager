@@ -51,11 +51,10 @@ export class StyleSheetManager {
 		this.darkEl = document.body.createDiv('theme-dark style-manager-ref');
 
 		// Hide these elements from view
-		this.lightEl.style.display = 'none';
-		this.darkEl.style.display = 'none';
-
 		document.body.classList.add('style-manager-css');
 	}
+
+
 
 	public cleanup(): void {
 		this.lightEl?.remove();

@@ -63,8 +63,6 @@ export class DeviceSelectionModal extends Modal {
 		}
 
 		const deviceList = contentEl.createDiv('style-manager-device-list');
-		deviceList.style.maxHeight = '400px';
-		deviceList.style.overflowY = 'auto';
 
 		allIds.forEach((id) => {
 			const name = this.service.identity.getLockerName(id);

@@ -52,11 +52,9 @@ export class ImportPresetModal extends Modal {
 		});
 
 		const errorSpan = contentEl.createEl('p', {
-			cls: 'style-manager-import-error style-manager-modal-error',
+			cls: 'style-manager-import-error style-manager-modal-error style-manager-hidden',
 			text: '',
 		});
-		errorSpan.style.color = 'var(--text-error)';
-		errorSpan.style.display = 'none';
 
 		const processImports = async (
 			items: { content: string | ArrayBuffer; name?: string }[]
@@ -101,10 +99,10 @@ export class ImportPresetModal extends Modal {
 			.addButton((btn) => {
 				const input = document.createElement('input');
 				input.addClass('style-manager-modal-input-file');
+				input.addClass('style-manager-hidden');
 				input.type = 'file';
 				input.accept = '.json,.md,.txt,.zip';
 				input.multiple = true;
-				input.style.display = 'none';
 				input.onchange = async (e: Event): Promise<void> => {
 					const files = Array.from(
 						(e.target as HTMLInputElement).files ?? []
@@ -174,7 +172,7 @@ export class ImportPresetModal extends Modal {
 				text.inputEl.addClass('style-manager-modal-textarea');
 				text.inputEl.rows = 10;
 				text.onChange(() => {
-					errorSpan.style.display = 'none';
+					errorSpan.addClass('style-manager-hidden');
 				});
 				return text;
 			});
@@ -191,7 +189,7 @@ export class ImportPresetModal extends Modal {
 						).getValue();
 						if (!val.trim()) {
 							errorSpan.setText('Please paste some JSON data.');
-							errorSpan.style.display = 'block';
+							errorSpan.removeClass('style-manager-hidden');
 							return;
 						}
 
@@ -200,7 +198,7 @@ export class ImportPresetModal extends Modal {
 							await processImports([{ content: val }]);
 						} catch {
 							errorSpan.setText('Invalid JSON data.');
-							errorSpan.style.display = 'block';
+							errorSpan.removeClass('style-manager-hidden');
 						}
 					});
 			});

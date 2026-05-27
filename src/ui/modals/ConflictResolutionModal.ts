@@ -75,16 +75,16 @@ export class ConflictResolutionModal extends Modal {
 				.setName(name)
 				.setClass('style-manager-conflict-row')
 				.addDropdown((drop) => {
-					drop
-						.addOption('rename', 'Rename')
-						.addOption('overwrite', 'Overwrite')
-						.addOption('skip', 'Skip')
-						.setValue('rename')
-						.onChange((val: string) => {
-							resolution.action = val as 'rename' | 'overwrite' | 'skip';
-							renameInputRow.settingEl.style.display =
-								val === 'rename' ? 'flex' : 'none';
-						});
+						drop
+							.addOption('rename', 'Rename')
+							.addOption('overwrite', 'Overwrite')
+							.addOption('skip', 'Skip')
+							.setValue('rename')
+							.onChange((val: string) => {
+								resolution.action = val as 'rename' | 'overwrite' | 'skip';
+								renameInputRow.settingEl.toggleClass('style-manager-hidden', val !== 'rename');
+							});
+
 				});
 
 			const renameInputRow = new Setting(container)
@@ -101,7 +101,7 @@ export class ConflictResolutionModal extends Modal {
 				});
 
 			// Initial state (visible if 'rename' is the default)
-			renameInputRow.settingEl.style.display = 'flex';
+			renameInputRow.settingEl.removeClass('style-manager-hidden');
 		});
 
 		const buttonContainer = contentEl.createDiv('style-manager-modal-buttons');

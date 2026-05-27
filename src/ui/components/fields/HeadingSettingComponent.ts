@@ -238,7 +238,6 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 				cls: 'style-manager-heading-description',
 				text: description,
 			});
-			descEl.style.cursor = 'pointer';
 			descEl.addEventListener('click', () => {
 				this.toggleVisible();
 			});
@@ -287,7 +286,6 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 			setTooltip(sourceBadge, tooltipText);
 
 			sourceBadge.addClass('is-clickable');
-			sourceBadge.style.cursor = 'pointer';
 
 			sourceBadge.addEventListener('click', (e) => {
 				e.preventDefault();

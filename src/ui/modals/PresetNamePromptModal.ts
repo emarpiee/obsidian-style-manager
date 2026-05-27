@@ -44,8 +44,6 @@ export class PresetNamePromptModal extends Modal {
 			placeholder: 'Preset name...',
 			cls: 'style-manager-modal-input',
 		});
-		input.style.width = '100%';
-		input.style.marginBottom = '20px';
 
 		const btnBar = contentEl.createDiv({ cls: 'style-manager-export-btn-bar' });
 		const saveBtn = btnBar.createEl('button', { text: 'Save', cls: 'mod-cta' });

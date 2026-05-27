@@ -132,7 +132,7 @@ export class ThemeManifestModal extends Modal {
 						this.manifest.fundingUrl = this.parseFundingString(val);
 					});
 				text.inputEl.rows = 4;
-				text.inputEl.style.width = '100%';
+				text.inputEl.addClass('style-manager-modal-textarea');
 			});
 
 		new Setting(contentEl)

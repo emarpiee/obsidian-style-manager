@@ -136,11 +136,9 @@ export class SnippetSettingComponent extends Component {
 		if (this.isSelected) {
 			this.setting.settingEl.addClass('is-selected');
 			setIcon(selectIcon, 'check-circle');
-			selectIcon.style.color = 'var(--interactive-accent)';
 		} else {
 			this.setting.settingEl.removeClass('is-selected');
 			setIcon(selectIcon, 'circle');
-			selectIcon.style.color = 'var(--text-faint)';
 		}
 
 		selectIcon.onclick = (e: MouseEvent): void => {
