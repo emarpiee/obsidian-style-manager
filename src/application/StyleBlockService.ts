@@ -243,7 +243,7 @@ settings:
 		{
 			id: 'color-gradient',
 			label: 'Color Gradient',
-			icon: 'swatch',
+			icon: 'rainbow',
 			position: 'cursor',
 			allowDuplicates: true,
 			group: 'field',

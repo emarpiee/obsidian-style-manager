@@ -58,13 +58,14 @@ body {
 	--sm-badge-secondary-bg-inactive: var(--background-primary-alt);
 	--sm-badge-secondary-color-inactive: var(--text-muted);
 	--sm-badge-secondary-border-color-inactive: var(--text-muted);
+	--sm-badge-secondary-border-radius: var(--radius-m);
 
 	/* --- Preset/Count Pill Badge (.style-manager-badge-primary) --- */
 	--sm-badge-primary-bg: var(--background-modifier-border);
 	--sm-badge-primary-color: var(--text-muted);
 	--sm-badge-primary-border-color: var(--text-muted);
 	--sm-badge-primary-border-size: 1px;
-	--sm-badge-primary-radius: 12px;
+	--sm-badge-primary-radius: var(--radius-m);
 	--sm-badge-primary-theme-bg: color-mix(
 		in oklch,
 		var(--text-accent),
@@ -278,7 +279,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	font-size: var(--font-ui-smaller);
 	font-weight: var(--font-normal);
 	white-space: nowrap;
-	border-radius: var(--radius-m);
+	border-radius: var(--sm-badge-secondary-border-radius);
 	padding: 2px 8px;
 	height: 20px;
 }
@@ -372,7 +373,6 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 
 /* Source Type Badge Colors - Polished Pill Design */
 .style-manager-badge-primary.source-type {
-	border-radius: 12px;
 	font-weight: 700;
 	padding: 1px 8px;
 	text-transform: capitalize;
@@ -574,14 +574,15 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	max-height: 85vh;
 	display: flex;
 	flex-direction: column;
-	padding: var(--size-4-4) !important;
+	padding: var(--size-4-4) 0 !important;
 }
 
 .modal-style-manager .modal-content {
 	display: flex;
 	flex-direction: column;
 	overflow: auto;
-	padding-bottom: 0 !important;
+	padding-block: 0 !important;
+	padding-inline: var(--size-4-4);
 }
 
 .style-manager-modal-title {
@@ -2221,8 +2222,6 @@ body.is-phone .style-manager-metadata-label {
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
-	padding-top: var(--size-4-2);
-	border-top: 1px solid var(--background-modifier-border);
 }
 
 .style-manager-editor-buttons-main {
@@ -2294,17 +2293,13 @@ body.is-mobile .style-manager-editor-footer {
 }
 
 .style-manager-editor-title-input {
-	flex: 1 1 120px;
-	min-width: 120px;
+	flex: auto;
 	background: transparent !important;
-	border: none !important;
 	box-shadow: none !important;
 	font-size: inherit !important;
 	font-weight: var(--font-bold) !important;
 	color: var(--text-normal) !important;
-	padding: 0 !important;
-	margin: 0 !important;
-	height: auto !important;
+	margin: 0 var(--size-4-5) 0 0 !important;
 	overflow: hidden;
 	text-overflow: ellipsis;
 }
