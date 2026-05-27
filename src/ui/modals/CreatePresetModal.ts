@@ -302,7 +302,7 @@ export class CreatePresetModal extends Modal {
 
 			// Count Badge
 			badgesContainer.createSpan({
-				cls: 'style-manager-preset-badge count',
+				cls: 'style-manager-badge-primary count',
 				text: `${prefix.count}`,
 			});
 

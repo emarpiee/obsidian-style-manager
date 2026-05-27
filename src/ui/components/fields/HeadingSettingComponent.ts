@@ -281,7 +281,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 				: `Edit Source File: ${type}`;
 
 			const sourceBadge = rightBadgesContainer.createSpan({
-				cls: `style-manager-preset-badge source-type mode-${type.toLowerCase()}`,
+				cls: `style-manager-badge-primary source-type mode-${type.toLowerCase()}`,
 				text: badgeText,
 			});
 			setTooltip(sourceBadge, tooltipText);
@@ -311,7 +311,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		}
 
 		this.countEl = leftBadgesContainer.createSpan({
-			cls: 'style-manager-preset-badge count',
+			cls: 'style-manager-badge-primary count',
 		});
 		this.updateCountBadge();
 

@@ -228,7 +228,7 @@ export class ResetSettingsModal extends Modal {
 			}
 
 			badgesContainer.createSpan({
-				cls: 'style-manager-preset-badge count',
+				cls: 'style-manager-badge-primary count',
 				text: `${section.count}`,
 			});
 

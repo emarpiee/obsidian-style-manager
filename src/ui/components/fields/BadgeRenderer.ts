@@ -44,7 +44,7 @@ export function renderSnippetBadge(
 	if (count === 0 && snippetList.length === 0) return null;
 
 	const badge = container.createSpan({
-		cls: 'style-manager-preset-badge snippets',
+		cls: 'style-manager-badge-primary snippets',
 		text: `${count} ${count === 1 ? 'snippet' : 'snippets'}`,
 	});
 
@@ -61,7 +61,7 @@ export function renderCountBadge(
 	count: number
 ): HTMLElement {
 	return container.createSpan({
-		cls: 'style-manager-preset-badge count',
+		cls: 'style-manager-badge-primary count',
 		text: `${count}`,
 	});
 }
@@ -73,7 +73,7 @@ export function renderThemeBadge(
 	accentColor?: string
 ): HTMLElement {
 	const badge = container.createSpan({
-		cls: 'style-manager-preset-badge theme',
+		cls: 'style-manager-badge-primary theme',
 		text: theme,
 	});
 
@@ -92,7 +92,7 @@ export function renderAppearanceBadge(
 	appearance: string
 ): HTMLElement {
 	const badge = container.createSpan({
-		cls: `style-manager-preset-badge appearance mode-${appearance}`,
+		cls: `style-manager-badge-primary appearance mode-${appearance}`,
 	});
 	setIcon(badge, appearance === 'dark' ? 'moon' : 'sun');
 	badge.createSpan({ text: appearance === 'dark' ? 'Dark' : 'Light' });
@@ -105,7 +105,7 @@ export function renderAccentBadge(
 	color: string
 ): HTMLElement {
 	const badge = container.createSpan({
-		cls: 'style-manager-preset-badge accent',
+		cls: 'style-manager-badge-primary accent',
 		text: color,
 	});
 

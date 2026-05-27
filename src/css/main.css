@@ -59,23 +59,23 @@ body {
 	--sm-badge-secondary-color-inactive: var(--text-muted);
 	--sm-badge-secondary-border-color-inactive: var(--text-muted);
 
-	/* --- Preset/Count Pill Badge (.style-manager-preset-badge) --- */
-	--sm-preset-badge-bg: var(--background-modifier-border);
-	--sm-preset-badge-color: var(--text-muted);
-	--sm-preset-badge-border-color: var(--text-muted);
-	--sm-preset-badge-border-size: 1px;
-	--sm-preset-badge-radius: 12px;
-	--sm-preset-badge-theme-bg: color-mix(
+	/* --- Preset/Count Pill Badge (.style-manager-badge-primary) --- */
+	--sm-badge-primary-bg: var(--background-modifier-border);
+	--sm-badge-primary-color: var(--text-muted);
+	--sm-badge-primary-border-color: var(--text-muted);
+	--sm-badge-primary-border-size: 1px;
+	--sm-badge-primary-radius: 12px;
+	--sm-badge-primary-theme-bg: color-mix(
 		in oklch,
 		var(--text-accent),
 		transparent 90%
 	);
-	--sm-preset-badge-theme-color: var(--text-accent);
-	--sm-preset-badge-theme-border-color: var(--text-accent);
-	--sm-preset-badge-appearance-dark-bg: oklch(72% 0.16 295 / 0.1);
-	--sm-preset-badge-appearance-dark-color: #a883ff;
-	--sm-preset-badge-appearance-light-bg: oklch(60% 0.18 45 / 0.15);
-	--sm-preset-badge-appearance-light-color: #b45309;
+	--sm-badge-primary-theme-color: var(--text-accent);
+	--sm-badge-primary-theme-border-color: var(--text-accent);
+	--sm-badge-primary-appearance-dark-bg: oklch(72% 0.16 295 / 0.1);
+	--sm-badge-primary-appearance-dark-color: #a883ff;
+	--sm-badge-primary-appearance-light-bg: oklch(60% 0.18 45 / 0.15);
+	--sm-badge-primary-appearance-light-color: #b45309;
 
 	/* --- Source Type Badge (Plugin / Theme / Snippet) --- */
 	/* Light Mode */
@@ -324,54 +324,54 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	margin-right: 12px;
 }
 
-.style-manager-preset-badge {
+.style-manager-badge-primary {
 	font-size: 10px;
 	padding: 1px 7px;
 	line-height: 1.4;
-	border-radius: var(--sm-preset-badge-radius);
-	background: var(--sm-preset-badge-bg);
-	color: var(--sm-preset-badge-color);
+	border-radius: var(--sm-badge-primary-radius);
+	background: var(--sm-badge-primary-bg);
+	color: var(--sm-badge-primary-color);
 	font-weight: 700;
 	white-space: nowrap;
 	text-transform: capitalize;
-	border: var(--sm-preset-badge-border-size) solid
-		var(--sm-preset-badge-border-color);
+	border: var(--sm-badge-primary-border-size) solid
+		var(--sm-badge-primary-border-color);
 }
 
-.style-manager-preset-badge.theme {
-	background: var(--sm-preset-badge-theme-bg);
-	color: var(--sm-preset-badge-theme-color);
-	border: var(--sm-preset-badge-border-size) solid
-		var(--sm-preset-badge-theme-border-color);
+.style-manager-badge-primary.theme {
+	background: var(--sm-badge-primary-theme-bg);
+	color: var(--sm-badge-primary-theme-color);
+	border: var(--sm-badge-primary-border-size) solid
+		var(--sm-badge-primary-theme-border-color);
 }
 
-.style-manager-preset-badge.appearance {
+.style-manager-badge-primary.appearance {
 	display: inline-flex;
 	align-items: center;
 	gap: 4px;
 }
 
-.style-manager-preset-badge.appearance svg {
+.style-manager-badge-primary.appearance svg {
 	width: 10px;
 	height: 10px;
 }
 
-.style-manager-preset-badge.appearance.mode-dark {
-	background: var(--sm-preset-badge-appearance-dark-bg);
-	color: var(--sm-preset-badge-appearance-dark-color);
-	border: var(--sm-preset-badge-border-size) solid
-		var(--sm-preset-badge-appearance-dark-color);
+.style-manager-badge-primary.appearance.mode-dark {
+	background: var(--sm-badge-primary-appearance-dark-bg);
+	color: var(--sm-badge-primary-appearance-dark-color);
+	border: var(--sm-badge-primary-border-size) solid
+		var(--sm-badge-primary-appearance-dark-color);
 }
 
-.style-manager-preset-badge.appearance.mode-light {
-	background: var(--sm-preset-badge-appearance-light-bg);
-	color: var(--sm-preset-badge-appearance-light-color);
-	border: var(--sm-preset-badge-border-size) solid
-		var(--sm-preset-badge-appearance-light-color);
+.style-manager-badge-primary.appearance.mode-light {
+	background: var(--sm-badge-primary-appearance-light-bg);
+	color: var(--sm-badge-primary-appearance-light-color);
+	border: var(--sm-badge-primary-border-size) solid
+		var(--sm-badge-primary-appearance-light-color);
 }
 
 /* Source Type Badge Colors - Polished Pill Design */
-.style-manager-preset-badge.source-type {
+.style-manager-badge-primary.source-type {
 	border-radius: 12px;
 	font-weight: 700;
 	padding: 1px 8px;
@@ -381,55 +381,55 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 }
 
 /* Light Theme: Darker text for readability */
-.theme-light .style-manager-preset-badge.source-type.mode-plugin {
+.theme-light .style-manager-badge-primary.source-type.mode-plugin {
 	background-color: var(--sm-source-badge-plugin-bg-light) !important;
 	color: var(--sm-source-badge-plugin-color-light) !important;
 	border: 1px solid var(--sm-source-badge-plugin-color-light) !important;
 }
 
-.theme-light .style-manager-preset-badge.source-type.mode-theme {
+.theme-light .style-manager-badge-primary.source-type.mode-theme {
 	background-color: var(--sm-source-badge-theme-bg-light) !important;
 	color: var(--sm-source-badge-theme-color-light) !important;
 	border: 1px solid var(--sm-source-badge-theme-color-light) !important;
 }
 
-.theme-light .style-manager-preset-badge.source-type.mode-snippet {
+.theme-light .style-manager-badge-primary.source-type.mode-snippet {
 	background-color: var(--sm-source-badge-snippet-bg-light) !important;
 	color: var(--sm-source-badge-snippet-color-light) !important;
 	border: 1px solid var(--sm-source-badge-snippet-color-light) !important;
 }
 
 /* Dark Theme: Vibrant colors */
-.theme-dark .style-manager-preset-badge.source-type.mode-plugin {
+.theme-dark .style-manager-badge-primary.source-type.mode-plugin {
 	background-color: var(--sm-source-badge-plugin-bg-dark) !important;
 	color: var(--sm-source-badge-plugin-color-dark) !important;
 	border: 1px solid var(--sm-source-badge-plugin-color-dark) !important;
 }
 
-.theme-dark .style-manager-preset-badge.source-type.mode-theme {
+.theme-dark .style-manager-badge-primary.source-type.mode-theme {
 	background-color: var(--sm-source-badge-theme-bg-dark) !important;
 	color: var(--sm-source-badge-theme-color-dark) !important;
 	border: 1px solid var(--sm-source-badge-theme-color-dark) !important;
 }
 
-.theme-dark .style-manager-preset-badge.source-type.mode-snippet {
+.theme-dark .style-manager-badge-primary.source-type.mode-snippet {
 	background-color: var(--sm-source-badge-snippet-bg-dark) !important;
 	color: var(--sm-source-badge-snippet-color-dark) !important;
 	border: 1px solid var(--sm-source-badge-snippet-color-dark) !important;
 }
 
 /* Visibility logic for heading counts */
-.style-manager-preset-badge.count {
+.style-manager-badge-primary.count {
 	display: none;
 }
 
-.style-manager-preset-badge.count.is-visible {
+.style-manager-badge-primary.count.is-visible {
 	display: inline-flex;
 }
 
 /* In modals and locker list, we want counts visible even without .is-visible, but NEVER if empty */
-.style-manager-badge-container .style-manager-preset-badge.count:not(:empty),
-.style-manager-locker-meta-row .style-manager-preset-badge.count:not(:empty) {
+.style-manager-badge-container .style-manager-badge-primary.count:not(:empty),
+.style-manager-locker-meta-row .style-manager-badge-primary.count:not(:empty) {
 	display: inline-flex;
 }
 
