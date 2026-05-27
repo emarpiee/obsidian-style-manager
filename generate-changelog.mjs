@@ -3,16 +3,20 @@ import fs from 'fs';
 
 try {
 	let latestTag = '';
+	let previousTag = '';
 
-	// 1. Get the latest git tag safely
+	// 1. Get the top two latest git tags safely
 	try {
 		const tags = execSync('git tag --sort=-v:refname', { encoding: 'utf8' })
 			.trim()
 			.split('\n')
-			.filter(Boolean); // Removes empty strings if no tags exist
+			.filter(Boolean); // Removes empty strings
 
 		if (tags.length > 0) {
 			latestTag = tags[0];
+		}
+		if (tags.length > 1) {
+			previousTag = tags[1];
 		}
 	} catch (e) {
 		console.log(
@@ -32,13 +36,25 @@ try {
 		}).trim();
 
 		if (!commits) {
-			// HEAD is exactly AT the latest tag. Log the history leading UP TO this tag.
-			console.log(
-				`📍 HEAD is at ${latestTag}. Fetching history included in this release...`
-			);
-			commits = execSync(`git log ${latestTag} -n 20 ${formatStr}`, {
-				encoding: 'utf8',
-			}).trim();
+			// HEAD is exactly AT the latest tag.
+			if (previousTag) {
+				// Fallback 1: Fetch ONLY commits between the previous tag and the latest tag
+				console.log(
+					`📍 HEAD is at ${latestTag}. Fetching changes since previous tag (${previousTag})...`
+				);
+				commits = execSync(
+					`git log ${previousTag}..${latestTag} ${formatStr}`,
+					{ encoding: 'utf8' }
+				).trim();
+			} else {
+				// Fallback 2: No previous tag exists, fetch last 20 commits leading up to this tag
+				console.log(
+					`📍 HEAD is at ${latestTag} (First Tag). Fetching recent history...`
+				);
+				commits = execSync(`git log ${latestTag} -n 20 ${formatStr}`, {
+					encoding: 'utf8',
+				}).trim();
+			}
 			titleHeader = `Changelog for ${latestTag}`;
 		} else {
 			// There are new commits AFTER the latest tag
