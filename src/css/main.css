@@ -47,17 +47,17 @@ body {
 	--sm-container-border-size: 2px;
 	--sm-container-item-border-color: var(--background-modifier-border);
 
-	/* --- State/Mode Badge (.style-manager-badge) --- */
-	--sm-badge-bg-active: color-mix(
+	/* --- State/Mode Badge (.style-manager-badge-secondary) --- */
+	--sm-badge-secondary-bg-active: color-mix(
 		in oklch,
 		var(--text-success),
 		transparent 92%
 	);
-	--sm-badge-color-active: var(--text-success);
-	--sm-badge-border-color-active: var(--text-success);
-	--sm-badge-bg-inactive: var(--background-primary-alt);
-	--sm-badge-color-inactive: var(--text-muted);
-	--sm-badge-border-color-inactive: var(--text-muted);
+	--sm-badge-secondary-color-active: var(--text-success);
+	--sm-badge-secondary-border-color-active: var(--text-success);
+	--sm-badge-secondary-bg-inactive: var(--background-primary-alt);
+	--sm-badge-secondary-color-inactive: var(--text-muted);
+	--sm-badge-secondary-border-color-inactive: var(--text-muted);
 
 	/* --- Preset/Count Pill Badge (.style-manager-preset-badge) --- */
 	--sm-preset-badge-bg: var(--background-modifier-border);
@@ -271,7 +271,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 }
 
 /* --- Badges & Counts --- */
-.style-manager-badge {
+.style-manager-badge-secondary {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -284,7 +284,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 }
 
 /* Base Badge (uppercase style) */
-.style-manager-badge {
+.style-manager-badge-secondary {
 	font-size: 10px;
 	font-weight: var(--font-bold);
 	text-transform: uppercase;
@@ -292,18 +292,18 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 }
 
 /* State-Specific Styles */
-.style-manager-badge.active,
-.style-manager-badge.badge-isolate {
-	background: var(--sm-badge-bg-active);
-	color: var(--sm-badge-color-active);
-	border: 1px solid var(--sm-badge-border-color-active) !important;
+.style-manager-badge-secondary.active,
+.style-manager-badge-secondary.badge-isolate {
+	background: var(--sm-badge-secondary-bg-active);
+	color: var(--sm-badge-secondary-color-active);
+	border: 1px solid var(--sm-badge-secondary-border-color-active) !important;
 }
 
-.style-manager-badge.inactive,
-.style-manager-badge.badge-shared {
-	background: var(--sm-badge-bg-inactive);
-	color: var(--sm-badge-color-inactive);
-	border: 1px solid var(--sm-badge-border-color-inactive) !important;
+.style-manager-badge-secondary.inactive,
+.style-manager-badge-secondary.badge-shared {
+	background: var(--sm-badge-secondary-bg-inactive);
+	color: var(--sm-badge-secondary-color-inactive);
+	border: 1px solid var(--sm-badge-secondary-border-color-inactive) !important;
 }
 
 /* Locker-Specific Styles */

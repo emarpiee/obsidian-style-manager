@@ -217,12 +217,12 @@ export class ResetSettingsModal extends Modal {
 			// Traditional Row Badges
 			if (section.isActive) {
 				badgesContainer.createSpan({
-					cls: 'style-manager-badge active',
+					cls: 'style-manager-badge-secondary active',
 					text: 'ACTIVE',
 				});
 			} else {
 				badgesContainer.createSpan({
-					cls: 'style-manager-badge inactive',
+					cls: 'style-manager-badge-secondary inactive',
 					text: 'INACTIVE',
 				});
 			}

@@ -290,12 +290,12 @@ export class CreatePresetModal extends Modal {
 
 			if (prefix.isActive) {
 				badgesContainer.createSpan({
-					cls: 'style-manager-badge active',
+					cls: 'style-manager-badge-secondary active',
 					text: 'Active',
 				});
 			} else {
 				badgesContainer.createSpan({
-					cls: 'style-manager-badge inactive',
+					cls: 'style-manager-badge-secondary inactive',
 					text: 'Inactive',
 				});
 			}

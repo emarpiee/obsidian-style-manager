@@ -305,7 +305,7 @@ export class IsolateTab {
 			const badgeCls = isCurrent ? 'active' : 'badge-shared';
 			setting.nameEl.createSpan({
 				text: badgeText,
-				cls: `style-manager-badge ${badgeCls}`,
+				cls: `style-manager-badge-secondary ${badgeCls}`,
 				attr: { style: 'margin-left: 10px;' },
 			});
 		});
