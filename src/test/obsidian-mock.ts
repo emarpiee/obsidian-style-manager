@@ -87,6 +87,8 @@ export class App {
 			rmdir: vi.fn(),
 			list: vi.fn(),
 		},
+		getAbstractFileByPath: vi.fn().mockReturnValue(null),
+		createFolder: vi.fn().mockResolvedValue(undefined),
 	} as any;
 	plugins = {
 		plugins: {},

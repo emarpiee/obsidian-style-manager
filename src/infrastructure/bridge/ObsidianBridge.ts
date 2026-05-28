@@ -235,7 +235,7 @@ export class ObsidianBridge {
 	 * Checks if a file or folder exists in the vault.
 	 */
 	public async fileExists(path: string): Promise<boolean> {
-		return await this.app.vault.adapter.exists(path);
+		return this.app.vault.getAbstractFileByPath(path) !== null;
 	}
 
 	/**
@@ -249,7 +249,20 @@ export class ObsidianBridge {
 	 * Recursively creates a folder in the vault if it doesn't exist.
 	 */
 	public async mkdir(path: string): Promise<void> {
-		await this.app.vault.adapter.mkdir(path);
+		if (path.startsWith('.') || path.includes('/.')) {
+			await this.app.vault.adapter.mkdir(path);
+			return;
+		}
+
+		const parts = path.split('/');
+		let currentPath = '';
+		for (const part of parts) {
+			if (!part) continue;
+			currentPath = currentPath ? `${currentPath}/${part}` : part;
+			if (this.app.vault.getAbstractFileByPath(currentPath) === null) {
+				await this.app.vault.createFolder(currentPath);
+			}
+		}
 	}
 
 	/**
