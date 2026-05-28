@@ -23,6 +23,7 @@ import { VariableNumberSlider, resetTooltip } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
+import { Logger } from '../../../utils/Logger';
 
 export class VariableNumberSliderSettingComponent extends AbstractSettingComponent {
 	settingEl: Setting;
@@ -35,9 +36,8 @@ export class VariableNumberSliderSettingComponent extends AbstractSettingCompone
 		const description = getDescription(this.setting);
 
 		if (typeof this.setting.default !== 'number') {
-			return console.error(
-				`${t('Error:')} ${title} ${t('missing default value')}`
-			);
+			Logger.error(`${t('Error:')} ${title} ${t('missing default value')}`);
+			return;
 		}
 
 		this.settingEl = new Setting(this.containerEl);

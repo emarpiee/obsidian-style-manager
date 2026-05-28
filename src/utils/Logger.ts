@@ -61,7 +61,6 @@ export class Logger {
 	}
 
 	public static error(...args: any[]): void {
-		// As per Obsidian Guidelines, errors should always be shown
 		console.error(...args);
 	}
 }

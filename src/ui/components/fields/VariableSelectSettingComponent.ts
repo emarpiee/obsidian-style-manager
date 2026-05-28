@@ -23,6 +23,7 @@ import { SelectOption, VariableSelect, resetTooltip } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
+import { Logger } from '../../../utils/Logger';
 
 export class VariableSelectSettingComponent extends AbstractSettingComponent {
 	settingEl: Setting;
@@ -35,9 +36,8 @@ export class VariableSelectSettingComponent extends AbstractSettingComponent {
 		const description = getDescription(this.setting);
 
 		if (typeof this.setting.default !== 'string') {
-			return console.error(
-				`${t('Error:')} ${title} ${t('missing default value')}`
-			);
+			Logger.error(`${t('Error:')} ${title} ${t('missing default value')}`);
+			return;
 		}
 
 		const defaultLabel = this.getDefaultOptionLabel();

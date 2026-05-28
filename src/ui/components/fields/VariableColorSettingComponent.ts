@@ -33,6 +33,7 @@ import {
 	resolveDefaultColor,
 } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
+import { Logger } from '../../../utils/Logger';
 
 export class VariableColorSettingComponent extends AbstractSettingComponent {
 	settingEl: Setting;
@@ -57,11 +58,12 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 			typeof this.setting.default !== 'string' ||
 			!isValidDefaultColor(this.setting.default)
 		) {
-			return console.error(
+			Logger.error(
 				`${t('Error:')} ${title} ${t(
 					'missing default value, or value is not in a valid color format'
 				)}`
 			);
+			return;
 		}
 
 		const value = this.settingsService.getSetting(

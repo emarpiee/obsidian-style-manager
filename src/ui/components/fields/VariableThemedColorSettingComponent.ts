@@ -32,6 +32,7 @@ import {
 	resolveDefaultColor,
 } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
+import { Logger } from '../../../utils/Logger';
 
 export class VariableThemedColorSettingComponent extends AbstractSettingComponent {
 	settingEl: Setting;
@@ -48,22 +49,24 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 			typeof this.setting['default-light'] !== 'string' ||
 			!isValidDefaultColor(this.setting['default-light'])
 		) {
-			return console.error(
+			Logger.error(
 				`${t('Error:')} ${title} ${t(
 					'missing default light value, or value is not in a valid color format'
 				)}`
 			);
+			return;
 		}
 
 		if (
 			typeof this.setting['default-dark'] !== 'string' ||
 			!isValidDefaultColor(this.setting['default-dark'])
 		) {
-			return console.error(
+			Logger.error(
 				`${t('Error:')} ${title} ${t(
 					'missing default dark value, or value is not in a valid color format'
 				)}`
 			);
+			return;
 		}
 
 		const idLight = `${this.setting.id}@@light`;
