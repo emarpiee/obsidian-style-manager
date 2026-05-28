@@ -1,5 +1,8 @@
-## Changelog for 1.1.1 (5/29/2026)
+## Changelog for 1.1.0 (5/29/2026)
 
+* 1.1.0 (fd00e4d)
+* update: Revert Version (5969bd0)
+* Added CHANGELOG.md (7148389)
 * 1.1.1 (6c02c1a)
 * refactor(ui): migrate dynamic badge and accent styles to CSS variables (435935d)
 * refactor(ui): move inline styles to CSS classes (526d5a6)
@@ -17,6 +20,3 @@
 * add: changelog generator (d5f6056)
 * update (4f672b6)
 * update: file (d7783ee)
-* update: GitHub Actios (c15746c)
-* restore: deleted script (9b84965)
-* refactor(css): introduce --sm-wrapper-bg variable for wrapper background (c9c234d)
