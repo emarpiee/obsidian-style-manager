@@ -73,14 +73,12 @@ export function renderThemeBadge(
 	accentColor?: string
 ): HTMLElement {
 	const badge = container.createSpan({
-		cls: 'style-manager-badge-primary theme',
+		cls: 'style-manager-badge-primary theme dynamic',
 		text: theme,
 	});
 
 	if (accentColor) {
-		badge.style.backgroundColor = `${accentColor}26`; // 15% opacity
-		badge.style.color = accentColor;
-		badge.style.border = `1px solid ${accentColor}`;
+		badge.style.setProperty('--sm-badge-dynamic-color', accentColor);
 	}
 
 	return badge;
@@ -105,13 +103,11 @@ export function renderAccentBadge(
 	color: string
 ): HTMLElement {
 	const badge = container.createSpan({
-		cls: 'style-manager-badge-primary accent',
+		cls: 'style-manager-badge-primary accent dynamic',
 		text: color,
 	});
 
-	badge.style.backgroundColor = `${color}26`; // 15% opacity
-	badge.style.color = color;
-	badge.style.border = `1px solid ${color}`;
+	badge.style.setProperty('--sm-badge-dynamic-color', color);
 
 	return badge;
 }

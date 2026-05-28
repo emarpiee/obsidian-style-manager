@@ -1434,6 +1434,11 @@ button.style-manager-icon-button {
 	border-radius: var(--radius-s);
 }
 
+.style-manager-item-row.is-selected {
+	background-color: var(--sm-item-selected-bg);
+	border-left: 3px solid var(--sm-item-selected-border-color);
+}
+
 .style-manager-item-row:hover {
 	background-color: var(--background-modifier-hover);
 }
@@ -1716,9 +1721,28 @@ button.style-manager-icon-button {
 	white-space: nowrap;
 }
 
-.style-manager-item-row.is-selected {
-	background-color: var(--sm-item-selected-bg);
-	border-left: 3px solid var(--sm-item-selected-border-color);
+.style-manager-badge-primary.dynamic {
+	background-color: color-mix(
+		in oklch,
+		var(--sm-badge-dynamic-color),
+		transparent 85%
+	);
+	color: var(--sm-badge-dynamic-color);
+	border-color: var(--sm-badge-dynamic-color);
+}
+
+.style-manager-accent-trigger {
+	background-color: var(--sm-accent-trigger-color, #8a5cf5);
+	width: 24px;
+	height: 24px;
+	border-radius: 50%;
+	cursor: pointer;
+}
+
+.style-manager-accent-trigger-container {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
 }
 
 /* State Banner (Isolate Method focus) */
@@ -2482,7 +2506,6 @@ body.is-mobile .style-manager-editor-footer {
 .style-manager-ref {
 	display: none;
 }
-
 
 .style-manager-modal-input {
 	width: 100%;

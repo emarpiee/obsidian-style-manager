@@ -53,7 +53,7 @@ export function renderAccentColorSelect(
 	const circle = triggerContainer.createDiv({
 		cls: 'style-manager-accent-trigger',
 	});
-	circle.style.backgroundColor = displayColor;
+	circle.style.setProperty('--sm-accent-trigger-color', displayColor);
 
 	// We use Pickr but we need to ensure it doesn't conflict with the circle's own styling
 	const pickr = Pickr.create(
