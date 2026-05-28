@@ -24,25 +24,25 @@ export class Logger {
 		this.isEnabled = enabled;
 	}
 
-	public static log(...args: any[]): void {
+	public static log(...args: unknown[]): void {
 		if (this.isEnabled) {
 			console.log(...args);
 		}
 	}
 
-	public static warn(...args: any[]): void {
+	public static warn(...args: unknown[]): void {
 		if (this.isEnabled) {
 			console.warn(...args);
 		}
 	}
 
-	public static info(...args: any[]): void {
+	public static info(...args: unknown[]): void {
 		if (this.isEnabled) {
 			console.info(...args);
 		}
 	}
 
-	public static debug(...args: any[]): void {
+	public static debug(...args: unknown[]): void {
 		if (this.isEnabled) {
 			console.debug(...args);
 		}
@@ -60,7 +60,7 @@ export class Logger {
 		}
 	}
 
-	public static error(...args: any[]): void {
+	public static error(...args: unknown[]): void {
 		console.error(...args);
 	}
 }
