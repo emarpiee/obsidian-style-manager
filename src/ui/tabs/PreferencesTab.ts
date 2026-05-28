@@ -72,13 +72,13 @@ export class PreferencesTab {
 	private renderBackupSettings(): void {
 		const { containerEl, plugin } = this;
 
-		this.renderHeader(containerEl, 'Backup & Safety', 'shield-check');
+		this.renderHeader(containerEl, 'Backup & safety', 'shield-check');
 		const backupContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
 		);
 
 		new Setting(backupContainer)
-			.setName('Full Vault Backup (ZIP)')
+			.setName('Full vault backup (ZIP)')
 			.setDesc(
 				'Creates a complete backup containing your settings AND all your CSS snippets in a single ZIP file.'
 			)
@@ -105,7 +105,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(backupContainer)
-			.setName('Basic Settings Backup')
+			.setName('Basic settings backup')
 			.setDesc(
 				'Export only your data.json variables (no snippets) as a single file.'
 			)
@@ -124,7 +124,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(backupContainer)
-			.setName('Restore from File')
+			.setName('Restore from file')
 			.setDesc(
 				'Import a previously exported configuration (.json or .zip). This will create a safety snapshot before overwriting.'
 			)
@@ -161,7 +161,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(backupContainer)
-			.setName('Safety Rollback')
+			.setName('Safety rollback')
 			.setDesc(
 				'Restore your settings from the last automatic safety snapshot (data.json.bak).'
 			)
@@ -195,13 +195,13 @@ export class PreferencesTab {
 	private renderExportSettings(): void {
 		const { containerEl, plugin } = this;
 
-		this.renderHeader(containerEl, 'Export Settings', 'download');
+		this.renderHeader(containerEl, 'Export settings', 'download');
 		const exportContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
 		);
 
 		new Setting(exportContainer)
-			.setName('Default Export Location')
+			.setName('Default export location')
 			.setDesc(
 				'Choose the folder where presets will be saved in your vault (e.g. "Presets"). Leave empty for vault root.'
 			)
@@ -225,7 +225,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(exportContainer)
-			.setName('Preferred Export Extension')
+			.setName('Preferred export extension')
 			.setDesc(
 				'Choose the file extension for your exports. The content will remain in JSON format regardless of extension.'
 			)
@@ -247,7 +247,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(exportContainer)
-			.setName('Export Timestamp Format')
+			.setName('Export timestamp format')
 			.setDesc(
 				'Customize the timestamp used in export filenames. WARNING: Avoid characters like ":", "/", or "\\" as they are invalid in filenames.'
 			)
@@ -271,7 +271,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(exportContainer)
-			.setName('Separate Bulk Presets')
+			.setName('Separate bulk presets')
 			.setDesc(
 				'When exporting multiple presets in a ZIP bundle, save each preset in its own file instead of a single bulk file.'
 			)
@@ -294,13 +294,13 @@ export class PreferencesTab {
 	private renderUISettings(): void {
 		const { containerEl, plugin } = this;
 
-		this.renderHeader(containerEl, 'User Interface', 'layout');
+		this.renderHeader(containerEl, 'User interface', 'layout');
 		const uiContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
 		);
 
 		new Setting(uiContainer)
-			.setName('Created Date Format')
+			.setName('Created date format')
 			.setDesc(
 				'Customize the date format for the "Created" label in the preset list. Uses moment.js syntax (e.g. "MMM. DD, YYYY").'
 			)
@@ -325,7 +325,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(uiContainer)
-			.setName('Show Status Bar Icon')
+			.setName('Show status bar icon')
 			.setDesc(
 				'Show an icon in the Obsidian status bar for quick access to Style Manager status and actions. (Desktop only)'
 			)
@@ -345,7 +345,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(uiContainer)
-			.setName('Show Snippet Metadata')
+			.setName('Show snippet metadata')
 			.setDesc(
 				'Display metadata (Author, Version, etc.) for CSS snippets if provided in a /* @metadata */ block.'
 			)
@@ -365,7 +365,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(uiContainer)
-			.setName('Open Editor After Creation')
+			.setName('Open editor after creation')
 			.setDesc(
 				'Automatically open the CSS editor modal when a new snippet is created.'
 			)
@@ -385,7 +385,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(uiContainer)
-			.setName('Editor Tab Size')
+			.setName('Editor tab size')
 			.setDesc('Set the indentation width (tab size) for the CSS editor modal.')
 			.addSlider((slider) => {
 				slider
@@ -445,22 +445,22 @@ export class PreferencesTab {
 		}> = [
 			{
 				key: '__style_manager_skip_apply_confirm',
-				name: 'Skip Apply Confirmation',
+				name: 'Skip apply confirmation',
 				desc: 'Instantly apply presets without showing the confirmation dialog.',
 			},
 			{
 				key: '__style_manager_skip_delete_confirm',
-				name: 'Skip Delete Confirmation',
+				name: 'Skip delete confirmation',
 				desc: 'Instantly delete presets without showing the confirmation dialog.',
 			},
 			{
 				key: '__style_manager_skip_export_confirm',
-				name: 'Skip Export Confirmation',
+				name: 'Skip export confirmation',
 				desc: 'Instantly export presets without showing the confirmation dialog.',
 			},
 			{
 				key: '__style_manager_skip_import_confirm',
-				name: 'Skip Import Confirmation',
+				name: 'Skip import confirmation',
 				desc: 'Instantly import presets or styles without showing the confirmation dialog.',
 			},
 		];
@@ -487,7 +487,7 @@ export class PreferencesTab {
 	private renderDeveloperSettings(): void {
 		const { containerEl, plugin } = this;
 
-		this.renderHeader(containerEl, 'Developer Options', 'code');
+		this.renderHeader(containerEl, 'Developer options', 'code');
 		const developerContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
 		);
@@ -495,27 +495,27 @@ export class PreferencesTab {
 		const notificationSettings = [
 			{
 				key: SHOW_SHARED_NOTIFICATIONS_KEY,
-				name: 'Shared Notifications',
+				name: 'Shared notifications',
 				desc: 'Alerts when background shared changes are detected.',
 			},
 			{
 				key: SHOW_PRESET_NOTIFICATIONS_KEY,
-				name: 'Preset Notifications',
+				name: 'Preset notifications',
 				desc: 'Alerts when saving, applying, or exporting presets.',
 			},
 			{
 				key: SHOW_ISOLATE_NOTIFICATIONS_KEY,
-				name: 'Isolate Notifications',
+				name: 'Isolate notifications',
 				desc: 'Alerts when resetting or pushing isolated settings.',
 			},
 			{
 				key: SHOW_SNIPPET_NOTIFICATIONS_KEY,
-				name: 'Snippet Notifications',
+				name: 'Snippet notifications',
 				desc: 'Alerts when managing CSS snippets (save, rename, delete).',
 			},
 			{
 				key: SHOW_UTILITY_NOTIFICATIONS_KEY,
-				name: 'Utility Notifications',
+				name: 'Utility notifications',
 				desc: 'Minor UI feedback like "Copied to clipboard".',
 			},
 		];
@@ -558,7 +558,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(developerContainer)
-			.setName('Current Shared Version')
+			.setName('Current shared version')
 			.setDesc(
 				'The internal version timestamp of your settings. Devices are in shared state when this number matches.'
 			)

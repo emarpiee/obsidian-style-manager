@@ -57,14 +57,14 @@ export class IsolateTab {
 	private renderIsolateModeSection(): void {
 		const { containerEl, plugin } = this;
 
-		new Setting(containerEl).setName('Isolate Mode').setHeading().setClass('style-manager-settings-tab-title');
+		new Setting(containerEl).setName('Isolate mode').setHeading().setClass('style-manager-settings-tab-title');
 
 		const isolateContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
 		);
 
 		new Setting(isolateContainer)
-			.setName('Enable Isolate Mode')
+			.setName('Enable isolate mode')
 			.setDesc(
 				"Isolate style and theme modifications to a private Locker for this device. When enabled, your local adjustments won't overwrite the shared configuration. (Preset list remains shared)."
 			)
@@ -81,14 +81,14 @@ export class IsolateTab {
 	private renderLockerIdentitySection(): void {
 		const { containerEl, plugin } = this;
 
-		new Setting(containerEl).setName('Locker Identity').setHeading().setClass('style-manager-settings-tab-title');
+		new Setting(containerEl).setName('Locker identity').setHeading().setClass('style-manager-settings-tab-title');
 
 		const deviceContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
 		);
 
 		new Setting(deviceContainer)
-			.setName('Locker Name')
+			.setName('Locker name')
 			.setDesc(
 				'A name for this private Locker. This helps identify your device across others.'
 			)
@@ -118,7 +118,7 @@ export class IsolateTab {
 		);
 
 		new Setting(deviceContainer)
-			.setName('Device Identity')
+			.setName('Device identity')
 			.setDesc(descFragment)
 			.addExtraButton((btn) => {
 				btn
@@ -154,7 +154,7 @@ export class IsolateTab {
 		const { containerEl, app, plugin } = this;
 
 		containerEl.createEl('h4', {
-			text: 'Remote Lockers (Other Devices)',
+			text: 'Remote lockers (other devices)',
 			cls: 'style-manager-settings-tab-subtitle',
 		});
 
