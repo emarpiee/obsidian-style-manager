@@ -175,3 +175,5 @@ export function createEl(tag: string, options?: any) {
 	if (options?.cls) el.className = options.cls;
 	return el;
 }
+
+export const normalizePath = (path: string) => path.replace(/\\/g, '/').replace(/^\/+/, '');

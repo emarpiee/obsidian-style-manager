@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App } from 'obsidian';
+import { App, normalizePath } from 'obsidian';
 
 import { NotificationService } from './NotificationService';
 
@@ -43,7 +43,7 @@ export class ThemeBuilderService {
 	 */
 	async createTheme(manifest: ThemeManifest): Promise<string> {
 		const themeId = manifest.name.toLowerCase().replace(/\s+/g, '-');
-		const themePath = `.obsidian/themes/${themeId}`;
+		const themePath = normalizePath(`.obsidian/themes/${themeId}`);
 		const adapter = this.app.vault.adapter;
 
 		if (await adapter.exists(themePath)) {
@@ -52,11 +52,11 @@ export class ThemeBuilderService {
 
 		await adapter.mkdir(themePath);
 		await adapter.write(
-			`${themePath}/manifest.json`,
+			normalizePath(`${themePath}/manifest.json`),
 			JSON.stringify(manifest, null, '\t')
 		);
 		await adapter.write(
-			`${themePath}/theme.css`,
+			normalizePath(`${themePath}/theme.css`),
 			`/* ${manifest.name} theme */\n\n:root {\n\n}\n`
 		);
 
@@ -72,7 +72,7 @@ export class ThemeBuilderService {
 	 * Deletes a theme directory and its contents
 	 */
 	async deleteTheme(themeId: string): Promise<void> {
-		const themePath = `.obsidian/themes/${themeId}`;
+		const themePath = normalizePath(`.obsidian/themes/${themeId}`);
 		const adapter = this.app.vault.adapter;
 
 		if (!(await adapter.exists(themePath))) {
@@ -92,9 +92,9 @@ export class ThemeBuilderService {
 		sourceThemeId: string,
 		newName: string
 	): Promise<string> {
-		const sourcePath = `.obsidian/themes/${sourceThemeId}`;
+		const sourcePath = normalizePath(`.obsidian/themes/${sourceThemeId}`);
 		const newThemeId = newName.toLowerCase().replace(/\s+/g, '-');
-		const newPath = `.obsidian/themes/${newThemeId}`;
+		const newPath = normalizePath(`.obsidian/themes/${newThemeId}`);
 		const adapter = this.app.vault.adapter;
 
 		if (!(await adapter.exists(sourcePath))) {
@@ -107,17 +107,17 @@ export class ThemeBuilderService {
 		await adapter.mkdir(newPath);
 
 		// Copy manifest and update name
-		const manifestContent = await adapter.read(`${sourcePath}/manifest.json`);
+		const manifestContent = await adapter.read(normalizePath(`${sourcePath}/manifest.json`));
 		const manifest = JSON.parse(manifestContent) as ThemeManifest;
 		manifest.name = newName;
 		await adapter.write(
-			`${newPath}/manifest.json`,
+			normalizePath(`${newPath}/manifest.json`),
 			JSON.stringify(manifest, null, '\t')
 		);
 
 		// Copy theme.css
-		const cssContent = await adapter.read(`${sourcePath}/theme.css`);
-		await adapter.write(`${newPath}/theme.css`, cssContent);
+		const cssContent = await adapter.read(normalizePath(`${sourcePath}/theme.css`));
+		await adapter.write(normalizePath(`${newPath}/theme.css`), cssContent);
 
 		this.notifications.util(`Duplicated theme to: ${newName}`);
 		this.bridge.requestLoadTheme();
@@ -143,7 +143,7 @@ export class ThemeBuilderService {
 			if (!themeId) continue;
 
 			try {
-				const manifestPath = `${folderPath}/manifest.json`;
+				const manifestPath = normalizePath(`${folderPath}/manifest.json`);
 				if (await adapter.exists(manifestPath)) {
 					const manifestContent = await adapter.read(manifestPath);
 					themes[themeId] = JSON.parse(manifestContent);
@@ -164,7 +164,7 @@ export class ThemeBuilderService {
 		manifest: ThemeManifest
 	): Promise<void> {
 		const adapter = this.app.vault.adapter;
-		const manifestPath = `.obsidian/themes/${themeId}/manifest.json`;
+		const manifestPath = normalizePath(`.obsidian/themes/${themeId}/manifest.json`);
 
 		if (!(await adapter.exists(manifestPath))) {
 			throw new Error(`Manifest not found for theme: ${themeId}`);

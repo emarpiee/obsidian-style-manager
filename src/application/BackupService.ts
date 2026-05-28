@@ -17,7 +17,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import JSZip from 'jszip';
-import { Notice } from 'obsidian';
+import { Notice, normalizePath } from 'obsidian';
 
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
@@ -86,7 +86,7 @@ export class BackupService {
 				for (const snippetId of customCss.snippets) {
 					const path = customCss.getSnippetPath
 						? customCss.getSnippetPath(snippetId)
-						: `.obsidian/snippets/${snippetId}.css`;
+						: normalizePath(`.obsidian/snippets/${snippetId}.css`);
 					try {
 						if (await this.plugin.app.vault.adapter.exists(path)) {
 							const content = await this.plugin.app.vault.adapter.read(path);

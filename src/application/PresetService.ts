@@ -24,6 +24,7 @@ import {
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from './SettingsService';
+import { normalizePath } from 'obsidian';
 
 import { ConfirmModal } from '../ui/modals/ConfirmModal';
 import { getFormattedTimestamp } from '../utils/CommonUtils';
@@ -126,7 +127,7 @@ export class PresetService {
 			}
 		}
 
-		let fullPath = `${exportPath}${targetFilename}`;
+		let fullPath = normalizePath(`${exportPath}${targetFilename}`);
 
 		// Handle file collision
 		if (await bridge.fileExists(fullPath)) {

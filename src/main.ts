@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Command, Plugin } from 'obsidian';
+import { Command, Plugin, normalizePath } from 'obsidian';
 
 import { ACCENT_COLOR_KEY, APPEARANCE_KEY, THEME_KEY } from './constants';
 import {
@@ -249,7 +249,7 @@ export default class StyleManagerPlugin extends Plugin {
 		for (const id of snippetIds) {
 			const path = customCss.getSnippetPath
 				? customCss.getSnippetPath(id)
-				: `.obsidian/snippets/${id}.css`;
+				: normalizePath(`.obsidian/snippets/${id}.css`);
 			try {
 				if (await adapter.exists(path)) {
 					const content = await adapter.read(path);

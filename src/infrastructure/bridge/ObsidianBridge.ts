@@ -22,6 +22,7 @@ import {
 	TAbstractFile,
 	TFile,
 	TFolder,
+	normalizePath,
 } from 'obsidian';
 
 /** Typed shell for undocumented Obsidian internal APIs. */
@@ -72,21 +73,21 @@ export class ObsidianBridge {
 		if (customCss && customCss.getSnippetPath) {
 			return customCss.getSnippetPath(id);
 		}
-		return `${this.app.vault.configDir}/snippets/${id}.css`;
+		return normalizePath(`${this.app.vault.configDir}/snippets/${id}.css`);
 	}
 
 	/**
 	 * Gets the full path to a theme file.
 	 */
 	public getThemePath(id: string): string {
-		return `${this.app.vault.configDir}/themes/${id}/theme.css`;
+		return normalizePath(`${this.app.vault.configDir}/themes/${id}/theme.css`);
 	}
 
 	/**
 	 * Gets the full path to a plugin's styles.css.
 	 */
 	public getPluginPath(id: string): string {
-		return `${this.app.vault.configDir}/plugins/${id}/styles.css`;
+		return normalizePath(`${this.app.vault.configDir}/plugins/${id}/styles.css`);
 	}
 
 	/**
@@ -258,7 +259,7 @@ export class ObsidianBridge {
 		try {
 			const adapter = this.app.vault.adapter;
 			const configDir = this.app.vault.configDir;
-			const path = `${configDir}/snippets/${name}.css`;
+			const path = normalizePath(`${configDir}/snippets/${name}.css`);
 			if (await adapter.exists(path)) {
 				return await adapter.read(path);
 			}
@@ -275,13 +276,13 @@ export class ObsidianBridge {
 		try {
 			const adapter = this.app.vault.adapter;
 			const configDir = this.app.vault.configDir;
-			const snippetsFolder = `${configDir}/snippets`;
+			const snippetsFolder = normalizePath(`${configDir}/snippets`);
 
 			if (!(await adapter.exists(snippetsFolder))) {
 				await adapter.mkdir(snippetsFolder);
 			}
 
-			const path = `${snippetsFolder}/${name}.css`;
+			const path = normalizePath(`${snippetsFolder}/${name}.css`);
 			await adapter.write(path, content);
 		} catch (e) {
 			console.error(`Style Manager | Error writing snippet "${name}":`, e);
@@ -295,7 +296,7 @@ export class ObsidianBridge {
 	public async snippetExists(name: string): Promise<boolean> {
 		const adapter = this.app.vault.adapter;
 		const configDir = this.app.vault.configDir;
-		const path = `${configDir}/snippets/${name}.css`;
+		const path = normalizePath(`${configDir}/snippets/${name}.css`);
 		return await adapter.exists(path);
 	}
 
@@ -441,7 +442,7 @@ export class ObsidianBridge {
 		try {
 			const adapter = this.app.vault.adapter;
 			const configDir = this.app.vault.configDir;
-			const appearancePath = `${configDir}/appearance.json`;
+			const appearancePath = normalizePath(`${configDir}/appearance.json`);
 
 			if (await adapter.exists(appearancePath)) {
 				const content = await adapter.read(appearancePath);
@@ -505,7 +506,7 @@ export class ObsidianBridge {
 	public async deleteSnippet(name: string): Promise<void> {
 		try {
 			const configDir = this.app.vault.configDir;
-			const path = `${configDir}/snippets/${name}.css`;
+			const path = normalizePath(`${configDir}/snippets/${name}.css`);
 			const adapter = this.app.vault.adapter;
 
 			if (!(await adapter.exists(path))) {

@@ -17,6 +17,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import { IStore } from './IStore';
+import { normalizePath } from 'obsidian';
 
 import type StyleManagerPlugin from '../../main';
 import { StyleManagerSettings } from '../../types';
@@ -52,8 +53,8 @@ export class SharedStore implements IStore<StyleManagerSettings> {
 			const adapter = vault.adapter;
 			const baseDir =
 				(this.plugin.manifest as PluginManifestWithDir).dir ||
-				`${vault.configDir}/plugins/${this.plugin.manifest.id}`;
-			const settingsPath = `${baseDir}/data.json`;
+				normalizePath(`${vault.configDir}/plugins/${this.plugin.manifest.id}`);
+			const settingsPath = normalizePath(`${baseDir}/data.json`);
 
 			if (await adapter.exists(settingsPath)) {
 				return await adapter.read(settingsPath);
@@ -80,9 +81,9 @@ export class SharedStore implements IStore<StyleManagerSettings> {
 			const adapter = vault.adapter;
 			const baseDir =
 				(this.plugin.manifest as PluginManifestWithDir).dir ||
-				`${vault.configDir}/plugins/${this.plugin.manifest.id}`;
-			const settingsPath = `${baseDir}/data.json`;
-			const backupPath = `${baseDir}/data.json.bak`;
+				normalizePath(`${vault.configDir}/plugins/${this.plugin.manifest.id}`);
+			const settingsPath = normalizePath(`${baseDir}/data.json`);
+			const backupPath = normalizePath(`${baseDir}/data.json.bak`);
 
 			if (await adapter.exists(settingsPath)) {
 				if (await adapter.exists(backupPath)) {
@@ -106,8 +107,8 @@ export class SharedStore implements IStore<StyleManagerSettings> {
 			const adapter = vault.adapter;
 			const baseDir =
 				(this.plugin.manifest as PluginManifestWithDir).dir ||
-				`${vault.configDir}/plugins/${this.plugin.manifest.id}`;
-			const backupPath = `${baseDir}/data.json.bak`;
+				normalizePath(`${vault.configDir}/plugins/${this.plugin.manifest.id}`);
+			const backupPath = normalizePath(`${baseDir}/data.json.bak`);
 			return await adapter.exists(backupPath);
 		} catch (e) {
 			console.error('Style Manager | Error checking backup:', e);
@@ -123,8 +124,8 @@ export class SharedStore implements IStore<StyleManagerSettings> {
 			const adapter = vault.adapter;
 			const baseDir =
 				(this.plugin.manifest as PluginManifestWithDir).dir ||
-				`${vault.configDir}/plugins/${this.plugin.manifest.id}`;
-			const settingsPath = `${baseDir}/data.json`;
+				normalizePath(`${vault.configDir}/plugins/${this.plugin.manifest.id}`);
+			const settingsPath = normalizePath(`${baseDir}/data.json`);
 
 			const stat = await adapter.stat(settingsPath);
 			return stat?.mtime || 0;
