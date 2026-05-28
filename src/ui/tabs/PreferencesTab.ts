@@ -195,7 +195,7 @@ export class PreferencesTab {
 	private renderExportSettings(): void {
 		const { containerEl, plugin } = this;
 
-		this.renderHeader(containerEl, 'Export settings', 'download');
+		this.renderHeader(containerEl, 'Exports', 'download');
 		const exportContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
 		);
