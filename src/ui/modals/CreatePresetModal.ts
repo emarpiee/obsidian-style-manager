@@ -75,10 +75,7 @@ export class CreatePresetModal extends Modal {
 			cls: 'style-manager-modal-title',
 		});
 
-		contentEl.createEl('h3', {
-			text: 'Settings to Save',
-			cls: 'style-manager-modal-subtitle',
-		});
+		new Setting(contentEl).setName('Settings to Save').setHeading().setClass('style-manager-modal-subtitle');
 		contentEl.createEl('p', {
 			text: 'Select which themes or plugins to include in this snapshot.',
 			cls: 'style-manager-modal-description',

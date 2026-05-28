@@ -20,6 +20,7 @@ import { App, Notice, Setting, debounce, setIcon } from 'obsidian';
 
 import {
 	EDITOR_TAB_SIZE_KEY,
+	ENABLE_CONSOLE_LOGGING_KEY,
 	OPEN_MODAL_ON_CREATE_KEY,
 	SEPARATE_BULK_PRESETS_KEY,
 	SHOW_ISOLATE_NOTIFICATIONS_KEY,
@@ -29,7 +30,6 @@ import {
 	SHOW_SNIPPET_NOTIFICATIONS_KEY,
 	SHOW_STATUS_BAR_KEY,
 	SHOW_UTILITY_NOTIFICATIONS_KEY,
-	ENABLE_CONSOLE_LOGGING_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -57,16 +57,16 @@ export class PreferencesTab {
 		containerEl: HTMLElement,
 		text: string,
 		icon: string
-	): HTMLElement {
-		const headerEl = containerEl.createEl('h3', {
-			cls: 'style-manager-settings-tab-title',
-		});
-		const iconEl = headerEl.createSpan({
+	): void {
+		const setting = new Setting(containerEl)
+			.setName(text)
+			.setHeading()
+			.setClass('style-manager-settings-tab-title');
+		const iconEl = setting.nameEl.createSpan({
 			cls: 'style-manager-settings-tab-icon',
 		});
 		setIcon(iconEl, icon);
-		headerEl.createSpan({ text: text });
-		return headerEl;
+		setting.nameEl.prepend(iconEl);
 	}
 
 	private renderBackupSettings(): void {
@@ -540,7 +540,7 @@ export class PreferencesTab {
 		new Setting(developerContainer)
 			.setName('Enable console logging')
 			.setDesc(
-				'Enable all debug, warning, and informational console logs for the Style Manager plugin (disabled by default). Errors are always displayed.'
+				'Enable all debug, warning, and informational console logs. Errors are always displayed.'
 			)
 			.addToggle((toggle) => {
 				toggle

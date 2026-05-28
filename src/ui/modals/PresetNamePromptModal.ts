@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Modal } from 'obsidian';
+import { App, Modal, Setting } from 'obsidian';
 
 export class PresetNamePromptModal extends Modal {
 	resolve: (value: string | null) => void;
@@ -30,10 +30,7 @@ export class PresetNamePromptModal extends Modal {
 
 	onOpen(): void {
 		const { contentEl } = this;
-		contentEl.createEl('h3', {
-			text: 'Save as Preset',
-			cls: 'style-manager-modal-title',
-		});
+		new Setting(contentEl).setName('Save as Preset').setHeading().setClass('style-manager-modal-title');
 		contentEl.createEl('p', {
 			text: 'Enter a name for this preset:',
 			cls: 'style-manager-modal-description',

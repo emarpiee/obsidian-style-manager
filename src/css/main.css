@@ -1824,6 +1824,11 @@ body.is-phone .style-manager-isolate-badge {
 	font-weight: 700;
 }
 
+.style-manager-settings-tab-title .setting-item-name {
+	display: flex;
+	gap: var(--size-4-2);
+}
+
 .style-manager-settings-tab-subtitle {
 	margin: var(--size-4-4) 0 var(--size-4-2) 0 !important;
 	padding: 0 var(--size-4-6) !important;

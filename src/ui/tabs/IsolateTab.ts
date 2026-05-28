@@ -57,10 +57,7 @@ export class IsolateTab {
 	private renderIsolateModeSection(): void {
 		const { containerEl, plugin } = this;
 
-		containerEl.createEl('h3', {
-			text: 'Isolate Mode',
-			cls: 'style-manager-settings-tab-title',
-		});
+		new Setting(containerEl).setName('Isolate Mode').setHeading().setClass('style-manager-settings-tab-title');
 
 		const isolateContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
@@ -84,10 +81,7 @@ export class IsolateTab {
 	private renderLockerIdentitySection(): void {
 		const { containerEl, plugin } = this;
 
-		containerEl.createEl('h3', {
-			text: 'Locker Identity',
-			cls: 'style-manager-settings-tab-title',
-		});
+		new Setting(containerEl).setName('Locker Identity').setHeading().setClass('style-manager-settings-tab-title');
 
 		const deviceContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'

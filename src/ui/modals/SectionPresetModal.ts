@@ -48,10 +48,7 @@ export class SectionPresetModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-export-modal');
 
-		contentEl.createEl('h3', {
-			text: `Save Section as Preset: ${this.section}`,
-			cls: 'style-manager-modal-title',
-		});
+		new Setting(contentEl).setName(`Save Section as Preset: ${this.section}`).setHeading().setClass('style-manager-modal-title');
 
 		contentEl.createEl('p', {
 			text: 'Create a reusable preset from these settings, or copy/download the raw JSON data.',
