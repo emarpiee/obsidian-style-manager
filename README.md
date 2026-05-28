@@ -1,75 +1,10 @@
-# Style Manager (Obsidian Plugin)
+# Obsidian Style Settings Plugin
 
-> [!NOTE]
-> **Style Manager** is a fork of the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin by [mgmeyers](https://github.com/mgmeyers).
->
-> This project is licensed under the [GNU General Public License v3 (GPLv3)](LICENSE.md).
-> - Original Work Copyright (c) 2023 mgmeyers
-> - Modified Work Copyright (c) 2026 emarpiee
+This plugin allows snippet, theme, and plugin CSS files to define a set of configuration options. It then allows users to see all the tweakable settings in one settings pane. Style Settings allows both toggling classes on and off the `body` element, as well as setting numeric, string, and color CSS variables.
 
-Style Manager allows snippet, theme, and plugin CSS files to define a set of configuration options. It then enables users to see all tweakable settings in one unified settings pane — and now, save, organize, and restore those settings as presets.
+**[This CSS Snippet](obsidian-default-theme.css) can be used to adjust every CSS variable of the default Obsidian theme.** 
 
----
-
-> [!CAUTION]
-> **Do not enable Style Manager and Style Settings at the same time.**
->
-> Both plugins listen for the same CSS parsing events (`parse-style-settings` / `parse-style-manager`) and write CSS variables to the document simultaneously. Running them together will cause **duplicate settings panels**, **conflicting CSS variable overrides**, and **unpredictable rendering behavior** — your styles may appear out of sync or reset unexpectedly.
->
-> If you are migrating from Style Settings to Style Manager, **disable Style Settings first** before enabling Style Manager.
-
----
-
-## 🌟 What's New in Style Manager
-
-Style Manager is more than just a settings viewer — it's a full configuration management suite built on top of the original Style Settings plugin. Here's what's new:
-
-### 🗂️ Preset Management
-- **Save & Load Presets**: Snapshot your current style configuration and save it as a named preset, then apply it at any time with one click.
-- **Import from Vault**: Browse and select `.json`, `.md`, or `.txt` config files directly from your Obsidian vault using a fuzzy file picker.
-- **Import from File / Paste JSON**: Import presets from a file on your computer or paste raw JSON directly into the import modal.
-- **Export to File / Download**: Export any preset as a `.json` file to share across vaults or back up your settings.
-- **Recoverable Deletions**: Accidentally deleted a preset? It can be recovered within the same session before closing the modal.
-- **Multi-select & Bulk Actions**: Hold Shift/Ctrl/Cmd to select multiple presets, then apply, export, or delete them all at once.
-- **Confirmation Toggles**: Enable or disable confirmation prompts for Apply, Delete, and Export actions on a per-action basis.
-- **Advanced File-Manager Selection**: The preset list behaves like a native file manager — click to select, modifier keys for multi-select, row clicks without modifiers clear the selection.
-- **Newest-First Sorting**: Presets are always listed newest-first for quick access to your most recent saves.
-
-### 🔍 Styles Tab Enhancements
-- **Customized Settings Badge**: Each section heading shows a live count of how many settings inside it have been modified from their defaults.
-- **Hierarchical Reset Buttons**: Every heading level has its own reset button — reset an entire section without touching the rest of your config.
-- **Manual Sync Button**: Reload settings from disk at any time without restarting Obsidian, useful when editing CSS files externally.
-- **Selective Reset**: Choose specific active or inactive sections to reset instead of wiping everything at once.
-- **Reset Settings**: A dedicated "Reset Settings" button with a confirmation dialog is available in the header for a full config wipe.
-- **Persistent Search**: The search bar retains focus while typing, making it easy to filter through large theme configurations.
-- **High-Performance Search**: Search results are now instantly filtered using an optimized `fuzzysort` implementation that includes section and heading names in its matching logic.
-
-### 💻 Local Mode & Global State
-- **Device-Specific Overrides**: Toggle "Local Mode" to isolate your style changes to a single device (stored in `localStorage`), preventing them from syncing to your other computers.
-- **Global Status Banner**: A sleek, high-visibility banner now appears when Local Mode is active.
-- **One-Click Sync**: Quickly "Push to Global" to sync your local overrides across your entire vault, or "Discard" them to return to your global configuration.
-
-### 🎨 UI/UX Improvements
-- **Tabbed Interface**: Cleanly separated "Styles" and "Presets" tabs for an organized experience.
-- **Redesigned Export Modal**: Centered action buttons with "Copy to Clipboard", "Save as Preset", and "Download" options.
-- **Dynamic Modal Height**: Export and preview modals resize dynamically based on their content.
-- **Color Picker — Monolith Theme**: The color picker now uses the Monolith theme for a cleaner, more integrated look.
-- **Mobile-Responsive Layout**: The preset UI and modals adapt gracefully to mobile screen sizes and on-screen keyboards.
-- **Refined Heading Style**: Hierarchical indentation lines and a fixed fold/collapse icon for a polished navigation experience.
-
-### 🔌 Developer & Compatibility
-- **Dual Event Support**: The plugin listens for both the new `parse-style-manager` event and the legacy `parse-style-settings` event, ensuring full backwards compatibility with existing themes and plugins.
-- **Global Settings Tab**: A dedicated plugin settings tab for managing vault-wide export paths and format options.
-
----
-
-## 📖 Core Functionality
-
-Style Manager is built on the same foundation as the original Style Settings plugin. Its core purpose is to provide a **unified, user-friendly interface for configuring CSS variables** exposed by Obsidian themes, plugins, and CSS snippets — without needing to edit any code.
-
-Theme and plugin developers can define a configuration block inside their CSS files using a special `/* @settings */` comment block. Style Manager reads these blocks and automatically renders them as interactive controls inside Obsidian's settings panel — things like color pickers, sliders, dropdowns, and toggles.
-
-Style Manager allows both toggling classes on and off the `body` element, as well as setting numeric, string, and color CSS variables.
+Configurable settings are defined by comments within CSS files beginning with `/* @settings`. These comments must contain YAML with `name`, `id`, and `settings` properties. Style Settings will scan for these comments in all CSS loaded by Obsidian from the `snippets`, `themes`, and `plugins` directories under your vault's configuration directory (`%yourVault%/.obsidian/`).  Please see the [Obsidian Docs](https://help.obsidian.md/Home) for more information.
 
 For example, adding this to a CSS snippet in your vault's snippets directory (`%yourVault%/.obsidian/snippets`):
 
@@ -121,11 +56,8 @@ All settings definitions must have these parameters:
   - `variable-select`: a text-based CSS variable displayed as a dropdown menu of predefined options
   - `variable-color`: a color CSS variable with corresponding color picker
 
----
 
-## Setting Types Reference
-
-### `heading`
+## `heading`
 
 `heading`s can be used to organize and group settings into collapsable nested sections. Along with the required attributes, `heading`s must contain a `level` attribute between `1` and `6`, and can optionally contain a `collapsed` attribute:
 
@@ -145,7 +77,7 @@ settings:
 */
 ```
 
-### `info-text`
+## `info-text`
 
 `info-text` displays arbitrary informational text to users. The `description` may contain markdown if `markdown` is set to `true`.
 
@@ -165,7 +97,7 @@ settings:
 */
 ```
 
-### `class-toggle`
+## `class-toggle`
 
 `class-toggle`s will toggle a css class on and off of the `body` element, allowing CSS themes and snippets to toggle features on and off. The `id` of the setting will be used as the class name. The `default` parameter can optionally be set to `true`. `class-toggle` also supports the `addCommand` property. When set to `true` a command will be added to obsidian to toggle the class via a hotkey or the command palette.
 
@@ -184,7 +116,7 @@ settings:
 */
 ```
 
-### `class-select`
+## `class-select`
 
 `class-select` creates a dropdown of predefined options for a CSS variable. The `id` of the setting will be used as the variable name.
 
@@ -237,7 +169,7 @@ settings:
 */
 ```
 
-### `variable-text`
+## `variable-text`
 
 `variable-text` represents any text based CSS value. The `id` of the setting will be used as the variable name. The output will be wrapped in quotes if `quotes` is set to true. `variable-text` settings require a `default` attribute.
 
@@ -287,7 +219,7 @@ This will output the variable:
 --icon: '•'
 ```
 
-### `variable-number`
+## `variable-number`
 
 `variable-number` represents any numeric CSS value. The `id` of the setting will be used as the variable name. `variable-number` settings require a `default` attribute. Optionally, a `format` attribute can be set. This value will be appended to the number. Eg `format: px` will result in `42px`
 
@@ -314,7 +246,7 @@ This will output the variable:
 --line-width: 42rem;
 ```
 
-### `variable-number-slider`
+## `variable-number-slider`
 
 `variable-number-slider` represents any numeric CSS value. The `id` of the setting will be used as the variable name. `variable-number-slider` settings require a `default` attribute, as well as these three attributes:
 
@@ -349,7 +281,7 @@ This will output the variable:
 --line-width: 42;
 ```
 
-### `variable-select`
+## `variable-select`
 
 `variable-select` creates a dropdown of predefined options for a CSS variable. The `id` of the setting will be used as the variable name. `variable-select` settings require a `default` attribute as well as a list of `options`.
 
@@ -404,9 +336,9 @@ This will output the variable:
 --text: Roboto;
 ```
 
-### `variable-color`
+## `variable-color`
 
-`variable-color` creates a color picker with a variety of output format options. A `default` attribute is required in `hex` or `rgb` format. **Note: hex color values must be wrapped in quotes.** A `format` attribute is also required.
+`variable-color` creates a color picker with a variety of output format options. A `default` attribute is required in `hex` or `rgb` format. **Note: hex color values must be wrapped in quotes.** A `format` attribute is also required. 
 
 Optional parameters:
 -  Setting `opacity` to `true` will enable opacity support in all output formats.
@@ -440,7 +372,7 @@ This will output the variable:
 --accent-rgb: rgb(0, 123, 255);
 ```
 
-### `variable-themed-color`
+## `variable-themed-color`
 
 `variable-themed-color` is identical to `variable-color` except that it generates two color pickers for a light and dark variant.
 
@@ -469,7 +401,7 @@ body.theme-light.css-settings-manager { --accent: #007AFF; }
 body.theme-dark.css-settings-manager { --accent: #2DB253; }
 ```
 
-#### `variable-color` formatting options
+### `variable-color` formatting options
 
 There are 8 formatting options:
 
@@ -584,9 +516,9 @@ When `opacity` is set to `true`:
 --accent-a: 1;
 ```
 
-### `color-gradient`
+## `color-gradient`
 
-`color-gradient` outputs a fixed number of colors along a gradient between two existing color variables. A `format` attribute is also required. *Note: The `to` variable must be set in style manager for the gradient to be generated. Also, gradients will only be generated using colors defined under the current style manager `id`.*
+`color-gradient` outputs a fixed number of colors along a gradient between two existing color variables. A `format` attribute is also required. *Note: The `to` variable must be set in style settings for the gradient to be generated. Also, gradients will only be generated using colors defined under the current style settings `id`.*
 
 Parameters:
 - `from`: The starting color, or color that will be at step 0
@@ -613,13 +545,9 @@ settings:
 */
 ```
 
----
-
 ## Plugin Support
 
-Plugins can specify a style manager config in the plugin's CSS. Plugins must call `app.workspace.trigger("parse-style-manager")` when the plugin loads in order for Style Manager to be notified of CSS changes. For backwards compatibility, `parse-style-settings` is also supported.
-
----
+Plugins can specify a style setting config in the plugin's CSS. Plugins must call `app.workspace.trigger("parse-style-settings")` when the plugin loads in order for Style Settings to be notified of CSS changes.
 
 ## Localization Support
 
