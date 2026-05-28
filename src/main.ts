@@ -421,7 +421,6 @@ export default class StyleManagerPlugin extends Plugin {
 			this.styleSheetManager.cleanup();
 			this.settingsService.cleanup();
 			this.statusBarManager.cleanup();
-			this.deactivateView();
 			this.unregisterSettingsFromSettingsSearch();
 
 			this.selectedSnippets.clear();
