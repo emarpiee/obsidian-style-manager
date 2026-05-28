@@ -18,6 +18,7 @@
 */
 import { IStore } from './IStore';
 import { normalizePath } from 'obsidian';
+import { Logger } from '../../utils/Logger';
 
 import type StyleManagerPlugin from '../../main';
 import { StyleManagerSettings } from '../../types';
@@ -60,7 +61,7 @@ export class SharedStore implements IStore<StyleManagerSettings> {
 				return await adapter.read(settingsPath);
 			}
 		} catch (e) {
-			console.warn('Style Manager | Direct disk read failed', e);
+			Logger.warn('Style Manager | Direct disk read failed', e);
 		}
 		return null;
 	}
@@ -93,7 +94,7 @@ export class SharedStore implements IStore<StyleManagerSettings> {
 				return true;
 			}
 		} catch (e) {
-			console.error('Style Manager | Error creating backup:', e);
+			Logger.error('Style Manager | Error creating backup:', e);
 		}
 		return false;
 	}
@@ -111,7 +112,7 @@ export class SharedStore implements IStore<StyleManagerSettings> {
 			const backupPath = normalizePath(`${baseDir}/data.json.bak`);
 			return await adapter.exists(backupPath);
 		} catch (e) {
-			console.error('Style Manager | Error checking backup:', e);
+			Logger.error('Style Manager | Error checking backup:', e);
 			return false;
 		}
 	}

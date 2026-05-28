@@ -44,6 +44,7 @@ import { SettingType } from './ui/components/base/types';
 import { StatusBarManager } from './ui/elements/StatusBarManager';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { getDescription, getTitle } from './utils/CommonUtils';
+import { Logger } from './utils/Logger';
 
 export default class StyleManagerPlugin extends Plugin {
 	settingsService: SettingsService;
@@ -208,12 +209,12 @@ export default class StyleManagerPlugin extends Plugin {
 			this.styleSheetManager.clearCache();
 			await this.styleSheetManager.buildDiskMap();
 
-			console.time('StyleManager:Parsing');
+			Logger.time('StyleManager:Parsing');
 			const { settingsList, errorList } =
 				this.styleSheetManager.getSettingsFromStyles();
 			this.settingsList = settingsList;
 			this.errorList = errorList;
-			console.timeEnd('StyleManager:Parsing');
+			Logger.timeEnd('StyleManager:Parsing');
 
 			this.isInitialLoading = false;
 
@@ -261,7 +262,7 @@ export default class StyleManagerPlugin extends Plugin {
 					}
 				}
 			} catch (err) {
-				console.error(
+				Logger.error(
 					`Style Manager | Failed to parse metadata for snippet ${id}:`,
 					err
 				);
@@ -427,7 +428,7 @@ export default class StyleManagerPlugin extends Plugin {
 			this.snippetMetadataMap.clear();
 			this.commandList = [];
 		} catch (e) {
-			console.error('Style Manager | Error during plugin shutdown', e);
+			Logger.error('Style Manager | Error during plugin shutdown', e);
 		}
 	}
 

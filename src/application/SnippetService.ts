@@ -18,6 +18,7 @@
 */
 import StyleManagerPlugin from '../main';
 import { RefreshLevel } from '../types';
+import { Logger } from '../utils/Logger';
 
 import { CSSParser } from '../core/css/CSSParser';
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
@@ -114,7 +115,7 @@ export class SnippetService {
 			const currentString = JSON.stringify([...currentEnabled].sort());
 
 			if (diskString !== currentString && diskString !== lockerString) {
-				console.log(
+				Logger.log(
 					'Style Manager | Snippets: Adopting appearance.json state into Shared Locker.'
 				);
 				await this.options.setLockerSettings(diskEnabled);
@@ -134,7 +135,7 @@ export class SnippetService {
 		}
 
 		if (needsRefresh) {
-			console.log(
+			Logger.log(
 				'Style Manager | Snippets: Reconciling memory with locker truth.'
 			);
 			await this.applySnippets(targetEnabled, isIsolate);

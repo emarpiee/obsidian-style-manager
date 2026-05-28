@@ -29,6 +29,7 @@ import {
 	SHOW_SNIPPET_NOTIFICATIONS_KEY,
 	SHOW_STATUS_BAR_KEY,
 	SHOW_UTILITY_NOTIFICATIONS_KEY,
+	ENABLE_CONSOLE_LOGGING_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -535,6 +536,26 @@ export class PreferencesTab {
 						});
 				});
 		});
+
+		new Setting(developerContainer)
+			.setName('Enable console logging')
+			.setDesc(
+				'Enable all debug, warning, and informational console logs for the Style Manager plugin (disabled by default). Errors are always displayed.'
+			)
+			.addToggle((toggle) => {
+				toggle
+					.setValue(
+						(plugin.settingsService.settings[
+							ENABLE_CONSOLE_LOGGING_KEY
+						] as boolean) || false
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings(
+							{ [ENABLE_CONSOLE_LOGGING_KEY]: val },
+							{ silentUI: true }
+						);
+					});
+			});
 
 		new Setting(developerContainer)
 			.setName('Current Shared Version')

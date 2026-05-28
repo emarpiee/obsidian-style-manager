@@ -24,6 +24,7 @@ import {
 	TFolder,
 	normalizePath,
 } from 'obsidian';
+import { Logger } from '../../utils/Logger';
 
 /** Typed shell for undocumented Obsidian internal APIs. */
 interface ObsidianCustomCss {
@@ -134,7 +135,7 @@ export class ObsidianBridge {
 				return Array.from(customCss.enabledSnippets) as string[];
 			}
 		} catch (e) {
-			console.error('Style Manager | Error getting enabled snippets:', e);
+			Logger.error('Style Manager | Error getting enabled snippets:', e);
 		}
 		return [];
 	}
@@ -149,7 +150,7 @@ export class ObsidianBridge {
 				return Array.from(customCss.snippets);
 			}
 		} catch (e) {
-			console.error('Style Manager | Error getting all snippets:', e);
+			Logger.error('Style Manager | Error getting all snippets:', e);
 		}
 		return [];
 	}
@@ -164,7 +165,7 @@ export class ObsidianBridge {
 				return Object.keys(customCss.themes);
 			}
 		} catch (e) {
-			console.error('Style Manager | Error getting installed themes:', e);
+			Logger.error('Style Manager | Error getting installed themes:', e);
 		}
 		return [];
 	}
@@ -179,7 +180,7 @@ export class ObsidianBridge {
 				return Object.keys(plugins.manifests);
 			}
 		} catch (e) {
-			console.error('Style Manager | Error getting installed plugins:', e);
+			Logger.error('Style Manager | Error getting installed plugins:', e);
 		}
 		return [];
 	}
@@ -277,7 +278,7 @@ export class ObsidianBridge {
 				return await adapter.read(path);
 			}
 		} catch (e) {
-			console.error(`Style Manager | Error reading snippet "${name}":`, e);
+			Logger.error(`Style Manager | Error reading snippet "${name}":`, e);
 		}
 		return null;
 	}
@@ -298,7 +299,7 @@ export class ObsidianBridge {
 			const path = normalizePath(`${snippetsFolder}/${name}.css`);
 			await adapter.write(path, content);
 		} catch (e) {
-			console.error(`Style Manager | Error writing snippet "${name}":`, e);
+			Logger.error(`Style Manager | Error writing snippet "${name}":`, e);
 			throw e;
 		}
 	}
@@ -386,11 +387,11 @@ export class ObsidianBridge {
 		): void {
 			if (!isApplyingPersistentTheme()) {
 				if (key === 'cssTheme') {
-					console.log('Style Manager | Bridge: Blocked config save for', key);
+					Logger.log('Style Manager | Bridge: Blocked config save for', key);
 					return;
 				}
 				if (key === 'theme') {
-					console.log(
+					Logger.log(
 						'Style Manager | Bridge: Intercepted native appearance change:',
 						value
 					);
@@ -398,7 +399,7 @@ export class ObsidianBridge {
 					return;
 				}
 				if (key === 'accentColor') {
-					console.log(
+					Logger.log(
 						'Style Manager | Bridge: Intercepted native accent color change:',
 						value
 					);
@@ -438,7 +439,7 @@ export class ObsidianBridge {
 				}
 
 				// If NOT an internal change, intercept and record locally
-				console.log(
+				Logger.log(
 					'Style Manager | Bridge: Intercepted native setTheme call:',
 					themeName
 				);
@@ -467,19 +468,19 @@ export class ObsidianBridge {
 				if (Array.isArray(list)) {
 					return list;
 				} else {
-					console.warn(
+					Logger.warn(
 						'Style Manager | appearance.json enabled snippets key is not an array:',
 						list
 					);
 				}
 			} else {
-				console.log(
+				Logger.log(
 					'Style Manager | appearance.json not found at',
 					appearancePath
 				);
 			}
 		} catch (e) {
-			console.error(
+			Logger.error(
 				'Style Manager | Error reading appearance.json from disk:',
 				e
 			);
@@ -523,7 +524,7 @@ export class ObsidianBridge {
 			const adapter = this.app.vault.adapter;
 
 			if (!(await adapter.exists(path))) {
-				console.warn(
+				Logger.warn(
 					`Style Manager | Snippet file not found for deletion: ${path}`
 				);
 				return;
@@ -540,14 +541,14 @@ export class ObsidianBridge {
 				try {
 					await adapter.trashSystem(path);
 				} catch (_e) {
-					console.log(
+					Logger.log(
 						`Style Manager | System trash failed for ${name}, trying local trash.`
 					);
 					await adapter.trashLocal(path);
 				}
 			}
 		} catch (e) {
-			console.error(`Style Manager | Error deleting snippet "${name}":`, e);
+			Logger.error(`Style Manager | Error deleting snippet "${name}":`, e);
 			throw e;
 		}
 	}

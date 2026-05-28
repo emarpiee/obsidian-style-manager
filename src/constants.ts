@@ -38,3 +38,6 @@ export const OPEN_MODAL_ON_CREATE_KEY = '__style_manager_open_modal_on_create';
 export const SEPARATE_BULK_PRESETS_KEY =
 	'__style_manager_separate_bulk_presets';
 export const EDITOR_TAB_SIZE_KEY = '__style_manager_editor_tab_size';
+export const ENABLE_CONSOLE_LOGGING_KEY =
+	'__style_manager_enable_console_logging';
+

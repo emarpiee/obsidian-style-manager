@@ -23,7 +23,9 @@ import {
 	APPEARANCE_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
+	ENABLE_CONSOLE_LOGGING_KEY,
 } from '../constants';
+import { Logger } from '../utils/Logger';
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, SettingValue, StyleManagerSettings } from '../types';
 import { IdentityService } from './IdentityService';
@@ -307,7 +309,7 @@ export class SettingsService extends Events {
 				oldAccent !== newAccent ||
 				oldVersion !== newVersion
 			) {
-				console.log(
+				Logger.log(
 					`Style Manager | Sync detected: v${oldVersion} -> v${newVersion}`
 				);
 				this.notifications.shared(
@@ -365,6 +367,7 @@ export class SettingsService extends Events {
 		}
 
 		this._mergedSettings = merged;
+		Logger.setEnabled(this._mergedSettings[ENABLE_CONSOLE_LOGGING_KEY] === true);
 	}
 
 	async applyTheme(themeName: string, persist: boolean): Promise<void> {
@@ -884,7 +887,7 @@ export class SettingsService extends Events {
 			this.themeService.cleanup();
 			this.styleGenerator.destroy();
 		} catch (e) {
-			console.error('Style Manager | Error during settings manager cleanup', e);
+			Logger.error('Style Manager | Error during settings manager cleanup', e);
 		}
 	}
 }

@@ -18,6 +18,7 @@
 */
 import { ACCENT_COLOR_KEY, APPEARANCE_KEY, THEME_KEY } from '../constants';
 import { NotificationService } from './NotificationService';
+import { Logger } from '../utils/Logger';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
 
@@ -288,7 +289,7 @@ export class ThemeService {
 			!rawNativeTheme && ourTheme !== 'default';
 
 		if (!nativeIsBlankBecauseSMCleared && nativeTheme !== ourTheme) {
-			console.log(
+			Logger.log(
 				`Style Manager | Adopting native theme: ${nativeTheme} (was ${ourTheme})`
 			);
 			setSettingValue(THEME_KEY, nativeTheme);
@@ -299,7 +300,7 @@ export class ThemeService {
 		const ourAppearance = getSettingValue(APPEARANCE_KEY);
 
 		if (ourAppearance !== nativeAppearance) {
-			console.log(
+			Logger.log(
 				`Style Manager | Adopting native appearance: ${nativeAppearance} (was ${ourAppearance})`
 			);
 			setSettingValue(APPEARANCE_KEY, nativeAppearance);
@@ -314,7 +315,7 @@ export class ThemeService {
 		).toLowerCase();
 
 		if (nativeAccent && ourAccent !== nativeAccent) {
-			console.log(
+			Logger.log(
 				`Style Manager | Adopting native accent color: ${nativeAccent} (was ${ourAccent})`
 			);
 			setSettingValue(ACCENT_COLOR_KEY, nativeAccent);

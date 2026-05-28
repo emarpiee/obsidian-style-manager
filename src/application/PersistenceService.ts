@@ -17,6 +17,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import { StyleManagerSettings } from '../types';
+import { Logger } from '../utils/Logger';
 import { NotificationService } from './NotificationService';
 import { SharedStateService } from './SharedStateService';
 
@@ -67,7 +68,7 @@ export class PersistenceService {
 		this.saveQueue = result
 			.then((): void => {})
 			.catch((e): void => {
-				console.error('Style Manager | Save enqueue error:', e);
+				Logger.error('Style Manager | Save enqueue error:', e);
 			});
 		return result;
 	}
@@ -86,13 +87,13 @@ export class PersistenceService {
 		force?: boolean;
 	}): Promise<void> {
 		if (!this.isSafeToSave) {
-			console.warn(
+			Logger.warn(
 				'Style Manager | Save blocked: Manager is in a suspected failed-load state.'
 			);
 			return;
 		}
 
-		console.time('StyleManager:SaveCycle');
+		Logger.time('StyleManager:SaveCycle');
 
 		const rawOnDisk = await this.options.sharedStore.readRaw();
 		let sharedSettings = this.options.getSharedSettings();
@@ -100,7 +101,7 @@ export class PersistenceService {
 		if (!options?.skipMerge && rawOnDisk !== null) {
 			const diskData = JSON.parse(rawOnDisk);
 			if (this.options.sharedStateService.hasContentChanged(diskData)) {
-				console.log(
+				Logger.log(
 					'Style Manager | Conflict detected during save! Merging with external disk state.'
 				);
 				sharedSettings = this.options.sharedStateService.applyConflictMerge(
@@ -123,14 +124,14 @@ export class PersistenceService {
 					!options?.force &&
 					!this.options.sharedStateService.hasContentChanged(dataToSave)
 				) {
-					console.log(
+					Logger.log(
 						'Style Manager | doSave() skipped: content identical to disk (sync-loop guard).'
 					);
-					console.timeEnd('StyleManager:SaveCycle');
+					Logger.timeEnd('StyleManager:SaveCycle');
 					return;
 				}
 			} catch (e) {
-				console.warn(
+				Logger.warn(
 					'Style Manager | Could not parse disk JSON during idempotency check:',
 					e
 				);
@@ -148,7 +149,7 @@ export class PersistenceService {
 
 		this.options.sharedStateService.setSyncState(finalData);
 		this.lastLoadedData = finalData;
-		console.timeEnd('StyleManager:SaveCycle');
+		Logger.timeEnd('StyleManager:SaveCycle');
 	}
 
 	public async load(forcePull: boolean = false): Promise<void> {
@@ -226,7 +227,7 @@ export class PersistenceService {
 
 		const diskData = JSON.parse(raw);
 		if (this.options.sharedStateService.hasContentChanged(diskData)) {
-			console.log(
+			Logger.log(
 				'Style Manager | External content change detected. Syncing...'
 			);
 			await this.doLoad(true);
