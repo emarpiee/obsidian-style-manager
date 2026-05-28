@@ -195,7 +195,7 @@ export class PresetItem {
 												data
 											);
 										} else {
-											const content = JSON.stringify(preset.data, null, 2);
+											const content = JSON.stringify(preset, null, 2);
 											await plugin.presetService.saveFileToVault(
 												filename,
 												content
