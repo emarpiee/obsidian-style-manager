@@ -41,7 +41,36 @@ export class SharedStore implements IStore<StyleManagerSettings> {
 		const raw = await this.readRaw();
 		if (raw === null)
 			return (await this.plugin.loadData()) as StyleManagerSettings | null;
-		return JSON.parse(raw) as StyleManagerSettings;
+		
+		try {
+			return JSON.parse(raw) as StyleManagerSettings;
+		} catch (e) {
+			Logger.error('Style Manager | Failed to parse data.json, returning null', e);
+			return null;
+		}
+	}
+
+	/**
+	 * Restores the backup file by copying data.json.bak over data.json.
+	 */
+	async restoreFromBackup(): Promise<boolean> {
+		try {
+			const vault = this.plugin.app.vault;
+			const adapter = vault.adapter;
+			const baseDir =
+				(this.plugin.manifest as PluginManifestWithDir).dir ||
+				normalizePath(`${vault.configDir}/plugins/${this.plugin.manifest.id}`);
+			const settingsPath = normalizePath(`${baseDir}/data.json`);
+			const backupPath = normalizePath(`${baseDir}/data.json.bak`);
+
+			if (await adapter.exists(backupPath)) {
+				await adapter.copy(backupPath, settingsPath);
+				return true;
+			}
+		} catch (e) {
+			Logger.error('Style Manager | Error restoring from backup:', e);
+		}
+		return false;
 	}
 
 	/**

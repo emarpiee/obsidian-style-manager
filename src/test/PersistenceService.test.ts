@@ -34,6 +34,7 @@ describe('PersistenceService', () => {
 				load: vi.fn().mockResolvedValue(null),
 				createBackup: vi.fn().mockResolvedValue(true),
 				hasBackup: vi.fn().mockResolvedValue(false),
+				restoreFromBackup: vi.fn().mockResolvedValue(false),
 			},
 			sharedStateService: {
 				hasContentChanged: vi.fn().mockReturnValue(true),
@@ -139,15 +140,17 @@ describe('PersistenceService', () => {
 	});
 
 	describe('Safe Mode & Protection', () => {
-		it('should trigger Safe Mode if settings file is missing but a backup exists', async () => {
+		it('should attempt recovery and trigger Safe Mode if recovery fails', async () => {
 			mockOptions.sharedStore.load.mockResolvedValue(null);
 			mockOptions.sharedStore.hasBackup.mockResolvedValue(true);
+			mockOptions.sharedStore.restoreFromBackup.mockResolvedValue(false);
 
 			await service.load();
 
+			expect(mockOptions.sharedStore.restoreFromBackup).toHaveBeenCalled();
 			expect(service.isSafeToSave).toBe(false);
 			expect(mockOptions.notifications.error).toHaveBeenCalledWith(
-				expect.stringContaining('backup exists')
+				expect.stringContaining('backup recovery failed')
 			);
 		});
 

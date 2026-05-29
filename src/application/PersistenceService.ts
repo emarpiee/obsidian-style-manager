@@ -168,10 +168,18 @@ export class PersistenceService {
 		if (isMissing && !hasBackup) {
 			this.isSafeToSave = true;
 		} else if (isMissing && hasBackup) {
-			this.isSafeToSave = false;
-			this.options.notifications.error(
-				'Style Manager | Warning: Settings file is missing but a backup exists. Save disabled.'
-			);
+			Logger.warn('Style Manager | Settings file is missing or corrupted but a backup exists. Attempting recovery...');
+			const restored = await this.options.sharedStore.restoreFromBackup();
+			if (restored) {
+				Logger.log('Style Manager | Successfully restored from backup.');
+				this.options.notifications.shared('Style Manager: Recovered settings from backup');
+				return this.doLoad(forcePull); // Retry loading after restore
+			} else {
+				this.isSafeToSave = false;
+				this.options.notifications.error(
+					'Style Manager | Warning: Settings file is missing and backup recovery failed. Save disabled.'
+				);
+			}
 		} else if (loadedData !== null && Object.keys(loadedData).length === 0) {
 			this.isSafeToSave = false;
 			this.options.notifications.error(
