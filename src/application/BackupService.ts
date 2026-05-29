@@ -55,7 +55,8 @@ export class BackupService {
 	}
 
 	/**
-	 * Creates a Universal ZIP backup containing data.json and all snippet files.
+	 * Creates a Universal ZIP backup containing data.json, all snippet files,
+	 * and all installed theme CSS + manifest files.
 	 */
 	async createUniversalBackup(): Promise<Uint8Array> {
 		const zip = new JSZip();
@@ -102,7 +103,39 @@ export class BackupService {
 			}
 		}
 
-		// 3. Add signature manifest
+		// 3. Add themes folder (all installed themes)
+		const installedThemes = this.plugin.settingsService.bridge.getInstalledThemes();
+		if (installedThemes.length > 0) {
+			const themesFolder = zip.folder('themes');
+			if (themesFolder) {
+				for (const themeName of installedThemes) {
+					try {
+						const cssContent =
+							await this.plugin.settingsService.bridge.readThemeCss(themeName);
+						const manifestContent =
+							await this.plugin.settingsService.bridge.readThemeManifest(themeName);
+						if (cssContent !== null || manifestContent !== null) {
+							const specificThemeFolder = themesFolder.folder(themeName);
+							if (specificThemeFolder) {
+								if (cssContent !== null) {
+									specificThemeFolder.file('theme.css', cssContent);
+								}
+								if (manifestContent !== null) {
+									specificThemeFolder.file('manifest.json', manifestContent);
+								}
+							}
+						}
+					} catch (e) {
+						console.error(
+							`BackupService | Failed to add theme "${themeName}" to backup:`,
+							e
+						);
+					}
+				}
+			}
+		}
+
+		// 4. Add signature manifest
 		const metadata = {
 			version: this.plugin.manifest.version,
 			timestamp: Date.now(),
@@ -123,6 +156,10 @@ export class BackupService {
 		try {
 			let newSettings: StyleManagerSettings | null = null;
 			const snippetsToInstall: { name: string; content: string }[] = [];
+			const themesToInstall: {
+				name: string;
+				files: { filename: string; content: string }[];
+			}[] = [];
 
 			if (data instanceof ArrayBuffer) {
 				// ZIP Bundle Handling
@@ -169,6 +206,34 @@ export class BackupService {
 						snippetsToInstall.push({ name, content });
 					}
 				}
+
+				// Find themes
+				const themesFolder = zip.folder('themes');
+				if (themesFolder) {
+					const themeNames = new Set<string>();
+					themesFolder.forEach((relativePath) => {
+						const parts = relativePath.split('/');
+						if (parts.length > 0 && parts[0]) {
+							themeNames.add(parts[0]);
+						}
+					});
+					for (const themeName of themeNames) {
+						const themeFiles: { filename: string; content: string }[] = [];
+						const cssFile = themesFolder.file(`${themeName}/theme.css`);
+						const themeManifestFile = themesFolder.file(`${themeName}/manifest.json`);
+						if (cssFile) {
+							const content = await cssFile.async('string');
+							themeFiles.push({ filename: 'theme.css', content });
+						}
+						if (themeManifestFile) {
+							const content = await themeManifestFile.async('string');
+							themeFiles.push({ filename: 'manifest.json', content });
+						}
+						if (themeFiles.length > 0) {
+							themesToInstall.push({ name: themeName, files: themeFiles });
+						}
+					}
+				}
 			} else {
 				// Raw String Handling (JSON, MD, TXT)
 				const sanitized = data.trim();
@@ -213,7 +278,21 @@ export class BackupService {
 				await this.plugin.settingsService.bridge.forceLoadSnippets();
 			}
 
-			// 3. Apply Settings with Version Jumping
+			// 3. Install Themes
+			if (themesToInstall.length > 0) {
+				for (const theme of themesToInstall) {
+					for (const file of theme.files) {
+						await this.plugin.settingsService.bridge.writeThemeFile(
+							theme.name,
+							file.filename,
+							file.content
+						);
+					}
+				}
+				this.plugin.settingsService.bridge.requestLoadTheme();
+			}
+
+			// 4. Apply Settings with Version Jumping
 			// We force a new shared version so this restore "wins" on all other devices.
 			const nextVersion = (
 				this.plugin.settingsService.persistenceService as unknown as {
@@ -231,7 +310,7 @@ export class BackupService {
 			// Explicitly save the restored state
 			await this.plugin.settingsService.save({ force: true });
 
-			// 4. Final Reload
+			// 5. Final Reload
 			await this.plugin.settingsService.refreshService.trigger(
 				RefreshLevel.SYSTEM_RELOAD,
 				{ skipAdopt: true }

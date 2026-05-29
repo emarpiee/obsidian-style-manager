@@ -63,6 +63,21 @@ vi.mock('jszip', () => {
 			folder: vi.fn().mockImplementation((name) => {
 				if (name === 'snippets') return { filter: (): any[] => [] };
 				if (name === 'presets') return null;
+				if (name === 'themes') {
+					return {
+						forEach: (cb: (path: string) => void) => {
+							cb('Minimal/theme.css');
+							cb('Minimal/manifest.json');
+						},
+						file: vi.fn().mockImplementation((sub: string) => {
+							if (sub === 'Minimal/theme.css')
+								return { async: () => Promise.resolve('theme-css') };
+							if (sub === 'Minimal/manifest.json')
+								return { async: () => Promise.resolve('{"name":"Minimal"}') };
+							return null;
+						}),
+					};
+				}
 				return null;
 			}),
 		}),
@@ -111,6 +126,11 @@ describe('BackupService', () => {
 				bridge: {
 					writeSnippet: vi.fn().mockResolvedValue(undefined),
 					forceLoadSnippets: vi.fn().mockResolvedValue(undefined),
+					writeThemeFile: vi.fn().mockResolvedValue(undefined),
+					requestLoadTheme: vi.fn(),
+					getInstalledThemes: vi.fn().mockReturnValue(['Minimal']),
+					readThemeCss: vi.fn().mockResolvedValue('theme-css-content'),
+					readThemeManifest: vi.fn().mockResolvedValue('{"name":"Minimal"}'),
 				},
 			},
 		};
@@ -132,10 +152,29 @@ describe('BackupService', () => {
 		);
 	});
 
-	it('should create a universal backup ZIP', async () => {
+	it('should create a universal backup ZIP including themes', async () => {
 		const data = await service.createUniversalBackup();
 		expect(data).toBeInstanceOf(Uint8Array);
 		expect(data).toEqual(new Uint8Array([1, 2, 3]));
+		expect(mockPlugin.settingsService.bridge.getInstalledThemes).toHaveBeenCalled();
+		expect(mockPlugin.settingsService.bridge.readThemeCss).toHaveBeenCalledWith('Minimal');
+		expect(mockPlugin.settingsService.bridge.readThemeManifest).toHaveBeenCalledWith('Minimal');
+	});
+
+	it('should restore themes from a valid ZIP backup', async () => {
+		const result = await service.restoreBackup(new ArrayBuffer(0));
+		expect(result).toBe(true);
+		expect(mockPlugin.settingsService.bridge.writeThemeFile).toHaveBeenCalledWith(
+			'Minimal',
+			'theme.css',
+			'theme-css'
+		);
+		expect(mockPlugin.settingsService.bridge.writeThemeFile).toHaveBeenCalledWith(
+			'Minimal',
+			'manifest.json',
+			'{"name":"Minimal"}'
+		);
+		expect(mockPlugin.settingsService.bridge.requestLoadTheme).toHaveBeenCalled();
 	});
 
 	it('should restore from a valid ZIP backup', async () => {
