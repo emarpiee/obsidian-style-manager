@@ -147,11 +147,39 @@ export class SnippetsTab {
 	}
 
 	private applyFilter(): void {
+		const query = this.filterString.toLowerCase();
+		
+		const authorMatch = query.match(/@author\s+([^\s@]+)/);
+		const nameMatch = query.match(/@name\s+([^\s@]+)/);
+		const descMatch = query.match(/@description\s+([^\s@]+)/);
+		const licenseMatch = query.match(/@license\s+([^\s@]+)/);
+		
+		const cleanedQuery = query
+			.replace(/@author\s+[^\s@]+/g, '')
+			.replace(/@name\s+[^\s@]+/g, '')
+			.replace(/@description\s+[^\s@]+/g, '')
+			.replace(/@license\s+[^\s@]+/g, '')
+			.trim();
+
 		this.snippetComponents.forEach((comp) => {
+			let matches = true;
 			const displayName = comp.snippetId + '.css';
-			const matches =
-				comp.snippetId.toLowerCase().includes(this.filterString) ||
-				displayName.toLowerCase().includes(this.filterString);
+			const metadata = this.plugin.snippetMetadataMap.get(comp.snippetId) || {};
+
+			if (authorMatch && !(metadata.author?.toLowerCase().includes(authorMatch[1]))) matches = false;
+			if (nameMatch && !(displayName.toLowerCase().includes(nameMatch[1]))) matches = false;
+			if (descMatch && !(metadata.description?.toLowerCase().includes(descMatch[1]))) matches = false;
+			if (licenseMatch && !(metadata.license?.toLowerCase().includes(licenseMatch[1]))) matches = false;
+
+			if (cleanedQuery && !(
+				comp.snippetId.toLowerCase().includes(cleanedQuery) ||
+				displayName.toLowerCase().includes(cleanedQuery) ||
+				metadata.author?.toLowerCase().includes(cleanedQuery) ||
+				metadata.description?.toLowerCase().includes(cleanedQuery)
+			)) {
+				matches = false;
+			}
+
 			comp.setVisibility(matches);
 		});
 	}

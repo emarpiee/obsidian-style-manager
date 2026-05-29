@@ -115,8 +115,30 @@ export class ThemeBuilderTab {
 	}
 
 	private applyFilter(): void {
+		const query = this.filterString.toLowerCase();
+		
+		const authorMatch = query.match(/@author\s+([^\s@]+)/);
+		const nameMatch = query.match(/@name\s+([^\s@]+)/);
+		
+		const cleanedQuery = query
+			.replace(/@author\s+[^\s@]+/g, '')
+			.replace(/@name\s+[^\s@]+/g, '')
+			.trim();
+
 		this.themeComponents.forEach((comp) => {
-			const matches = comp.themeId.toLowerCase().includes(this.filterString);
+			let matches = true;
+			const manifest = comp.manifest;
+
+			if (authorMatch && !(manifest?.author?.toLowerCase().includes(authorMatch[1]))) matches = false;
+			if (nameMatch && !(manifest?.name?.toLowerCase().includes(nameMatch[1]))) matches = false;
+
+			if (cleanedQuery && !(
+				comp.themeId.toLowerCase().includes(cleanedQuery) ||
+				manifest?.name?.toLowerCase().includes(cleanedQuery)
+			)) {
+				matches = false;
+			}
+			
 			comp.setVisibility(matches);
 		});
 	}

@@ -47,7 +47,7 @@ export class StyleBlockService {
 description: 
 author: 
 version: 1.0.0
-authorUrl 
+authorUrl: 
 license: 
 */`,
 		},

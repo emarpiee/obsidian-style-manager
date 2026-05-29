@@ -33,7 +33,7 @@ export class ThemeItemComponent extends Component {
 		private containerEl: HTMLElement,
 		private plugin: StyleManagerPlugin,
 		public themeId: string,
-		private manifest: ThemeManifest,
+		public manifest: ThemeManifest,
 		private onUpdate: () => void
 	) {
 		super();
