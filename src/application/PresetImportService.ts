@@ -222,12 +222,14 @@ export class PresetImportService {
 		}
 
 		// 4. Add Presets to storage
+		const currentPresets = this.plugin.presetService.presets;
 		for (const preset of analysis.presets || []) {
 			// Re-generate ID to be sure it's unique locally
 			preset.id = crypto.randomUUID();
-			this.plugin.presetService.presets.unshift(preset);
+			currentPresets.unshift(preset);
 			totalPresets++;
 		}
+		this.plugin.presetService.presets = currentPresets;
 
 		await this.plugin.presetService.savePresets();
 		return totalPresets;
