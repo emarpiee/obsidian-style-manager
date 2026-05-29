@@ -88,9 +88,7 @@ export class PresetImportService {
 					if (bundleData.themes) {
 						for (const theme of bundleData.themes) {
 							if (
-								await this.plugin.settingsService.bridge.themeExists(
-									theme.name
-								)
+								await this.plugin.settingsService.bridge.themeExists(theme.name)
 							) {
 								if (!analysis.themeConflicts.includes(theme.name)) {
 									analysis.themeConflicts.push(theme.name);
@@ -146,7 +144,7 @@ export class PresetImportService {
 		let totalPresets = 0;
 
 		// 1. Handle Snippets & Resolutions
-		for (const snippet of (analysis.snippets || [])) {
+		for (const snippet of analysis.snippets || []) {
 			const resolution = resolutions?.find((r) => r.name === snippet.name);
 
 			if (!resolution || resolution.action === 'overwrite') {
@@ -160,23 +158,18 @@ export class PresetImportService {
 					snippet.content
 				);
 				// Update preset references to the renamed snippet
-				for (const preset of (analysis.presets || [])) {
+				for (const preset of analysis.presets || []) {
 					const snippets = (preset.data[SNIPPETS_KEY] as string[]) || [];
 					const idx = snippets.indexOf(snippet.name);
 					if (idx !== -1) snippets[idx] = resolution.newName;
 				}
 			} else if (resolution.action === 'skip') {
-				// Remove snippet from all presets referencing it
-				for (const preset of (analysis.presets || [])) {
-					const snippets = (preset.data[SNIPPETS_KEY] as string[]) || [];
-					const idx = snippets.indexOf(snippet.name);
-					if (idx !== -1) snippets.splice(idx, 1);
-				}
+				// We keep the snippet reference in the preset but do not overwrite the snippet on disk.
 			}
 		}
 
 		// 2. Handle Themes & Resolutions
-		for (const theme of (analysis.themes || [])) {
+		for (const theme of analysis.themes || []) {
 			const resolution = resolutions?.find((r) => r.name === theme.name);
 
 			if (!resolution || resolution.action === 'overwrite') {
@@ -196,7 +189,10 @@ export class PresetImportService {
 							manifestObj.name = resolution.newName;
 							content = JSON.stringify(manifestObj, null, 2);
 						} catch (e) {
-							console.error('Style Manager | Failed to parse manifest JSON during rename:', e);
+							console.error(
+								'Style Manager | Failed to parse manifest JSON during rename:',
+								e
+							);
 						}
 					}
 					await this.plugin.settingsService.bridge.writeThemeFile(
@@ -206,7 +202,7 @@ export class PresetImportService {
 					);
 				}
 				// Update preset references to the renamed theme
-				for (const preset of (analysis.presets || [])) {
+				for (const preset of analysis.presets || []) {
 					const themeName = preset.data[THEME_KEY] as string | undefined;
 					if (themeName === theme.name) {
 						preset.data[THEME_KEY] = resolution.newName;
@@ -226,16 +222,14 @@ export class PresetImportService {
 		}
 
 		// 4. Add Presets to storage
-		for (const preset of (analysis.presets || [])) {
+		for (const preset of analysis.presets || []) {
 			// Re-generate ID to be sure it's unique locally
 			preset.id = crypto.randomUUID();
 			this.plugin.presetService.presets.unshift(preset);
 			totalPresets++;
 		}
 
-
 		await this.plugin.presetService.savePresets();
 		return totalPresets;
 	}
 }
-
