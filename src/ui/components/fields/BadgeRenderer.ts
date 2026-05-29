@@ -93,7 +93,6 @@ export function renderAppearanceBadge(
 		cls: `style-manager-badge-primary appearance mode-${appearance}`,
 	});
 	setIcon(badge, appearance === 'dark' ? 'moon' : 'sun');
-	badge.createSpan({ text: appearance === 'dark' ? 'Dark' : 'Light' });
 	return badge;
 }
 

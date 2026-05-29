@@ -80,10 +80,16 @@ export class PresetItem {
 			'style-manager-badge-container mod-left'
 		);
 
-		// 1. Count Badge
+		// Count Badge
 		renderCountBadge(badgesContainer, count);
 
-		// 2. Theme Badge
+		// Appearance Badge
+		const appearance = preset.data[APPEARANCE_KEY] as string | undefined;
+		if (appearance) {
+			renderAppearanceBadge(badgesContainer, appearance);
+		}
+
+		// Theme Badge
 		const theme = preset.data[THEME_KEY] as string | undefined;
 		if (theme) {
 			renderThemeBadge(
@@ -91,12 +97,6 @@ export class PresetItem {
 				theme,
 				preset.data[ACCENT_COLOR_KEY] as string
 			);
-		}
-
-		// 3. Appearance Badge
-		const appearance = preset.data[APPEARANCE_KEY] as string | undefined;
-		if (appearance) {
-			renderAppearanceBadge(badgesContainer, appearance);
 		}
 
 		// Snippets Badge

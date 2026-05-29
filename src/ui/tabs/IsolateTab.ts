@@ -57,7 +57,10 @@ export class IsolateTab {
 	private renderIsolateModeSection(): void {
 		const { containerEl, plugin } = this;
 
-		new Setting(containerEl).setName('Isolate mode').setHeading().setClass('style-manager-settings-tab-title');
+		new Setting(containerEl)
+			.setName('Isolate mode')
+			.setHeading()
+			.setClass('style-manager-settings-tab-title');
 
 		const isolateContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
@@ -81,7 +84,10 @@ export class IsolateTab {
 	private renderLockerIdentitySection(): void {
 		const { containerEl, plugin } = this;
 
-		new Setting(containerEl).setName('Locker identity').setHeading().setClass('style-manager-settings-tab-title');
+		new Setting(containerEl)
+			.setName('Locker identity')
+			.setHeading()
+			.setClass('style-manager-settings-tab-title');
 
 		const deviceContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
@@ -265,10 +271,15 @@ export class IsolateTab {
 
 			const metaRow = descContainer.createDiv('style-manager-locker-meta-row');
 
-			// 1. Count Badge
+			// Count Badge
 			renderCountBadge(metaRow, count);
 
-			// 2. Theme Badge (if not default)
+			// Appearance Badge
+			if (appearance && appearance !== 'system') {
+				renderAppearanceBadge(metaRow, appearance as string);
+			}
+
+			// Theme Badge (if not default)
 			if (theme && theme !== 'Default' && theme !== 'default') {
 				renderThemeBadge(
 					metaRow,
@@ -277,12 +288,7 @@ export class IsolateTab {
 				);
 			}
 
-			// 3. Appearance Badge
-			if (appearance && appearance !== 'system') {
-				renderAppearanceBadge(metaRow, appearance as string);
-			}
-
-			// 4. Snippets Badge
+			// Snippets Badge
 			renderSnippetBadge(
 				metaRow,
 				plugin,

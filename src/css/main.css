@@ -76,7 +76,7 @@ body {
 	--sm-badge-primary-appearance-dark-bg: oklch(72% 0.16 295 / 0.1);
 	--sm-badge-primary-appearance-dark-color: #a883ff;
 	--sm-badge-primary-appearance-light-bg: oklch(60% 0.18 45 / 0.15);
-	--sm-badge-primary-appearance-light-color: #b45309;
+	--sm-badge-primary-appearance-light-color: #ccaa00;
 
 	/* --- Source Type Badge (Plugin / Theme / Snippet) --- */
 	/* Light Mode */
@@ -329,7 +329,6 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 .style-manager-badge-primary {
 	font-size: 10px;
 	padding: 1px 7px;
-	line-height: 1.4;
 	border-radius: var(--sm-badge-primary-radius);
 	background: var(--sm-badge-primary-bg);
 	color: var(--sm-badge-primary-color);
@@ -350,26 +349,29 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 .style-manager-badge-primary.appearance {
 	display: inline-flex;
 	align-items: center;
-	gap: 4px;
+	justify-content: center;
+	padding: 0;
+	width: 16px;
+	height: 16px;
 }
 
 .style-manager-badge-primary.appearance svg {
-	width: 10px;
-	height: 10px;
+	width: 100%;
+	height: 100%;
+	stroke-width: 2.5px;
+	fill: currentColor;
 }
 
 .style-manager-badge-primary.appearance.mode-dark {
-	background: var(--sm-badge-primary-appearance-dark-bg);
+	background: none;
 	color: var(--sm-badge-primary-appearance-dark-color);
-	border: var(--sm-badge-primary-border-size) solid
-		var(--sm-badge-primary-appearance-dark-color);
+	border: none;
 }
 
 .style-manager-badge-primary.appearance.mode-light {
-	background: var(--sm-badge-primary-appearance-light-bg);
+	background: none;
 	color: var(--sm-badge-primary-appearance-light-color);
-	border: var(--sm-badge-primary-border-size) solid
-		var(--sm-badge-primary-appearance-light-color);
+	border: none;
 }
 
 /* Source Type Badge Colors - Polished Pill Design */
