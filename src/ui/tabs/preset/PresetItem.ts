@@ -85,7 +85,7 @@ export class PresetItem {
 
 		// 2. Theme Badge
 		const theme = preset.data[THEME_KEY] as string | undefined;
-		if (theme && theme !== 'default') {
+		if (theme) {
 			renderThemeBadge(
 				badgesContainer,
 				theme,
