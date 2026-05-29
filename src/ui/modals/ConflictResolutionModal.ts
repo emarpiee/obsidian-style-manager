@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, ButtonComponent, Modal, Setting } from 'obsidian';
+import { App, ButtonComponent, Modal, Setting, DropdownComponent } from 'obsidian';
 
 export interface ConflictItem {
 	name: string;
@@ -35,6 +35,7 @@ export interface ConflictAction {
  */
 export class ConflictResolutionModal extends Modal {
 	private resolutions: Record<string, ConflictAction> = {};
+	private updaters: ((action: 'rename' | 'overwrite' | 'skip') => void)[] = [];
 
 	constructor(
 		app: App,
@@ -53,6 +54,10 @@ export class ConflictResolutionModal extends Modal {
 		});
 	}
 
+	private applyBulkAction(action: 'rename' | 'overwrite' | 'skip') {
+		this.updaters.forEach((updater) => updater(action));
+	}
+
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
 		modalEl.addClass('modal-style-manager');
@@ -67,9 +72,28 @@ export class ConflictResolutionModal extends Modal {
 			cls: 'style-manager-modal-description',
 		});
 
+		const bulkActionContainer = contentEl.createDiv('style-manager-bulk-actions');
+		bulkActionContainer.style.display = 'flex';
+		bulkActionContainer.style.gap = '8px';
+		bulkActionContainer.style.marginBottom = '12px';
+
+		new ButtonComponent(bulkActionContainer)
+			.setButtonText('Rename all')
+			.onClick(() => this.applyBulkAction('rename'));
+
+		new ButtonComponent(bulkActionContainer)
+			.setButtonText('Overwrite all')
+			.onClick(() => this.applyBulkAction('overwrite'));
+
+		new ButtonComponent(bulkActionContainer)
+			.setButtonText('Skip all')
+			.onClick(() => this.applyBulkAction('skip'));
+
 		const scrollContainer = contentEl.createDiv(
 			'style-manager-conflict-scroll'
 		);
+
+		this.updaters = [];
 
 		this.conflicts.forEach((item) => {
 			const resolution = this.resolutions[item.name];
@@ -81,10 +105,13 @@ export class ConflictResolutionModal extends Modal {
 			const typeLabel = item.type === 'theme' ? ' (Theme)' : ' (Snippet)';
 			const placeholderText = item.type === 'theme' ? 'Enter new theme name...' : 'Enter new snippet name...';
 
+			let dropComponent: DropdownComponent;
+
 			new Setting(container)
 				.setName(`${item.name}${typeLabel}`)
 				.setClass('style-manager-conflict-row')
 				.addDropdown((drop) => {
+						dropComponent = drop;
 						drop
 							.addOption('rename', 'Rename')
 							.addOption('overwrite', 'Overwrite')
@@ -109,6 +136,12 @@ export class ConflictResolutionModal extends Modal {
 						});
 					text.inputEl.addClass('style-manager-conflict-input');
 				});
+
+			this.updaters.push((action) => {
+				dropComponent.setValue(action);
+				resolution.action = action;
+				renameInputRow.settingEl.toggleClass('style-manager-hidden', action !== 'rename');
+			});
 
 			// Initial state (visible if 'rename' is the default)
 			renameInputRow.settingEl.removeClass('style-manager-hidden');
