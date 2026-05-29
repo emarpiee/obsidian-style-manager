@@ -40,4 +40,6 @@ export const SEPARATE_BULK_PRESETS_KEY =
 export const EDITOR_TAB_SIZE_KEY = '__style_manager_editor_tab_size';
 export const ENABLE_CONSOLE_LOGGING_KEY =
 	'__style_manager_enable_console_logging';
+export const BACKUP_PATH_KEY = '__style_manager_backup_path';
+export const BACKUP_DATE_FORMAT_KEY = '__style_manager_backup_date_format';
 

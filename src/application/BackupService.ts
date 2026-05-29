@@ -21,6 +21,7 @@ import { Notice, normalizePath } from 'obsidian';
 
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
+import { BACKUP_PATH_KEY, BACKUP_DATE_FORMAT_KEY } from '../constants';
 
 /**
  * Service for managing full plugin backups, safety snapshots, and loop-free restores.
@@ -327,5 +328,39 @@ export class BackupService {
 			);
 			return false;
 		}
+	}
+
+	/**
+	 * Saves a backup ZIP to the vault using backup-specific location settings.
+	 * Defaults to vault root. Does NOT read from preset export settings.
+	 */
+	public async saveBackupToVault(filename: string, data: Uint8Array): Promise<void> {
+		const settings = this.plugin.settingsService.settings;
+
+		// Resolve backup path from backup-specific key only; empty = vault root
+		let backupPath = (settings[BACKUP_PATH_KEY] as string) || '';
+
+		if (backupPath && !backupPath.endsWith('/')) {
+			backupPath += '/';
+		}
+
+		const bridge = this.plugin.settingsService.bridge;
+		if (backupPath) {
+			try {
+				await bridge.mkdir(backupPath);
+			} catch (e) {
+				console.error('BackupService | Failed to create backup folder', e);
+			}
+		}
+
+		let fullPath = normalizePath(`${backupPath}${filename}`);
+
+		// Handle filename collision
+		if (await bridge.fileExists(fullPath)) {
+			fullPath = fullPath.replace('.zip', `_${Date.now()}.zip`);
+		}
+
+		await bridge.createFile(fullPath, data);
+		this.plugin.settingsService.notifications.preset(`Backup saved: ${fullPath}`);
 	}
 }

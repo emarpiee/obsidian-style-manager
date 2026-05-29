@@ -19,6 +19,8 @@
 import { App, Notice, Setting, debounce, setIcon } from 'obsidian';
 
 import {
+	BACKUP_DATE_FORMAT_KEY,
+	BACKUP_PATH_KEY,
 	EDITOR_TAB_SIZE_KEY,
 	ENABLE_CONSOLE_LOGGING_KEY,
 	OPEN_MODAL_ON_CREATE_KEY,
@@ -78,6 +80,53 @@ export class PreferencesTab {
 		);
 
 		new Setting(backupContainer)
+			.setName('Backup location')
+			.setDesc(
+				'Choose the folder where full vault backup ZIPs will be saved (e.g. "Backups"). Leave empty to save to the vault root.'
+			)
+			.addText((text) => {
+				const currentPath =
+					(plugin.settingsService.settings[BACKUP_PATH_KEY] as string) ?? '';
+				text
+					.setPlaceholder('Folder/Path (leave empty for vault root)')
+					.setValue(currentPath)
+					.onChange(
+						debounce(async (val) => {
+							await plugin.settingsService.setSettings(
+								{ [BACKUP_PATH_KEY]: val.trim() },
+								{ silentUI: true }
+							);
+						}, 500)
+					);
+				plugin.settingsService.bridge.createFolderSuggest(text.inputEl);
+			});
+
+		new Setting(backupContainer)
+			.setName('Backup timestamp format')
+			.setDesc(
+				'Customize the timestamp used in backup filenames. Avoid ":", "/", or "\\" as they are invalid in filenames.'
+			)
+			.addText((text) => {
+				text
+					.setPlaceholder('YYYYMMDDHHmmss')
+					.setValue(
+						(plugin.settingsService.settings[
+							BACKUP_DATE_FORMAT_KEY
+						] as string) ?? 'YYYYMMDDHHmmss'
+					)
+					.onChange(
+						debounce(async (val) => {
+							const sanitized =
+								val.replace(/[:/\\?%*|"<>]/g, '') || 'YYYYMMDDHHmmss';
+							await plugin.settingsService.setSettings(
+								{ [BACKUP_DATE_FORMAT_KEY]: sanitized },
+								{ silentUI: true }
+							);
+						}, 500)
+					);
+			});
+
+		new Setting(backupContainer)
 			.setName('Full vault backup (ZIP)')
 			.setDesc(
 				'Creates a complete backup containing your settings AND all your CSS snippets in a single ZIP file.'
@@ -90,13 +139,13 @@ export class PreferencesTab {
 					.onClick(async () => {
 						try {
 							const data = await plugin.backupService.createUniversalBackup();
-							const timestamp = getFormattedTimestamp(
-								plugin.settingsService.settings[
-									'__style_manager_export_date_format'
-								] as string
-							);
+							const backupFormat =
+								(plugin.settingsService.settings[
+									BACKUP_DATE_FORMAT_KEY
+								] as string) || 'YYYYMMDDHHmmss';
+							const timestamp = getFormattedTimestamp(backupFormat);
 							const filename = `full-backup-style-manager-${timestamp}.zip`;
-							await plugin.presetService.saveFileToVault(filename, data);
+							await plugin.backupService.saveBackupToVault(filename, data);
 						} catch (e) {
 							console.error('Style Manager | Backup failed:', e);
 							new Notice('Backup failed. See console for details.');
