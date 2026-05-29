@@ -216,12 +216,25 @@ export class PresetItem {
 
 								const snippetList =
 									(preset.data[SNIPPETS_KEY] as string[]) || [];
-								if (snippetList.length > 0) {
+								const activeTheme = preset.data[THEME_KEY] as string | undefined;
+								const hasTheme = activeTheme && activeTheme !== 'default';
+
+								if (snippetList.length > 0 || hasTheme) {
+									let description = 'This preset';
+									if (snippetList.length > 0 && hasTheme) {
+										description += ` has ${snippetList.length} enabled snippet(s) and uses theme "${activeTheme}".`;
+									} else if (snippetList.length > 0) {
+										description += ` has ${snippetList.length} enabled snippet(s).`;
+									} else {
+										description += ` uses theme "${activeTheme}".`;
+									}
+									description += ' Do you want to include these files in a ZIP bundle?';
+
 									new ConfirmModal(
 										plugin.app,
 										'Export Preset Bundle',
-										`This preset has ${snippetList.length} enabled snippet(s). Do you want to include the snippet files in a ZIP bundle?`,
-										'Include Snippets (ZIP)',
+										description,
+										'Include Assets (ZIP)',
 										false,
 										() => performExport(true),
 										`Preset Only (${preferredExtension})`,
@@ -247,6 +260,7 @@ export class PresetItem {
 								}
 							})
 					);
+
 
 					menu.addSeparator();
 

@@ -258,17 +258,32 @@ export class PresetList {
 			};
 
 			const allSnippets = new Set<string>();
+			const allThemes = new Set<string>();
 			presetsToExport.forEach((p) => {
 				const snippets = (p.data[SNIPPETS_KEY] as string[]) || [];
 				snippets.forEach((s) => allSnippets.add(s));
+				const themeName = p.data[THEME_KEY] as string | undefined;
+				if (themeName && themeName !== 'default') {
+					allThemes.add(themeName);
+				}
 			});
 
-			if (allSnippets.size > 0) {
+			if (allSnippets.size > 0 || allThemes.size > 0) {
+				let description = 'The selected presets contain';
+				if (allSnippets.size > 0 && allThemes.size > 0) {
+					description += ` ${allSnippets.size} unique snippet(s) and ${allThemes.size} unique theme(s).`;
+				} else if (allSnippets.size > 0) {
+					description += ` ${allSnippets.size} unique snippet(s).`;
+				} else {
+					description += ` ${allThemes.size} unique theme(s).`;
+				}
+				description += ' Do you want to include these files in a ZIP bundle?';
+
 				new ConfirmModal(
 					plugin.app,
 					'Export Multiple Presets',
-					`The selected presets contain ${allSnippets.size} unique snippet(s). Do you want to include the snippet files in a ZIP bundle?`,
-					'Include Snippets (ZIP)',
+					description,
+					'Include Assets (ZIP)',
 					false,
 					() => performExport(true),
 					`Presets Only (${preferredExtension})`,
@@ -291,6 +306,7 @@ export class PresetList {
 				}
 			}
 		});
+
 
 		new ButtonComponent(actionsDiv)
 			.setButtonText('Apply All')

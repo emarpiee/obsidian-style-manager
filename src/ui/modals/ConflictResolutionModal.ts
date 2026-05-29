@@ -18,30 +18,37 @@
 */
 import { App, ButtonComponent, Modal, Setting } from 'obsidian';
 
+export interface ConflictItem {
+	name: string;
+	type: 'snippet' | 'theme';
+}
+
 export interface ConflictAction {
 	name: string;
+	type: 'snippet' | 'theme';
 	action: 'rename' | 'overwrite' | 'skip';
 	newName?: string;
 }
 
 /**
- * Modal to resolve filename conflicts for CSS snippets during import.
+ * Modal to resolve filename conflicts for CSS snippets and themes during import.
  */
 export class ConflictResolutionModal extends Modal {
 	private resolutions: Record<string, ConflictAction> = {};
 
 	constructor(
 		app: App,
-		private conflicts: string[],
+		private conflicts: ConflictItem[],
 		private onComplete: (actions: ConflictAction[]) => void
 	) {
 		super(app);
 		// Initialize default resolutions to rename with a suffix
-		conflicts.forEach((name) => {
-			this.resolutions[name] = {
-				name,
+		conflicts.forEach((item) => {
+			this.resolutions[item.name] = {
+				name: item.name,
+				type: item.type,
 				action: 'rename',
-				newName: `${name}-imported`,
+				newName: `${item.name}-imported`,
 			};
 		});
 	}
@@ -52,11 +59,11 @@ export class ConflictResolutionModal extends Modal {
 		modalEl.addClass('style-manager-conflict-modal');
 
 		contentEl.createEl('h2', {
-			text: 'Snippet Conflicts',
+			text: 'Import Conflicts',
 			cls: 'style-manager-modal-title',
 		});
 		contentEl.createEl('p', {
-			text: 'The following snippets already exist in your vault. Choose how to handle each one.',
+			text: 'The following snippets or themes already exist in your vault. Choose how to handle each one.',
 			cls: 'style-manager-modal-description',
 		});
 
@@ -64,15 +71,18 @@ export class ConflictResolutionModal extends Modal {
 			'style-manager-conflict-scroll'
 		);
 
-		this.conflicts.forEach((name) => {
-			const resolution = this.resolutions[name];
+		this.conflicts.forEach((item) => {
+			const resolution = this.resolutions[item.name];
 
 			const container = scrollContainer.createDiv(
 				'style-manager-conflict-item'
 			);
 
+			const typeLabel = item.type === 'theme' ? ' (Theme)' : ' (Snippet)';
+			const placeholderText = item.type === 'theme' ? 'Enter new theme name...' : 'Enter new snippet name...';
+
 			new Setting(container)
-				.setName(name)
+				.setName(`${item.name}${typeLabel}`)
 				.setClass('style-manager-conflict-row')
 				.addDropdown((drop) => {
 						drop
@@ -93,7 +103,7 @@ export class ConflictResolutionModal extends Modal {
 				.addText((text) => {
 					text
 						.setValue(resolution.newName || '')
-						.setPlaceholder('Enter new snippet name...')
+						.setPlaceholder(placeholderText)
 						.onChange((val) => {
 							resolution.newName = val;
 						});
@@ -123,3 +133,4 @@ export class ConflictResolutionModal extends Modal {
 		this.contentEl.empty();
 	}
 }
+

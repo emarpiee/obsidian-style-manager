@@ -18,7 +18,7 @@
 */
 import JSZip from 'jszip';
 
-import { SNIPPETS_KEY } from '../constants';
+import { SNIPPETS_KEY, THEME_KEY } from '../constants';
 import { Preset } from '../types';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
@@ -26,6 +26,7 @@ import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
 export interface BundleData {
 	presets: Preset[];
 	snippets: { name: string; content: string }[];
+	themes?: { name: string; files: { filename: string; content: string }[] }[];
 }
 
 /**
@@ -84,6 +85,37 @@ export class BundleService {
 					const content = await this.bridge.readSnippet(name);
 					if (content !== null) {
 						snippetsFolder.file(`${name}.css`, content);
+					}
+				}
+			}
+		}
+
+		// 4. Collect unique active themes across all presets
+		const allThemeNames = new Set<string>();
+		for (const preset of presets) {
+			const themeName = preset.data[THEME_KEY] as string | undefined;
+			if (themeName && themeName !== 'default') {
+				allThemeNames.add(themeName);
+			}
+		}
+
+		// 5. Add themes to bundle
+		if (allThemeNames.size > 0) {
+			const themesFolder = zip.folder('themes');
+			if (themesFolder) {
+				for (const themeName of allThemeNames) {
+					const cssContent = await this.bridge.readThemeCss(themeName);
+					const manifestContent = await this.bridge.readThemeManifest(themeName);
+					if (cssContent !== null || manifestContent !== null) {
+						const specificThemeFolder = themesFolder.folder(themeName);
+						if (specificThemeFolder) {
+							if (cssContent !== null) {
+								specificThemeFolder.file('theme.css', cssContent);
+							}
+							if (manifestContent !== null) {
+								specificThemeFolder.file('manifest.json', manifestContent);
+							}
+						}
 					}
 				}
 			}
@@ -151,6 +183,35 @@ export class BundleService {
 			}
 		}
 
-		return { presets, snippets };
+		const themes: { name: string; files: { filename: string; content: string }[] }[] = [];
+		const themesFolder = zip.folder('themes');
+		if (themesFolder) {
+			const themeNames = new Set<string>();
+			themesFolder.forEach((relativePath) => {
+				const parts = relativePath.split('/');
+				if (parts.length > 0 && parts[0]) {
+					themeNames.add(parts[0]);
+				}
+			});
+			for (const themeName of themeNames) {
+				const themeFiles: { filename: string; content: string }[] = [];
+				const cssFile = themesFolder.file(`${themeName}/theme.css`);
+				const manifestFile = themesFolder.file(`${themeName}/manifest.json`);
+				if (cssFile) {
+					const content = await cssFile.async('string');
+					themeFiles.push({ filename: 'theme.css', content });
+				}
+				if (manifestFile) {
+					const content = await manifestFile.async('string');
+					themeFiles.push({ filename: 'manifest.json', content });
+				}
+				if (themeFiles.length > 0) {
+					themes.push({ name: themeName, files: themeFiles });
+				}
+			}
+		}
+
+		return { presets, snippets, themes };
 	}
 }
+

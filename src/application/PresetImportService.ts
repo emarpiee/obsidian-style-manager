@@ -19,14 +19,16 @@
 import JSZip from 'jszip';
 import { Notice } from 'obsidian';
 
-import { SNIPPETS_KEY } from '../constants';
+import { SNIPPETS_KEY, THEME_KEY } from '../constants';
 import StyleManagerPlugin from '../main';
 import { Preset } from '../types';
 
 export interface ImportAnalysis {
 	presets: Preset[];
 	snippets: { name: string; content: string }[];
+	themes: { name: string; files: { filename: string; content: string }[] }[];
 	conflicts: string[];
+	themeConflicts: string[];
 }
 
 export class PresetImportService {
@@ -41,7 +43,9 @@ export class PresetImportService {
 		const analysis: ImportAnalysis = {
 			presets: [],
 			snippets: [],
+			themes: [],
 			conflicts: [],
+			themeConflicts: [],
 		};
 
 		for (const item of items) {
@@ -65,6 +69,9 @@ export class PresetImportService {
 					);
 					analysis.presets.push(...bundleData.presets);
 					analysis.snippets.push(...bundleData.snippets);
+					if (bundleData.themes) {
+						analysis.themes.push(...bundleData.themes);
+					}
 
 					for (const snippet of bundleData.snippets) {
 						if (
@@ -74,6 +81,20 @@ export class PresetImportService {
 						) {
 							if (!analysis.conflicts.includes(snippet.name)) {
 								analysis.conflicts.push(snippet.name);
+							}
+						}
+					}
+
+					if (bundleData.themes) {
+						for (const theme of bundleData.themes) {
+							if (
+								await this.plugin.settingsService.bridge.themeExists(
+									theme.name
+								)
+							) {
+								if (!analysis.themeConflicts.includes(theme.name)) {
+									analysis.themeConflicts.push(theme.name);
+								}
 							}
 						}
 					}
@@ -112,7 +133,7 @@ export class PresetImportService {
 	}
 
 	/**
-	 * Finalizes the import of presets and snippets after conflict resolution.
+	 * Finalizes the import of presets, snippets, and themes after conflict resolution.
 	 */
 	async executePresetImport(
 		analysis: ImportAnalysis,
@@ -125,7 +146,7 @@ export class PresetImportService {
 		let totalPresets = 0;
 
 		// 1. Handle Snippets & Resolutions
-		for (const snippet of analysis.snippets) {
+		for (const snippet of (analysis.snippets || [])) {
 			const resolution = resolutions?.find((r) => r.name === snippet.name);
 
 			if (!resolution || resolution.action === 'overwrite') {
@@ -139,14 +160,14 @@ export class PresetImportService {
 					snippet.content
 				);
 				// Update preset references to the renamed snippet
-				for (const preset of analysis.presets) {
+				for (const preset of (analysis.presets || [])) {
 					const snippets = (preset.data[SNIPPETS_KEY] as string[]) || [];
 					const idx = snippets.indexOf(snippet.name);
 					if (idx !== -1) snippets[idx] = resolution.newName;
 				}
 			} else if (resolution.action === 'skip') {
 				// Remove snippet from all presets referencing it
-				for (const preset of analysis.presets) {
+				for (const preset of (analysis.presets || [])) {
 					const snippets = (preset.data[SNIPPETS_KEY] as string[]) || [];
 					const idx = snippets.indexOf(snippet.name);
 					if (idx !== -1) snippets.splice(idx, 1);
@@ -154,20 +175,67 @@ export class PresetImportService {
 			}
 		}
 
-		// 2. Refresh snippets in Obsidian
-		if (analysis.snippets.length > 0) {
-			await this.plugin.settingsService.bridge.forceLoadSnippets();
+		// 2. Handle Themes & Resolutions
+		for (const theme of (analysis.themes || [])) {
+			const resolution = resolutions?.find((r) => r.name === theme.name);
+
+			if (!resolution || resolution.action === 'overwrite') {
+				for (const file of theme.files) {
+					await this.plugin.settingsService.bridge.writeThemeFile(
+						theme.name,
+						file.filename,
+						file.content
+					);
+				}
+			} else if (resolution.action === 'rename' && resolution.newName) {
+				for (const file of theme.files) {
+					let content = file.content;
+					if (file.filename === 'manifest.json') {
+						try {
+							const manifestObj = JSON.parse(content);
+							manifestObj.name = resolution.newName;
+							content = JSON.stringify(manifestObj, null, 2);
+						} catch (e) {
+							console.error('Style Manager | Failed to parse manifest JSON during rename:', e);
+						}
+					}
+					await this.plugin.settingsService.bridge.writeThemeFile(
+						resolution.newName,
+						file.filename,
+						content
+					);
+				}
+				// Update preset references to the renamed theme
+				for (const preset of (analysis.presets || [])) {
+					const themeName = preset.data[THEME_KEY] as string | undefined;
+					if (themeName === theme.name) {
+						preset.data[THEME_KEY] = resolution.newName;
+					}
+				}
+			} else if (resolution.action === 'skip') {
+				// We keep the theme setting in the preset but do not import/overwrite the theme files.
+			}
 		}
 
-		// 3. Add Presets to storage
-		for (const preset of analysis.presets) {
+		// 3. Refresh snippets and themes in Obsidian
+		if (analysis.snippets && analysis.snippets.length > 0) {
+			await this.plugin.settingsService.bridge.forceLoadSnippets();
+		}
+		if (analysis.themes && analysis.themes.length > 0) {
+			this.plugin.settingsService.bridge.requestLoadTheme();
+		}
+
+		// 4. Add Presets to storage
+		for (const preset of (analysis.presets || [])) {
 			// Re-generate ID to be sure it's unique locally
 			preset.id = crypto.randomUUID();
 			this.plugin.presetService.presets.unshift(preset);
 			totalPresets++;
 		}
 
+
 		await this.plugin.presetService.savePresets();
 		return totalPresets;
 	}
 }
+

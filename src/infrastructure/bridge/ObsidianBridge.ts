@@ -315,6 +315,72 @@ export class ObsidianBridge {
 	}
 
 	/**
+	 * Reads the content of a theme's theme.css.
+	 */
+	public async readThemeCss(themeName: string): Promise<string | null> {
+		try {
+			const adapter = this.app.vault.adapter;
+			const configDir = this.app.vault.configDir;
+			const path = normalizePath(`${configDir}/themes/${themeName}/theme.css`);
+			if (await adapter.exists(path)) {
+				return await adapter.read(path);
+			}
+		} catch (e) {
+			Logger.error(`Style Manager | Error reading theme CSS "${themeName}":`, e);
+		}
+		return null;
+	}
+
+	/**
+	 * Reads the content of a theme's manifest.json.
+	 */
+	public async readThemeManifest(themeName: string): Promise<string | null> {
+		try {
+			const adapter = this.app.vault.adapter;
+			const configDir = this.app.vault.configDir;
+			const path = normalizePath(`${configDir}/themes/${themeName}/manifest.json`);
+			if (await adapter.exists(path)) {
+				return await adapter.read(path);
+			}
+		} catch (e) {
+			Logger.error(`Style Manager | Error reading theme manifest "${themeName}":`, e);
+		}
+		return null;
+	}
+
+	/**
+	 * Writes a theme CSS or manifest file to the themes directory.
+	 */
+	public async writeThemeFile(themeName: string, filename: string, content: string): Promise<void> {
+		try {
+			const adapter = this.app.vault.adapter;
+			const configDir = this.app.vault.configDir;
+			const themeFolder = normalizePath(`${configDir}/themes/${themeName}`);
+
+			if (!(await adapter.exists(themeFolder))) {
+				await adapter.mkdir(themeFolder);
+			}
+
+			const path = normalizePath(`${themeFolder}/${filename}`);
+			await adapter.write(path, content);
+		} catch (e) {
+			Logger.error(`Style Manager | Error writing theme file "${filename}" for theme "${themeName}":`, e);
+			throw e;
+		}
+	}
+
+	/**
+	 * Checks if a theme exists.
+	 */
+	public async themeExists(themeName: string): Promise<boolean> {
+		const adapter = this.app.vault.adapter;
+		const configDir = this.app.vault.configDir;
+		const path = normalizePath(`${configDir}/themes/${themeName}/theme.css`);
+		return await adapter.exists(path);
+	}
+
+
+	/**
 	 * Gets leaves of a specific type from the workspace.
 	 */
 	public getLeavesOfType(type: string): unknown[] {

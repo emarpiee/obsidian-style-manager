@@ -79,10 +79,15 @@ export class ImportPresetModal extends Modal {
 				}
 			};
 
-			if (analysis.conflicts.length > 0) {
+			const allConflicts = [
+				...analysis.conflicts.map((c) => ({ name: c, type: 'snippet' as const })),
+				...analysis.themeConflicts.map((t) => ({ name: t, type: 'theme' as const })),
+			];
+
+			if (allConflicts.length > 0) {
 				new ConflictResolutionModal(
 					this.app,
-					analysis.conflicts,
+					allConflicts,
 					async (resolutions) => {
 						await performImport(resolutions);
 					}
@@ -91,6 +96,7 @@ export class ImportPresetModal extends Modal {
 				await performImport();
 			}
 		};
+
 
 		new Setting(contentEl)
 			.setClass('style-manager-modal-setting')

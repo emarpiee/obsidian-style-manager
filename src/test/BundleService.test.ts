@@ -18,7 +18,7 @@
 */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SNIPPETS_KEY } from '../constants';
+import { SNIPPETS_KEY, THEME_KEY } from '../constants';
 
 import { BundleService } from '../application/BundleService';
 
@@ -52,6 +52,27 @@ vi.mock('jszip', () => {
 						],
 					};
 				}
+				if (name === 'themes') {
+					return {
+						forEach: (callback: any) => {
+							callback('test-theme/theme.css');
+							callback('test-theme/manifest.json');
+						},
+						file: vi.fn().mockImplementation((subname) => {
+							if (subname === 'test-theme/theme.css') {
+								return {
+									async: () => Promise.resolve('theme-css-content'),
+								};
+							}
+							if (subname === 'test-theme/manifest.json') {
+								return {
+									async: () => Promise.resolve('{"name": "test-theme"}'),
+								};
+							}
+							return null;
+						}),
+					};
+				}
 				if (name === 'presets') return null;
 				return {
 					filter: (): any[] => [],
@@ -73,27 +94,43 @@ describe('BundleService', () => {
 	beforeEach(() => {
 		mockBridge = {
 			readSnippet: vi.fn().mockResolvedValue('snippet-css-content'),
+			readThemeCss: vi.fn().mockResolvedValue('theme-css-content'),
+			readThemeManifest: vi.fn().mockResolvedValue('{"name": "test-theme"}'),
 		};
 		service = new BundleService(mockBridge);
 	});
 
-	it('should bundle preset and snippets into a ZIP', async () => {
+	it('should bundle preset, snippets, and themes into a ZIP', async () => {
 		const preset = {
 			name: 'My Bundle',
-			data: { [SNIPPETS_KEY]: ['snippet-1'] },
+			data: {
+				[SNIPPETS_KEY]: ['snippet-1'],
+				[THEME_KEY]: 'test-theme',
+			},
 		} as any;
 
 		const data = await service.createBundle(preset);
 		expect(data).toBeInstanceOf(Uint8Array);
 		expect(mockBridge.readSnippet).toHaveBeenCalledWith('snippet-1');
+		expect(mockBridge.readThemeCss).toHaveBeenCalledWith('test-theme');
+		expect(mockBridge.readThemeManifest).toHaveBeenCalledWith('test-theme');
 	});
 
-	it('should extract preset and snippets from a ZIP buffer', async () => {
+	it('should extract preset, snippets, and themes from a ZIP buffer', async () => {
 		const result = await service.extractBundle(new ArrayBuffer(0));
 
 		expect(result.presets[0].name).toBe('Test');
 		expect(result.snippets).toHaveLength(1);
 		expect(result.snippets[0].name).toBe('test');
 		expect(result.snippets[0].content).toBe('content');
+
+		expect(result.themes).toHaveLength(1);
+		expect(result.themes![0].name).toBe('test-theme');
+		expect(result.themes![0].files).toHaveLength(2);
+		expect(result.themes![0].files[0].filename).toBe('theme.css');
+		expect(result.themes![0].files[0].content).toBe('theme-css-content');
+		expect(result.themes![0].files[1].filename).toBe('manifest.json');
+		expect(result.themes![0].files[1].content).toBe('{"name": "test-theme"}');
 	});
 });
+
