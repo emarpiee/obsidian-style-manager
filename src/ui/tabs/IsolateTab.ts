@@ -139,7 +139,7 @@ export class IsolateTab {
 			})
 			.addButton((btn) => {
 				btn
-					.setButtonText('Generate New ID')
+					.setButtonText('Generate new ID')
 					.setWarning()
 					.onClick(async () => {
 						new ConfirmModal(
@@ -196,13 +196,13 @@ export class IsolateTab {
 
 							menu.addItem((item: MenuItem) =>
 								item
-									.setTitle('Rename Locker')
+									.setTitle('Rename locker')
 									.setIcon('pencil')
 									.onClick(() => {
 										const currentName = service.identity.getLockerName(id);
 										new RenameModal(
 											app,
-											`Rename Locker: ${id}`,
+											`Rename locker: ${id}`,
 											currentName || id,
 											async (newName: string) => {
 												if (newName !== null) {
@@ -218,20 +218,20 @@ export class IsolateTab {
 
 							menu.addItem((item: MenuItem) =>
 								item
-									.setTitle('Delete Locker')
+									.setTitle('Delete locker')
 									.setIcon('trash')
 									.setWarning(true)
 									.onClick(async () => {
 										const isThisDevice = id === service.deviceId;
 										const message = isThisDevice
-											? `Permanently delete settings and reset DEVICE ID for this device? \n\nYour current identity will be erased and a new one generated.`
+											? `Permanently delete settings and reset device ID for this device? \n\nYour current identity will be erased and a new one generated.`
 											: `Permanently delete settings for device ${id}?`;
 
 										new ConfirmModal(
 											app,
-											'Delete Locker',
+											'Delete locker',
 											message,
-											'Delete Locker',
+											'Delete locker',
 											true,
 											async () => {
 												await service.identity.removeDeviceLocker(id);
