@@ -109,6 +109,7 @@ body {
 	--sm-tab-color-hover: var(--text-accent);
 	--sm-tab-actions-bg: var(--setting-items-background);
 	--sm-tab-actions-border-color: var(--background-modifier-border);
+	--sm-tab-actions-border-radius: var(--radius-l);
 
 	/* --- Modified Setting Indicator --- */
 	--sm-modified-bar-color: var(--interactive-accent);
@@ -153,7 +154,6 @@ body {
 .style-manager-accent-icon {
 	color: var(--sm-icon-dynamic-color, var(--text-accent));
 }
-
 
 body .vertical-tab-content:has(.style-manager-wrapper),
 body .view-content:has(.style-manager-wrapper) {
@@ -1283,10 +1283,6 @@ body.is-phone .style-manager-tabs-scroll-wrap {
 	color: var(--sm-tab-color-active);
 }
 
-.style-manager-tab.is-active .style-manager-tab-icon svg {
-	fill: currentColor;
-}
-
 .style-manager-tab-icon {
 	display: flex;
 	align-items: center;
@@ -1333,7 +1329,7 @@ body.is-phone .style-manager-tab-spacer {
 	align-self: center;
 	gap: var(--size-4-1);
 	background-color: var(--sm-tab-actions-bg);
-	border-radius: var(--radius-l);
+	border-radius: var(--sm-tab-actions-border-radius);
 	padding: 2px;
 	border: 1px solid var(--sm-tab-actions-border-color);
 	margin-bottom: 4px;
