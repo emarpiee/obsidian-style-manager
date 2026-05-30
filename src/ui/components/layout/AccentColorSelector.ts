@@ -48,7 +48,7 @@ export function renderAccentColorSelect(
 	const triggerContainer = containerEl.createDiv({
 		cls: 'style-manager-accent-trigger-container',
 	});
-	setTooltip(triggerContainer, 'Change Accent Color (Right-click to Reset)');
+	setTooltip(triggerContainer, 'Change accent color (right-click to reset)');
 
 	const circle = triggerContainer.createDiv({
 		cls: 'style-manager-accent-trigger',
@@ -85,7 +85,7 @@ export function renderAccentColorSelect(
 		const menu = new Menu();
 		menu.addItem((item) => {
 			item
-				.setTitle('Reset to Obsidian Default')
+				.setTitle('Reset to Obsidian default')
 				.setIcon('rotate-ccw')
 				.onClick(async () => {
 					// Explicitly set to #8a5cf5 to ensure the setting persists for all UI components

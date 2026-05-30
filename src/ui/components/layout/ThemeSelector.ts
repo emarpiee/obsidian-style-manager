@@ -37,11 +37,11 @@ export function renderThemeSelect(
 	const themes = customCss.themes;
 	const currentThemeName =
 		currentValue === 'default'
-			? 'Obsidian Default'
+			? 'Obsidian default'
 			: themes[currentValue]?.name || currentValue;
 
 	const triggerContainer = containerEl.createDiv('style-manager-theme-trigger');
-	setTooltip(triggerContainer, 'Change Theme');
+	setTooltip(triggerContainer, 'Change theme');
 	const iconEl = triggerContainer.createSpan(
 		'style-manager-theme-trigger-icon'
 	);
@@ -56,7 +56,7 @@ export function renderThemeSelect(
 
 		menu.addItem((item) => {
 			item
-				.setTitle('Obsidian Default')
+				.setTitle('Obsidian default')
 				.setChecked(currentValue === 'default')
 				.onClick(async () => {
 					await plugin.settingsService.setSetting(THEME_KEY, 'default');

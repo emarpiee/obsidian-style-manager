@@ -136,7 +136,7 @@ export class SettingsHeaderComponent extends Component {
 				id: 'isolate',
 				label: 'Isolate',
 				icon: 'shield',
-				tooltip: 'Isolate Mode',
+				tooltip: 'Isolate mode',
 			},
 			{
 				id: 'preferences',
@@ -183,13 +183,13 @@ export class SettingsHeaderComponent extends Component {
 			(this.plugin.settingsService.getSetting(APPEARANCE_KEY) as string) ||
 			'system';
 		let icon = 'monitor';
-		let label = 'Follow Shared';
+		let label = 'Follow shared';
 		if (appearance === 'light') {
 			icon = 'sun';
-			label = 'Light Mode';
+			label = 'Light mode';
 		} else if (appearance === 'dark') {
 			icon = 'moon';
-			label = 'Dark Mode';
+			label = 'Dark mode';
 		}
 
 		const toggleBtn = containerEl.createDiv({
@@ -213,7 +213,7 @@ export class SettingsHeaderComponent extends Component {
 			cls: 'style-manager-icon-button',
 		});
 		setIcon(reloadBtn, 'refresh-cw');
-		setTooltip(reloadBtn, 'Update from Shared Locker (Refresh)');
+		setTooltip(reloadBtn, 'Update from shared locker (refresh)');
 		reloadBtn.onclick = async (_e: MouseEvent): Promise<void> => {
 			reloadBtn.addClass('is-loading');
 			try {
@@ -235,14 +235,14 @@ export class SettingsHeaderComponent extends Component {
 			cls: 'style-manager-icon-button style-manager-tab-more-actions',
 		});
 		setIcon(moreBtn, 'more-vertical');
-		setTooltip(moreBtn, 'More Options');
+		setTooltip(moreBtn, 'More options');
 
 		moreBtn.onclick = (_e: MouseEvent): void => {
 			const menu = new Menu();
 
 			menu.addItem((item) => {
 				item
-					.setTitle('Create New Preset...')
+					.setTitle('Create new preset...')
 					.setIcon('plus')
 					.onClick(() => {
 						const prefixesArr = this.plugin.presetService.getPrefixesMetadata();
@@ -260,7 +260,7 @@ export class SettingsHeaderComponent extends Component {
 
 			menu.addItem((item) => {
 				item
-					.setTitle('Import Preset...')
+					.setTitle('Import preset...')
 					.setIcon('layers')
 					.onClick(() => {
 						new ImportPresetModal(this.app, this.plugin.presetService, () => {
@@ -274,7 +274,7 @@ export class SettingsHeaderComponent extends Component {
 
 			menu.addItem((item) => {
 				item
-					.setTitle('Create New Snippet...')
+					.setTitle('Create new snippet...')
 					.setIcon('plus-circle')
 					.onClick(async () => {
 						const id =
@@ -299,7 +299,7 @@ export class SettingsHeaderComponent extends Component {
 
 			menu.addItem((item) => {
 				item
-					.setTitle('Reset Styles')
+					.setTitle('Reset styles')
 					.setIcon('rotate-ccw')
 					.setWarning(true)
 					.onClick(() => {
