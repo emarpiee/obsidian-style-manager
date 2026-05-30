@@ -589,15 +589,12 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 
 /* Modal Utility Classes */
 .modal-style-manager {
-	max-height: 85vh;
 	display: flex;
 	flex-direction: column;
 	padding: var(--size-4-4) 0 !important;
 }
 
 .modal-style-manager .modal-content {
-	display: flex;
-	flex-direction: column;
 	overflow: auto;
 	padding-block: 0 !important;
 	padding-inline: var(--size-4-4);
@@ -2285,25 +2282,6 @@ body.is-phone .style-manager-metadata-label {
 	opacity: 1 !important;
 }
 
-/* Revert to native Obsidian Modal behavior for mobile */
-.is-mobile .style-manager-editor-modal {
-	border-radius: var(--radius-l);
-	overflow: hidden;
-}
-
-.is-mobile .style-manager-editor-modal .modal-content {
-	/* Minimal padding, relying on native safe-areas normally handled by Obsidian container */
-	padding-top: var(--size-4-2);
-	padding-bottom: var(--size-4-4);
-	height: 100%;
-	display: flex;
-	flex-direction: column;
-	box-sizing: border-box;
-	overflow: hidden;
-	/* CRUCIAL: Allow the content to shrink below its children's height (CodeMirror) */
-	min-height: 0 !important;
-}
-
 /* Specific mobile header adjustment */
 body.is-mobile .style-manager-editor-title-container {
 	width: calc(100% - 60px);
@@ -2312,11 +2290,6 @@ body.is-mobile .style-manager-editor-title-container {
 	display: flex;
 	flex-wrap: nowrap;
 	overflow: hidden;
-}
-
-/* Standardize mobile buttons */
-body.is-mobile .style-manager-editor-footer {
-	padding-bottom: var(--size-4-2);
 }
 
 /* Editable Title */
