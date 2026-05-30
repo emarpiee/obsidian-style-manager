@@ -128,14 +128,19 @@ export class SettingsHeaderComponent extends Component {
 			{
 				id: 'theme',
 				label: 'Themes',
-				icon: 'palette',
-				tooltip: 'Theme Builder',
+				icon: 'paint-roller',
+				tooltip: 'Theme builder',
 			},
-			{ id: 'presets', label: 'Presets', icon: 'layers', tooltip: 'Presets' },
+			{
+				id: 'presets',
+				label: 'Presets',
+				icon: 'swatch-book',
+				tooltip: 'Presets',
+			},
 			{
 				id: 'isolate',
 				label: 'Isolate',
-				icon: 'shield',
+				icon: 'lock-keyhole',
 				tooltip: 'Isolate mode',
 			},
 			{
@@ -182,8 +187,8 @@ export class SettingsHeaderComponent extends Component {
 		const appearance =
 			(this.plugin.settingsService.getSetting(APPEARANCE_KEY) as string) ||
 			'system';
-		let icon = 'monitor';
-		let label = 'Follow shared';
+		let icon = '';
+		let label = '';
 		if (appearance === 'light') {
 			icon = 'sun';
 			label = 'Light mode';

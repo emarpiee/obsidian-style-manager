@@ -60,7 +60,7 @@ export class IsolateModeHeader extends Component {
 		);
 
 		const iconEl = this.el.createSpan('style-manager-isolate-badge-icon');
-		setIcon(iconEl, 'monitor');
+		setIcon(iconEl, isIsolated ? 'lock' : 'lock-open');
 
 		this.el.createSpan({
 			cls: 'style-manager-isolate-badge-text',
@@ -120,10 +120,12 @@ export class IsolateModeHeader extends Component {
 				);
 			}
 
+			menu.addSeparator();
+
 			menu.addItem((item) =>
 				item
 					.setTitle('Disable isolate mode')
-					.setIcon('monitor-off')
+					.setIcon('lock-open')
 					.onClick(() => {
 						this.plugin.settingsService.setIsolateMode(false);
 					})

@@ -110,10 +110,11 @@ body {
 	--sm-tab-actions-bg: var(--setting-items-background);
 	--sm-tab-actions-border-color: var(--background-modifier-border);
 	--sm-tab-actions-border-radius: var(--radius-l);
+	--sm-tab-actions-padding: 2px;
 
 	/* --- Modified Setting Indicator --- */
 	--sm-modified-bar-color: var(--interactive-accent);
-	--sm-modified-bar-size: 4px;
+	--sm-modified-bar-size: 6px;
 
 	/* --- Color Picker Wrapper --- */
 	--sm-color-picker-bg: var(--background-secondary);
@@ -128,6 +129,9 @@ body {
 	--sm-isolate-badge-active-bg: var(--text-accent);
 	--sm-isolate-badge-active-border-color: var(--text-accent);
 	--sm-isolate-badge-active-color: var(--background-primary-alt);
+	--sm-isolate-badge-border-radius: calc(
+		var(--sm-tab-actions-border-radius) - var(--sm-tab-actions-padding)
+	);
 
 	/* --- Status Bar --- */
 	--sm-status-bar-isolate-color: #f59e0b;
@@ -1330,7 +1334,7 @@ body.is-phone .style-manager-tab-spacer {
 	gap: var(--size-4-1);
 	background-color: var(--sm-tab-actions-bg);
 	border-radius: var(--sm-tab-actions-border-radius);
-	padding: 2px;
+	padding: var(--sm-tab-actions-padding);
 	border: 1px solid var(--sm-tab-actions-border-color);
 	margin-bottom: 4px;
 	/* Offset from bottom slightly for visual balance */
@@ -1761,7 +1765,7 @@ button.style-manager-icon-button {
 	align-items: center;
 	gap: var(--size-2-3);
 	padding: var(--size-4-1);
-	border-radius: var(--radius-s);
+	border-radius: var(--sm-isolate-badge-border-radius);
 	cursor: pointer;
 	height: 30px;
 	align-self: center;
@@ -1773,7 +1777,6 @@ button.style-manager-icon-button {
 	padding: var(--size-2-1) var(--size-4-3);
 	background: var(--sm-isolate-badge-active-bg);
 	border: 1px solid var(--sm-isolate-badge-active-border-color);
-	border-radius: 100px;
 }
 
 .style-manager-isolate-badge:hover {
@@ -1800,10 +1803,6 @@ button.style-manager-icon-button {
 	height: 18px;
 	fill: none;
 	stroke: currentColor;
-}
-
-.style-manager-isolate-badge.is-active .style-manager-isolate-badge-icon svg {
-	fill: currentColor;
 }
 
 .style-manager-isolate-badge-text {

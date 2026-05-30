@@ -128,8 +128,8 @@ export class StatusBarManager {
 		// 1. Mode Information & Toggle
 		menu.addItem((item) => {
 			item
-				.setTitle(`Mode: ${isIsolate ? 'Isolate' : 'Sync'}`)
-				.setIcon(isIsolate ? 'monitor' : 'globe')
+				.setTitle(`Mode: ${isIsolate ? 'Isolate' : 'Shared'}`)
+				.setIcon(isIsolate ? 'lock' : 'lock-open')
 				.onClick(async () => {
 					await this.plugin.settingsService.setIsolateMode(!isIsolate);
 					this.refresh();
@@ -181,7 +181,7 @@ export class StatusBarManager {
 			(this.plugin.settingsService.settings[APPEARANCE_KEY] as string) ||
 			'system';
 		menu.addItem((item) => {
-			let icon = 'monitor';
+			let icon = '';
 			if (appearance === 'light') icon = 'sun';
 			if (appearance === 'dark') icon = 'moon';
 

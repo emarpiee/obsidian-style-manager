@@ -79,7 +79,7 @@ export function addApplyOptionsToMenu(
 		menu.addItem((item) =>
 			item
 				.setTitle('Apply to Isolate Locker')
-				.setIcon('monitor')
+				.setIcon('lock')
 				.onClick(() => {
 					plugin.presetService.confirmApply(
 						source.name,

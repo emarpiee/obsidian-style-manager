@@ -307,7 +307,6 @@ export class PresetList {
 			}
 		});
 
-
 		new ButtonComponent(actionsDiv)
 			.setButtonText('Apply All')
 			.setCta()
@@ -353,7 +352,7 @@ export class PresetList {
 				menu.addItem((item: MenuItem) =>
 					item
 						.setTitle('Apply All to This Device (Isolate Mode)')
-						.setIcon('monitor')
+						.setIcon('lock')
 						.onClick(() => applyAll(true))
 				);
 
