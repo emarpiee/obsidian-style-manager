@@ -16,7 +16,13 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, ButtonComponent, Modal, Setting, DropdownComponent } from 'obsidian';
+import {
+	App,
+	ButtonComponent,
+	DropdownComponent,
+	Modal,
+	Setting,
+} from 'obsidian';
 
 export interface ConflictItem {
 	name: string;
@@ -71,8 +77,7 @@ export class ConflictResolutionModal extends Modal {
 			text: 'The following snippets or themes already exist in your vault. Choose how to handle each one.',
 			cls: 'style-manager-modal-description',
 		});
-
-		const bulkActionContainer = contentEl.createDiv('style-manager-bulk-actions');
+		const bulkActionContainer = contentEl.createDiv();
 		bulkActionContainer.style.display = 'flex';
 		bulkActionContainer.style.gap = '8px';
 		bulkActionContainer.style.marginBottom = '12px';
@@ -103,7 +108,10 @@ export class ConflictResolutionModal extends Modal {
 			);
 
 			const typeLabel = item.type === 'theme' ? ' (Theme)' : ' (Snippet)';
-			const placeholderText = item.type === 'theme' ? 'Enter new theme name...' : 'Enter new snippet name...';
+			const placeholderText =
+				item.type === 'theme'
+					? 'Enter new theme name...'
+					: 'Enter new snippet name...';
 
 			let dropComponent: DropdownComponent;
 
@@ -111,17 +119,19 @@ export class ConflictResolutionModal extends Modal {
 				.setName(`${item.name}${typeLabel}`)
 				.setClass('style-manager-conflict-row')
 				.addDropdown((drop) => {
-						dropComponent = drop;
-						drop
-							.addOption('rename', 'Rename')
-							.addOption('overwrite', 'Overwrite')
-							.addOption('skip', 'Skip')
-							.setValue('rename')
-							.onChange((val: string) => {
-								resolution.action = val as 'rename' | 'overwrite' | 'skip';
-								renameInputRow.settingEl.toggleClass('style-manager-hidden', val !== 'rename');
-							});
-
+					dropComponent = drop;
+					drop
+						.addOption('rename', 'Rename')
+						.addOption('overwrite', 'Overwrite')
+						.addOption('skip', 'Skip')
+						.setValue('rename')
+						.onChange((val: string) => {
+							resolution.action = val as 'rename' | 'overwrite' | 'skip';
+							renameInputRow.settingEl.toggleClass(
+								'style-manager-hidden',
+								val !== 'rename'
+							);
+						});
 				});
 
 			const renameInputRow = new Setting(container)
@@ -140,30 +150,36 @@ export class ConflictResolutionModal extends Modal {
 			this.updaters.push((action) => {
 				dropComponent.setValue(action);
 				resolution.action = action;
-				renameInputRow.settingEl.toggleClass('style-manager-hidden', action !== 'rename');
+				renameInputRow.settingEl.toggleClass(
+					'style-manager-hidden',
+					action !== 'rename'
+				);
 			});
 
 			// Initial state (visible if 'rename' is the default)
 			renameInputRow.settingEl.removeClass('style-manager-hidden');
 		});
 
-		const buttonContainer = contentEl.createDiv('style-manager-modal-buttons');
+		const buttonSetting = new Setting(contentEl).setClass(
+			'style-manager-modal-buttons'
+		);
 
-		new ButtonComponent(buttonContainer)
-			.setButtonText('Cancel Import')
-			.onClick(() => this.close());
+		buttonSetting.addButton((btn) =>
+			btn.setButtonText('Cancel Import').onClick(() => this.close())
+		);
 
-		new ButtonComponent(buttonContainer)
-			.setButtonText('Finish Import')
-			.setCta()
-			.onClick(() => {
-				this.onComplete(Object.values(this.resolutions));
-				this.close();
-			});
+		buttonSetting.addButton((btn) => {
+			btn
+				.setButtonText('Finish Import')
+				.setCta()
+				.onClick(() => {
+					this.onComplete(Object.values(this.resolutions));
+					this.close();
+				});
+		});
 	}
 
 	onClose(): void {
 		this.contentEl.empty();
 	}
 }
-
