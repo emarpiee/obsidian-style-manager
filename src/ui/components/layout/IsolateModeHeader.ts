@@ -56,7 +56,7 @@ export class IsolateModeHeader extends Component {
 
 		setTooltip(
 			this.el,
-			isIsolated ? 'Manage Isolate Mode' : 'Enable Isolate Mode'
+			isIsolated ? 'Manage isolate mode' : 'Enable isolate mode'
 		);
 
 		const iconEl = this.el.createSpan('style-manager-isolate-badge-icon');
@@ -78,12 +78,12 @@ export class IsolateModeHeader extends Component {
 			const menu = new Menu();
 
 			const isolateSettings = this.plugin.settingsService.getIsolateSettings();
-			const sourceName = 'Local Isolated Settings';
+			const sourceName = 'Local isolated locker';
 
 			// 1. Apply to Sync (Global)
 			menu.addItem((item) =>
 				item
-					.setTitle('Apply to Shared Locker')
+					.setTitle('Apply to shared locker')
 					.setIcon('globe')
 					.onClick(() => {
 						this.plugin.presetService.confirmApply(sourceName, async () => {
@@ -100,7 +100,7 @@ export class IsolateModeHeader extends Component {
 			if (otherDeviceIds.length > 0) {
 				menu.addItem((item) =>
 					item
-						.setTitle('Apply to other Isolate Locker')
+						.setTitle('Apply to other isolated locker')
 						.setIcon('share-2')
 						.onClick(() => {
 							new DeviceSelectionModal(
@@ -112,7 +112,7 @@ export class IsolateModeHeader extends Component {
 										isolateSettings
 									);
 									new Notice(
-										`Settings for "${sourceName}" applied to Isolate Locker.`
+										`Settings for "${sourceName}" applied to isolated locker.`
 									);
 								}
 							).open();
@@ -122,7 +122,7 @@ export class IsolateModeHeader extends Component {
 
 			menu.addItem((item) =>
 				item
-					.setTitle('Disable Isolate Mode')
+					.setTitle('Disable isolate mode')
 					.setIcon('monitor-off')
 					.onClick(() => {
 						this.plugin.settingsService.setIsolateMode(false);
