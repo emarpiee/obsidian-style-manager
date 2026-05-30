@@ -55,7 +55,7 @@ export function addApplyOptionsToMenu(
 	if (options?.hideShared !== true) {
 		menu.addItem((item) =>
 			item
-				.setTitle('Apply to Shared Locker')
+				.setTitle('Apply to shared locker')
 				.setIcon('globe')
 				.onClick(() => {
 					plugin.presetService.confirmApply(source.name, async () => {
@@ -78,7 +78,7 @@ export function addApplyOptionsToMenu(
 	if (options?.hideIsolate !== true) {
 		menu.addItem((item) =>
 			item
-				.setTitle('Apply to Isolate Locker')
+				.setTitle('Apply to isolate locker')
 				.setIcon('lock')
 				.onClick(() => {
 					plugin.presetService.confirmApply(
@@ -107,7 +107,7 @@ export function addApplyOptionsToMenu(
 	if (options?.hideRemote !== true && otherDeviceIds.length > 0) {
 		menu.addItem((item) =>
 			item
-				.setTitle('Apply to other Isolate Locker')
+				.setTitle('Apply to other isolate locker')
 				.setIcon('share-2')
 				.onClick(() => {
 					new DeviceSelectionModal(

@@ -16,6 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
+import { normalizePath } from 'obsidian';
+
 import StyleManagerPlugin from '../main';
 import { PrefixMetadata, Preset } from '../types';
 import {
@@ -24,7 +26,6 @@ import {
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from './SettingsService';
-import { normalizePath } from 'obsidian';
 
 import { ConfirmModal } from '../ui/modals/ConfirmModal';
 import { getFormattedTimestamp } from '../utils/CommonUtils';
@@ -281,11 +282,11 @@ export class PresetService {
 		} else {
 			new ConfirmModal(
 				this.plugin.app,
-				isolateOnly ? 'Apply to Isolate Locker' : 'Apply to Shared Locker',
+				isolateOnly ? 'Apply to isolate locker' : 'Apply to shared locker',
 				isolateOnly
-					? `Are you sure you want to apply the preset "${presetName}" to this Isolate Locker only? This will bypass the Shared Locker.`
-					: `Are you sure you want to apply the preset "${presetName}" to the Shared Locker? This will update all synced devices.`,
-				isolateOnly ? 'Apply to Isolate Locker' : 'Apply to Shared Locker',
+					? `Are you sure you want to apply the preset "${presetName}" to this isolate locker only?`
+					: `Are you sure you want to apply the preset "${presetName}" to the shared locker?`,
+				isolateOnly ? 'Apply to isolate locker' : 'Apply to shared locker',
 				false,
 				onConfirm
 			).open();

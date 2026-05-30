@@ -30,7 +30,10 @@ export class PresetNamePromptModal extends Modal {
 
 	onOpen(): void {
 		const { contentEl } = this;
-		new Setting(contentEl).setName('Save as Preset').setHeading().setClass('style-manager-modal-title');
+		new Setting(contentEl)
+			.setName('Save as preset')
+			.setHeading()
+			.setClass('style-manager-modal-title');
 		contentEl.createEl('p', {
 			text: 'Enter a name for this preset:',
 			cls: 'style-manager-modal-description',

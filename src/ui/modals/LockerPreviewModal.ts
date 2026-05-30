@@ -54,7 +54,7 @@ export class LockerPreviewModal extends Modal {
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
-				btn.setButtonText('Copy to Clipboard').onClick(async () => {
+				btn.setButtonText('Copy to clipboard').onClick(async () => {
 					await navigator.clipboard.writeText(
 						JSON.stringify(this.data, null, 2)
 					);
@@ -65,7 +65,7 @@ export class LockerPreviewModal extends Modal {
 			)
 			.addButton((btn) =>
 				btn
-					.setButtonText('Save as Preset')
+					.setButtonText('Save as preset')
 					.setCta()
 					.onClick(async () => {
 						const effectiveData =

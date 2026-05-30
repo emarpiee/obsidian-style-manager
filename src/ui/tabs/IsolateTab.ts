@@ -262,7 +262,7 @@ export class IsolateTab {
 					new LockerPreviewModal(
 						this.app,
 						this.plugin,
-						`Settings for Device: ${id}`,
+						`Settings for device: ${id}`,
 						id,
 						lockerData.isolateSettings
 					).open();

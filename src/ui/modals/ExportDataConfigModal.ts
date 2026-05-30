@@ -41,7 +41,10 @@ export class ExportDataConfigModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-export-modal');
 
-		new Setting(contentEl).setName(this.title).setHeading().setClass('style-manager-modal-title');
+		new Setting(contentEl)
+			.setName(this.title)
+			.setHeading()
+			.setClass('style-manager-modal-title');
 
 		contentEl.createEl('p', {
 			text: 'This will export your current variable settings and plugin preferences as a raw JSON file. Note: This does not include your CSS snippets.',
@@ -56,7 +59,7 @@ export class ExportDataConfigModal extends Modal {
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
-				btn.setButtonText('Copy to Clipboard').onClick(async () => {
+				btn.setButtonText('Copy to clipboard').onClick(async () => {
 					await navigator.clipboard.writeText(output);
 					this.plugin.settingsService.notifications.util('Copied to clipboard');
 				})

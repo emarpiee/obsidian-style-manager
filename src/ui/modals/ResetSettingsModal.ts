@@ -74,13 +74,13 @@ export class ResetSettingsModal extends Modal {
 		modalEl.addClass('style-manager-reset-modal');
 
 		contentEl.createEl('h2', {
-			text: 'Reset Styles',
+			text: 'Reset styles',
 			cls: 'style-manager-modal-title',
 		});
 
 		if (this.sections.length === 0) {
 			contentEl.createEl('p', {
-				text: 'No customized settings found to reset.',
+				text: 'No customized styles found to reset.',
 				cls: 'style-manager-modal-description',
 			});
 			return;
@@ -114,7 +114,7 @@ export class ResetSettingsModal extends Modal {
 			})
 			.addButton((btn) => {
 				btn
-					.setButtonText('Reset Selected')
+					.setButtonText('Reset selected')
 					.setWarning()
 					.onClick(async () => {
 						if (this.selectedIds.size === 0) {
@@ -178,7 +178,10 @@ export class ResetSettingsModal extends Modal {
 			} else if (isAccent) {
 				const iconContainer = document.createElement('span');
 				iconContainer.className = 'style-manager-accent-icon';
-				iconContainer.style.setProperty('--sm-icon-dynamic-color', (section.value as string) || '');
+				iconContainer.style.setProperty(
+					'--sm-icon-dynamic-color',
+					(section.value as string) || ''
+				);
 				setIcon(iconContainer, 'paint-bucket');
 				nameEl.prepend(iconContainer);
 			} else if (isSnippets) {

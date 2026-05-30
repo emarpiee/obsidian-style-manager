@@ -47,7 +47,7 @@ export class PresetPreviewModal extends Modal {
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
-				btn.setButtonText('Copy to Clipboard').onClick(async () => {
+				btn.setButtonText('Copy to clipboard').onClick(async () => {
 					await navigator.clipboard.writeText(
 						JSON.stringify(this.preset.data, null, 2)
 					);

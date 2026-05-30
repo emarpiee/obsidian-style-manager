@@ -71,11 +71,10 @@ export class CreatePresetModal extends Modal {
 		modalEl.addClass('style-manager-save-preset-modal');
 
 		contentEl.createEl('h2', {
-			text: 'Create New Preset',
+			text: 'Create new preset',
 			cls: 'style-manager-modal-title',
 		});
 
-		new Setting(contentEl).setName('Settings to Save').setHeading().setClass('style-manager-modal-subtitle');
 		contentEl.createEl('p', {
 			text: 'Select which themes or plugins to include in this snapshot.',
 			cls: 'style-manager-modal-description',
@@ -84,15 +83,15 @@ export class CreatePresetModal extends Modal {
 		const controlsEl = contentEl.createDiv('style-manager-modal-controls');
 
 		const selectAllBtn = controlsEl.createEl('button', {
-			text: 'Select All',
+			text: 'Select all',
 			cls: 'style-manager-modal-button',
 		});
 		const selectModifiedBtn = controlsEl.createEl('button', {
-			text: 'Select Modified',
+			text: 'Select modified',
 			cls: 'style-manager-modal-button',
 		});
 		const deselectAllBtn = controlsEl.createEl('button', {
-			text: 'Deselect All',
+			text: 'Deselect all',
 			cls: 'style-manager-modal-button',
 		});
 
@@ -126,7 +125,7 @@ export class CreatePresetModal extends Modal {
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
 				btn
-					.setButtonText('Save Preset')
+					.setButtonText('Save preset')
 					.setCta()
 					.onClick(async () => {
 						if (this.selectedPrefixes.size === 0) {
@@ -214,13 +213,13 @@ export class CreatePresetModal extends Modal {
 			const nameEl = textContainer.createSpan({
 				cls: 'style-manager-reset-item-name',
 				text: isTheme
-					? 'Active Theme'
+					? 'Active theme'
 					: isAppearance
 						? 'Appearance'
 						: isSnippets
 							? 'Snippets'
 							: isAccent
-								? 'Accent Color'
+								? 'Accent color'
 								: prefix.name,
 			});
 
@@ -244,7 +243,10 @@ export class CreatePresetModal extends Modal {
 				const iconContainer = document.createElement('span');
 				iconContainer.className = 'style-manager-accent-icon';
 				// Make the bucket icon match the actual accent color
-				iconContainer.style.setProperty('--sm-icon-dynamic-color', prefix.value as string);
+				iconContainer.style.setProperty(
+					'--sm-icon-dynamic-color',
+					prefix.value as string
+				);
 				setIcon(iconContainer, 'paint-bucket');
 				nameEl.prepend(iconContainer);
 			}

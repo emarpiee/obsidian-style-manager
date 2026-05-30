@@ -125,7 +125,7 @@ export class PresetItem {
 		row.addExtraButton((btn) => {
 			btn
 				.setIcon('more-vertical')
-				.setTooltip('More Options')
+				.setTooltip('More options')
 				.onClick(() => {
 					const menu = new Menu();
 
@@ -139,12 +139,12 @@ export class PresetItem {
 					// Management Options
 					menu.addItem((item) =>
 						item
-							.setTitle('Rename Preset')
+							.setTitle('Rename preset')
 							.setIcon('pencil')
 							.onClick(() => {
 								new RenameModal(
 									plugin.app,
-									'Rename Preset',
+									'Rename preset',
 									preset.name,
 									async (newName: string) => {
 										preset.name = newName.trim() || preset.name;
@@ -157,7 +157,7 @@ export class PresetItem {
 
 					menu.addItem((item) =>
 						item
-							.setTitle('Export to Vault')
+							.setTitle('Export to vault')
 							.setIcon('download')
 							.onClick(() => {
 								const performExport = async (
@@ -235,12 +235,12 @@ export class PresetItem {
 
 									new ConfirmModal(
 										plugin.app,
-										'Export Preset Bundle',
+										'Export preset bundle',
 										description,
-										'Include Assets (ZIP)',
+										'Include assets (ZIP)',
 										false,
 										() => performExport(true),
-										`Preset Only (${preferredExtension})`,
+										`Preset only (${preferredExtension})`,
 										() => performExport(false)
 									).open();
 								} else {
@@ -253,7 +253,7 @@ export class PresetItem {
 									} else {
 										new ConfirmModal(
 											plugin.app,
-											'Export Preset',
+											'Export preset',
 											`Are you sure you want to export the preset "${preset.name}" to your vault?`,
 											`Export (${preferredExtension})`,
 											false,
@@ -269,7 +269,7 @@ export class PresetItem {
 					// Delete Option
 					menu.addItem((item) =>
 						item
-							.setTitle('Delete Preset')
+							.setTitle('Delete preset')
 							.setIcon('trash')
 							.setWarning(true)
 							.onClick(() => {
@@ -295,7 +295,7 @@ export class PresetItem {
 								} else {
 									new ConfirmModal(
 										plugin.app,
-										'Delete Preset',
+										'Delete preset',
 										`Are you sure you want to delete the preset "${preset.name}"? This action cannot be undone.`,
 										'Delete',
 										true,

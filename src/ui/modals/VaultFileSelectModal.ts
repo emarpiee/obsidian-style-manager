@@ -50,7 +50,7 @@ export class VaultFileSelectModal extends Modal {
 		modalEl.addClass('style-manager-vault-select-modal');
 
 		contentEl.createEl('h2', {
-			text: 'Browse Vault',
+			text: 'Browse vault',
 			cls: 'style-manager-modal-title',
 		});
 
@@ -67,7 +67,7 @@ export class VaultFileSelectModal extends Modal {
 
 		const controlsEl = contentEl.createDiv('style-manager-modal-controls');
 		const selectAllBtn = controlsEl.createEl('button', {
-			text: 'Select All',
+			text: 'Select all',
 			cls: 'style-manager-modal-button',
 		});
 		selectAllBtn.onclick = (): void => {
@@ -76,7 +76,7 @@ export class VaultFileSelectModal extends Modal {
 		};
 
 		const deselectAllBtn = controlsEl.createEl('button', {
-			text: 'Deselect All',
+			text: 'Deselect all',
 			cls: 'style-manager-modal-button',
 		});
 		deselectAllBtn.onclick = (): void => {
@@ -94,7 +94,7 @@ export class VaultFileSelectModal extends Modal {
 			)
 			.addButton((btn) =>
 				btn
-					.setButtonText('Import Selected')
+					.setButtonText('Import selected')
 					.setCta()
 					.onClick(() => {
 						const selected = this.files.filter((f) =>

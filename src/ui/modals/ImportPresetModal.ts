@@ -42,7 +42,7 @@ export class ImportPresetModal extends Modal {
 		modalEl.addClass('style-manager-import-preset-modal');
 
 		contentEl.createEl('h2', {
-			text: 'Import Preset',
+			text: 'Import preset',
 			cls: 'style-manager-modal-title',
 		});
 
@@ -80,8 +80,14 @@ export class ImportPresetModal extends Modal {
 			};
 
 			const allConflicts = [
-				...analysis.conflicts.map((c) => ({ name: c, type: 'snippet' as const })),
-				...analysis.themeConflicts.map((t) => ({ name: t, type: 'theme' as const })),
+				...analysis.conflicts.map((c) => ({
+					name: c,
+					type: 'snippet' as const,
+				})),
+				...analysis.themeConflicts.map((t) => ({
+					name: t,
+					type: 'theme' as const,
+				})),
 			];
 
 			if (allConflicts.length > 0) {
@@ -96,7 +102,6 @@ export class ImportPresetModal extends Modal {
 				await performImport();
 			}
 		};
-
 
 		new Setting(contentEl)
 			.setClass('style-manager-modal-setting')
@@ -140,7 +145,7 @@ export class ImportPresetModal extends Modal {
 				};
 				contentEl.appendChild(input);
 
-				btn.setButtonText('Choose Files').onClick(() => input.click());
+				btn.setButtonText('Choose files').onClick(() => input.click());
 			});
 
 		new Setting(contentEl)
@@ -148,7 +153,7 @@ export class ImportPresetModal extends Modal {
 			.setName('Import from vault')
 			.setDesc('Browse and select files already in your vault.')
 			.addButton((btn) => {
-				btn.setButtonText('Browse Vault...').onClick(() => {
+				btn.setButtonText('Browse vault...').onClick(() => {
 					new VaultFileSelectModal(this.app, async (selectedFiles) => {
 						if (selectedFiles.length > 0) {
 							const imports = await Promise.all(
@@ -168,7 +173,7 @@ export class ImportPresetModal extends Modal {
 
 		new Setting(contentEl)
 			.setClass('style-manager-modal-setting')
-			.setName('Paste JSON Data')
+			.setName('Paste JSON data')
 			.setDesc('Paste the JSON content of a style-manager export here.');
 
 		const textArea = new Setting(contentEl)
@@ -187,7 +192,7 @@ export class ImportPresetModal extends Modal {
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) => {
 				btn
-					.setButtonText('Import from Text')
+					.setButtonText('Import from text')
 					.setCta()
 					.onClick(async () => {
 						const val = (

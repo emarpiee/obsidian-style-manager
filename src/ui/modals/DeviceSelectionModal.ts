@@ -35,7 +35,7 @@ export class DeviceSelectionModal extends Modal {
 		modalEl.addClass('style-manager-device-selection-modal');
 
 		contentEl.createEl('h2', {
-			text: 'Select Target Device',
+			text: 'Select target device',
 			cls: 'style-manager-modal-title',
 		});
 

@@ -48,7 +48,10 @@ export class SectionPresetModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-export-modal');
 
-		new Setting(contentEl).setName(`Save Section as Preset: ${this.section}`).setHeading().setClass('style-manager-modal-title');
+		new Setting(contentEl)
+			.setName(`Save Section as Preset: ${this.section}`)
+			.setHeading()
+			.setClass('style-manager-modal-title');
 
 		contentEl.createEl('p', {
 			text: 'Create a reusable preset from these settings, or copy/download the raw JSON data.',
@@ -63,7 +66,7 @@ export class SectionPresetModal extends Modal {
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
-				btn.setButtonText('Copy to Clipboard').onClick(async () => {
+				btn.setButtonText('Copy to clipboard').onClick(async () => {
 					await navigator.clipboard.writeText(output);
 					this.plugin.settingsService.notifications.util('Copied to clipboard');
 				})
@@ -96,7 +99,7 @@ export class SectionPresetModal extends Modal {
 			)
 			.addButton((btn) =>
 				btn
-					.setButtonText('Save as Preset')
+					.setButtonText('Save as preset')
 					.setCta()
 					.onClick(async () => {
 						if (Object.keys(this.config).length === 0) {
