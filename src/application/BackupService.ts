@@ -21,7 +21,7 @@ import { Notice, normalizePath } from 'obsidian';
 
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
-import { BACKUP_PATH_KEY, BACKUP_DATE_FORMAT_KEY } from '../constants';
+import { BACKUP_PATH_KEY } from '../constants';
 
 /**
  * Service for managing full plugin backups, safety snapshots, and loop-free restores.

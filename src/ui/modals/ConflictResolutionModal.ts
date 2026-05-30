@@ -54,7 +54,7 @@ export class ConflictResolutionModal extends Modal {
 		});
 	}
 
-	private applyBulkAction(action: 'rename' | 'overwrite' | 'skip') {
+	private applyBulkAction(action: 'rename' | 'overwrite' | 'skip'): void {
 		this.updaters.forEach((updater) => updater(action));
 	}
 
