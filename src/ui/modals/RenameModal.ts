@@ -38,8 +38,6 @@ export class RenameModal extends Modal {
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
 		modalEl.addClass('modal-style-manager');
-		modalEl.addClass('style-manager-rename-modal');
-
 		contentEl.createEl('h2', {
 			text: this.title,
 			cls: 'style-manager-modal-title',

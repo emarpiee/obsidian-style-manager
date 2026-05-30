@@ -183,7 +183,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 .style-manager-wrapper {
 	display: flex;
 	flex-direction: column;
-	min-height: 100%;
+	min-height: 0;
 	width: 100%;
 	box-sizing: border-box;
 	position: relative;
@@ -589,13 +589,14 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 
 /* Modal Utility Classes */
 .modal-style-manager {
-	display: flex;
-	flex-direction: column;
-	padding: var(--size-4-4) 0 !important;
+	padding-inline: var(--size-4-4) !important;
+	padding-bottom: var(--safe-area-inset-bottom) !important;
 }
 
 .modal-style-manager .modal-content {
-	overflow: auto;
+	display: flex;
+	flex-direction: column;
+	overflow-y: auto;
 	padding-block: 0 !important;
 	padding-inline: var(--size-4-4);
 }
@@ -622,10 +623,6 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 
 .modal-style-manager .setting-item {
 	align-items: flex-start;
-}
-
-.modal-style-manager button {
-	margin: var(--size-4-2) 0 0;
 }
 
 .view-content
@@ -2229,13 +2226,14 @@ body.is-phone .style-manager-metadata-label {
 	max-width: var(--modal-max-width);
 	height: var(--modal-height);
 	max-height: var(--modal-max-height);
+	padding-inline: 0 !important;
 }
 
 .style-manager-editor-modal .modal-content {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	padding-top: var(--size-4-2);
+	padding-inline: 0;
 }
 
 .style-manager-editor-container {
@@ -2244,9 +2242,9 @@ body.is-phone .style-manager-metadata-label {
 	width: 100%;
 	height: 100%;
 	min-height: 0 !important;
-	margin-bottom: var(--size-4-4);
+	margin-bottom: var(--size-4-1);
 	border: 1px solid var(--background-modifier-border);
-	border-radius: var(--radius-m);
+	border-radius: 0;
 	overflow: hidden;
 }
 
@@ -2257,6 +2255,7 @@ body.is-phone .style-manager-metadata-label {
 }
 
 .style-manager-editor-footer {
+	padding: var(--size-4-3);
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
@@ -2268,8 +2267,7 @@ body.is-phone .style-manager-metadata-label {
 }
 
 .style-manager-editor-buttons {
-	border: none !important;
-	padding: 0 !important;
+	display: block;
 }
 
 .style-manager-editor-buttons .setting-item-control {
@@ -2286,7 +2284,7 @@ body.is-phone .style-manager-metadata-label {
 body.is-mobile .style-manager-editor-title-container {
 	width: calc(100% - 60px);
 	margin: 0;
-	padding-left: var(--size-4-1);
+	padding-left: var(--size-4-4);
 	display: flex;
 	flex-wrap: nowrap;
 	overflow: hidden;
