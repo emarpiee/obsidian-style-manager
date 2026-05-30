@@ -77,10 +77,9 @@ export class ConflictResolutionModal extends Modal {
 			text: 'The following snippets or themes already exist in your vault. Choose how to handle each one.',
 			cls: 'style-manager-modal-description',
 		});
-		const bulkActionContainer = contentEl.createDiv();
-		bulkActionContainer.style.display = 'flex';
-		bulkActionContainer.style.gap = '8px';
-		bulkActionContainer.style.marginBottom = '12px';
+		const bulkActionContainer = contentEl.createDiv({
+			cls: 'style-manager-conflict-bulk-actions',
+		});
 
 		new ButtonComponent(bulkActionContainer)
 			.setButtonText('Rename all')

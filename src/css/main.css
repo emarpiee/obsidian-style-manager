@@ -144,6 +144,17 @@ body {
 	--sm-bulk-actions-border-color: var(--background-modifier-border);
 }
 
+.style-manager-conflict-bulk-actions {
+	display: flex;
+	gap: 8px;
+	margin-bottom: 12px;
+}
+
+.style-manager-accent-icon {
+	color: var(--sm-icon-dynamic-color, var(--text-accent));
+}
+
+
 body .vertical-tab-content:has(.style-manager-wrapper),
 body .view-content:has(.style-manager-wrapper) {
 	padding: 0;

@@ -244,7 +244,7 @@ export class CreatePresetModal extends Modal {
 				const iconContainer = document.createElement('span');
 				iconContainer.className = 'style-manager-accent-icon';
 				// Make the bucket icon match the actual accent color
-				iconContainer.style.color = prefix.value as string;
+				iconContainer.style.setProperty('--sm-icon-dynamic-color', prefix.value as string);
 				setIcon(iconContainer, 'paint-bucket');
 				nameEl.prepend(iconContainer);
 			}

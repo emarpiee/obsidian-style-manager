@@ -178,7 +178,7 @@ export class ResetSettingsModal extends Modal {
 			} else if (isAccent) {
 				const iconContainer = document.createElement('span');
 				iconContainer.className = 'style-manager-accent-icon';
-				iconContainer.style.color = (section.value as string) || '';
+				iconContainer.style.setProperty('--sm-icon-dynamic-color', (section.value as string) || '');
 				setIcon(iconContainer, 'paint-bucket');
 				nameEl.prepend(iconContainer);
 			} else if (isSnippets) {
