@@ -37,9 +37,6 @@ import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
 import { ExportDataConfigModal } from '../modals/ExportDataConfigModal';
 
-/**
- * Renders the Preferences tab: export settings, UI preferences, confirmations, and file management.
- */
 export class PreferencesTab {
 	constructor(
 		private app: App,
@@ -127,9 +124,9 @@ export class PreferencesTab {
 			});
 
 		new Setting(backupContainer)
-			.setName('Full vault backup (ZIP)')
+			.setName('Full backup (ZIP)')
 			.setDesc(
-				'Creates a complete backup containing your settings AND all your CSS snippets in a single ZIP file.'
+				'Creates a complete backup containing your preferences, presets, snippets and themes in a single ZIP file.'
 			)
 			.addButton((btn) => {
 				btn
@@ -154,9 +151,9 @@ export class PreferencesTab {
 			});
 
 		new Setting(backupContainer)
-			.setName('Basic settings backup')
+			.setName('Basic backup')
 			.setDesc(
-				'Export only your data.json variables (no snippets) as a single file.'
+				'Backup only your data.json variables (no snippets and themes) as a single file.'
 			)
 			.addButton((btn) => {
 				btn
@@ -166,20 +163,20 @@ export class PreferencesTab {
 						new ExportDataConfigModal(
 							this.app,
 							plugin,
-							'Full Backup',
+							'Basic backup',
 							plugin.settingsService.settings
 						).open();
 					});
 			});
 
 		new Setting(backupContainer)
-			.setName('Restore from file')
+			.setName('Restore backup from file')
 			.setDesc(
-				'Import a previously exported configuration (.json or .zip). This will create a safety snapshot before overwriting.'
+				'Import a previously exported backup file (.json or .zip). This will create a safety snapshot before overwriting.'
 			)
 			.addButton((btn) => {
 				btn
-					.setButtonText('Import Backup...')
+					.setButtonText('Restore backup...')
 					.setIcon('download')
 					.onClick(() => {
 						const input = document.createElement('input');
@@ -212,7 +209,7 @@ export class PreferencesTab {
 		new Setting(backupContainer)
 			.setName('Safety rollback')
 			.setDesc(
-				'Restore your settings from the last automatic safety snapshot (data.json.bak).'
+				'Restore your configurations from the last automatic safety snapshot (data.json.bak). Snippet and theme files are not included in the automatic snapshot.'
 			)
 			.addButton((btn) => {
 				btn
@@ -250,7 +247,7 @@ export class PreferencesTab {
 		);
 
 		new Setting(exportContainer)
-			.setName('Default export location')
+			.setName('Preset export location')
 			.setDesc(
 				'Choose the folder where presets will be saved in your vault (e.g. "Presets"). Leave empty for vault root.'
 			)
@@ -276,7 +273,7 @@ export class PreferencesTab {
 		new Setting(exportContainer)
 			.setName('Preferred export extension')
 			.setDesc(
-				'Choose the file extension for your exports. The content will remain in JSON format regardless of extension.'
+				'Choose the file extension for your preset exports. The content will remain in JSON format regardless of extension.'
 			)
 			.addDropdown((dropdown) => {
 				dropdown
@@ -298,7 +295,7 @@ export class PreferencesTab {
 		new Setting(exportContainer)
 			.setName('Export timestamp format')
 			.setDesc(
-				'Customize the timestamp used in export filenames. WARNING: Avoid characters like ":", "/", or "\\" as they are invalid in filenames.'
+				'Customize the timestamp used in export filenames. Avoid characters like ":", "/", or "\\" as they are invalid in filenames.'
 			)
 			.addText((text) => {
 				text
@@ -555,7 +552,7 @@ export class PreferencesTab {
 			{
 				key: SHOW_ISOLATE_NOTIFICATIONS_KEY,
 				name: 'Isolate notifications',
-				desc: 'Alerts when resetting or pushing isolated settings.',
+				desc: 'Alerts when resetting or pushing isolated configurations.',
 			},
 			{
 				key: SHOW_SNIPPET_NOTIFICATIONS_KEY,
@@ -609,7 +606,7 @@ export class PreferencesTab {
 		new Setting(developerContainer)
 			.setName('Current shared version')
 			.setDesc(
-				'The internal version timestamp of your settings. Devices are in shared state when this number matches.'
+				'The internal version timestamp. Devices are in shared state when this number matches.'
 			)
 			.addText((text) => {
 				const version =

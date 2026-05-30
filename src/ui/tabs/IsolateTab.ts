@@ -69,7 +69,7 @@ export class IsolateTab {
 		new Setting(isolateContainer)
 			.setName('Enable isolate mode')
 			.setDesc(
-				"Isolate style and theme modifications to a private Locker for this device. When enabled, your local adjustments won't overwrite the shared configuration. (Preset list remains shared)."
+				"Isolate style, theme modifications, enabled snippets to a private Locker for this device. When enabled, your local adjustments won't overwrite the shared configuration. (Preset, snippet and theme list remains shared)."
 			)
 			.addToggle((toggle) => {
 				toggle
@@ -120,7 +120,7 @@ export class IsolateTab {
 		descFragment.createEl('br');
 		descFragment.createEl('br');
 		descFragment.append(
-			'WARNING: This will un-link this device from its current Locker and reset your local settings. You will be placed into a fresh, empty Locker.'
+			'WARNING: Generating a new ID for this device will un-link this device from its current locker and reset the local configurations. This device will be placed into a fresh, empty locker.'
 		);
 
 		new Setting(deviceContainer)
@@ -160,7 +160,7 @@ export class IsolateTab {
 		const { containerEl, app, plugin } = this;
 
 		containerEl.createEl('h4', {
-			text: 'Remote lockers (other devices)',
+			text: 'Other devices',
 			cls: 'style-manager-settings-tab-subtitle',
 		});
 
