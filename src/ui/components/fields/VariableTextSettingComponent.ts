@@ -58,12 +58,19 @@ export class VariableTextSettingComponent extends AbstractSettingComponent {
 
 			const onChange = debounce(
 				(value: string) => {
-					this.settingsService.setSetting(
-						this.sectionId,
-						this.setting.id,
-						sanitizeText(value),
-						{ silentUI: true }
-					);
+					const sanitizedValue = sanitizeText(value);
+					if (sanitizedValue === this.setting.default) {
+						this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+							silentUI: true,
+						});
+					} else {
+						this.settingsService.setSetting(
+							this.sectionId,
+							this.setting.id,
+							sanitizedValue,
+							{ silentUI: true }
+						);
+					}
 					this.updateModifiedClass();
 				},
 				250,

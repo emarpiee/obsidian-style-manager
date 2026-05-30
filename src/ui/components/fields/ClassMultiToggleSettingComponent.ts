@@ -67,12 +67,18 @@ export class ClassMultiToggleSettingComponent extends AbstractSettingComponent {
 			dropdown.setValue(prevValue);
 
 			dropdown.onChange((value) => {
-				this.settingsService.setSetting(
-					this.sectionId,
-					this.setting.id,
-					value,
-					{ silentUI: true }
-				);
+				if (value === this.setting.default) {
+					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+						silentUI: true,
+					});
+				} else {
+					this.settingsService.setSetting(
+						this.sectionId,
+						this.setting.id,
+						value,
+						{ silentUI: true }
+					);
+				}
 				prevValue = value;
 				this.updateModifiedClass();
 			});

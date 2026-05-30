@@ -314,13 +314,24 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 		if (!color) {
 			this.settingsService.clearSetting(this.sectionId, id, { silentUI: true });
 		} else {
-			this.settingsService.setSetting(
-				this.sectionId,
-				id,
-				color.toHEXA().toString(),
-				{ silentUI: true }
-			);
-			instance.addSwatch(color.toHEXA().toString());
+			const hexValue = color.toHEXA().toString();
+			const normalizedHex = hexValue.toLowerCase();
+
+			const isLight = id.endsWith('@@light');
+			const defaultColor = isLight ? this.setting['default-light'] : this.setting['default-dark'];
+			const normalizedDefault = (defaultColor || '').toLowerCase();
+
+			if (normalizedHex === normalizedDefault) {
+				this.settingsService.clearSetting(this.sectionId, id, { silentUI: true });
+			} else {
+				this.settingsService.setSetting(
+					this.sectionId,
+					id,
+					hexValue,
+					{ silentUI: true }
+				);
+				instance.addSwatch(hexValue);
+			}
 		}
 
 		this.updateModifiedClass();
