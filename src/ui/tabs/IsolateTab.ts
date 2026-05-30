@@ -271,9 +271,6 @@ export class IsolateTab {
 
 			const metaRow = descContainer.createDiv('style-manager-locker-meta-row');
 
-			// Count Badge
-			renderCountBadge(metaRow, count);
-
 			// Appearance Badge
 			if (appearance && appearance !== 'system') {
 				renderAppearanceBadge(metaRow, appearance as string);
@@ -287,6 +284,9 @@ export class IsolateTab {
 					locker?.isolateSettings?.[ACCENT_COLOR_KEY] as string
 				);
 			}
+
+			// Count Badge
+			renderCountBadge(metaRow, count);
 
 			// Snippets Badge
 			renderSnippetBadge(

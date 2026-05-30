@@ -80,9 +80,6 @@ export class PresetItem {
 			'style-manager-badge-container mod-left'
 		);
 
-		// Count Badge
-		renderCountBadge(badgesContainer, count);
-
 		// Appearance Badge
 		const appearance = preset.data[APPEARANCE_KEY] as string | undefined;
 		if (appearance) {
@@ -98,6 +95,9 @@ export class PresetItem {
 				preset.data[ACCENT_COLOR_KEY] as string
 			);
 		}
+
+		// Count Badge
+		renderCountBadge(badgesContainer, count);
 
 		// Snippets Badge
 		renderSnippetBadge(
@@ -216,7 +216,9 @@ export class PresetItem {
 
 								const snippetList =
 									(preset.data[SNIPPETS_KEY] as string[]) || [];
-								const activeTheme = preset.data[THEME_KEY] as string | undefined;
+								const activeTheme = preset.data[THEME_KEY] as
+									| string
+									| undefined;
 								const hasTheme = activeTheme && activeTheme !== 'default';
 
 								if (snippetList.length > 0 || hasTheme) {
@@ -228,7 +230,8 @@ export class PresetItem {
 									} else {
 										description += ` uses theme "${activeTheme}".`;
 									}
-									description += ' Do you want to include these files in a ZIP bundle?';
+									description +=
+										' Do you want to include these files in a ZIP bundle?';
 
 									new ConfirmModal(
 										plugin.app,
@@ -260,7 +263,6 @@ export class PresetItem {
 								}
 							})
 					);
-
 
 					menu.addSeparator();
 
