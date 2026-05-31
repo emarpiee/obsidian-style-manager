@@ -2488,3 +2488,1027 @@ body.is-mobile .style-manager-editor-title-container {
 .style-manager-editor-disabled-input {
 	opacity: 0.7;
 }
+
+/*! @settings
+
+name: dev-test
+id: dev-test
+description: test lorem lrpoem lorem *test* test lorem lrpoem lorem *test* test lorem lrpoem lorem *test* test lorem lrpoem lorem *test* test lorem lrpoem lorem *test* test lorem lrpoem lorem *test*
+author: emarpiee
+version: 1.0.0
+repo: github.com/emarpiee/obsidian-style-manager
+settings:
+    -
+        id: color-scheme
+        title: 🎨 Color Scheme
+        description: Find the vibe that fits you best.
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: theme-color-scheme-selection
+        title: Theme Color Scheme Selection
+        type: class-select
+        allowEmpty: false
+        default: "Analogous"
+        options:
+            -
+              label: Analogous (Default)
+              value: Analogous
+            -
+              label: Analogous (Reversed)
+              value: rtm-cs-analogous-colors-reversed
+            -
+              label: Split Complementary
+              value: rtm-cs-split-complementary-colors
+            -
+              label: Split Complementary (Reversed)
+              value: rtm-cs-split-complementary-colors-reversed
+            -
+              label: Triadic
+              value: rtm-cs-triadic-colors
+            -
+              label: Triadic (Reversed)
+              value: rtm-cs-triadic-colors-reversed
+            -
+              label: Monochromatic
+              value: rtm-cs-monochromatic-colors
+            -
+              label: Monochromatic (Reversed)
+              value: rtm-cs-monochromatic-colors-reversed
+    -
+        id: interactive-accent
+        title: Accent Color
+        description: "Your preferred accent color in light and dark mode. Click reset buttons if you want to use Obsidian's default accent color."
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-chroma-lightmode-accent
+        title: Light Mode Chroma Accent
+        type: variable-number-slider
+        default: 0.4
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-chroma-darkmode-accent
+        title: Dark  Mode Chroma Accent
+        type: variable-number-slider
+        default: 0.3
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-lightness-darkmode-accent
+        title: Dark Mode Lightness 
+        type: variable-number-slider
+        default: 0.16
+        min: 0
+        max: 0.26
+        step: 0.01
+    -
+        id: editor-settings
+        title: ✍️ Editor
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: rtm-markdown-editor-bg
+        title: Markdown Editor Background Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: workspace-settings
+        title: 🖌️ Workspace
+        description: Shape your digital workspace.
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: workspace-font-selection
+        title: Workspace Font
+        description: Fonts that complement the theme.
+        type: class-select
+        default: default
+        options:
+            - 
+                label: Default
+                value: default
+            - 
+                label: W95font
+                value: rtm-font-w95font
+            - 
+                label: Cascadia Code
+                value: rtm-font-cascadia-code
+            - 
+                label: iA Writer Mono
+                value: rtm-font-ia-writer-mono
+            - 
+                label: Excalifont
+                value: rtm-font-excalifont
+    -
+        id: rtm-nav-header-view-simple
+        title: 🧪 Simple Nav Header (desktop)
+        type: class-toggle
+    -
+        id: rtm-ss-workspace-leaf-simple-view
+        title: 🧪 Simple Workspace Leaf
+        type: class-toggle
+    -
+        id: rtm-interface-radius
+        title: Workspace Border Radius
+        type: variable-number-slider
+        format: px
+        default: 12
+        min: 0
+        max: 16
+        step: 1
+    -
+        id: rtm-workspace-border-width
+        title: Workspace Border Width
+        type: variable-number-slider
+        format: px
+        default: 4
+        min: 0
+        max: 4
+        step: 1
+    -
+        id: rtm-workspace-tab-padding
+        title: Workspace Padding (desktop) 
+        type: variable-number-slider
+        format: px
+        default: 16
+        min: 4
+        max: 32
+        step: 1
+    -
+        id: workspace-color-overrides
+        title: 🎨 Workspace Color Overrides
+        type: heading
+        level: 2
+        collapsed: true
+    -
+        id: rtm-workspace-bg
+        title: Workspace BG Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-workspace-leaf-bg
+        title: Workspace Leaf BG Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-view-content-bg
+        title: Workspace Leaf Content BG Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: font-settings
+        title: 🔤 Font
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: 3d-button-settings
+        title: 📦️ 3D Button (advance)
+        description: Sculpt your buttons, customize input and touch interactions.
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: rtm-btn-radius
+        title: Button Border Radius
+        type: variable-number-slider
+        format: px
+        default: 8
+        min: 0
+        max: 16
+        step: 1
+    -
+        id: rtm-btn-outline-width
+        title: Button Border Width
+        type: variable-number-slider
+        format: px
+        default: 1
+        min: 0
+        max: 3
+        step: 1
+    -
+        id: rtm-3d-light-angle
+        title: 3D Button Light Angle (global)
+        type: variable-number-slider
+        format: deg
+        default: 225
+        min: 0
+        max: 360
+        step: 5
+    -
+        id: 3d-button-tuner-lightmode
+        title: ☀️ 3D Button Light Mode
+        type: heading
+        level: 2
+        collapsed: true
+    -
+        id: rtm-chroma-lightmode-btn
+        title: ☀️ Button BG Chroma
+        type: variable-number-slider
+        default: 0.1
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-chroma-lightmode-btn-icon
+        title: ☀️ Button Icon Chroma
+        type: variable-number-slider
+        default: 0.3
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-lightness-lightmode-btn
+        title: ☀️ Button Icon Lightness
+        type: variable-number-slider
+        default: 0.2
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-light-angle
+        title: ☀️ Light Angle
+        type: variable-number-slider
+        format: deg
+        default: 225
+        min: 0
+        max: 360
+        step: 5
+    -
+        id: lightmode-normal-btn-settings-3d-tuner
+        title: ☀️ Normal State
+        description: Adjust the visual lighting and shadow properties of a button in its default, normal or idle state.
+        type: heading
+        level: 3
+        collapsed: true
+    -
+        id: rtm-btn-3d-shadow-color
+        title: ☀️🧪 Normal Button SHADOW Color
+        type: variable-color
+        format: hex
+        opacity: false
+        default: '#'
+    -
+        id: rtm-btn-3d-shadow-thickness
+        title: ☀️ Normal Button SHADOW Thickness
+        type: variable-number-slider
+        format: px
+        default: 3
+        min: 0
+        max: 6
+        step: 1
+    -
+        id: rtm-btn-3d-shadow-lightness
+        title: ☀️ Normal Button SHADOW Lightness
+        type: variable-number-slider
+        default: 0.4
+        min: 0
+        max: 0.5
+        step: 0.05
+    -
+        id: rtm-btn-3d-shadow-opacity
+        title: ☀️ Normal Button SHADOW Opacity
+        type: variable-number-slider
+        default: 0.5
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-3d-shadow-blur
+        title: ☀️ Normal Button SHADOW Blur
+        type: variable-number-slider
+        format: px
+        default: 0 
+        min: 0
+        max: 5
+        step: 1
+    -
+        id: rtm-btn-3d-light-color
+        title: ☀️🧪 Normal Button LIGHT Color
+        type: variable-color
+        format: hex
+        opacity: false
+        default: '#'
+    -
+        id: rtm-btn-3d-light-thickness
+        title: ☀️ Normal Button LIGHT Thickness
+        type: variable-number-slider
+        format: px
+        default: 3
+        min: 0
+        max: 6
+        step: 1
+    -
+        id: rtm-btn-3d-light-lightness
+        title: ☀️ Normal Button LIGHT Lightness
+        type: variable-number-slider
+        default: 1
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-3d-light-opacity
+        title: ☀️ Normal Button LIGHT Opacity
+        type: variable-number-slider
+        default: 0.8
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-3d-light-blur
+        title: ☀️ Normal Button LIGHT Blur
+        type: variable-number-slider
+        format: px
+        default: 0
+        min: 0
+        max: 5
+        step: 0.5
+    -
+        id: lightmode-active-btn-settings-3d-tuner
+        title: ☀️ Active State
+        description: Adjust the visual lighting and shadow properties of a button in its default, active or pressed state..
+        type: heading
+        level: 3
+        collapsed: true
+    -
+        id: rtm-btn-3d-shadow-color-active
+        title: ☀️🧪 Active Button SHADOW Color
+        type: variable-color
+        format: hex
+        opacity: false
+        default: '#'
+    -
+        id: rtm-btn-3d-shadow-thickness-active
+        title: ☀️ Active Button SHADOW Thickness
+        type: variable-number-slider
+        format: px
+        default: 3
+        min: 0
+        max: 6
+        step: 1
+    -
+        id: rtm-btn-3d-shadow-lightness-active
+        title: ☀️ Active Button SHADOW Lightness
+        type: variable-number-slider
+        default: 0.3 
+        min: 0
+        max: 0.5
+        step: 0.05
+    -
+        id: rtm-btn-3d-shadow-opacity-active
+        title: ☀️ Active Button SHADOW Opacity
+        type: variable-number-slider
+        default: 0.7
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-3d-shadow-blur-active
+        title: ☀️ Active Button SHADOW Blur
+        type: variable-number-slider
+        format: px
+        default: 0 
+        min: 0
+        max: 5
+        step: 1
+    -
+        id: rtm-btn-3d-light-color-active
+        title: ☀️🧪 Active Button LIGHT Color
+        type: variable-color
+        format: hex
+        opacity: false
+        default: '#'
+    -
+        id: rtm-btn-3d-light-thickness-active
+        title: ☀️ Active Button LIGHT Thickness
+        type: variable-number-slider
+        format: px
+        default: 3
+        min: 0
+        max: 6
+        step: 1
+    -
+        id: rtm-btn-3d-light-lightness-active
+        title: ☀️ Active Button LIGHT Lightness
+        type: variable-number-slider
+        default: 0.8
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-3d-light-opacity-active
+        title: ☀️ Active Button LIGHT Opacity
+        type: variable-number-slider
+        default: 0.4
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-3d-light-blur-active
+        title: ☀️ Active Button LIGHT Blur
+        type: variable-number-slider
+        format: px
+        default: 0
+        min: 0
+        max: 5
+        step: 0.5
+    -
+        id: 3d-button-tuner-darkmode
+        title: 🌙 3D Button Dark Mode
+        type: heading
+        level: 2
+        collapsed: true
+    -
+        id: rtm-chroma-darkmode-btn
+        title: 🌛 Buton BG Chroma
+        type: variable-number-slider
+        default: 0.2
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-chroma-darkmode-btn-icon
+        title: 🌛 Buton Icon Chroma
+        type: variable-number-slider
+        default: 0.2
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-lightness-darkmode-btn
+        title: 🌛 Button Icon Lightness
+        type: variable-number-slider
+        default: 1
+        min: 0.7
+        max: 1
+        step: 0.05
+    -
+        id: rtm-light-angle-darkmode
+        title: 🌙 Light Angle
+        type: variable-number-slider
+        format: deg
+        default: 225
+        min: 0
+        max: 360
+        step: 5
+    -
+        id: darkmode-normal-btn-settings-3d-tuner
+        title: 🌙 Normal State
+        description: Adjust the visual lighting and shadow properties of a button in its default, normal or idle state.
+        type: heading
+        level: 3
+        collapsed: true
+    -
+        id: rtm-btn-darkmode-3d-shadow-color
+        title: 🌙🧪 Normal Button SHADOW Color
+        type: variable-color
+        format: hex
+        opacity: false
+        default: '#'
+    -
+        id: rtm-btn-darkmode-3d-shadow-thickness
+        title: 🌙 Normal Button SHADOW Thickness
+        type: variable-number-slider
+        format: px
+        default: 3
+        min: 0
+        max: 6
+        step: 1
+    -
+        id: rtm-btn-darkmode-3d-shadow-lightness
+        title: 🌙 Normal Button SHADOW Lightness
+        type: variable-number-slider
+        default: 0.1
+        min: 0
+        max: 0.5
+        step: 0.05
+    -
+        id: rtm-btn-darkmode-3d-shadow-opacity
+        title: 🌙 Normal Button SHADOW Opacity
+        type: variable-number-slider
+        default: 1
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-darkmode-3d-shadow-blur
+        title: 🌙 Normal Button SHADOW Blur
+        type: variable-number-slider
+        format: px
+        default: 0 
+        min: 0
+        max: 5
+        step: 1
+    -
+        id: rtm-btn-darkmode-3d-light-color
+        title: 🌙🧪 Normal Button LIGHT Color
+        type: variable-color
+        format: hex
+        opacity: false
+        default: '#'
+    -
+        id: rtm-btn-darkmode-3d-light-thickness
+        title: 🌙 Normal Button LIGHT Thickness
+        type: variable-number-slider
+        format: px
+        default: 3
+        min: 0
+        max: 6
+        step: 1
+    -
+        id: rtm-btn-darkmode-3d-light-lightness
+        title: 🌙 Normal Button LIGHT Lightness
+        type: variable-number-slider
+        default: 1
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-darkmode-3d-light-opacity
+        title: 🌙 Normal Button LIGHT Opacity
+        type: variable-number-slider
+        default: 0.2
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-darkmode-3d-light-blur
+        title: 🌙 Normal Button LIGHT Blur
+        type: variable-number-slider
+        format: px
+        default: 0
+        min: 0
+        max: 5
+        step: 0.5
+    -
+        id: darkmode-active-btn-darkmode-settings-3d-tuner
+        title: 🌙 Active State
+        description: Adjust the visual lighting and shadow properties of a button in its default, active or pressed state.
+        type: heading
+        level: 3
+        collapsed: true
+    -
+        id: rtm-btn-darkmode-3d-shadow-color-active
+        title: 🌙🧪 Active Button SHADOW Color
+        type: variable-color
+        format: hex
+        opacity: false
+        default: '#'
+    -
+        id: rtm-btn-darkmode-3d-shadow-thickness-active
+        title: 🌙 Active Button SHADOW Thickness
+        type: variable-number-slider
+        format: px
+        default: 3
+        min: 0
+        max: 6
+        step: 1
+    -
+        id: rtm-btn-darkmode-3d-shadow-lightness-active
+        title: 🌙 Active Button SHADOW Lightness
+        type: variable-number-slider
+        default: 0.2 
+        min: 0
+        max: 0.5
+        step: 0.05
+    -
+        id: rtm-btn-darkmode-3d-shadow-opacity-active
+        title: 🌙 Active Button SHADOW Opacity
+        type: variable-number-slider
+        default: 0.7
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-darkmode-3d-shadow-blur-active
+        title: 🌙 Active Button SHADOW Blur
+        type: variable-number-slider
+        format: px
+        default: 0 
+        min: 0
+        max: 5
+        step: 1
+    -
+        id: rtm-btn-darkmode-3d-light-color-active
+        title: 🌙🧪 Active Button LIGHT Color
+        type: variable-color
+        format: hex
+        opacity: false
+        default: '#'
+    -
+        id: rtm-btn-darkmode-3d-light-thickness-active
+        title: 🌙 Active Button LIGHT Thickness
+        type: variable-number-slider
+        format: px
+        default: 3
+        min: 0
+        max: 6
+        step: 1
+    -
+        id: rtm-btn-darkmode-3d-light-lightness-active
+        title: 🌙 Active Button LIGHT Lightness
+        type: variable-number-slider
+        default: 0.8
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-darkmode-3d-light-opacity-active
+        title: 🌙 Active Button LIGHT Opacity
+        type: variable-number-slider
+        default: 0.2
+        min: 0
+        max: 1
+        step: 0.05
+    -
+        id: rtm-btn-darkmode-3d-light-blur-active
+        title: 🌙 Active Button LIGHT Blur
+        type: variable-number-slider
+        format: px
+        default: 0
+        min: 0
+        max: 5
+        step: 0.5
+    -
+        id: 3d-btn-color-overrieds
+        title: 🎨 Button Color Overrides
+        type: heading
+        level: 2
+        collapsed: true
+    -
+        id: rtm-btn-outline-color
+        title: Button Border Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-btn-bg-normal
+        title: 🧪 Button Normal State BG Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-btn-bg-hover
+        title: 🧪 Button Hover State BG Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-btn-bg-active
+        title: 🧪 Button Active State BG Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-icon-color
+        title: 🧪 Button Inner Icon Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: typography-settings
+        title: 🔤  Typography
+        description: Refine your reading and writing experience.
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: rtm-chroma-lightmode-txt
+        title: Text Light Mode Chroma
+        type: variable-number-slider
+        default: 0.3
+        min: 0
+        max: 0.3
+        step: 0.01
+    -
+        id: rtm-chroma-darkmode-txt
+        title: Text Dark Mode Chroma
+        type: variable-number-slider
+        default: 0.1
+        min: 0
+        max: 0.3
+        step: 0.01
+    -
+        id: tab-settings
+        title: 📌 Tabs
+        description: Shape your tabs.
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: rtm-workspace-tab-height
+        title: Tab Header Height
+        type: variable-number-slider
+        format: px
+        default: 40
+        min: 40
+        max: 60
+        step: 5
+    -
+        id: rtm-tab-radius
+        title: Tab Radius
+        type: variable-number-slider
+        format: px
+        default: 8
+        min: 0
+        max: 12
+        step: 1
+    -
+        id: titlebar-settings
+        title: 📏 Title Bar
+        description: Refine your workspace titlebar.
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: titlebar-color-overrides
+        title: 🎨 Title Bar Color Overrides
+        type: heading
+        level: 2
+        collapsed: true
+    -
+        id: rtm-titlebar-bg-focus
+        title: Title Bar Background Color Focus
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-titlebar-txt-color-focus
+        title: Title Bar Text Color Focus
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-titlebar-bg
+        title: Title Bar Background Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-titlebar-txt-color
+        title: Title Bar Text Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: statusbar-settings
+        title: 📏 Status Bar
+        description: Refine your workspace footer.
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: rtm-statusbar-height
+        title: Height
+        type: variable-number-slider
+        format: px
+        default: 24
+        min: 18
+        max: 32
+        step: 1
+    -
+        id: statusbar-color-overrides
+        title: 🎨 Status Bar Color Overrides
+        type: heading
+        level: 2
+        collapsed: true
+    -
+        id: rtm-statusbar-bg
+        title: Status Bar Background Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-statusbar-txt-color
+        title: Status Bar Text Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: zen-mode
+        title: ☕️ Zen Mode (desktop)
+        description: Focus on writing.
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: rtm-zen-mode
+        title: Zen Mode Toggle
+        type: class-toggle
+    -
+        id: rtm-zen-mode-opacity
+        title: Fade Opacity
+        type: variable-number-slider
+        default: 0
+        min: 0
+        max: 0.75
+        step: 0.05
+    -
+        id: rtm-zen-mode-fade-in
+        title: Fade Delay (seconds)
+        type: variable-number-slider
+        format: s
+        default: 1
+        min: 0
+        max: 10
+        step: 0.25
+    -
+        id: rtm-zen-mode-pin-titlebar
+        title: Pin Title Bar
+        type: class-toggle
+    -
+        id: rtm-zen-mode-pin-statusbar
+        title: Pin Status Bar
+        type: class-toggle
+    -
+        id: rtm-zen-mode-pin-tabs
+        title: Pin Tabs
+        type: class-toggle
+    -
+        id: rtm-zen-mode-pin-left-split
+        title: Pin Left Sidebar
+        type: class-toggle
+    -
+        id: rtm-zen-mode-pin-right-split
+        title: Pin Right Sidebar
+        type: class-toggle
+    -
+        id: zen-mode-color-overrides
+        title: 🎨 Zen Mode Color Overrides
+        type: heading
+        level: 2
+        collapsed: true
+    -
+        id: rtm-zen-mode-bg
+        title: 🧪 Zen Mode BG Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: grayscale
+        title: 🔲 Grayscale
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: rtm-ss-grayscale
+        title: Grayscale Toggle
+        type: class-toggle
+    -
+        id: rtm-ss-grayscale-image
+        title: Include Images and Emojis
+        type: class-toggle
+    -
+        id: mobile-specific-settings
+        title: 📱 Mobile Specific Settings
+        description: Only affects the mobile experience.
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: rtm-mobile-toolbar-bg
+        title: 🧪 Mobile Tool Bar BG Color
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    -
+        id: rtm-mobile-sidebar-width
+        title: Sidebar Width
+        type: variable-select
+        default: 84vw
+        options:
+            -
+                label: Default
+                value: 84vw
+            -
+                label: Fullscreen
+                value: 100vw
+    -
+        id: rtm-mobile-nav-buttons-container-position
+        title: File Explorer Buttons Position
+        type: variable-select
+        default: absolute
+        options:
+            -
+                label: Bottom (default)
+                value: absolute
+            -
+                label: Top
+                value: relative
+    -
+        id: scrollbar-settings
+        title: 🖱️ Scrollbar
+        description: Slide through your workspace...or don't.
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: rtm-scrollbar-width
+        title: Scrollbar Width (desktop)
+        type: variable-number-slider
+        format: px
+        default: 8
+        min: 0
+        max: 16
+        step: 1
+    -
+        id: rtm-scrollbar-width-mobile
+        title: Scrollbar Width (mobile)
+        type: variable-number-slider
+        format: px
+        default: 6
+        min: 0
+        max: 16
+        step: 1
+    -
+        id: rtm-scrollbar-thumb-radius
+        title: Scrollbar Thumb Radius (desktop)
+        type: variable-number-slider
+        format: px
+        default: 8
+        min: 0
+        max: 8
+        step: 1
+    -
+        id: rtm-scrollbar-thumb-radius-mobile
+        title: Scrollbar Thumb Radius (mobile)
+        type: variable-number-slider
+        format: px
+        default: 8
+        min: 0
+        max: 8
+        step: 1
+    -
+        id: experimental
+        title: 🧪 Experimental
+        type: heading
+        level: 1
+        collapsed: true
+    -
+        id: rtm-zen-mode-pin-workspace-drawer
+        title: 🧪 Pin Mobile Workspace Drawer
+        type: class-toggle
+    -
+        id: rtm-heading-show-hashtag
+        title: 🧪 Render Headings Hashtag in Reading Mode
+        type: class-toggle
+    -
+        id: author
+        title: 🌱  SUPPORT THE DEVELOPMENT
+        type: heading
+        level: 1
+    -
+        id: description
+        title: 
+        description: "Retroma GitHub Repo: https://github.com/emarpiee/Retroma<br>Retroma Developer: https://github.com/emarpiee<br><br>☕️ **BUY ME A COFEE**<br>Ko-Fi: https://ko-fi.com/emarpiee <br>PayPal: https://paypal.me/emarpiee"
+        type: info-text
+        markdown: true
+*/

@@ -7,6 +7,7 @@ const { minAppVersion } = manifest;
 
 manifest.version = pkg.version;
 manifest.description = pkg.description;
+manifest.id = pkg.name;
 writeFileSync('manifest.json', JSON.stringify(manifest, null, '\t') + '\n');
 
 // update versions.json with target version and minAppVersion from manifest.json
