@@ -161,7 +161,7 @@ export class StyleSheetManager {
 				name: string;
 			}[] = [];
 
-			if (content && content.includes('/* @settings')) {
+			if (content && /\/\*!?\s*@settings/.test(content)) {
 				const { settingsList } = CSSParser.parseCSSText(content);
 				for (const s of settingsList) {
 					const data = { sourceType, sourceId, sectionName: s.name };
@@ -241,7 +241,7 @@ export class StyleSheetManager {
 				if (!node || node.nodeType !== 1) continue;
 
 				const text = node.textContent;
-				if (!text || !text.includes('/* @settings')) continue;
+				if (!text || !/\/\*!?\s*@settings/.test(text)) continue;
 
 				const trimmed = text.trim();
 				if (processedContent.has(trimmed)) continue;
