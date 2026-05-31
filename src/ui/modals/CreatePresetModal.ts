@@ -70,10 +70,7 @@ export class CreatePresetModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-save-preset-modal');
 
-		contentEl.createEl('h2', {
-			text: 'Create new preset',
-			cls: 'style-manager-modal-title',
-		});
+		this.setTitle('Create new preset');
 
 		contentEl.createEl('p', {
 			text: 'Select which themes or plugins to include in this snapshot.',

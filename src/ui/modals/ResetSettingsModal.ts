@@ -73,10 +73,7 @@ export class ResetSettingsModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-reset-modal');
 
-		contentEl.createEl('h2', {
-			text: 'Reset styles',
-			cls: 'style-manager-modal-title',
-		});
+		this.setTitle('Reset styles');
 
 		if (this.sections.length === 0) {
 			contentEl.createEl('p', {

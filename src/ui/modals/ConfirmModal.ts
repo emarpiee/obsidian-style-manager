@@ -52,10 +52,7 @@ export class ConfirmModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-confirm-modal');
 
-		contentEl.createEl('h2', {
-			text: this.title,
-			cls: 'style-manager-modal-title',
-		});
+		this.setTitle(this.title);
 		contentEl.createEl('p', {
 			text: this.message,
 			cls: 'style-manager-modal-description',

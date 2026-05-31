@@ -29,11 +29,9 @@ export class PresetNamePromptModal extends Modal {
 	}
 
 	onOpen(): void {
-		const { contentEl } = this;
-		new Setting(contentEl)
-			.setName('Save as preset')
-			.setHeading()
-			.setClass('style-manager-modal-title');
+		const { contentEl, modalEl } = this;
+		modalEl.addClass('modal-style-manager');
+		this.setTitle('Save as preset');
 		contentEl.createEl('p', {
 			text: 'Enter a name for this preset:',
 			cls: 'style-manager-modal-description',
@@ -45,10 +43,6 @@ export class PresetNamePromptModal extends Modal {
 			cls: 'style-manager-modal-input',
 		});
 
-		const btnBar = contentEl.createDiv({ cls: 'style-manager-export-btn-bar' });
-		const saveBtn = btnBar.createEl('button', { text: 'Save', cls: 'mod-cta' });
-		const cancelBtn = btnBar.createEl('button', { text: 'Cancel' });
-
 		const submit = (): void => {
 			const name = input.value.trim();
 			if (name) {
@@ -56,18 +50,12 @@ export class PresetNamePromptModal extends Modal {
 				this.close();
 			}
 		};
+ 
+		new Setting(contentEl)
+			.setClass('style-manager-modal-buttons')
+			.addButton((btn) => btn.setButtonText('Cancel').onClick(() => this.close()))
+			.addButton((btn) => btn.setButtonText('Save').setCta().onClick(submit));
 
-		saveBtn.addEventListener('click', (e) => {
-			e.preventDefault();
-			e.stopPropagation();
-			submit();
-		});
-
-		cancelBtn.addEventListener('click', (e) => {
-			e.preventDefault();
-			e.stopPropagation();
-			this.close();
-		});
 
 		// Use Obsidian's scope for reliable key handling in modals
 		this.scope.register([], 'Enter', (e) => {

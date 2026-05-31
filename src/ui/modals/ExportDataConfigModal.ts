@@ -41,10 +41,7 @@ export class ExportDataConfigModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-export-modal');
 
-		new Setting(contentEl)
-			.setName(this.title)
-			.setHeading()
-			.setClass('style-manager-modal-title');
+		this.setTitle(this.title);
 
 		contentEl.createEl('p', {
 			text: 'This will export your current variable settings and plugin preferences as a raw JSON file. Note: This does not include your CSS snippets.',

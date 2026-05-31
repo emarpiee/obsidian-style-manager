@@ -69,10 +69,7 @@ export class ConflictResolutionModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-conflict-modal');
 
-		contentEl.createEl('h2', {
-			text: 'Import Conflicts',
-			cls: 'style-manager-modal-title',
-		});
+		this.setTitle('Import Conflicts');
 		contentEl.createEl('p', {
 			text: 'The following snippets or themes already exist in your vault. Choose how to handle each one.',
 			cls: 'style-manager-modal-description',

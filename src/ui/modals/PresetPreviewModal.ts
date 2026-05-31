@@ -36,10 +36,7 @@ export class PresetPreviewModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-preview-modal');
 
-		contentEl.createEl('h2', {
-			text: `Settings for: ${this.preset.name}`,
-			cls: 'style-manager-modal-title',
-		});
+		this.setTitle(`Settings for: ${this.preset.name}`);
 
 		const pre = contentEl.createEl('pre', { cls: 'style-manager-modal-pre' });
 		pre.setText(JSON.stringify(this.preset.data, null, 2));

@@ -162,6 +162,7 @@ body {
 body .vertical-tab-content:has(.style-manager-wrapper),
 body .view-content:has(.style-manager-wrapper) {
 	padding: 0;
+	padding-bottom: var(--view-bottom-spacing);
 }
 
 body.is-phone .vertical-tab-content:has(.style-manager-wrapper) {
@@ -590,19 +591,16 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 /* Modal Utility Classes */
 .modal-style-manager {
 	padding-inline: var(--size-4-4) !important;
+}
+
+body.is-mobile
+	.modal-style-manager:not(
+		.style-manager-confirm-modal,
+		.style-manager-model-pre,
+		.style-manager-export-modal,
+		.style-manager-preview-modal
+	) {
 	padding-bottom: var(--safe-area-inset-bottom) !important;
-}
-
-.modal-style-manager .modal-content {
-	display: flex;
-	flex-direction: column;
-	overflow-y: auto;
-	padding-block: 0 !important;
-	padding-inline: var(--size-4-4);
-}
-
-.style-manager-modal-title {
-	margin-bottom: var(--size-4-4);
 }
 
 .style-manager-modal-pre {
@@ -619,6 +617,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 
 .style-manager-modal-buttons {
 	margin-top: auto;
+	padding: var(--size-4-4) 0 !important;
 }
 
 .modal-style-manager .setting-item {
@@ -1487,13 +1486,6 @@ button.style-manager-icon-button {
 	}
 }
 
-/* Selective Reset Modal & Save Preset Modal Layout */
-.style-manager-reset-modal,
-.style-manager-save-preset-modal {
-	width: 600px;
-	max-width: 95vw;
-}
-
 .style-manager-reset-list {
 	margin: var(--size-4-4) 0;
 	flex: 1 1 auto;
@@ -1595,11 +1587,6 @@ button.style-manager-icon-button {
 	padding: 0;
 	margin: var(--size-4-4) 0;
 	background-color: var(--background-primary-alt);
-}
-
-.style-manager-modal-subtitle {
-	margin-top: var(--size-4-4);
-	margin-bottom: var(--size-4-1);
 }
 
 .style-manager-modal-controls {
@@ -1841,12 +1828,6 @@ body.is-phone .style-manager-isolate-badge {
 
 .style-manager-settings-tab-content {
 	padding: 0 var(--size-4-6) !important;
-}
-
-/* Vault File Select Modal */
-.style-manager-vault-select-modal .modal-content {
-	display: flex;
-	flex-direction: column;
 }
 
 .style-manager-vault-file-list {
@@ -2491,9 +2472,12 @@ body.is-mobile .style-manager-editor-title-container {
 	display: none;
 }
 
+.style-manager-modal-input-container {
+	display: block;
+}
+
 .style-manager-modal-input {
 	width: 100%;
-	margin-bottom: 20px;
 }
 
 .style-manager-device-list {

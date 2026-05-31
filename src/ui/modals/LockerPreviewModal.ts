@@ -43,10 +43,7 @@ export class LockerPreviewModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-preview-modal');
 
-		contentEl.createEl('h2', {
-			text: this.title,
-			cls: 'style-manager-modal-title',
-		});
+		this.setTitle(this.title);
 
 		const pre = contentEl.createEl('pre', { cls: 'style-manager-modal-pre' });
 		pre.setText(JSON.stringify(this.data, null, 2));

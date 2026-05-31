@@ -49,10 +49,7 @@ export class VaultFileSelectModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-vault-select-modal');
 
-		contentEl.createEl('h2', {
-			text: 'Browse vault',
-			cls: 'style-manager-modal-title',
-		});
+		this.setTitle('Browse vault');
 
 		const searchContainer = contentEl.createDiv('style-manager-search-row');
 		new Setting(searchContainer)

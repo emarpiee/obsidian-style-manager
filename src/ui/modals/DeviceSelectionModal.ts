@@ -34,10 +34,7 @@ export class DeviceSelectionModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-device-selection-modal');
 
-		contentEl.createEl('h2', {
-			text: 'Select target device',
-			cls: 'style-manager-modal-title',
-		});
+		this.setTitle('Select target device');
 
 		contentEl.createEl('p', {
 			text: 'Choose a device locker to apply the preset settings to. This will merge the settings into their private locker.',

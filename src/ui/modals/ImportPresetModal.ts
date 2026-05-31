@@ -41,10 +41,7 @@ export class ImportPresetModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-import-preset-modal');
 
-		contentEl.createEl('h2', {
-			text: 'Import preset',
-			cls: 'style-manager-modal-title',
-		});
+		this.setTitle('Import preset');
 
 		contentEl.createEl('p', {
 			text: 'Import a JSON preset or a ZIP bundle to restore snippets and settings.',
