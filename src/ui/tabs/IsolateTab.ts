@@ -259,10 +259,11 @@ export class IsolateTab {
 
 				const lockerData = service.identity.getLockerData(id);
 				if (lockerData) {
+					const lockerName = service.identity.getLockerName(id) || id;
 					new LockerPreviewModal(
 						this.app,
 						this.plugin,
-						`Settings for device: ${id}`,
+						`Viewing locker: ${lockerName}`,
 						id,
 						lockerData.isolateSettings
 					).open();

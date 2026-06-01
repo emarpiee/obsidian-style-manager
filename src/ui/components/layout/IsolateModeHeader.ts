@@ -19,7 +19,7 @@
 import { App, Component, Menu, Notice, setIcon, setTooltip } from 'obsidian';
 
 import StyleManagerPlugin from '../../../main';
-import { DeviceSelectionModal } from '../../modals/DeviceSelectionModal';
+import { addApplyOptionsToMenu } from '../../tabs/preset/PresetMenuHelper';
 
 export class IsolateModeHeader extends Component {
 	private el: HTMLElement | null = null;
@@ -80,45 +80,26 @@ export class IsolateModeHeader extends Component {
 			const isolateSettings = this.plugin.settingsService.getIsolateSettings();
 			const sourceName = 'Local isolated locker';
 
-			// 1. Apply to Sync (Global)
-			menu.addItem((item) =>
-				item
-					.setTitle('Apply to shared locker')
-					.setIcon('globe')
-					.onClick(() => {
-						this.plugin.presetService.confirmApply(sourceName, async () => {
-							await this.plugin.settingsService.pushToShared();
-						});
-					})
+			addApplyOptionsToMenu(
+				menu,
+				this.plugin,
+				{ name: sourceName, data: isolateSettings },
+				{
+					hideIsolate: true,
+					onApplyShared: async () => {
+						await this.plugin.settingsService.pushToShared();
+					},
+					onApplyRemote: async (deviceId: string) => {
+						await this.plugin.settingsService.identity.applyPresetToLocker(
+							deviceId,
+							isolateSettings
+						);
+						new Notice(
+							`Settings for "${sourceName}" applied to isolated locker.`
+						);
+					},
+				}
 			);
-
-			// 2. Apply to other Device (Remote)
-			const otherDeviceIds = this.plugin.settingsService.identity
-				.getAllDeviceIds()
-				.filter((id: string) => id !== this.plugin.settingsService.deviceId);
-
-			if (otherDeviceIds.length > 0) {
-				menu.addItem((item) =>
-					item
-						.setTitle('Apply to other device (isolate)')
-						.setIcon('share-2')
-						.onClick(() => {
-							new DeviceSelectionModal(
-								this.app,
-								this.plugin.settingsService,
-								async (deviceId: string) => {
-									await this.plugin.settingsService.identity.applyPresetToLocker(
-										deviceId,
-										isolateSettings
-									);
-									new Notice(
-										`Settings for "${sourceName}" applied to isolated locker.`
-									);
-								}
-							).open();
-						})
-				);
-			}
 
 			menu.addSeparator();
 

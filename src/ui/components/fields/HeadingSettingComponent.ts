@@ -32,7 +32,7 @@ import { SettingsService } from '../../../application/SettingsService';
 import { CSSSetting, Heading } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
-import { SectionPresetModal } from '../../modals/SectionPresetModal';
+import { SectionStyleModal } from '../../modals/SectionStyleModal';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 import { SettingType } from '../base/types';
 
@@ -494,14 +494,14 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 
 	private addExportButton(): void {
 		this.settingEl.addExtraButton((b) => {
-			b.setIcon('install');
-			b.setTooltip('Export settings');
+			b.setIcon('ellipsis-vertical');
+			b.setTooltip('More options');
 			b.extraSettingsEl.onClickEvent((e) => {
 				e.stopPropagation();
 				let title = getTitle(this.setting);
 				title =
 					this.sectionName === title ? title : `${this.sectionName} > ${title}`;
-				new SectionPresetModal(
+				new SectionStyleModal(
 					this.settingsService.plugin.app,
 					this.settingsService.plugin,
 					title,

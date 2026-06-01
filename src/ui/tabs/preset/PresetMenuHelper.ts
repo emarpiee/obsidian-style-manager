@@ -34,6 +34,12 @@ export interface ApplyMenuOptions {
 	onApplied?: () => void;
 	/** Optional override for the "Shared" application action (useful for Isolate Mode teardown) */
 	onApplyShared?: () => Promise<void>;
+	/** Optional override for the "Isolate" application action */
+	onApplyIsolate?: () => Promise<void>;
+	/** Optional override for the "Remote" application action */
+	onApplyRemote?: (deviceId: string) => Promise<void>;
+	/** Skip default confirmation dialogs (useful for bulk actions that implement their own) */
+	skipConfirm?: boolean;
 	hideShared?: boolean;
 	hideIsolate?: boolean;
 	hideRemote?: boolean;
@@ -47,6 +53,9 @@ export function addApplyOptionsToMenu(
 ): void {
 	const onApplied = options?.onApplied;
 	const onApplyShared = options?.onApplyShared;
+	const onApplyIsolate = options?.onApplyIsolate;
+	const onApplyRemote = options?.onApplyRemote;
+	const skipConfirm = options?.skipConfirm;
 
 	if (options?.hideShared !== true) {
 		menu.addItem((item) =>
@@ -54,7 +63,7 @@ export function addApplyOptionsToMenu(
 				.setTitle('Apply to shared locker')
 				.setIcon('globe')
 				.onClick(() => {
-					plugin.presetService.confirmApply(source.name, async () => {
+					const perform = async () => {
 						if (onApplyShared) {
 							await onApplyShared();
 						} else if (source.id) {
@@ -66,7 +75,13 @@ export function addApplyOptionsToMenu(
 							);
 						}
 						if (onApplied) onApplied();
-					});
+					};
+
+					if (skipConfirm) {
+						perform();
+					} else {
+						plugin.presetService.confirmApply(source.name, perform);
+					}
 				})
 		);
 	}
@@ -77,21 +92,29 @@ export function addApplyOptionsToMenu(
 				.setTitle('Apply to this device (isolate)')
 				.setIcon('lock')
 				.onClick(() => {
-					plugin.presetService.confirmApply(
-						source.name,
-						async () => {
-							if (source.id) {
-								await plugin.presetService.applyPreset(source.id, true);
-							} else {
-								await plugin.settingsService.applySettingsOverlay(
-									source.data,
-									true
-								);
-							}
-							if (onApplied) onApplied();
-						},
-						true
-					);
+					const perform = async () => {
+						if (onApplyIsolate) {
+							await onApplyIsolate();
+						} else if (source.id) {
+							await plugin.presetService.applyPreset(source.id, true);
+						} else {
+							await plugin.settingsService.applySettingsOverlay(
+								source.data,
+								true
+							);
+						}
+						if (onApplied) onApplied();
+					};
+
+					if (skipConfirm) {
+						perform();
+					} else {
+						plugin.presetService.confirmApply(
+							source.name,
+							perform,
+							true
+						);
+					}
 				})
 		);
 	}
@@ -110,13 +133,17 @@ export function addApplyOptionsToMenu(
 						plugin.app,
 						plugin.settingsService,
 						async (deviceId) => {
-							await plugin.settingsService.identity.applyPresetToLocker(
-								deviceId,
-								source.data
-							);
-							new Notice(
-								`Settings for "${source.name}" applied to isolate locker.`
-							);
+							if (onApplyRemote) {
+								await onApplyRemote(deviceId);
+							} else {
+								await plugin.settingsService.identity.applyPresetToLocker(
+									deviceId,
+									source.data
+								);
+								new Notice(
+									`Settings for "${source.name}" applied to isolate locker.`
+								);
+							}
 							if (onApplied) onApplied();
 						}
 					).open();

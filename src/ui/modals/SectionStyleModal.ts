@@ -25,7 +25,7 @@ import StyleManagerPlugin from '../../main';
 import { Preset, SettingValue } from '../../types';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
 
-export class SectionPresetModal extends Modal {
+export class SectionStyleModal extends Modal {
 	plugin: StyleManagerPlugin;
 	section: string;
 	config: Record<string, SettingValue>;
@@ -48,10 +48,10 @@ export class SectionPresetModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-export-modal');
 
-		this.setTitle(`Save Section as Preset: ${this.section}`);
+		this.setTitle(`Viewing section: ${this.section}`);
 
 		contentEl.createEl('p', {
-			text: 'Create a reusable preset from these settings, or copy/download the raw JSON data.',
+			text: 'Create a reusable preset from this section, or copy/export the raw JSON data.',
 			cls: 'style-manager-modal-description',
 		});
 
@@ -69,7 +69,7 @@ export class SectionPresetModal extends Modal {
 				})
 			)
 			.addButton((btn) =>
-				btn.setButtonText('Download').onClick(() => {
+				btn.setButtonText('Export').onClick(() => {
 					const blob = new Blob([output], { type: 'application/json' });
 					const url = URL.createObjectURL(blob);
 					const a = document.createElement('a');
@@ -101,7 +101,7 @@ export class SectionPresetModal extends Modal {
 					.onClick(async () => {
 						if (Object.keys(this.config).length === 0) {
 							this.plugin.settingsService.notifications.preset(
-								'No modified settings found for this section.'
+								'No modified styles found for this section.'
 							);
 							return;
 						}

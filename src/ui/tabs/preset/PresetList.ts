@@ -28,6 +28,7 @@ import {
 } from 'obsidian';
 
 import { PresetItem } from './PresetItem';
+import { addApplyOptionsToMenu } from './PresetMenuHelper';
 
 import {
 	APPEARANCE_KEY,
@@ -344,53 +345,33 @@ export class PresetList {
 					}
 				};
 
-				menu.addItem((item: MenuItem) =>
-					item
-						.setTitle('Apply to shared locker')
-						.setIcon('globe')
-						.onClick(() => applyAll(false))
+				addApplyOptionsToMenu(
+					menu,
+					plugin,
+					{ name: 'Bulk presets', data: {} },
+					{
+						skipConfirm: true,
+						onApplyShared: async () => await applyAll(false),
+						onApplyIsolate: async () => await applyAll(true),
+						onApplyRemote: async (deviceId: string) => {
+							const selectedIds = Array.from(service.selectedPresets);
+							for (const id of selectedIds) {
+								const preset = service.presets.find((p) => p.id === id);
+								if (preset) {
+									await plugin.settingsService.identity.applyPresetToLocker(
+										deviceId,
+										preset.data
+									);
+								}
+							}
+							service.selectedPresets.clear();
+							this.renderPresetListItems();
+							new Notice(
+								`Applied ${selectedIds.length} presets to device locker.`
+							);
+						},
+					}
 				);
-
-				menu.addItem((item: MenuItem) =>
-					item
-						.setTitle('Apply to this device (isolate)')
-						.setIcon('lock')
-						.onClick(() => applyAll(true))
-				);
-
-				const otherDeviceIds = plugin.settingsService.identity
-					.getAllDeviceIds()
-					.filter((id) => id !== plugin.settingsService.deviceId);
-				if (otherDeviceIds.length > 0) {
-					menu.addItem((item) =>
-						item
-							.setTitle('Apply to other device (isolate)')
-							.setIcon('share-2')
-							.onClick(() => {
-								new DeviceSelectionModal(
-									plugin.app,
-									plugin.settingsService,
-									async (deviceId) => {
-										const selectedIds = Array.from(service.selectedPresets);
-										for (const id of selectedIds) {
-											const preset = service.presets.find((p) => p.id === id);
-											if (preset) {
-												await plugin.settingsService.identity.applyPresetToLocker(
-													deviceId,
-													preset.data
-												);
-											}
-										}
-										service.selectedPresets.clear();
-										this.renderPresetListItems();
-										new Notice(
-											`Applied ${selectedIds.length} presets to device locker.`
-										);
-									}
-								).open();
-							})
-					);
-				}
 
 				menu.showAtMouseEvent(e as MouseEvent);
 			});

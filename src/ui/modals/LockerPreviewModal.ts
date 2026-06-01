@@ -72,7 +72,7 @@ export class LockerPreviewModal extends Modal {
 
 						if (Object.keys(effectiveData).length === 0) {
 							this.plugin.settingsService.notifications.util(
-								'No settings found in this locker.'
+								'No configurations found in this locker.'
 							);
 							return;
 						}
