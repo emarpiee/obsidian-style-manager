@@ -308,6 +308,15 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 			});
 		}
 
+		if (this.setting.isDuplicate) {
+			const dupBadge = rightBadgesContainer.createSpan({
+				cls: 'style-manager-badge-warning',
+				text: '!',
+			});
+			setTooltip(dupBadge, 'Multiple styles define this ID');
+			rightBadgesContainer.prepend(dupBadge);
+		}
+
 		this.countEl = leftBadgesContainer.createSpan({
 			cls: 'style-manager-badge-primary count',
 		});

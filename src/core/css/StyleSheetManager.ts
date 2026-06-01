@@ -350,10 +350,15 @@ export class StyleSheetManager {
 							) ||
 							candidates.find(
 								(c) =>
+									c.sectionName === section.name && c.sourceType === 'Plugin'
+							) ||
+							candidates.find(
+								(c) =>
 									c.sectionName === section.name && c.sourceType === 'Snippet'
 							) ||
 							candidates.find((c) => c.sectionName === section.name) ||
 							candidates.find((c) => c.sourceType === 'Theme') ||
+							candidates.find((c) => c.sourceType === 'Plugin') ||
 							candidates.find((c) => c.sourceType === 'Snippet') ||
 							candidates[0];
 
@@ -398,6 +403,17 @@ export class StyleSheetManager {
 				if (priA !== priB) return priA - priB;
 				return (a.sourceId || '').localeCompare(b.sourceId || '');
 			});
+
+			// Mark duplicate IDs
+			const idCounts = new Map<string, number>();
+			for (const s of settingsList) {
+				idCounts.set(s.id, (idCounts.get(s.id) || 0) + 1);
+			}
+			for (const s of settingsList) {
+				if ((idCounts.get(s.id) || 0) > 1) {
+					s.isDuplicate = true;
+				}
+			}
 
 			return { settingsList, errorList };
 		} catch (e) {

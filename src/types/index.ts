@@ -98,6 +98,7 @@ export interface Heading extends Meta {
 	resetFn?: () => void;
 	sourceType?: 'Plugin' | 'Theme' | 'Snippet' | 'Unknown' | 'Style';
 	sourceId?: string;
+	isDuplicate?: boolean;
 }
 
 export interface InfoText extends Meta {
@@ -211,6 +212,7 @@ export interface ParsedCSSSettings {
 	sourceId?: string;
 	metadata?: SnippetMetadata;
 	raw?: string;
+	isDuplicate?: boolean;
 }
 
 export interface Preset {

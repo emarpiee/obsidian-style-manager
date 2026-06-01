@@ -135,6 +135,7 @@ export class StylesTab {
 					collapsed: s.collapsed,
 					sourceType: s.sourceType,
 					sourceId: s.sourceId,
+					isDuplicate: s.isDuplicate,
 					resetFn: (): void => {
 						plugin.settingsService.clearSection(s.id);
 					},
