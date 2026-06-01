@@ -22,16 +22,19 @@ import {
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from '../constants';
-import { StyleManagerSettings } from '../types';
+import { ParsedCSSSettings, StyleManagerSettings } from '../types';
 import { IsolateModeService } from './IsolateModeService';
 
 import { StyleGenerator } from '../core/style/StyleGenerator';
+import { StyleSheetManager } from '../core/css/StyleSheetManager';
 
 export interface StatsServiceOptions {
 	getSettings: () => StyleManagerSettings;
 	getSharedSettings: () => StyleManagerSettings;
 	isolateModeService: IsolateModeService;
 	styleGenerator: StyleGenerator;
+	styleSheetManager?: StyleSheetManager;
+	getSettingsList?: () => ParsedCSSSettings[];
 }
 
 /**
@@ -154,7 +157,9 @@ export class StatsService {
 								? 'Accent Color'
 								: s.id === '__snippets'
 									? 'Snippets'
-									: s.id,
+									: this.options.getSettingsList?.().find((active) => active.id === s.id)?.name ||
+									  this.options.styleSheetManager?.getSectionName(s.id) ||
+									  s.id,
 				isActive: s.isActive,
 				count:
 					s.id === '__theme' ||

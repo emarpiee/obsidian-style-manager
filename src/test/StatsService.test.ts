@@ -99,6 +99,32 @@ describe('StatsService', () => {
 			const deadSection = sections.find((s) => s.id === 'dead-snippet');
 			expect(deadSection!.isActive).toBe(false);
 		});
+
+		it('should resolve human-readable names for custom sections using active settings list or stylesheet manager', () => {
+			mockOptions.getSettings.mockReturnValue({
+				'active-snippet@@key': 'val',
+				'inactive-snippet@@key': 'val',
+			});
+			mockOptions.getSettingsList = vi.fn().mockReturnValue([
+				{ id: 'active-snippet', name: 'Active Snippet Name' }
+			]);
+			mockOptions.styleSheetManager = {
+				getSectionName: vi.fn().mockImplementation((id) => {
+					if (id === 'inactive-snippet') return 'Inactive Snippet Name';
+					return undefined;
+				})
+			};
+
+			const sections = service.getRawSettingsSections();
+
+			const activeSec = sections.find((s) => s.id === 'active-snippet');
+			expect(activeSec).toBeDefined();
+			expect(activeSec!.name).toBe('Active Snippet Name');
+
+			const inactiveSec = sections.find((s) => s.id === 'inactive-snippet');
+			expect(inactiveSec).toBeDefined();
+			expect(inactiveSec!.name).toBe('Inactive Snippet Name');
+		});
 	});
 
 	describe('getResetSectionsData', () => {

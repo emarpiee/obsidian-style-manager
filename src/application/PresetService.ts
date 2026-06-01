@@ -317,7 +317,7 @@ export class PresetService {
 			} else {
 				categories.set(section.id, {
 					id: section.id,
-					name: section.id,
+					name: section.name || section.id,
 					count: section.count,
 					isActive: false,
 				});

@@ -98,6 +98,18 @@ export class StyleSheetManager {
 		return result;
 	}
 
+	/**
+	 * Retrieves the human-readable display name of a style section by its ID from the disk map.
+	 */
+	public getSectionName(id: string): string | undefined {
+		const candidates = this.diskMapCache.get(id);
+		if (candidates && candidates.length > 0) {
+			return candidates[0].sectionName;
+		}
+		return undefined;
+	}
+
+
 	private fileCache: Map<
 		string,
 		{

@@ -166,6 +166,8 @@ export class SettingsService extends Events {
 			getSharedSettings: (): typeof this.sharedSettings => this.sharedSettings,
 			isolateModeService: this.isolateModeService,
 			styleGenerator: this.styleGenerator,
+			styleSheetManager: this.styleSheetManager,
+			getSettingsList: () => this.plugin.settingsList,
 		});
 
 		this.persistenceService = new PersistenceService({
