@@ -18,9 +18,9 @@
 */
 import { ACCENT_COLOR_KEY, APPEARANCE_KEY, THEME_KEY } from '../constants';
 import { NotificationService } from './NotificationService';
-import { Logger } from '../utils/Logger';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
+import { Logger } from '../utils/Logger';
 
 export type AppearanceMode = 'light' | 'dark' | 'system' | string;
 
@@ -112,9 +112,7 @@ export class ThemeService {
 			styleTag.textContent = cssContent;
 			this.deps.bridge.triggerEvent('parse-style-manager');
 		} catch {
-			this.deps.notifications.error(
-				`Could not load isolated theme: ${themeName}`
-			);
+			this.deps.notifications.error(`Could not load theme: ${themeName}`);
 		}
 	}
 

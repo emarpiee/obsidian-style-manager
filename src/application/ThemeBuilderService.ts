@@ -39,10 +39,17 @@ export class ThemeBuilderService {
 	) {}
 
 	/**
+	 * Generates a theme ID from a theme name
+	 */
+	private generateThemeId(name: string): string {
+		return name.toLowerCase().replace(/\s+/g, '-');
+	}
+
+	/**
 	 * Creates a new theme scaffold in .obsidian/themes/
 	 */
 	async createTheme(manifest: ThemeManifest): Promise<string> {
-		const themeId = manifest.name.toLowerCase().replace(/\s+/g, '-');
+		const themeId = this.generateThemeId(manifest.name);
 		const themePath = normalizePath(`.obsidian/themes/${themeId}`);
 		const adapter = this.app.vault.adapter;
 
@@ -93,7 +100,7 @@ export class ThemeBuilderService {
 		newName: string
 	): Promise<string> {
 		const sourcePath = normalizePath(`.obsidian/themes/${sourceThemeId}`);
-		const newThemeId = newName.toLowerCase().replace(/\s+/g, '-');
+		const newThemeId = this.generateThemeId(newName);
 		const newPath = normalizePath(`.obsidian/themes/${newThemeId}`);
 		const adapter = this.app.vault.adapter;
 
@@ -157,17 +164,35 @@ export class ThemeBuilderService {
 	}
 
 	/**
-	 * Updates the manifest.json for a theme
+	 * Updates the manifest.json for a theme and renames the folder if the name changed
 	 */
 	async updateThemeManifest(
 		themeId: string,
 		manifest: ThemeManifest
 	): Promise<void> {
 		const adapter = this.app.vault.adapter;
-		const manifestPath = normalizePath(`.obsidian/themes/${themeId}/manifest.json`);
+		let currentThemeId = themeId;
+		const newThemeId = this.generateThemeId(manifest.name);
+
+		if (newThemeId !== currentThemeId) {
+			const oldPath = normalizePath(`.obsidian/themes/${currentThemeId}`);
+			const newPath = normalizePath(`.obsidian/themes/${newThemeId}`);
+
+			if (!(await adapter.exists(oldPath))) {
+				throw new Error(`Theme directory not found: ${oldPath}`);
+			}
+			if (await adapter.exists(newPath)) {
+				throw new Error(`Target theme directory already exists: ${newPath}`);
+			}
+
+			await adapter.rename(oldPath, newPath);
+			currentThemeId = newThemeId;
+		}
+
+		const manifestPath = normalizePath(`.obsidian/themes/${currentThemeId}/manifest.json`);
 
 		if (!(await adapter.exists(manifestPath))) {
-			throw new Error(`Manifest not found for theme: ${themeId}`);
+			throw new Error(`Manifest not found for theme: ${currentThemeId}`);
 		}
 
 		await adapter.write(manifestPath, JSON.stringify(manifest, null, '\t'));
