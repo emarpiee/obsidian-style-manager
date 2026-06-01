@@ -202,7 +202,7 @@ export class PresetList {
 
 		const actionsDiv = bulkActionRow.createDiv('style-manager-bulk-buttons');
 
-		new ButtonComponent(actionsDiv).setButtonText('Select All').onClick(() => {
+		new ButtonComponent(actionsDiv).setButtonText('Select all').onClick(() => {
 			this.filteredPresets.forEach((p) => service.selectedPresets.add(p.id));
 			this.renderPresetListItems();
 		});
@@ -250,7 +250,7 @@ export class PresetList {
 					service.selectedPresets.clear();
 					this.renderPresetListItems();
 				} catch (err) {
-					console.error('Style Manager | Bulk Export failed:', err);
+					console.error('Style Manager | Bulk export failed:', err);
 					new Notice(
 						`Export failed: ${err instanceof Error ? err.message : String(err)}`
 					);
@@ -281,12 +281,12 @@ export class PresetList {
 
 				new ConfirmModal(
 					plugin.app,
-					'Export Multiple Presets',
+					'Export multiple presets',
 					description,
-					'Include Assets (ZIP)',
+					'Include assets (ZIP)',
 					false,
 					() => performExport(true),
-					`Presets Only (${preferredExtension})`,
+					`Presets only (${preferredExtension})`,
 					() => performExport(false)
 				).open();
 			} else {
@@ -297,7 +297,7 @@ export class PresetList {
 				} else {
 					new ConfirmModal(
 						plugin.app,
-						'Export Multiple Presets',
+						'Export multiple presets',
 						`Are you sure you want to export ${service.selectedPresets.size} selected presets to your vault?`,
 						`Export (${preferredExtension})`,
 						false,
@@ -308,7 +308,7 @@ export class PresetList {
 		});
 
 		new ButtonComponent(actionsDiv)
-			.setButtonText('Apply All')
+			.setButtonText('Apply')
 			.setCta()
 			.onClick((e: MouseEvent | KeyboardEvent) => {
 				const menu = new Menu();
@@ -331,11 +331,13 @@ export class PresetList {
 					} else {
 						new ConfirmModal(
 							plugin.app,
-							isolate ? 'Apply All (Isolated)' : 'Apply All',
 							isolate
-								? `Are you sure you want to apply ${service.selectedPresets.size} presets sequentially to this device only?`
-								: `Are you sure you want to apply ${service.selectedPresets.size} presets sequentially to all shared devices?`,
-							isolate ? 'Apply All (Isolated)' : 'Apply All',
+								? 'Apply to this device (isolate)'
+								: 'Apply to shared locker',
+							isolate
+								? `Are you sure you want to apply ${service.selectedPresets.size} presets sequentially to this device?`
+								: `Are you sure you want to apply ${service.selectedPresets.size} presets sequentially to the shared locker?`,
+							isolate ? 'Confirm' : 'Confirm',
 							false,
 							performApply
 						).open();
@@ -344,14 +346,14 @@ export class PresetList {
 
 				menu.addItem((item: MenuItem) =>
 					item
-						.setTitle('Apply All Globally (Shared Mode)')
+						.setTitle('Apply to shared locker')
 						.setIcon('globe')
 						.onClick(() => applyAll(false))
 				);
 
 				menu.addItem((item: MenuItem) =>
 					item
-						.setTitle('Apply All to This Device (Isolate Mode)')
+						.setTitle('Apply to this device (isolate)')
 						.setIcon('lock')
 						.onClick(() => applyAll(true))
 				);
@@ -362,7 +364,7 @@ export class PresetList {
 				if (otherDeviceIds.length > 0) {
 					menu.addItem((item) =>
 						item
-							.setTitle('Apply All to other Device (Isolate Mode)')
+							.setTitle('Apply to other device (isolate)')
 							.setIcon('share-2')
 							.onClick(() => {
 								new DeviceSelectionModal(
@@ -418,9 +420,9 @@ export class PresetList {
 				} else {
 					new ConfirmModal(
 						plugin.app,
-						'Delete Multiple Presets',
+						'Delete multiple presets',
 						`Are you sure you want to delete ${service.selectedPresets.size} presets? This action cannot be undone.`,
-						'Delete All',
+						'Delete selected',
 						true,
 						performDelete
 					).open();
@@ -429,7 +431,7 @@ export class PresetList {
 
 		new ButtonComponent(actionsDiv)
 			.setIcon('cross')
-			.setTooltip('Cancel Selection')
+			.setTooltip('Cancel selection')
 			.onClick(() => {
 				service.selectedPresets.clear();
 				this.renderPresetListItems();

@@ -100,7 +100,7 @@ export class IsolateModeHeader extends Component {
 			if (otherDeviceIds.length > 0) {
 				menu.addItem((item) =>
 					item
-						.setTitle('Apply to other isolated locker')
+						.setTitle('Apply to other device (isolate)')
 						.setIcon('share-2')
 						.onClick(() => {
 							new DeviceSelectionModal(

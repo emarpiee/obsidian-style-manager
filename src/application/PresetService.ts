@@ -282,11 +282,13 @@ export class PresetService {
 		} else {
 			new ConfirmModal(
 				this.plugin.app,
-				isolateOnly ? 'Apply to isolate locker' : 'Apply to shared locker',
 				isolateOnly
-					? `Are you sure you want to apply the preset "${presetName}" to this isolate locker only?`
+					? 'Apply to this devce (isolate)'
+					: 'Apply to shared locker',
+				isolateOnly
+					? `Are you sure you want to apply the preset "${presetName}" to this device?`
 					: `Are you sure you want to apply the preset "${presetName}" to the shared locker?`,
-				isolateOnly ? 'Apply to isolate locker' : 'Apply to shared locker',
+				isolateOnly ? 'Confirm' : 'Confirm',
 				false,
 				onConfirm
 			).open();

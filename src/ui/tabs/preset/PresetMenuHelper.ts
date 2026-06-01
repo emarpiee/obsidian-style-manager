@@ -39,10 +39,6 @@ export interface ApplyMenuOptions {
 	hideRemote?: boolean;
 }
 
-/**
- * Standardizes the "Apply" options (Shared Mode, Isolate Mode, Remote Device)
- * for a data source (Preset or Isolate Bucket) across the UI.
- */
 export function addApplyOptionsToMenu(
 	menu: Menu,
 	plugin: StyleManagerPlugin,
@@ -78,7 +74,7 @@ export function addApplyOptionsToMenu(
 	if (options?.hideIsolate !== true) {
 		menu.addItem((item) =>
 			item
-				.setTitle('Apply to isolate locker')
+				.setTitle('Apply to this device (isolate)')
 				.setIcon('lock')
 				.onClick(() => {
 					plugin.presetService.confirmApply(
@@ -107,7 +103,7 @@ export function addApplyOptionsToMenu(
 	if (options?.hideRemote !== true && otherDeviceIds.length > 0) {
 		menu.addItem((item) =>
 			item
-				.setTitle('Apply to other isolate locker')
+				.setTitle('Apply to other device (isolate)')
 				.setIcon('share-2')
 				.onClick(() => {
 					new DeviceSelectionModal(
@@ -119,7 +115,7 @@ export function addApplyOptionsToMenu(
 								source.data
 							);
 							new Notice(
-								`Settings for "${source.name}" applied to Isolate Locker.`
+								`Settings for "${source.name}" applied to isolate locker.`
 							);
 							if (onApplied) onApplied();
 						}
