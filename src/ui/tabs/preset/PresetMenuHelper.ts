@@ -62,9 +62,9 @@ export function addApplyOptionsToMenu(
 			item
 				.setTitle('Apply to shared locker')
 				.setIcon('globe')
-				.onClick(() => {
-					const perform = async () => {
-						if (onApplyShared) {
+						.onClick(() => {
+							const perform = async (): Promise<void> => {
+								if (onApplyShared) {
 							await onApplyShared();
 						} else if (source.id) {
 							await plugin.presetService.applyPreset(source.id);
@@ -91,9 +91,9 @@ export function addApplyOptionsToMenu(
 			item
 				.setTitle('Apply to this device (isolate)')
 				.setIcon('lock')
-				.onClick(() => {
-					const perform = async () => {
-						if (onApplyIsolate) {
+						.onClick(() => {
+							const perform = async (): Promise<void> => {
+								if (onApplyIsolate) {
 							await onApplyIsolate();
 						} else if (source.id) {
 							await plugin.presetService.applyPreset(source.id, true);

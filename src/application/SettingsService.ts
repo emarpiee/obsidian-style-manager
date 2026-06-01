@@ -27,7 +27,7 @@ import {
 } from '../constants';
 import { Logger } from '../utils/Logger';
 import type StyleManagerPlugin from '../main';
-import { RefreshLevel, SettingValue, StyleManagerSettings } from '../types';
+import { ParsedCSSSettings, RefreshLevel, SettingValue, StyleManagerSettings } from '../types';
 import { IdentityService } from './IdentityService';
 import { IsolateModeService } from './IsolateModeService';
 import { NotificationService } from './NotificationService';
@@ -167,7 +167,7 @@ export class SettingsService extends Events {
 			isolateModeService: this.isolateModeService,
 			styleGenerator: this.styleGenerator,
 			styleSheetManager: this.styleSheetManager,
-			getSettingsList: () => this.plugin.settingsList,
+			getSettingsList: (): ParsedCSSSettings[] => this.plugin.settingsList,
 		});
 
 		this.persistenceService = new PersistenceService({

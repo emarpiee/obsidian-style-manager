@@ -158,8 +158,8 @@ export class StatsService {
 								: s.id === '__snippets'
 									? 'Snippets'
 									: this.options.getSettingsList?.().find((active) => active.id === s.id)?.name ||
-									  this.options.styleSheetManager?.getSectionName(s.id) ||
-									  s.id,
+									this.options.styleSheetManager?.getSectionName(s.id) ||
+									s.id,
 				isActive: s.isActive,
 				count:
 					s.id === '__theme' ||

@@ -19,7 +19,6 @@
 import {
 	ButtonComponent,
 	Menu,
-	MenuItem,
 	Notice,
 	Platform,
 	SearchComponent,
@@ -41,7 +40,6 @@ import { Preset } from '../../../types';
 import { getFormattedTimestamp } from '../../../utils/CommonUtils';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { CreatePresetModal } from '../../modals/CreatePresetModal';
-import { DeviceSelectionModal } from '../../modals/DeviceSelectionModal';
 import { ImportPresetModal } from '../../modals/ImportPresetModal';
 
 export class PresetList {
