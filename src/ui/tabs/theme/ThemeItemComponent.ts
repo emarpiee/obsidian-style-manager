@@ -51,40 +51,40 @@ export class ThemeItemComponent extends Component {
 			.addExtraButton((btn) => {
 				btn
 					.setIcon('info')
-					.setTooltip('Edit Theme Manifest')
+					.setTooltip('Edit theme manifest')
 					.onClick(() => this.onEditManifest());
 			})
 			.addExtraButton((btn) => {
 				btn
 					.setIcon('more-vertical')
-					.setTooltip('More Options')
+					.setTooltip('More options')
 					.onClick(() => {
 						const menu = new Menu();
 
 						menu.addItem((item) =>
 							item
-								.setTitle('Edit Theme CSS')
+								.setTitle('Edit theme CSS')
 								.setIcon('code')
 								.onClick(() => this.onEdit())
 						);
 
 						menu.addItem((item) =>
 							item
-								.setTitle('Edit Theme Manifest')
+								.setTitle('Edit theme manifest')
 								.setIcon('info')
 								.onClick(() => this.onEditManifest())
 						);
 
 						menu.addItem((item) =>
 							item
-								.setTitle('Duplicate Theme')
+								.setTitle('Duplicate theme')
 								.setIcon('copy')
 								.onClick(() => this.onDuplicate())
 						);
 
 						menu.addItem((item) =>
 							item
-								.setTitle('Delete Theme')
+								.setTitle('Delete theme')
 								.setIcon('trash')
 								.setWarning(true)
 								.onClick(() => this.onDelete())
@@ -213,7 +213,7 @@ export class ThemeItemComponent extends Component {
 	private async onDuplicate(): Promise<void> {
 		new RenameModal(
 			this.app,
-			'Duplicate Theme',
+			'Duplicate theme',
 			`${this.manifest.name} Copy`,
 			async (newName) => {
 				if (!newName) return;
@@ -236,7 +236,7 @@ export class ThemeItemComponent extends Component {
 	private async onDelete(): Promise<void> {
 		new ConfirmModal(
 			this.app,
-			'Delete Theme',
+			'Delete theme',
 			`Are you sure you want to delete the theme "${this.manifest.name}"? This action will permanently remove the theme folder.`,
 			'Delete',
 			true,

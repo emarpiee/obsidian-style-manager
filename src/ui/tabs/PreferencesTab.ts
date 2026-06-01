@@ -541,27 +541,27 @@ export class PreferencesTab {
 		const notificationSettings = [
 			{
 				key: SHOW_SHARED_NOTIFICATIONS_KEY,
-				name: 'Shared notifications',
+				name: 'shared notifications',
 				desc: 'Alerts when background shared changes are detected.',
 			},
 			{
 				key: SHOW_PRESET_NOTIFICATIONS_KEY,
-				name: 'Preset notifications',
+				name: 'preset notifications',
 				desc: 'Alerts when saving, applying, or exporting presets.',
 			},
 			{
 				key: SHOW_ISOLATE_NOTIFICATIONS_KEY,
-				name: 'Isolate notifications',
+				name: 'isolate notifications',
 				desc: 'Alerts when resetting or pushing isolated configurations.',
 			},
 			{
 				key: SHOW_SNIPPET_NOTIFICATIONS_KEY,
-				name: 'Snippet notifications',
+				name: 'snippet notifications',
 				desc: 'Alerts when managing CSS snippets (save, rename, delete).',
 			},
 			{
 				key: SHOW_UTILITY_NOTIFICATIONS_KEY,
-				name: 'Utility notifications',
+				name: 'utility notifications',
 				desc: 'Minor UI feedback like "Copied to clipboard".',
 			},
 		];

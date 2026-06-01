@@ -53,7 +53,7 @@ export class ThemeManifestModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-create-theme-modal');
 
-		this.setTitle(this.themeId ? 'Edit Theme Manifest' : 'Create New Theme');
+		this.setTitle(this.themeId ? 'Edit theme manifest' : 'Create new theme');
 		contentEl.createEl('p', {
 			text: '⚠️ Modifying a community theme’s manifest may break its connection to the gallery.',
 			cls: 'style-manager-theme-manifest-warning',
@@ -62,7 +62,7 @@ export class ThemeManifestModal extends Modal {
 
 		new Setting(contentEl)
 			.setClass('style-manager-required-setting')
-			.setName('Theme Name')
+			.setName('Theme name')
 			.setDesc('The display name of your theme.')
 			.addText((text) =>
 				text
@@ -77,7 +77,7 @@ export class ThemeManifestModal extends Modal {
 			.setDesc("The author's name.")
 			.addText((text) =>
 				text
-					.setPlaceholder('Your Name')
+					.setPlaceholder('kepano')
 					.setValue(this.manifest.author)
 					.onChange((val) => (this.manifest.author = val.trim()))
 			);
@@ -95,7 +95,7 @@ export class ThemeManifestModal extends Modal {
 
 		new Setting(contentEl)
 			.setClass('style-manager-required-setting')
-			.setName('Min App Version')
+			.setName('Min app version')
 			.setDesc('The minimum required Obsidian version.')
 			.addText((text) =>
 				text
@@ -136,7 +136,7 @@ export class ThemeManifestModal extends Modal {
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
 				btn
-					.setButtonText(this.themeId ? 'Save Changes' : 'Create Theme')
+					.setButtonText(this.themeId ? 'Save changes' : 'Create theme')
 					.setCta()
 					.onClick(async () => {
 						if (
