@@ -668,17 +668,22 @@ export class SettingsService extends Events {
 		const hasStyleChange = Object.keys(updates).some((key) =>
 			this.isStyleSetting(key)
 		);
+		const isSnippetOnly =
+			updates[SNIPPETS_KEY] !== undefined &&
+			!Object.keys(updates).some(
+				(key) => key !== SNIPPETS_KEY && this.isStyleSetting(key)
+			);
 
-		if (hasStyleChange) {
+		if (hasStyleChange && !isSnippetOnly) {
 			this.styleSheetManager.clearCache();
 			this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
 		}
 
-		if (!options?.silentUI) {
+		if (!options?.silentUI && !isSnippetOnly) {
 			this.refreshService.trigger(RefreshLevel.UI_ONLY);
 		}
 
-		if (hasStyleChange) {
+		if (hasStyleChange && !isSnippetOnly) {
 			this.trigger('refresh-status-bar');
 		}
 
