@@ -221,7 +221,14 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	display: flex;
 	align-items: center;
 	overflow: hidden !important;
+}
+
+.style-manager-style-wrapper:not(:first-child) .style-manager-style-heading {
 	border-top: var(--sm-heading-border-size) solid var(--sm-heading-border-color) !important;
+}
+.style-manager-style-wrapper:is(:last-child) {
+	border-bottom: var(--sm-heading-border-size) solid
+		var(--sm-heading-border-color) !important;
 }
 
 .style-manager-style-heading-description {
@@ -271,7 +278,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 }
 
 .style-manager-style-heading:not(.is-collapsed) {
-	box-shadow: none;
+	box-shadow: 0 4px 6px -1px oklch(0 0 0 / 0.05);
 }
 
 .style-manager-style-heading:hover {
