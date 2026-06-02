@@ -33,6 +33,7 @@ export class ClassToggleSettingComponent extends AbstractSettingComponent {
 		const description = getDescription(this.setting);
 
 		this.settingEl = new Setting(this.containerEl);
+		this.settingEl.setClass('style-manager-style-settings-item');
 		this.settingEl.setName(title);
 		this.settingEl.setDesc(description ?? '');
 

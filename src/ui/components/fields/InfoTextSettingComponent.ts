@@ -33,6 +33,7 @@ export class InfoTextSettingComponent extends AbstractSettingComponent {
 		const description = getDescription(this.setting);
 
 		this.settingEl = new Setting(this.containerEl);
+		this.settingEl.setClass('style-manager-style-settings-item');
 		this.settingEl.setClass('style-manager-info-text');
 		if (title) {
 			this.settingEl.setName(title);

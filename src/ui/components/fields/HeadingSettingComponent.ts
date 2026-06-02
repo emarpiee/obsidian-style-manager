@@ -221,21 +221,21 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		const description = getDescription(this.setting);
 
 		this.sectionEl = this.containerEl.createDiv({
-			cls: 'style-manager-section',
+			cls: 'style-manager-style-wrapper',
 		});
 
 		const headerGroupEl = this.sectionEl.createDiv({
-			cls: 'style-manager-heading-group',
+			cls: 'style-manager-style-item-group',
 		});
 
 		this.settingEl = new Setting(headerGroupEl);
 		this.settingEl.setHeading();
-		this.settingEl.setClass('style-manager-heading');
+		this.settingEl.setClass('style-manager-style-heading');
 		this.settingEl.setName(title);
 
 		if (description) {
 			const descEl = headerGroupEl.createDiv({
-				cls: 'style-manager-heading-description',
+				cls: 'style-manager-style-heading-description',
 				text: description,
 			});
 			descEl.addEventListener('click', () => {
@@ -330,7 +330,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		this.addExportButton();
 
 		this.childEl = this.sectionEl.createDiv({
-			cls: 'style-manager-container',
+			cls: 'style-manager-style-settings-container',
 		});
 
 		const fullId = `${this.sectionId}:${this.setting.id}`;

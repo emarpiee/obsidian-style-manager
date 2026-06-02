@@ -101,6 +101,7 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 		}
 
 		this.settingEl = new Setting(this.containerEl);
+		this.settingEl.setClass('style-manager-style-settings-item');
 		this.settingEl.setName(title);
 
 		// Construct description

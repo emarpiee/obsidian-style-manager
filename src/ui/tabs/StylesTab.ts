@@ -203,14 +203,17 @@ export class StylesTab {
 				wrapper.createDiv({
 					cls: 'style-manager-skeleton style-manager-skeleton-heading',
 				});
-				wrapper.createDiv({ cls: 'style-manager-container' }, (container) => {
-					for (let j = 0; j < 3; j++) {
-						container.createDiv({
-							cls: 'style-manager-skeleton style-manager-skeleton-item',
-							attr: { style: `width: ${80 - j * 10}%` },
-						});
+				wrapper.createDiv(
+					{ cls: 'style-manager-style-settings-container' },
+					(container) => {
+						for (let j = 0; j < 3; j++) {
+							container.createDiv({
+								cls: 'style-manager-skeleton style-manager-skeleton-item',
+								attr: { style: `width: ${80 - j * 10}%` },
+							});
+						}
 					}
-				});
+				);
 			}
 		});
 	}
