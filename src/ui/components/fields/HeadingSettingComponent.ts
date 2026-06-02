@@ -313,10 +313,15 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 				cls: 'style-manager-style-id-duplicate-badge-warning',
 			});
 			setIcon(dupBadge, 'alert-circle');
-			const warningMessage = 'Duplicate @setting block ID detected';
+
+			const duplicateNames = this.settingsService.plugin.settingsList
+				.filter((s) => s.id === this.setting.id)
+				.map((s) => s.name);
+
+			const warningMessage = `Duplicate @setting ID detected:\n${duplicateNames.join('\n')}`;
 			setTooltip(dupBadge, warningMessage);
 			if (Platform.isMobile) {
-				dupBadge.onclick = (e) => {
+				dupBadge.onclick = (e): void => {
 					e.stopPropagation();
 					new Notice(warningMessage);
 				};
