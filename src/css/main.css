@@ -224,6 +224,15 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	border-top: var(--sm-heading-border-size) solid var(--sm-heading-border-color) !important;
 }
 
+.style-manager-style-heading-description {
+	padding: 0 var(--size-4-3) var(--size-4-1);
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+	line-height: var(--line-height-tight);
+	background-color: var(--sm-heading-bg);
+	cursor: pointer;
+}
+
 .style-manager-style-heading[data-level='0'] {
 	top: var(--sm-sticky-top-offset);
 	z-index: 100;
