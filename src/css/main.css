@@ -200,6 +200,10 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	width: 100%;
 }
 
+.style-manager-style-wrapper:not(:first-child) {
+	border-top: var(--sm-heading-border-size) solid var(--sm-heading-border-color) !important;
+}
+
 .style-manager-style-item-group {
 	display: contents;
 }
@@ -208,7 +212,6 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	cursor: pointer;
 	margin: 0 !important;
 	padding: 0 var(--size-4-2) !important;
-	border-top: var(--sm-heading-border-size) solid var(--sm-heading-border-color) !important;
 	border-radius: 0 !important;
 	position: sticky;
 	background-color: var(--sm-heading-bg);
