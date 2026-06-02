@@ -208,6 +208,11 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	display: contents;
 }
 
+.style-manager-style-id-duplicate-badge-warning {
+	color: var(--text-error);
+	display: flex;
+}
+
 .style-manager-style-heading {
 	cursor: pointer;
 	margin: 0 !important;

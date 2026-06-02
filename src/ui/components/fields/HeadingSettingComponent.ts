@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Setting, setIcon, setTooltip } from 'obsidian';
+import { Notice, Platform, Setting, setIcon, setTooltip } from 'obsidian';
 
 import { ClassMultiToggleSettingComponent } from './ClassMultiToggleSettingComponent';
 import { ClassToggleSettingComponent } from './ClassToggleSettingComponent';
@@ -276,8 +276,8 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 			const isReadOnly = type === 'Theme' || type === 'Plugin';
 			const badgeText = type;
 			const tooltipText = isReadOnly
-				? `View Source File: ${type} (Read-only)`
-				: `Edit Source File: ${type}`;
+				? `View source file: ${type} (Read-only)`
+				: `Edit source file: ${type}`;
 
 			const sourceBadge = rightBadgesContainer.createSpan({
 				cls: `style-manager-badge-primary source-type mode-${type.toLowerCase()}`,
@@ -295,7 +295,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 				const id = this.setting.sourceId;
 				if (!id) {
 					this.settingsService.notifications.error(
-						`Cannot edit: Could not determine the file ID for this ${type}.`
+						`Cannot edit: could not determine the file ID for this ${type}.`
 					);
 					return;
 				}
@@ -310,10 +310,17 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 
 		if (this.setting.isDuplicate) {
 			const dupBadge = rightBadgesContainer.createSpan({
-				cls: 'style-manager-badge-warning',
-				text: '!',
+				cls: 'style-manager-style-id-duplicate-badge-warning',
 			});
-			setTooltip(dupBadge, 'Multiple styles define this ID');
+			setIcon(dupBadge, 'alert-circle');
+			const warningMessage = 'Duplicate @setting block ID detected';
+			setTooltip(dupBadge, warningMessage);
+			if (Platform.isMobile) {
+				dupBadge.onclick = (e) => {
+					e.stopPropagation();
+					new Notice(warningMessage);
+				};
+			}
 			rightBadgesContainer.prepend(dupBadge);
 		}
 

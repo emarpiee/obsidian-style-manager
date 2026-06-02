@@ -86,7 +86,7 @@ export class CSSEditorModal extends Modal {
 		this.titleEl.addClass('style-manager-editor-title-container');
 
 		this.titleEl.createSpan({
-			text: `${this.source.readOnly ? 'View' : 'Edit'} ${this.source.type}: `,
+			text: `${this.source.readOnly ? 'Viewing' : 'Editing'}: `,
 			cls: 'style-manager-editor-title-prefix',
 		});
 

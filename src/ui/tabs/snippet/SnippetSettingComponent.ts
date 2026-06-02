@@ -78,34 +78,34 @@ export class SnippetSettingComponent extends Component {
 			.addExtraButton((btn) => {
 				btn
 					.setIcon('more-vertical')
-					.setTooltip('More Options')
+					.setTooltip('More options')
 					.onClick(() => {
 						const menu = new Menu();
 
 						menu.addItem((item) =>
 							item
-								.setTitle('Duplicate Snippet')
+								.setTitle('Duplicate snippet')
 								.setIcon('copy')
 								.onClick(() => this.onDuplicate())
 						);
 
 						menu.addItem((item) =>
 							item
-								.setTitle('Edit Snippet')
+								.setTitle('Edit snippet')
 								.setIcon('code')
 								.onClick(() => this.onEdit())
 						);
 
 						menu.addItem((item) =>
 							item
-								.setTitle('Rename Snippet')
+								.setTitle('Rename snippet')
 								.setIcon('pencil')
 								.onClick(() => this.onRename())
 						);
 
 						menu.addItem((item) =>
 							item
-								.setTitle('Delete Snippet')
+								.setTitle('Delete snippet')
 								.setIcon('trash')
 								.setWarning(true)
 								.onClick(() => this.onDelete())
@@ -268,7 +268,7 @@ export class SnippetSettingComponent extends Component {
 	private async onRename(): Promise<void> {
 		new RenameModal(
 			this.app,
-			'Rename Snippet',
+			'Rename snippet',
 			this.snippetId,
 			async (newName) => {
 				if (!newName || newName === this.snippetId) return;
@@ -294,7 +294,7 @@ export class SnippetSettingComponent extends Component {
 	private async onDelete(): Promise<void> {
 		new ConfirmModal(
 			this.app,
-			'Delete Snippet',
+			'Delete snippet',
 			`Are you sure you want to delete the snippet "${this.snippetId}"? This action cannot be undone.`,
 			'Delete',
 			true,
