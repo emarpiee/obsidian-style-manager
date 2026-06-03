@@ -42,6 +42,7 @@ import { StyleManagerSettingTab } from './ui/StyleManagerSettingTab';
 import { StyleManagerView, viewType } from './ui/StyleManagerView';
 import { SettingType } from './ui/components/base/types';
 import { StatusBarManager } from './ui/elements/StatusBarManager';
+import { ApplyPresetModal } from './ui/modals/ApplyPresetModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
@@ -98,6 +99,30 @@ export default class StyleManagerPlugin extends Plugin {
 				new CreatePresetModal(this.app, this.presetService, prefixesArr, () => {
 					this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
 				}).open();
+			},
+		});
+
+		this.addCommand({
+			id: 'style-manager-apply-preset-shared',
+			name: 'Apply preset to shared locker',
+			callback: () => {
+				new ApplyPresetModal(this.app, this.presetService, 'shared').open();
+			},
+		});
+
+		this.addCommand({
+			id: 'style-manager-apply-preset-this-device',
+			name: 'Apply preset to this device (isolate)',
+			callback: () => {
+				new ApplyPresetModal(this.app, this.presetService, 'this-device').open();
+			},
+		});
+
+		this.addCommand({
+			id: 'style-manager-apply-preset-other-device',
+			name: 'Apply preset to other device (isolate)',
+			callback: () => {
+				new ApplyPresetModal(this.app, this.presetService, 'other-device').open();
 			},
 		});
 
