@@ -41,6 +41,10 @@ export class ApplyPresetModal extends SuggestModal<Preset> {
 
 	onOpen(): void {
 		this.setPlaceholder('Search presets...');
+		if (this.inputEl) {
+			this.inputEl.value = '';
+			this.inputEl.dispatchEvent(new Event('input'));
+		}
 	}
 
 	getSuggestions(query: string): Preset[] {
