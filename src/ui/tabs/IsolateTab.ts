@@ -159,10 +159,10 @@ export class IsolateTab {
 	private renderRemoteLockers(): void {
 		const { containerEl, app, plugin } = this;
 
-		containerEl.createEl('h4', {
-			text: 'Other devices',
-			cls: 'style-manager-settings-tab-subtitle',
-		});
+		new Setting(containerEl)
+			.setName('Other devices')
+			.setHeading()
+			.setClass('style-manager-settings-tab-title');
 
 		const deviceContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
