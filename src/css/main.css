@@ -346,10 +346,6 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	margin-left: 8px;
 }
 
-.style-manager-badge-container.mod-right {
-	margin-right: 12px;
-}
-
 .style-manager-badge-primary {
 	font-size: 10px;
 	padding: 1px 7px;
@@ -600,11 +596,14 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	display: block;
 }
 
-
 /* Input Validation */
 .is-invalid {
 	border: 1px solid var(--text-error) !important;
-	background-color: color-mix(in oklch, var(--text-error), transparent 95%) !important;
+	background-color: color-mix(
+		in oklch,
+		var(--text-error),
+		transparent 95%
+	) !important;
 }
 
 body.is-mobile
