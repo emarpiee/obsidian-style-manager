@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Command, Plugin, normalizePath } from 'obsidian';
+import { Command, Notice, Plugin, normalizePath } from 'obsidian';
 
 import { ACCENT_COLOR_KEY, APPEARANCE_KEY, THEME_KEY } from './constants';
 import {
@@ -92,7 +92,7 @@ export default class StyleManagerPlugin extends Plugin {
 		);
 
 		this.addCommand({
-			id: 'style-manager-save-preset',
+			id: 'style-manager-command-save-preset',
 			name: 'Save current styles as preset',
 			callback: () => {
 				const prefixesArr = this.presetService.getPrefixesMetadata();
@@ -103,7 +103,7 @@ export default class StyleManagerPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: 'style-manager-apply-preset-shared',
+			id: 'style-manager-command-apply-preset-shared',
 			name: 'Apply preset to shared locker',
 			callback: () => {
 				new ApplyPresetModal(this.app, this.presetService, 'shared').open();
@@ -111,18 +111,37 @@ export default class StyleManagerPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: 'style-manager-apply-preset-this-device',
+			id: 'style-manager-command-apply-preset-this-device',
 			name: 'Apply preset to this device (isolate)',
 			callback: () => {
-				new ApplyPresetModal(this.app, this.presetService, 'this-device').open();
+				new ApplyPresetModal(
+					this.app,
+					this.presetService,
+					'this-device'
+				).open();
 			},
 		});
 
 		this.addCommand({
-			id: 'style-manager-apply-preset-other-device',
+			id: 'style-manager-command-apply-preset-other-device',
 			name: 'Apply preset to other device (isolate)',
 			callback: () => {
-				new ApplyPresetModal(this.app, this.presetService, 'other-device').open();
+				new ApplyPresetModal(
+					this.app,
+					this.presetService,
+					'other-device'
+				).open();
+			},
+		});
+
+		this.addCommand({
+			id: 'style-manager-command-toggle-isolate-mode',
+			name: 'Toggle isolate mode',
+			callback: async () => {
+				const current = this.settingsService.isIsolateMode();
+				const next = !current;
+				await this.settingsService.setIsolateMode(next);
+				new Notice(`Isolate mode ${next ? 'enabled' : 'disabled'}`);
 			},
 		});
 
@@ -342,7 +361,7 @@ export default class StyleManagerPlugin extends Plugin {
 
 		if (!options?.skipLoad) {
 			this.settingsService.notifications.shared(
-				'Style Manager synchronized with Shared Locker'
+				'Style Manager synchronized with shared locker.'
 			);
 		}
 	}

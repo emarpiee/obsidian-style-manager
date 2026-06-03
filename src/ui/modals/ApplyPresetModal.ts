@@ -16,10 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, SuggestModal, Notice } from 'obsidian';
-import { Preset } from '../../types';
-import { PresetService } from '../../application/PresetService';
+import { App, Notice, SuggestModal } from 'obsidian';
+
 import { DeviceSelectionModal } from './DeviceSelectionModal';
+
+import { PresetService } from '../../application/PresetService';
+import { Preset } from '../../types';
 
 export type ApplyPresetTarget = 'shared' | 'this-device' | 'other-device';
 
@@ -27,7 +29,11 @@ export class ApplyPresetModal extends SuggestModal<Preset> {
 	presetService: PresetService;
 	target: ApplyPresetTarget;
 
-	constructor(app: App, presetService: PresetService, target: ApplyPresetTarget) {
+	constructor(
+		app: App,
+		presetService: PresetService,
+		target: ApplyPresetTarget
+	) {
 		super(app);
 		this.presetService = presetService;
 		this.target = target;
@@ -76,7 +82,9 @@ export class ApplyPresetModal extends SuggestModal<Preset> {
 							deviceId,
 							preset.data
 						);
-						new Notice(`Settings for "${preset.name}" applied to isolate locker.`);
+						new Notice(
+							`Settings for "${preset.name}" applied to isolate locker.`
+						);
 						this.close();
 					}
 				).open();
@@ -85,6 +93,6 @@ export class ApplyPresetModal extends SuggestModal<Preset> {
 	}
 
 	renderSuggestion(preset: Preset, el: HTMLElement): void {
-		el.setText(preset.name);
+		el.createEl('div', { text: preset.name });
 	}
 }
