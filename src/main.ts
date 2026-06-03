@@ -44,6 +44,7 @@ import { SettingType } from './ui/components/base/types';
 import { StatusBarManager } from './ui/elements/StatusBarManager';
 import { ApplyPresetModal } from './ui/modals/ApplyPresetModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
+import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
 
@@ -135,6 +136,23 @@ export default class StyleManagerPlugin extends Plugin {
 		});
 
 		this.addCommand({
+			id: 'style-manager-command-reset-styles',
+			name: 'Reset current styles',
+			callback: () => {
+				const sectionsWithData = this.settingsService.statsService.getResetSectionsData();
+				new ResetSettingsModal(
+					this.app,
+					this,
+					sectionsWithData,
+					async (selectedIds) => {
+						this.settingsService.clearSections(selectedIds);
+						this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
+					}
+				).open();
+			},
+		});
+
+		this.addCommand({
 			id: 'style-manager-command-toggle-isolate-mode',
 			name: 'Toggle isolate mode',
 			callback: async () => {
@@ -142,21 +160,6 @@ export default class StyleManagerPlugin extends Plugin {
 				const next = !current;
 				await this.settingsService.setIsolateMode(next);
 				new Notice(`Isolate mode ${next ? 'enabled' : 'disabled'}`);
-			},
-		});
-
-		this.addCommand({
-			id: 'style-manager-command-reset-current-styles',
-			name: 'Reset current styles',
-			callback: async () => {
-				const isIsolate = this.settingsService.isIsolateMode();
-				const sections =
-					this.settingsService.statsService.getResetSectionsData();
-				const idsToReset = sections
-					.filter((s) => (isIsolate ? s.isIsolate : s.isShared))
-					.map((s) => s.id);
-				await this.settingsService.clearSections(idsToReset);
-				new Notice(`Reset styles in ${isIsolate ? 'isolate' : 'shared'} mode`);
 			},
 		});
 
