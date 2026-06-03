@@ -330,16 +330,21 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		}
 
 		this.countEl = leftBadgesContainer.createSpan({
-			cls: 'style-manager-badge-primary count',
+			cls: 'style-manager-badge-primary count is-clickable',
 		});
 		this.updateCountBadge();
+
+		this.countEl.addEventListener('click', (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			this.openSectionStyleModal();
+		});
 
 		this.settingEl.settingEl.addEventListener('click', () => {
 			this.toggleVisible();
 		});
 
 		this.addResetButton();
-		this.addExportButton();
 
 		this.childEl = this.sectionEl.createDiv({
 			cls: 'style-manager-style-settings-container',
@@ -471,7 +476,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		const { resetFn } = this.setting;
 		this.settingEl.addExtraButton((b) => {
 			b.setIcon('reset');
-			b.setTooltip('Reset settings in this section');
+			b.setTooltip('Reset configurations in this section');
 			b.extraSettingsEl.onClickEvent((e) => {
 				e.stopPropagation();
 				if (resetFn) {
@@ -504,26 +509,16 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		}
 	}
 
-	private addExportButton(): void {
-		this.settingEl.addExtraButton((b) => {
-			b.setIcon('ellipsis-vertical');
-			b.setTooltip('More options');
-			b.extraSettingsEl.onClickEvent((e) => {
-				e.stopPropagation();
-				let title = getTitle(this.setting);
-				title =
-					this.sectionName === title ? title : `${this.sectionName} > ${title}`;
-				new SectionStyleModal(
-					this.settingsService.plugin.app,
-					this.settingsService.plugin,
-					title,
-					this.settingsService.getSettings(
-						this.sectionId,
-						this.getAllChildrenIds()
-					)
-				).open();
-			});
-		});
+	private openSectionStyleModal(): void {
+		let title = getTitle(this.setting);
+		title =
+			this.sectionName === title ? title : `${this.sectionName} > ${title}`;
+		new SectionStyleModal(
+			this.settingsService.plugin.app,
+			this.settingsService.plugin,
+			title,
+			this.settingsService.getSettings(this.sectionId, this.getAllChildrenIds())
+		).open();
 	}
 
 	addSettingChild(child: CSSSetting): AbstractSettingComponent | undefined {
