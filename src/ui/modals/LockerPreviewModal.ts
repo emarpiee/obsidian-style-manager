@@ -51,6 +51,11 @@ export class LockerPreviewModal extends Modal {
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
+				btn.setButtonText('Close').onClick(() => {
+					this.close();
+				})
+			)
+			.addButton((btn) =>
 				btn.setButtonText('Copy to clipboard').onClick(async () => {
 					await navigator.clipboard.writeText(
 						JSON.stringify(this.data, null, 2)
@@ -94,11 +99,6 @@ export class LockerPreviewModal extends Modal {
 						);
 						this.close();
 					})
-			)
-			.addButton((btn) =>
-				btn.setButtonText('Close').onClick(() => {
-					this.close();
-				})
 			);
 	}
 

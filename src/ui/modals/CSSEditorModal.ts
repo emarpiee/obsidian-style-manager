@@ -309,6 +309,9 @@ export class CSSEditorModal extends Modal {
 		if (this.source.readOnly) {
 			mainBtnsSetting
 				.addButton((btn) =>
+					btn.setButtonText('Close').onClick(() => this.close())
+				)
+				.addButton((btn) =>
 					btn
 						.setButtonText('Copy to clipboard')
 						.setCta()
@@ -320,9 +323,6 @@ export class CSSEditorModal extends Modal {
 							);
 							this.close();
 						})
-				)
-				.addButton((btn) =>
-					btn.setButtonText('Close').onClick(() => this.close())
 				);
 		} else {
 			mainBtnsSetting

@@ -44,6 +44,11 @@ export class PresetPreviewModal extends Modal {
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
+				btn.setButtonText('Close').onClick(() => {
+					this.close();
+				})
+			)
+			.addButton((btn) =>
 				btn.setButtonText('Copy to clipboard').onClick(async () => {
 					await navigator.clipboard.writeText(
 						JSON.stringify(this.preset.data, null, 2)
@@ -69,11 +74,6 @@ export class PresetPreviewModal extends Modal {
 							menu.showAtPosition({ x: rect.left, y: rect.bottom });
 						}
 					})
-			)
-			.addButton((btn) =>
-				btn.setButtonText('Close').onClick(() => {
-					this.close();
-				})
 			);
 	}
 

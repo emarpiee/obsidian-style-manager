@@ -201,8 +201,11 @@ export class ThemeManifestModal extends Modal {
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
+				btn.setButtonText('Cancel').onClick(() => this.close())
+			)
+			.addButton((btn) =>
 				btn
-					.setButtonText(this.themeId ? 'Save changes' : 'Create theme')
+					.setButtonText(this.themeId ? 'Save' : 'Create')
 					.setCta()
 					.onClick(async () => {
 						let hasError = false;
@@ -249,9 +252,6 @@ export class ThemeManifestModal extends Modal {
 							);
 						}
 					})
-			)
-			.addButton((btn) =>
-				btn.setButtonText('Cancel').onClick(() => this.close())
 			);
 	}
 
