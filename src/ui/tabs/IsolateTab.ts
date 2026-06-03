@@ -101,14 +101,26 @@ export class IsolateTab {
 			.addText((text) => {
 				text
 					.setPlaceholder('e.g., Office Mac')
-					.setValue(plugin.settingsService.deviceName || '')
-					.onChange(async (val) => {
-						await plugin.settingsService.identity.setLockerName(
-							plugin.settingsService.deviceId,
-							val,
-							{ silent: true }
-						);
-					});
+					.setValue(plugin.settingsService.deviceName || '');
+
+				const saveName = async (): Promise<void> => {
+					await plugin.settingsService.identity.setLockerName(
+						plugin.settingsService.deviceId,
+						text.getValue(),
+						{ silent: false }
+					);
+				};
+
+				text.inputEl.addEventListener('keydown', async (e) => {
+					if (e.key === 'Enter') {
+						await saveName();
+						text.inputEl.blur();
+					}
+				});
+
+				text.inputEl.addEventListener('blur', async () => {
+					await saveName();
+				});
 			});
 
 		const descFragment = document.createDocumentFragment();
@@ -144,9 +156,9 @@ export class IsolateTab {
 					.onClick(async () => {
 						new ConfirmModal(
 							this.app,
-							'Generate New Identity',
-							"Are you sure you want to generate a new Identity? This device will lose access to its current 'Isolate Mode' settings in your shared data.",
-							'Generate New ID',
+							'Generate new locker ID',
+							'Are you sure you want to generate a new locker ID? This device will lose access to its current isolated configurations.',
+							'Generate',
 							true,
 							async () => {
 								await plugin.settingsService.identity.regenerateDeviceId();
