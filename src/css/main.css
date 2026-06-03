@@ -600,9 +600,11 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	display: block;
 }
 
-/* Modal Utility Classes */
-.modal-style-manager {
-	padding-inline: var(--size-4-4) !important;
+
+/* Input Validation */
+.is-invalid {
+	border: 1px solid var(--text-error) !important;
+	background-color: color-mix(in oklch, var(--text-error), transparent 95%) !important;
 }
 
 body.is-mobile

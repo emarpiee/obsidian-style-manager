@@ -11,6 +11,7 @@
 		"lint:fix": "eslint ./src/**/*.ts --fix",
 		"prettier": "prettier --write \"./src/**/*.{ts,tsx}\"",
 		"clean": "npm run prettier && npm run lint:fix",
+		"health": "npm run lint && npm run typecheck",
 		"changelog": "node generate-changelog.mjs",
 		"bump": "node version-bump.mjs",
 		"release": "node release.mjs",

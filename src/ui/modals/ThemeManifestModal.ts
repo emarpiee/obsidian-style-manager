@@ -25,9 +25,19 @@ import {
 	ThemeManifest,
 } from '../../application/ThemeBuilderService';
 import StyleManagerPlugin from '../../main';
+import {
+	Validator,
+	Validators,
+	applyInvalidState,
+	clearInvalidState,
+} from '../../utils/ValidationUtils';
 
 export class ThemeManifestModal extends Modal {
 	private manifest: ThemeManifest;
+	private inputs: Map<
+		string,
+		{ el: HTMLInputElement | HTMLTextAreaElement; validators: Validator[] }
+	> = new Map();
 
 	constructor(
 		app: App,
@@ -60,59 +70,110 @@ export class ThemeManifestModal extends Modal {
 		});
 		// Insert warning before the first setting
 
+		const validateField = (
+			key: string,
+			el: HTMLInputElement | HTMLTextAreaElement
+		): void => {
+			const entry = this.inputs.get(key);
+			if (!entry) return;
+			for (const validator of entry.validators) {
+				const error = validator(el.value);
+				if (error) {
+					applyInvalidState(el, error);
+					return;
+				}
+			}
+			clearInvalidState(el);
+		};
+
 		new Setting(contentEl)
 			.setClass('style-manager-required-setting')
 			.setName('Theme name')
 			.setDesc('The display name of your theme.')
-			.addText((text) =>
+			.addText((text) => {
 				text
 					.setPlaceholder('My Awesome Theme')
 					.setValue(this.manifest.name)
-					.onChange((val) => (this.manifest.name = val.trim()))
-			);
+					.onChange((val) => {
+						this.manifest.name = val.trim();
+						validateField('name', text.inputEl);
+					});
+				this.inputs.set('name', {
+					el: text.inputEl,
+					validators: [Validators.required],
+				});
+			});
 
 		new Setting(contentEl)
 			.setClass('style-manager-required-setting')
 			.setName('Author')
 			.setDesc("The author's name.")
-			.addText((text) =>
+			.addText((text) => {
 				text
 					.setPlaceholder('kepano')
 					.setValue(this.manifest.author)
-					.onChange((val) => (this.manifest.author = val.trim()))
-			);
+					.onChange((val) => {
+						this.manifest.author = val.trim();
+						validateField('author', text.inputEl);
+					});
+				this.inputs.set('author', {
+					el: text.inputEl,
+					validators: [Validators.required],
+				});
+			});
 
 		new Setting(contentEl)
 			.setClass('style-manager-required-setting')
 			.setName('Version')
 			.setDesc('The version, using Semantic Versioning in the format x.y.z.')
-			.addText((text) =>
+			.addText((text) => {
 				text
 					.setPlaceholder('1.0.0')
 					.setValue(this.manifest.version)
-					.onChange((val) => (this.manifest.version = val.trim()))
-			);
+					.onChange((val) => {
+						this.manifest.version = val.trim();
+						validateField('version', text.inputEl);
+					});
+				this.inputs.set('version', {
+					el: text.inputEl,
+					validators: [Validators.required, Validators.semver],
+				});
+			});
 
 		new Setting(contentEl)
 			.setClass('style-manager-required-setting')
 			.setName('Min app version')
 			.setDesc('The minimum required Obsidian version.')
-			.addText((text) =>
+			.addText((text) => {
 				text
 					.setPlaceholder('0.15.0')
 					.setValue(this.manifest.minAppVersion)
-					.onChange((val) => (this.manifest.minAppVersion = val.trim()))
-			);
+					.onChange((val) => {
+						this.manifest.minAppVersion = val.trim();
+						validateField('minAppVersion', text.inputEl);
+					});
+				this.inputs.set('minAppVersion', {
+					el: text.inputEl,
+					validators: [Validators.required, Validators.semver],
+				});
+			});
 
 		new Setting(contentEl)
 			.setName('Author URL')
 			.setDesc("A URL to the author's website.")
-			.addText((text) =>
+			.addText((text) => {
 				text
 					.setPlaceholder('https://example.com')
 					.setValue(this.manifest.authorUrl || '')
-					.onChange((val) => (this.manifest.authorUrl = val.trim()))
-			);
+					.onChange((val) => {
+						this.manifest.authorUrl = val.trim();
+						validateField('authorUrl', text.inputEl);
+					});
+				this.inputs.set('authorUrl', {
+					el: text.inputEl,
+					validators: [Validators.url],
+				});
+			});
 
 		new Setting(contentEl)
 			.setName('Funding URL')
@@ -127,10 +188,15 @@ export class ThemeManifestModal extends Modal {
 					.setValue(this.getFundingString())
 					.onChange((val) => {
 						this.manifest.fundingUrl = this.parseFundingString(val);
+						validateField('fundingUrl', text.inputEl);
 					});
-				text.inputEl.rows = 4;
-				text.inputEl.addClass('style-manager-modal-textarea');
+				this.inputs.set('fundingUrl', { el: text.inputEl, validators: [] });
 			});
+
+		// Initial validation for existing manifest data
+		for (const [key, { el }] of this.inputs) {
+			validateField(key, el);
+		}
 
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
@@ -139,14 +205,22 @@ export class ThemeManifestModal extends Modal {
 					.setButtonText(this.themeId ? 'Save changes' : 'Create theme')
 					.setCta()
 					.onClick(async () => {
-						if (
-							!this.manifest.name ||
-							!this.manifest.author ||
-							!this.manifest.version ||
-							!this.manifest.minAppVersion
-						) {
+						let hasError = false;
+						for (const [_, { el, validators }] of this.inputs) {
+							const value = el.value;
+							for (const validator of validators) {
+								const error = validator(value);
+								if (error) {
+									applyInvalidState(el, error);
+									hasError = true;
+									break;
+								}
+							}
+						}
+
+						if (hasError) {
 							this.plugin.settingsService.notifications.error(
-								'All required fields must be filled.'
+								'All required fields must be filled and valid.'
 							);
 							return;
 						}

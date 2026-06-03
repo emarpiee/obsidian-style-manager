@@ -18,6 +18,12 @@
 */
 import { App, Modal, Setting } from 'obsidian';
 
+import {
+	Validators,
+	applyInvalidState,
+	clearInvalidState,
+} from '../../utils/ValidationUtils';
+
 export class PresetNamePromptModal extends Modal {
 	resolve: (value: string | null) => void;
 	value: string | null = null;
@@ -43,19 +49,35 @@ export class PresetNamePromptModal extends Modal {
 			cls: 'style-manager-modal-input',
 		});
 
+		input.oninput = (): void => {
+			const name = input.value.trim();
+			const error = Validators.required(name);
+			if (error) {
+				applyInvalidState(input, error);
+			} else {
+				clearInvalidState(input);
+			}
+		};
+
 		const submit = (): void => {
 			const name = input.value.trim();
+			const error = Validators.required(name);
+			if (error) {
+				applyInvalidState(input, error);
+				return;
+			}
 			if (name) {
 				this.value = name;
 				this.close();
 			}
 		};
- 
+
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
-			.addButton((btn) => btn.setButtonText('Cancel').onClick(() => this.close()))
+			.addButton((btn) =>
+				btn.setButtonText('Cancel').onClick(() => this.close())
+			)
 			.addButton((btn) => btn.setButtonText('Save').setCta().onClick(submit));
-
 
 		// Use Obsidian's scope for reliable key handling in modals
 		this.scope.register([], 'Enter', (e) => {
