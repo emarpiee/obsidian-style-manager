@@ -25,7 +25,7 @@ import { Preset } from '../../types';
 
 export type ApplyPresetTarget = 'shared' | 'this-device' | 'other-device';
 
-export class ApplyPresetModal extends SuggestModal<Preset> {
+export class CommandApplyPresetModal extends SuggestModal<Preset> {
 	presetService: PresetService;
 	target: ApplyPresetTarget;
 
