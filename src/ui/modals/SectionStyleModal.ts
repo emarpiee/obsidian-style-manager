@@ -63,6 +63,9 @@ export class SectionStyleModal extends Modal {
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
+				btn.setButtonText('Close').onClick(() => this.close())
+			)
+			.addButton((btn) =>
 				btn.setButtonText('Copy to clipboard').onClick(async () => {
 					await navigator.clipboard.writeText(output);
 					this.plugin.settingsService.notifications.util('Copied to clipboard');

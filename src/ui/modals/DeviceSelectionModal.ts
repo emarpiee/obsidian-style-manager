@@ -76,6 +76,12 @@ export class DeviceSelectionModal extends Modal {
 						})
 				);
 		});
+
+		new Setting(contentEl)
+			.setClass('style-manager-modal-buttons')
+			.addButton((btn) =>
+				btn.setButtonText('Cancel').onClick(() => this.close())
+			);
 	}
 
 	onClose(): void {
