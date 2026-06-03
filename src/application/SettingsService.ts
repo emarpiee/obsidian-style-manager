@@ -812,6 +812,23 @@ export class SettingsService extends Events {
 			} else {
 				this.refreshService.trigger(RefreshLevel.FULL_VISUAL);
 			}
+
+			const coreMapping: Record<string, string> = {
+				'__theme': 'active theme',
+				'__appearance': 'appearance',
+				'__accentColor': 'color accent',
+				'__snippets': 'snippets',
+			};
+			const resetCoreItems = sectionIds
+				.filter((id) => id in coreMapping)
+				.map((id) => coreMapping[id]);
+
+			if (resetCoreItems.length > 0) {
+				const mode = isIsolate ? 'isolate' : 'shared';
+				this.notifications.notify(
+					`Reset ${resetCoreItems.join(', ')} to default in ${mode} mode.`
+				);
+			}
 		}
 	}
 
