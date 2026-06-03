@@ -19,7 +19,6 @@
 import {
 	ButtonComponent,
 	Menu,
-	Notice,
 	Platform,
 	SearchComponent,
 	Setting,
@@ -250,9 +249,9 @@ export class PresetList {
 					this.renderPresetListItems();
 				} catch (err) {
 					console.error('Style Manager | Bulk export failed:', err);
-					new Notice(
-						`Export failed: ${err instanceof Error ? err.message : String(err)}`
-					);
+						plugin.settingsService.notifications.error(
+							`Export failed: ${err instanceof Error ? err.message : String(err)}`
+						);
 				}
 			};
 
@@ -364,7 +363,7 @@ export class PresetList {
 							}
 							service.selectedPresets.clear();
 							this.renderPresetListItems();
-							new Notice(
+							plugin.settingsService.notifications.isolate(
 								`Applied ${selectedIds.length} presets to device locker.`
 							);
 						},

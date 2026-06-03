@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Menu, Modal, Notice, Setting } from 'obsidian';
+import { App, Menu, Modal, Setting } from 'obsidian';
 
 import StyleManagerPlugin from '../../main';
 import { Preset } from '../../types';
@@ -48,7 +48,7 @@ export class PresetPreviewModal extends Modal {
 					await navigator.clipboard.writeText(
 						JSON.stringify(this.preset.data, null, 2)
 					);
-					new Notice('Settings copied to clipboard!');
+					this.plugin.settingsService.notifications.util('Settings copied to clipboard!');
 				})
 			)
 			.addButton((btn) =>

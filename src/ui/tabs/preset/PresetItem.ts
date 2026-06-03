@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Menu, Notice, Setting, setIcon, setTooltip } from 'obsidian';
+import { Menu, Setting, setIcon, setTooltip } from 'obsidian';
 
 import { addApplyOptionsToMenu } from './PresetMenuHelper';
 
@@ -203,9 +203,9 @@ export class PresetItem {
 										}
 									} catch (err) {
 										console.error('Style Manager | Export failed:', err);
-										new Notice(
-											`Export failed: ${err instanceof Error ? err.message : String(err)}`
-										);
+								plugin.settingsService.notifications.error(
+									`Export failed: ${err instanceof Error ? err.message : String(err)}`
+								);
 									}
 								};
 

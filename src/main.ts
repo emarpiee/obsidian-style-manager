@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Command, Notice, Plugin, normalizePath } from 'obsidian';
+import { Command, Plugin, normalizePath } from 'obsidian';
 
 import { ACCENT_COLOR_KEY, APPEARANCE_KEY, THEME_KEY } from './constants';
 import {
@@ -159,7 +159,6 @@ export default class StyleManagerPlugin extends Plugin {
 				const current = this.settingsService.isIsolateMode();
 				const next = !current;
 				await this.settingsService.setIsolateMode(next);
-				new Notice(`Isolate mode ${next ? 'enabled' : 'disabled'}`);
 			},
 		});
 

@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Modal, Notice, Setting, setIcon } from 'obsidian';
+import { App, Modal, Setting, setIcon } from 'obsidian';
 
 import { PresetNamePromptModal } from './PresetNamePromptModal';
 
@@ -126,7 +126,7 @@ export class CreatePresetModal extends Modal {
 					.setCta()
 					.onClick(async () => {
 						if (this.selectedPrefixes.size === 0) {
-							new Notice('You must select at least one setting to save.');
+							this.service.plugin.settingsService.notifications.preset('You must select at least one setting to save.');
 							return;
 						}
 
@@ -139,7 +139,7 @@ export class CreatePresetModal extends Modal {
 						}
 
 						if (totalSettingsCount === 0) {
-							new Notice(
+							this.service.plugin.settingsService.notifications.preset(
 								'No modified settings found in the selected categories.'
 							);
 							return;

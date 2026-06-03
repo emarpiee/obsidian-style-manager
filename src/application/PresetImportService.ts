@@ -17,7 +17,6 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import JSZip from 'jszip';
-import { Notice } from 'obsidian';
 
 import { SNIPPETS_KEY, THEME_KEY } from '../constants';
 import StyleManagerPlugin from '../main';
@@ -123,7 +122,7 @@ export class PresetImportService {
 					}
 				}
 			} catch (e) {
-				new Notice(`Error analyzing ${item.name || 'import'}: ${e}`);
+				this.plugin.settingsService.notifications.error(`Error analyzing ${item.name || 'import'}: ${e}`);
 			}
 		}
 

@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Modal, Notice, Setting, setIcon } from 'obsidian';
+import { App, Modal, Setting, setIcon } from 'obsidian';
 
 import StyleManagerPlugin from '../../main';
 import {
@@ -115,7 +115,7 @@ export class ResetSettingsModal extends Modal {
 					.setWarning()
 					.onClick(async () => {
 						if (this.selectedIds.size === 0) {
-							new Notice('Please select at least one item to reset');
+							this.plugin.settingsService.notifications.preset('Please select at least one item to reset');
 							return;
 						}
 						await this.onConfirm(Array.from(this.selectedIds));

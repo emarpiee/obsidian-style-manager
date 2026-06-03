@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Notice, SuggestModal } from 'obsidian';
+import { App, SuggestModal } from 'obsidian';
 
 import { DeviceSelectionModal } from './DeviceSelectionModal';
 
@@ -86,7 +86,7 @@ export class ApplyPresetModal extends SuggestModal<Preset> {
 							deviceId,
 							preset.data
 						);
-						new Notice(
+						this.presetService.plugin.settingsService.notifications.isolate(
 							`Settings for "${preset.name}" applied to isolate locker.`
 						);
 						this.close();

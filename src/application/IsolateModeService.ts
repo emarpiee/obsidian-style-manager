@@ -91,8 +91,6 @@ export class IsolateModeService {
 			: this.delegate.save();
 		this.delegate.updateMerged();
 
-		// Wait, we need to read from merged settings, but the delegate apply methods will handle it.
-		// Since we don't have getMergedSettings() in the delegate, we can use the plugin.settingsManager
 		const currentTheme =
 			this.delegate.plugin.settingsService.settings[THEME_KEY];
 		if (currentTheme)
@@ -121,6 +119,10 @@ export class IsolateModeService {
 
 		this.delegate.triggerGlobal('isolate-mode-changed');
 		this.delegate.triggerGlobal('device-lockers-updated');
+
+		this.delegate.plugin.settingsService.notifications.isolate(
+			`Isolate mode ${enabled ? 'enabled' : 'disabled'}`
+		);
 
 		return savePromise;
 	}
@@ -233,7 +235,7 @@ export class IsolateModeService {
 		this.delegate.triggerGlobal('isolate-mode-changed');
 		this.delegate.triggerGlobal('device-lockers-updated');
 		this.delegate.plugin.settingsService.notifications.isolate(
-			'Isolated settings pushed to Shared Locker and globally applied.'
+			'Isolated styles pushed to shared locker.'
 		);
 	}
 }

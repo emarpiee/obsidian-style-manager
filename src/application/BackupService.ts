@@ -17,7 +17,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import JSZip from 'jszip';
-import { Notice, normalizePath } from 'obsidian';
+import { normalizePath } from 'obsidian';
 
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
@@ -50,7 +50,7 @@ export class BackupService {
 				'Safety snapshot created (data.json.bak)'
 			);
 		} else {
-			new Notice('Failed to create snapshot.');
+			this.plugin.settingsService.notifications.error('Failed to create snapshot.');
 		}
 		return success;
 	}
@@ -323,7 +323,7 @@ export class BackupService {
 			return true;
 		} catch (e) {
 			console.error('BackupService | Restore failed:', e);
-			new Notice(
+			this.plugin.settingsService.notifications.error(
 				`Restore failed: ${e instanceof Error ? e.message : String(e)}`
 			);
 			return false;

@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Menu, Notice } from 'obsidian';
+import { Menu } from 'obsidian';
 
 import StyleManagerPlugin from '../../../main';
 import { DeviceSelectionModal } from '../../modals/DeviceSelectionModal';
@@ -140,7 +140,7 @@ export function addApplyOptionsToMenu(
 									deviceId,
 									source.data
 								);
-								new Notice(
+								plugin.settingsService.notifications.isolate(
 									`Settings for "${source.name}" applied to isolate locker.`
 								);
 							}

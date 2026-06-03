@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Component, Menu, Notice, setIcon, setTooltip } from 'obsidian';
+import { App, Component, Menu, setIcon, setTooltip } from 'obsidian';
 
 import StyleManagerPlugin from '../../../main';
 import { addApplyOptionsToMenu } from '../../tabs/preset/PresetMenuHelper';
@@ -94,7 +94,7 @@ export class IsolateModeHeader extends Component {
 							deviceId,
 							isolateSettings
 						);
-						new Notice(
+						this.plugin.settingsService.notifications.isolate(
 							`Settings for "${sourceName}" applied to isolated locker.`
 						);
 					},

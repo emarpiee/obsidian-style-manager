@@ -20,7 +20,6 @@ import {
 	App,
 	Component,
 	Menu,
-	Notice,
 	Platform,
 	setIcon,
 	setTooltip,
@@ -227,7 +226,7 @@ export class SettingsHeaderComponent extends Component {
 				);
 			} catch (e) {
 				console.error('Style Manager | Shared update error:', e);
-				new Notice('Error: Could not update from Shared Locker.');
+						this.plugin.settingsService.notifications.error('Error: Could not update from Shared Locker.');
 			} finally {
 				reloadBtn.removeClass('is-loading');
 				this.options.onRerender();

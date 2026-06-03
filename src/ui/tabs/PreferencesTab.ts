@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Notice, Setting, debounce, setIcon } from 'obsidian';
+import { App, Setting, debounce, setIcon } from 'obsidian';
 
 import {
 	BACKUP_DATE_FORMAT_KEY,
@@ -145,7 +145,7 @@ export class PreferencesTab {
 							await plugin.backupService.saveBackupToVault(filename, data);
 						} catch (e) {
 							console.error('Style Manager | Backup failed:', e);
-							new Notice('Backup failed. See console for details.');
+							plugin.settingsService.notifications.error('Backup failed. See console for details.');
 						}
 					});
 			});
@@ -232,7 +232,7 @@ export class PreferencesTab {
 							const content = await adapter.read(backupPath);
 							await plugin.backupService.restoreBackup(content);
 						} else {
-							new Notice('No safety snapshot found.');
+							plugin.settingsService.notifications.util('No safety snapshot found.');
 						}
 					});
 			});

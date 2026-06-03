@@ -16,7 +16,7 @@
 	You should have received a copy of the GNU General Public License
 	along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Modal, Notice, Setting, TextAreaComponent } from 'obsidian';
+import { App, Modal, Setting, TextAreaComponent } from 'obsidian';
 
 import {
 	ConflictAction,
@@ -71,7 +71,7 @@ export class ImportPresetModal extends Modal {
 					);
 				if (total > 0) {
 					this.onImport();
-					new Notice(`Imported ${total} preset${total !== 1 ? 's' : ''}.`);
+					this.service.plugin.settingsService.notifications.preset(`Imported ${total} preset${total !== 1 ? 's' : ''}.`);
 					this.close();
 				}
 			};

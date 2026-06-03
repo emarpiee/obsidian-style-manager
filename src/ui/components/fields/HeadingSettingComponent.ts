@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Notice, Platform, Setting, setIcon, setTooltip } from 'obsidian';
+import { Platform, Setting, setIcon, setTooltip } from 'obsidian';
 
 import { ClassMultiToggleSettingComponent } from './ClassMultiToggleSettingComponent';
 import { ClassToggleSettingComponent } from './ClassToggleSettingComponent';
@@ -323,7 +323,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 			if (Platform.isMobile) {
 				dupBadge.onclick = (e): void => {
 					e.stopPropagation();
-					new Notice(warningMessage);
+					this.settingsService.notifications.util(warningMessage);
 				};
 			}
 			rightBadgesContainer.prepend(dupBadge);
