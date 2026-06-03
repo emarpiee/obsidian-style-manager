@@ -2246,7 +2246,7 @@ body.is-phone .style-manager-metadata-label {
 }
 
 .style-manager-editor-footer {
-	padding: var(--size-4-3);
+	padding: var(--size-4-3) var(--size-4-3) 0;
 	display: flex;
 	justify-content: space-between;
 	align-items: center;
