@@ -25,6 +25,7 @@ import {
 	THEME_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
+import { addThemeOptionsToMenu } from '../components/layout/ThemeSelector';
 
 /**
  * Manages the Obsidian status bar integration for Style Manager.
@@ -122,8 +123,7 @@ export class StatusBarManager {
 			(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
 		const activeTheme =
 			(this.plugin.settingsService.settings[THEME_KEY] as string) || 'default';
-		const installedThemes =
-			this.plugin.settingsService.bridge.getInstalledThemes();
+
 
 		// 1. Mode Information & Toggle
 		menu.addItem((item) => {
@@ -153,21 +153,7 @@ export class StatusBarManager {
 				item as unknown as { setSubmenu?: () => Menu }
 			).setSubmenu?.();
 			if (themeMenu) {
-				const themes = ['default', ...installedThemes];
-				themes.forEach((themeId) => {
-					themeMenu.addItem((subItem) => {
-						subItem
-							.setTitle(themeId === 'default' ? 'Default' : themeId)
-							.setChecked(themeId === activeTheme)
-							.onClick(async () => {
-								await this.plugin.settingsService.setSetting(
-									THEME_KEY,
-									themeId
-								);
-								this.refresh();
-							});
-					});
-				});
+				addThemeOptionsToMenu(this.plugin, themeMenu, activeTheme, () => this.refresh());
 			} else {
 				// Fallback for older Obsidian versions: toggle directly or show notice
 				item.onClick(() => {

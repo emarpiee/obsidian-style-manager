@@ -21,6 +21,43 @@ import { Menu, setIcon, setTooltip } from 'obsidian';
 import { THEME_KEY } from '../../../application/SettingsService';
 import StyleManagerPlugin from '../../../main';
 
+export function addThemeOptionsToMenu(
+	plugin: StyleManagerPlugin,
+	menu: Menu,
+	currentValue: string,
+	onDone: () => void
+): void {
+	const customCss = (
+		plugin.app as unknown as {
+			customCss: { themes: Record<string, { name: string }> };
+		}
+	).customCss;
+	const themes = customCss.themes;
+
+	menu.addItem((item) => {
+		item
+			.setTitle('Obsidian default')
+			.setChecked(currentValue === 'default')
+			.onClick(async () => {
+				await plugin.settingsService.setSetting(THEME_KEY, 'default');
+				onDone();
+			});
+	});
+
+	for (const themeId in themes) {
+		const themeName = themes[themeId].name;
+		menu.addItem((item) => {
+			item
+				.setTitle(themeName)
+				.setChecked(currentValue === themeId)
+				.onClick(async () => {
+					await plugin.settingsService.setSetting(THEME_KEY, themeId);
+					onDone();
+				});
+		});
+	}
+}
+
 export function renderThemeSelect(
 	plugin: StyleManagerPlugin,
 	containerEl: HTMLElement,
@@ -54,28 +91,7 @@ export function renderThemeSelect(
 	triggerContainer.onclick = (e: MouseEvent): void => {
 		const menu = new Menu();
 
-		menu.addItem((item) => {
-			item
-				.setTitle('Obsidian default')
-				.setChecked(currentValue === 'default')
-				.onClick(async () => {
-					await plugin.settingsService.setSetting(THEME_KEY, 'default');
-					onDone();
-				});
-		});
-
-		for (const themeId in themes) {
-			const themeName = themes[themeId].name;
-			menu.addItem((item) => {
-				item
-					.setTitle(themeName)
-					.setChecked(currentValue === themeId)
-					.onClick(async () => {
-						await plugin.settingsService.setSetting(THEME_KEY, themeId);
-						onDone();
-					});
-			});
-		}
+		addThemeOptionsToMenu(plugin, menu, currentValue, onDone);
 
 		menu.showAtMouseEvent(e);
 	};
