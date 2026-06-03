@@ -145,6 +145,21 @@ export default class StyleManagerPlugin extends Plugin {
 			},
 		});
 
+		this.addCommand({
+			id: 'style-manager-command-reset-current-styles',
+			name: 'Reset current styles',
+			callback: async () => {
+				const isIsolate = this.settingsService.isIsolateMode();
+				const sections =
+					this.settingsService.statsService.getResetSectionsData();
+				const idsToReset = sections
+					.filter((s) => (isIsolate ? s.isIsolate : s.isShared))
+					.map((s) => s.id);
+				await this.settingsService.clearSections(idsToReset);
+				new Notice(`Reset styles in ${isIsolate ? 'isolate' : 'shared'} mode`);
+			},
+		});
+
 		this.addSettingTab(
 			(
 				this.settingsService.viewManager as unknown as {
