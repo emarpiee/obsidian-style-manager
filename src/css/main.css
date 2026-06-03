@@ -192,6 +192,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 }
 
 .style-manager-wrapper .search-input-container {
+	flex-grow: 1 !important;
 	width: 100%;
 }
 
@@ -628,7 +629,6 @@ body.is-mobile
 
 .style-manager-modal-buttons {
 	margin-top: auto;
-	padding: var(--size-4-4) 0 !important;
 }
 
 .modal-style-manager .setting-item {
@@ -1443,10 +1443,6 @@ button.style-manager-icon-button {
 	/* Ensure input is centered in its own control */
 }
 
-.style-manager-search-container .search-input {
-	padding: 2px 5px 2px 25px !important;
-}
-
 .style-manager-item-row {
 	border-radius: var(--radius-s);
 }
@@ -1842,10 +1838,9 @@ body.is-phone .style-manager-isolate-badge {
 }
 
 .style-manager-vault-file-list {
-	flex-grow: 1;
 	overflow-y: auto;
-	margin: var(--size-4-4) 0;
-	max-height: 450px;
+	margin: var(--size-4-2) 0;
+	max-height: 30vh;
 	border: 1px solid var(--background-modifier-border);
 	border-radius: var(--radius-m);
 	padding: var(--size-4-2);

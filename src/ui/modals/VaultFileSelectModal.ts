@@ -51,7 +51,7 @@ export class VaultFileSelectModal extends Modal {
 
 		this.setTitle('Browse vault');
 
-		const searchContainer = contentEl.createDiv('style-manager-search-row');
+		const searchContainer = contentEl.createDiv();
 		new Setting(searchContainer)
 			.setClass('style-manager-search-container')
 			.addSearch((search) => {
@@ -157,9 +157,11 @@ export class VaultFileSelectModal extends Modal {
 				cls: 'style-manager-suggestion-path',
 			});
 
-			item.onclick = (): void => {
-				checkbox.checked = !checkbox.checked;
-				checkbox.dispatchEvent(new Event('change'));
+			item.onclick = (e: MouseEvent): void => {
+				if (e.target !== checkbox) {
+					checkbox.checked = !checkbox.checked;
+					checkbox.dispatchEvent(new Event('change'));
+				}
 			};
 		});
 	}
