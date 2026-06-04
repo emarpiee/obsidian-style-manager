@@ -37,6 +37,7 @@ import { StyleBlockService } from './application/StyleBlockService';
 import { GarbledTextTool } from './tools/GarbledTextTool';
 import { RedOutlinesTool } from './tools/RedOutlinesTool';
 import { TestNoticeTool } from './tools/TestNoticeTool';
+import { CopyAccentColorTool } from './tools/CopyAccentColorTool';
 import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
 import './css/main.css';
@@ -63,6 +64,7 @@ export default class StyleManagerPlugin extends Plugin {
 	garbledTextTool: GarbledTextTool;
 	redOutlinesTool: RedOutlinesTool;
 	testNoticeTool: TestNoticeTool;
+	copyAccentColorTool: CopyAccentColorTool;
 
 	settingsList: ParsedCSSSettings[] = [];
 	errorList: ErrorList = [];
@@ -88,6 +90,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.garbledTextTool = new GarbledTextTool(this);
 		this.redOutlinesTool = new RedOutlinesTool(this);
 		this.testNoticeTool = new TestNoticeTool(this);
+		this.copyAccentColorTool = new CopyAccentColorTool(this);
 
 		this.settingsService.refreshService.setDelegates({
 			parseCSS: () => this.parseCSS(),
@@ -174,16 +177,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.addCommand({
 			id: 'style-manager-command-copy-accent-color',
 			name: 'Copy current accent color',
-			callback: async () => {
-				const color = this.settingsService.settings[ACCENT_COLOR_KEY] || 
-								this.settingsService.bridge.getNativeConfig('accentColor');
-				if (color) {
-					await navigator.clipboard.writeText(color as string);
-					this.settingsService.notifications.util(`Accent color ${color} copied to clipboard`);
-				} else {
-					this.settingsService.notifications.error('No accent color set');
-				}
-			},
+			callback: async () => this.copyAccentColorTool.copy(),
 		});
 
 		this.addCommand({
