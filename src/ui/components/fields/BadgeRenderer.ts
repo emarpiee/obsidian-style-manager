@@ -53,7 +53,7 @@ export function renderSnippetBadge(
 		setTooltip(badge, tooltipText);
 
 		badge.addClass('is-clickable');
-		badge.onclick = (e) => {
+		badge.onclick = (e: MouseEvent): void => {
 			e.preventDefault();
 			e.stopPropagation();
 			displayTooltip(badge, tooltipText);

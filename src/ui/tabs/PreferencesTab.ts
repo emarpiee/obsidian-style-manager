@@ -18,8 +18,6 @@
 */
 import { App, Setting, debounce, setIcon } from 'obsidian';
 
-import { ConfirmModal } from '../modals/ConfirmModal';
-
 import {
 	BACKUP_DATE_FORMAT_KEY,
 	BACKUP_PATH_KEY,
@@ -37,6 +35,7 @@ import {
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
+import { ConfirmModal } from '../modals/ConfirmModal';
 import { ExportDataConfigModal } from '../modals/ExportDataConfigModal';
 
 export class PreferencesTab {
@@ -147,7 +146,9 @@ export class PreferencesTab {
 							await plugin.backupService.saveBackupToVault(filename, data);
 						} catch (e) {
 							console.error('Style Manager | Backup failed:', e);
-							plugin.settingsService.notifications.error('Backup failed. See console for details.');
+							plugin.settingsService.notifications.error(
+								'Backup failed. See console for details.'
+							);
 						}
 					});
 			});
@@ -218,20 +219,20 @@ export class PreferencesTab {
 			});
 
 		new Setting(backupContainer)
-			.setName('Safety rollback')
+			.setName('Rollback plugin state')
 			.setDesc(
-				'Restore your configurations from the last automatic safety snapshot (data.json.bak). Snippet and theme files are not included in the automatic snapshot.'
+				'Restore internal plugin configuration  from the last automatic safety snapshot (data.json.bak). This will overwrite your current plugin state. Snippets and themes are not affected.'
 			)
 			.addButton((btn) => {
 				btn
-					.setButtonText('Rollback to Snapshot')
+					.setButtonText('Safety rollback')
 					.setWarning()
 					.setIcon('rotate-ccw')
 					.onClick(() => {
 						new ConfirmModal(
 							this.app,
 							'Safety rollback',
-							'Restore your configurations from the last automatic safety snapshot (data.json.bak). This will overwrite your current settings. Are you sure you want to proceed?',
+							'Restore internal plugin configuration  from the last automatic safety snapshot (data.json.bak). This will overwrite your current plugin state. Snippets and themes are not affected.',
 							'Rollback',
 							true,
 							async () => {
@@ -240,8 +241,8 @@ export class PreferencesTab {
 									(
 										this.plugin
 											.manifest as import('../../main').default['manifest'] & {
-												dir?: string;
-											}
+											dir?: string;
+										}
 									).dir ||
 									`${this.app.vault.configDir}/plugins/${this.plugin.manifest.id}`;
 								const backupPath = `${baseDir}/data.json.bak`;
@@ -250,7 +251,9 @@ export class PreferencesTab {
 									const content = await adapter.read(backupPath);
 									await plugin.backupService.restoreBackup(content);
 								} else {
-									plugin.settingsService.notifications.util('No safety snapshot found.');
+									plugin.settingsService.notifications.util(
+										'No safety snapshot found.'
+									);
 								}
 							}
 						).open();
