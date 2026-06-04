@@ -162,6 +162,21 @@ export default class StyleManagerPlugin extends Plugin {
 			},
 		});
 
+		this.addCommand({
+			id: 'style-manager-command-copy-accent-color',
+			name: 'Copy current accent color',
+			callback: async () => {
+				const color = this.settingsService.settings[ACCENT_COLOR_KEY] || 
+								this.settingsService.bridge.getNativeConfig('accentColor');
+				if (color) {
+					await navigator.clipboard.writeText(color as string);
+					this.settingsService.notifications.util(`Accent color ${color} copied to clipboard`);
+				} else {
+					this.settingsService.notifications.error('No accent color set');
+				}
+			},
+		});
+
 		this.addSettingTab(
 			(
 				this.settingsService.viewManager as unknown as {
