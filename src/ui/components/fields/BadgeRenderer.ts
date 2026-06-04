@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { setIcon, setTooltip } from 'obsidian';
+import { setIcon, setTooltip, displayTooltip } from 'obsidian';
 
 import StyleManagerPlugin from '../../../main';
 
@@ -49,7 +49,15 @@ export function renderSnippetBadge(
 	});
 
 	if (snippetList.length > 0) {
-		setTooltip(badge, `${snippetList.join('\n')}`);
+		const tooltipText = snippetList.join('\n');
+		setTooltip(badge, tooltipText);
+
+		badge.addClass('is-clickable');
+		badge.onclick = (e) => {
+			e.preventDefault();
+			e.stopPropagation();
+			displayTooltip(badge, tooltipText);
+		};
 	}
 
 	return badge;
