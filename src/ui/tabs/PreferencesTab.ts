@@ -18,6 +18,8 @@
 */
 import { App, Setting, debounce, setIcon } from 'obsidian';
 
+import { ConfirmModal } from '../modals/ConfirmModal';
+
 import {
 	BACKUP_DATE_FORMAT_KEY,
 	BACKUP_PATH_KEY,
@@ -191,9 +193,18 @@ export class PreferencesTab {
 							const reader = new FileReader();
 							reader.onload = async (e): Promise<void> => {
 								const content = e.target?.result;
-								if (content) {
-									await plugin.backupService.restoreBackup(content);
-								}
+								if (!content) return;
+
+								new ConfirmModal(
+									this.app,
+									'Restore backup',
+									'Importing a backup will overwrite your current settings, presets, snippets, and themes. A safety snapshot will be created automatically. Are you sure you want to proceed?',
+									'Restore',
+									true,
+									async () => {
+										await plugin.backupService.restoreBackup(content);
+									}
+								).open();
 							};
 
 							if (isZip) {
@@ -216,24 +227,33 @@ export class PreferencesTab {
 					.setButtonText('Rollback to Snapshot')
 					.setWarning()
 					.setIcon('rotate-ccw')
-					.onClick(async () => {
-						const adapter = this.app.vault.adapter;
-						const baseDir =
-							(
-								this.plugin
-									.manifest as import('../../main').default['manifest'] & {
-									dir?: string;
-								}
-							).dir ||
-							`${this.app.vault.configDir}/plugins/${this.plugin.manifest.id}`;
-						const backupPath = `${baseDir}/data.json.bak`;
+					.onClick(() => {
+						new ConfirmModal(
+							this.app,
+							'Safety rollback',
+							'Restore your configurations from the last automatic safety snapshot (data.json.bak). This will overwrite your current settings. Are you sure you want to proceed?',
+							'Rollback',
+							true,
+							async () => {
+								const adapter = this.app.vault.adapter;
+								const baseDir =
+									(
+										this.plugin
+											.manifest as import('../../main').default['manifest'] & {
+												dir?: string;
+											}
+									).dir ||
+									`${this.app.vault.configDir}/plugins/${this.plugin.manifest.id}`;
+								const backupPath = `${baseDir}/data.json.bak`;
 
-						if (await adapter.exists(backupPath)) {
-							const content = await adapter.read(backupPath);
-							await plugin.backupService.restoreBackup(content);
-						} else {
-							plugin.settingsService.notifications.util('No safety snapshot found.');
-						}
+								if (await adapter.exists(backupPath)) {
+									const content = await adapter.read(backupPath);
+									await plugin.backupService.restoreBackup(content);
+								} else {
+									plugin.settingsService.notifications.util('No safety snapshot found.');
+								}
+							}
+						).open();
 					});
 			});
 	}
