@@ -38,6 +38,7 @@ import { GarbledTextTool } from './tools/GarbledTextTool';
 import { RedOutlinesTool } from './tools/RedOutlinesTool';
 import { TestNoticeTool } from './tools/TestNoticeTool';
 import { CopyAccentColorTool } from './tools/CopyAccentColorTool';
+import { MobileEmulationTool } from './tools/MobileEmulationTool';
 import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
 import './css/main.css';
@@ -65,6 +66,8 @@ export default class StyleManagerPlugin extends Plugin {
 	redOutlinesTool: RedOutlinesTool;
 	testNoticeTool: TestNoticeTool;
 	copyAccentColorTool: CopyAccentColorTool;
+	mobileEmulationTool: MobileEmulationTool;
+
 
 	settingsList: ParsedCSSSettings[] = [];
 	errorList: ErrorList = [];
@@ -91,6 +94,8 @@ export default class StyleManagerPlugin extends Plugin {
 		this.redOutlinesTool = new RedOutlinesTool(this);
 		this.testNoticeTool = new TestNoticeTool(this);
 		this.copyAccentColorTool = new CopyAccentColorTool(this);
+		this.mobileEmulationTool = new MobileEmulationTool(this);
+
 
 		this.settingsService.refreshService.setDelegates({
 			parseCSS: () => this.parseCSS(),
@@ -191,6 +196,14 @@ export default class StyleManagerPlugin extends Plugin {
 			name: 'Toggle Red Outlines for Debugging',
 			callback: () => this.redOutlinesTool.toggle(),
 		});
+
+		if (!(this.app as unknown as { isMobile: boolean }).isMobile) {
+			this.addCommand({
+				id: 'style-manager-command-toggle-mobile-emulation',
+				name: 'Toggle Mobile Emulation',
+				callback: () => this.mobileEmulationTool.toggle(),
+			});
+		}
 
 		this.addCommand({
 			id: 'style-manager-command-show-test-notice',
