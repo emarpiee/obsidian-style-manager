@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Modal, Setting } from 'obsidian';
+import { App, Modal, Setting, displayTooltip } from 'obsidian';
 
 import { CSSEditorModal } from './CSSEditorModal';
 
@@ -196,9 +196,11 @@ export class ThemeManifestModal extends Modal {
 		// Initial validation for existing manifest data
 		for (const [key, { el }] of this.inputs) {
 			validateField(key, el);
+			this.setupValidationListeners(key, el);
 		}
 
 		new Setting(contentEl)
+
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
 				btn.setButtonText('Cancel').onClick(() => this.close())
@@ -292,5 +294,27 @@ export class ThemeManifestModal extends Modal {
 
 	onClose(): void {
 		this.contentEl.empty();
+	}
+
+	private getFieldError(key: string): string | null {
+		const entry = this.inputs.get(key);
+		if (!entry) return null;
+		for (const validator of entry.validators) {
+			const error = validator(entry.el.value);
+			if (error) return error;
+		}
+		return null;
+	}
+
+	private setupValidationListeners(key: string, el: HTMLInputElement | HTMLTextAreaElement): void {
+		const showTooltip = (): void => {
+			const error = this.getFieldError(key);
+			if (error) {
+				displayTooltip(el, error);
+			}
+		};
+
+		el.addEventListener('focus', showTooltip);
+		el.addEventListener('click', showTooltip);
 	}
 }
