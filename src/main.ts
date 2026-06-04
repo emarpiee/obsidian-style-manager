@@ -57,6 +57,7 @@ export default class StyleManagerPlugin extends Plugin {
 	styleBlockService: StyleBlockService;
 	styleSheetManager: StyleSheetManager;
 	statusBarManager: StatusBarManager;
+	garbledTextStyleEl: HTMLElement | undefined;
 
 	settingsList: ParsedCSSSettings[] = [];
 	errorList: ErrorList = [];
@@ -175,6 +176,12 @@ export default class StyleManagerPlugin extends Plugin {
 					this.settingsService.notifications.error('No accent color set');
 				}
 			},
+		});
+
+		this.addCommand({
+			id: 'style-manager-command-toggle-garbled-text',
+			name: 'Toggle Garbled Text',
+			callback: () => this.toggleGarbledText(),
 		});
 
 		this.addSettingTab(
@@ -526,5 +533,25 @@ export default class StyleManagerPlugin extends Plugin {
 		if (tab && view.settingsMarkup) {
 			view.settingsMarkup.openTab(tab);
 		}
+	}
+
+	toggleGarbledText(): void {
+		const currentCSS = this.garbledTextStyleEl?.textContent;
+		let cssToApply = '';
+
+		if (!currentCSS) {
+			cssToApply = 'body *:not(:hover) { font-family: Flow Circular !important; }';
+			this.garbledTextStyleEl = document.createElement('style');
+			this.garbledTextStyleEl.setAttribute('type', 'text/css');
+			document.head.appendChild(this.garbledTextStyleEl);
+			this.register(() => this.garbledTextStyleEl?.detach());
+		} else {
+			cssToApply = '';
+		}
+
+		if (this.garbledTextStyleEl) {
+			this.garbledTextStyleEl.textContent = cssToApply;
+		}
+		this.app.workspace.trigger('css-change');
 	}
 }
