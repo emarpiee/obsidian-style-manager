@@ -33,9 +33,42 @@ body.is-phone {
 	--sm-sticky-tabs-height: 104px;
 }
 
-@media (max-width: 700px) {
+@media (max-width: 900px) {
 	body {
 		--sm-sticky-tabs-height: 104px;
+	}
+
+	.style-manager-tabs-container {
+		flex-direction: column;
+		overflow: scroll !important;
+	}
+
+	.style-manager-tabs-scroll-wrap {
+		min-width: 100%;
+		justify-content: space-evenly;
+		gap: 0 !important;
+	}
+
+	.style-manager-tab-text {
+		display: inline;
+	}
+
+	.style-manager-tab-icon {
+		margin-right: var(--size-4-2);
+	}
+
+	.style-manager-tab {
+		justify-content: center;
+	}
+
+	.style-manager-tab-spacer {
+		display: none;
+	}
+
+	.style-manager-tab-actions {
+		margin-bottom: 0 !important;
+		min-width: 100%;
+		justify-content: space-evenly;
 	}
 }
 
@@ -1223,16 +1256,6 @@ body.is-phone .style-manager-tabs-container {
 	align-items: center;
 }
 
-@media (max-width: 700px) {
-	.style-manager-tabs-container {
-		flex-direction: column;
-		height: var(--sm-sticky-tabs-height);
-		padding: var(--size-4-2) var(--size-4-3);
-		gap: var(--size-4-3);
-		align-items: center;
-	}
-}
-
 .style-manager-tabs-scroll-wrap {
 	display: flex;
 	align-items: flex-end;
@@ -1262,15 +1285,6 @@ body.is-phone .style-manager-tabs-scroll-wrap {
 	height: 40px;
 	flex-grow: 0;
 	align-items: center;
-}
-
-@media (max-width: 700px) {
-	.style-manager-tabs-scroll-wrap {
-		width: 100%;
-		height: 40px;
-		flex-grow: 0;
-		align-items: center;
-	}
 }
 
 .style-manager-tabs-scroll-wrap.has-start-fade {
@@ -1335,30 +1349,12 @@ body.is-phone .style-manager-tab-text {
 	display: inline;
 }
 
-@media (max-width: 700px) {
-	.style-manager-tab-text {
-		display: inline;
-	}
-}
-
 body.is-phone .style-manager-tab-icon {
 	margin-right: var(--size-4-2);
 }
 
-@media (max-width: 700px) {
-	.style-manager-tab-icon {
-		margin-right: var(--size-4-2);
-	}
-}
-
 body.is-phone .style-manager-tab {
 	justify-content: center;
-}
-
-@media (max-width: 700px) {
-	.style-manager-tab {
-		justify-content: center;
-	}
 }
 
 .style-manager-tab-spacer {
@@ -1367,12 +1363,6 @@ body.is-phone .style-manager-tab {
 
 body.is-phone .style-manager-tab-spacer {
 	display: none;
-}
-
-@media (max-width: 700px) {
-	.style-manager-tab-spacer {
-		display: none;
-	}
 }
 
 .style-manager-tab-actions {
@@ -1390,12 +1380,6 @@ body.is-phone .style-manager-tab-spacer {
 
 body.is-phone .style-manager-tab-actions {
 	margin-bottom: 0;
-}
-
-@media (max-width: 700px) {
-	.style-manager-tab-actions {
-		margin-bottom: 0;
-	}
 }
 
 .style-manager-tab-actions .style-manager-icon-button {
