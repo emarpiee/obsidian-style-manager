@@ -175,7 +175,7 @@ export class PreferencesTab {
 		new Setting(backupContainer)
 			.setName('Restore backup from file')
 			.setDesc(
-				'Import a previously exported backup file (.json or .zip). This will create a safety snapshot before overwriting.'
+				'Import a previously exported backup file (.json or .zip). This will create a safety snapshot for your plugin configurations before overwriting it.'
 			)
 			.addButton((btn) => {
 				btn

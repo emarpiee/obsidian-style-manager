@@ -36,7 +36,7 @@ export function addThemeOptionsToMenu(
 
 	menu.addItem((item) => {
 		item
-			.setTitle('Obsidian default')
+			.setTitle('Default')
 			.setChecked(currentValue === 'default')
 			.onClick(async () => {
 				await plugin.settingsService.setSetting(THEME_KEY, 'default');
@@ -74,7 +74,7 @@ export function renderThemeSelect(
 	const themes = customCss.themes;
 	const currentThemeName =
 		currentValue === 'default'
-			? 'Obsidian default'
+			? 'Default'
 			: themes[currentValue]?.name || currentValue;
 
 	const triggerContainer = containerEl.createDiv('style-manager-theme-trigger');
