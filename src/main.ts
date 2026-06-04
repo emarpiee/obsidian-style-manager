@@ -35,6 +35,8 @@ import { PresetService } from './application/PresetService';
 import { SettingsService } from './application/SettingsService';
 import { StyleBlockService } from './application/StyleBlockService';
 import { GarbledTextTool } from './tools/GarbledTextTool';
+import { RedOutlinesTool } from './tools/RedOutlinesTool';
+import { TestNoticeTool } from './tools/TestNoticeTool';
 import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
 import './css/main.css';
@@ -59,6 +61,8 @@ export default class StyleManagerPlugin extends Plugin {
 	styleSheetManager: StyleSheetManager;
 	statusBarManager: StatusBarManager;
 	garbledTextTool: GarbledTextTool;
+	redOutlinesTool: RedOutlinesTool;
+	testNoticeTool: TestNoticeTool;
 
 	settingsList: ParsedCSSSettings[] = [];
 	errorList: ErrorList = [];
@@ -82,6 +86,8 @@ export default class StyleManagerPlugin extends Plugin {
 		this.styleSheetManager = this.settingsService.styleSheetManager;
 		this.statusBarManager = new StatusBarManager(this);
 		this.garbledTextTool = new GarbledTextTool(this);
+		this.redOutlinesTool = new RedOutlinesTool(this);
+		this.testNoticeTool = new TestNoticeTool(this);
 
 		this.settingsService.refreshService.setDelegates({
 			parseCSS: () => this.parseCSS(),
@@ -184,6 +190,18 @@ export default class StyleManagerPlugin extends Plugin {
 			id: 'style-manager-command-toggle-garbled-text',
 			name: 'Toggle Garbled Text',
 			callback: () => this.garbledTextTool.toggle(),
+		});
+
+		this.addCommand({
+			id: 'style-manager-command-toggle-red-outlines',
+			name: 'Toggle Red Outlines for Debugging',
+			callback: () => this.redOutlinesTool.toggle(),
+		});
+
+		this.addCommand({
+			id: 'style-manager-command-show-test-notice',
+			name: 'Show Test Notice',
+			callback: () => this.testNoticeTool.show(),
 		});
 
 		this.addSettingTab(
