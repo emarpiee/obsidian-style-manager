@@ -34,6 +34,17 @@ describe('ThemeBuilderService', () => {
 
 	beforeEach(() => {
 		app = new App();
+		app.vault = {
+			adapter: {
+				exists: vi.fn(),
+				mkdir: vi.fn(),
+				write: vi.fn(),
+				read: vi.fn(),
+				rmdir: vi.fn(),
+				list: vi.fn(),
+				rename: vi.fn(),
+			},
+		} as any;
 		notifications = {
 			util: vi.fn(),
 			error: vi.fn(),
@@ -269,18 +280,27 @@ describe('ThemeBuilderService', () => {
 
 			const existsSpy = vi
 				.spyOn(app.vault.adapter, 'exists')
-				.mockResolvedValue(true);
+				.mockImplementation(async (path) => {
+					if (path === '.obsidian/themes/test-theme') return true;
+					if (path === '.obsidian/themes/updated-theme') return false;
+					if (path === '.obsidian/themes/updated-theme/manifest.json') return true;
+					return false;
+				});
+			const renameSpy = vi
+				.spyOn(app.vault.adapter, 'rename')
+				.mockResolvedValue(undefined);
 			const writeSpy = vi
 				.spyOn(app.vault.adapter, 'write')
 				.mockResolvedValue(undefined);
 
 			await themeBuilder.updateThemeManifest('test-theme', manifest);
 
-			expect(existsSpy).toHaveBeenCalledWith(
-				'.obsidian/themes/test-theme/manifest.json'
+			expect(renameSpy).toHaveBeenCalledWith(
+				'.obsidian/themes/test-theme',
+				'.obsidian/themes/updated-theme'
 			);
 			expect(writeSpy).toHaveBeenCalledWith(
-				'.obsidian/themes/test-theme/manifest.json',
+				'.obsidian/themes/updated-theme/manifest.json',
 				JSON.stringify(manifest, null, '\t')
 			);
 			expect(notifications.util).toHaveBeenCalledWith(
@@ -291,13 +311,17 @@ describe('ThemeBuilderService', () => {
 
 		it('should throw an error if manifest does not exist', async () => {
 			const manifest: ThemeManifest = {
-				name: 'Theme',
+				name: 'Test Theme',
 				author: 'Author',
 				version: '1.0',
 				minAppVersion: '1.0',
 			};
 
-			vi.spyOn(app.vault.adapter, 'exists').mockResolvedValue(false);
+			vi.spyOn(app.vault.adapter, 'exists').mockImplementation(async (path) => {
+				if (path === '.obsidian/themes/test-theme') return true;
+				if (path === '.obsidian/themes/test-theme/manifest.json') return false;
+				return false;
+			});
 
 			await expect(
 				themeBuilder.updateThemeManifest('test-theme', manifest)
