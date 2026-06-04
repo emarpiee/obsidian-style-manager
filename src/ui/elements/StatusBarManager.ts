@@ -124,7 +124,6 @@ export class StatusBarManager {
 		const activeTheme =
 			(this.plugin.settingsService.settings[THEME_KEY] as string) || 'default';
 
-
 		// 1. Mode Information & Toggle
 		menu.addItem((item) => {
 			item
@@ -153,7 +152,9 @@ export class StatusBarManager {
 				item as unknown as { setSubmenu?: () => Menu }
 			).setSubmenu?.();
 			if (themeMenu) {
-				addThemeOptionsToMenu(this.plugin, themeMenu, activeTheme, () => this.refresh());
+				addThemeOptionsToMenu(this.plugin, themeMenu, activeTheme, () =>
+					this.refresh()
+				);
 			} else {
 				// Fallback for older Obsidian versions: toggle directly or show notice
 				item.onClick(() => {
@@ -163,9 +164,9 @@ export class StatusBarManager {
 		});
 
 		// 3. Appearance Toggle
-		const appearance =
-			(this.plugin.settingsService.settings[APPEARANCE_KEY] as string) ||
-			'system';
+		const appearance = this.plugin.settingsService.settings[
+			APPEARANCE_KEY
+		] as string;
 		menu.addItem((item) => {
 			let icon = '';
 			if (appearance === 'light') icon = 'sun';

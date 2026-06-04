@@ -285,12 +285,12 @@ export class IsolateTab {
 			const metaRow = descContainer.createDiv('style-manager-locker-meta-row');
 
 			// Appearance Badge
-			if (appearance && appearance !== 'system') {
+			if (appearance) {
 				renderAppearanceBadge(metaRow, appearance as string);
 			}
 
-			// Theme Badge (if not default)
-			if (theme && theme !== 'Default' && theme !== 'default') {
+			// Theme Badge
+			if (theme) {
 				renderThemeBadge(
 					metaRow,
 					theme as string,
