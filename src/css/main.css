@@ -332,8 +332,6 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	border: 1px solid var(--sm-badge-secondary-border-color-inactive) !important;
 }
 
-/* Locker-Specific Styles */
-
 .style-manager-badge-container {
 	display: flex;
 	flex-wrap: wrap;
@@ -342,13 +340,9 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	vertical-align: middle;
 }
 
-.style-manager-badge-container.mod-left {
-	margin-left: 8px;
-}
-
 .style-manager-badge-primary {
 	font-size: 10px;
-	padding: 1px 7px;
+	padding: 1px 4px;
 	border-radius: var(--sm-badge-primary-radius);
 	background: var(--sm-badge-primary-bg);
 	color: var(--sm-badge-primary-color);
