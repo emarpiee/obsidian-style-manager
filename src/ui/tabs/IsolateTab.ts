@@ -293,6 +293,7 @@ export class IsolateTab {
 			if (theme) {
 				renderThemeBadge(
 					metaRow,
+					plugin,
 					theme as string,
 					locker?.isolateSettings?.[ACCENT_COLOR_KEY] as string
 				);

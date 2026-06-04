@@ -264,6 +264,7 @@ export class CreatePresetModal extends Modal {
 				if (isTheme) {
 					renderThemeBadge(
 						badgesContainer,
+						this.service.plugin,
 						prefix.value as string,
 						currentAccent
 					);

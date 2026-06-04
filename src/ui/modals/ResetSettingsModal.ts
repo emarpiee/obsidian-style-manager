@@ -197,6 +197,7 @@ export class ResetSettingsModal extends Modal {
 				if (isTheme) {
 					renderThemeBadge(
 						badgesContainer,
+						this.plugin,
 						section.value as string,
 						section.accentColor
 					);

@@ -91,6 +91,7 @@ export class PresetItem {
 		if (theme) {
 			renderThemeBadge(
 				badgesContainer,
+				plugin,
 				theme,
 				preset.data[ACCENT_COLOR_KEY] as string
 			);

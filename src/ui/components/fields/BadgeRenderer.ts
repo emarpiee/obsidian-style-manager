@@ -78,6 +78,7 @@ export function renderCountBadge(
 /** Renders the theme badge, with optional accent color styling. */
 export function renderThemeBadge(
 	container: HTMLElement,
+	plugin: StyleManagerPlugin,
 	theme: string,
 	accentColor?: string
 ): HTMLElement {
@@ -95,6 +96,9 @@ export function renderThemeBadge(
 			e.stopPropagation();
 			copyToClipboard(accentColor);
 			displayTooltip(badge, accentColor);
+			plugin.settingsService.notifications.util(
+				`Accent color ${accentColor} copied to clipboard`
+			);
 		};
 	}
 
