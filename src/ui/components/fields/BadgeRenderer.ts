@@ -19,6 +19,7 @@
 import { setIcon, setTooltip, displayTooltip } from 'obsidian';
 
 import StyleManagerPlugin from '../../../main';
+import { copyToClipboard } from '../../../utils/UIUtils';
 
 /**
  * Standardized renderer for the snippet badge across different modals.
@@ -87,6 +88,14 @@ export function renderThemeBadge(
 
 	if (accentColor) {
 		badge.style.setProperty('--sm-badge-dynamic-color', accentColor);
+		setTooltip(badge, accentColor);
+		badge.addClass('is-clickable');
+		badge.onclick = (e: MouseEvent): void => {
+			e.preventDefault();
+			e.stopPropagation();
+			copyToClipboard(accentColor);
+			displayTooltip(badge, accentColor);
+		};
 	}
 
 	return badge;
