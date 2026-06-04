@@ -34,6 +34,7 @@ import { PresetImportService } from './application/PresetImportService';
 import { PresetService } from './application/PresetService';
 import { SettingsService } from './application/SettingsService';
 import { StyleBlockService } from './application/StyleBlockService';
+import { GarbledTextTool } from './tools/GarbledTextTool';
 import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
 import './css/main.css';
@@ -57,7 +58,7 @@ export default class StyleManagerPlugin extends Plugin {
 	styleBlockService: StyleBlockService;
 	styleSheetManager: StyleSheetManager;
 	statusBarManager: StatusBarManager;
-	garbledTextStyleEl: HTMLElement | undefined;
+	garbledTextTool: GarbledTextTool;
 
 	settingsList: ParsedCSSSettings[] = [];
 	errorList: ErrorList = [];
@@ -80,6 +81,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.styleBlockService = new StyleBlockService();
 		this.styleSheetManager = this.settingsService.styleSheetManager;
 		this.statusBarManager = new StatusBarManager(this);
+		this.garbledTextTool = new GarbledTextTool(this);
 
 		this.settingsService.refreshService.setDelegates({
 			parseCSS: () => this.parseCSS(),
@@ -181,7 +183,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.addCommand({
 			id: 'style-manager-command-toggle-garbled-text',
 			name: 'Toggle Garbled Text',
-			callback: () => this.toggleGarbledText(),
+			callback: () => this.garbledTextTool.toggle(),
 		});
 
 		this.addSettingTab(
@@ -533,25 +535,5 @@ export default class StyleManagerPlugin extends Plugin {
 		if (tab && view.settingsMarkup) {
 			view.settingsMarkup.openTab(tab);
 		}
-	}
-
-	toggleGarbledText(): void {
-		const currentCSS = this.garbledTextStyleEl?.textContent;
-		let cssToApply = '';
-
-		if (!currentCSS) {
-			cssToApply = 'body *:not(:hover) { font-family: Flow Circular !important; }';
-			this.garbledTextStyleEl = document.createElement('style');
-			this.garbledTextStyleEl.setAttribute('type', 'text/css');
-			document.head.appendChild(this.garbledTextStyleEl);
-			this.register(() => this.garbledTextStyleEl?.detach());
-		} else {
-			cssToApply = '';
-		}
-
-		if (this.garbledTextStyleEl) {
-			this.garbledTextStyleEl.textContent = cssToApply;
-		}
-		this.app.workspace.trigger('css-change');
 	}
 }
