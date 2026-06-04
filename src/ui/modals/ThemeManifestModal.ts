@@ -199,7 +199,10 @@ export class ThemeManifestModal extends Modal {
 			this.setupValidationListeners(key, el);
 		}
 
+		this.setupScrollListener();
+
 		new Setting(contentEl)
+
 
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
@@ -316,5 +319,12 @@ export class ThemeManifestModal extends Modal {
 
 		el.addEventListener('focus', showTooltip);
 		el.addEventListener('click', showTooltip);
+	}
+
+	private setupScrollListener(): void {
+		this.contentEl.addEventListener('scroll', () => {
+			const tooltips = document.querySelectorAll('.tooltip');
+			tooltips.forEach((tooltip) => tooltip.remove());
+		}, { passive: true });
 	}
 }
