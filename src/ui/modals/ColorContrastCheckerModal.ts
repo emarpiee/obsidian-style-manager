@@ -97,17 +97,19 @@ export class ColorContrastCheckerModal extends Modal {
 		this.previewEl.style.gap = '10px';
 
 		this.largeTextPreviewEl = this.previewEl.createDiv();
-		this.largeTextPreviewEl.setText('Large Text Preview');
+		this.largeTextPreviewEl.setText('Contrast');
 		this.largeTextPreviewEl.style.fontSize = '24px';
 		this.largeTextPreviewEl.style.fontWeight = 'bold';
 
 		this.normalTextPreviewEl = this.previewEl.createDiv();
-		this.normalTextPreviewEl.setText('Normal Text Preview');
+		this.normalTextPreviewEl.setText(
+			'Contrast is the difference in luminance or color that makes an object or its representation in an image or display distinguishable. In visual perception of the real world, contrast is determined by the difference in the color and brightness of the object and other objects within the same field of view.'
+		);
 		this.normalTextPreviewEl.style.fontSize = '16px';
 		this.normalTextPreviewEl.style.fontWeight = 'normal';
 
 		this.normalTextPreviewEl = this.previewEl.createDiv();
-		this.normalTextPreviewEl.setText('Small Text Preview');
+		this.normalTextPreviewEl.setText('from Wikipedia, the free encyclopedia');
 		this.normalTextPreviewEl.style.fontSize = '8px';
 		this.normalTextPreviewEl.style.fontWeight = 'normal';
 
