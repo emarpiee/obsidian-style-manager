@@ -16,14 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import {
-	App,
-	Component,
-	Menu,
-	Platform,
-	setIcon,
-	setTooltip,
-} from 'obsidian';
+import { App, Component, Menu, Platform, setIcon, setTooltip } from 'obsidian';
 
 import { renderAccentColorSelect } from './AccentColorSelector';
 import { IsolateModeHeader } from './IsolateModeHeader';
@@ -226,7 +219,9 @@ export class SettingsHeaderComponent extends Component {
 				);
 			} catch (e) {
 				console.error('Style Manager | Shared update error:', e);
-						this.plugin.settingsService.notifications.error('Error: Could not update from Shared Locker.');
+				this.plugin.settingsService.notifications.error(
+					'Error: Could not update from Shared Locker.'
+				);
 			} finally {
 				reloadBtn.removeClass('is-loading');
 				this.options.onRerender();

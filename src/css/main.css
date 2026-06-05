@@ -629,7 +629,6 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	display: block;
 }
 
-
 /* Color Contrast Checker */
 .style-manager-contrast-actions {
 	display: flex;
@@ -1304,8 +1303,6 @@ body.is-mobile
 body.is-phone .style-manager-tabs-container {
 	flex-direction: column;
 	height: var(--sm-sticky-tabs-height);
-	padding: var(--size-4-2) var(--size-4-3);
-	gap: var(--size-4-3);
 	align-items: center;
 }
 
