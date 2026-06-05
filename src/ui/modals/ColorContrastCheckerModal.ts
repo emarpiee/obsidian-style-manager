@@ -162,11 +162,16 @@ export class ColorContrastCheckerModal extends Modal {
 	}
 
 	private suggestAccessibleColors(): void {
-		this.bgColor = chroma.random().hex();
+		let bgColor = chroma.random();
+		while (Math.max(chroma.contrast('#FFFFFF', bgColor), chroma.contrast('#000000', bgColor)) < 7) {
+			bgColor = chroma.random();
+		}
+		this.bgColor = bgColor.hex();
+
 		let fgColor = chroma.random();
 
 		let attempts = 0;
-		while (chroma.contrast(fgColor, this.bgColor) < 4.5 && attempts < 20) {
+		while (chroma.contrast(fgColor, this.bgColor) < 7 && attempts < 20) {
 			if (chroma(this.bgColor).luminance() > 0.5) {
 				fgColor = fgColor.darken(0.1);
 			} else {
@@ -175,7 +180,7 @@ export class ColorContrastCheckerModal extends Modal {
 			attempts++;
 		}
 
-		if (chroma.contrast(fgColor, this.bgColor) < 4.5) {
+		if (chroma.contrast(fgColor, this.bgColor) < 7) {
 			const whiteContrast = chroma.contrast('#FFFFFF', this.bgColor);
 			const blackContrast = chroma.contrast('#000000', this.bgColor);
 			this.fgColor = whiteContrast > blackContrast ? '#FFFFFF' : '#000000';
