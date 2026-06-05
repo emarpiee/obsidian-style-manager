@@ -63,12 +63,6 @@ export class ColorContrastCheckerModal extends Modal {
 		actionsDiv.style.gap = '10px';
 		actionsDiv.style.margin = '10px 0';
 
-		const swapBtn = actionsDiv.createEl('button', { text: 'Swap' });
-		swapBtn.onclick = (): void => this.swapColors();
-
-		const randomBtn = actionsDiv.createEl('button', { text: 'Randomize' });
-		randomBtn.onclick = (): void => this.randomizeColors();
-
 		const bgSetting = new Setting(contentEl)
 			.setName('Background color')
 			.setDesc('Surface color');
@@ -110,6 +104,15 @@ export class ColorContrastCheckerModal extends Modal {
 		this.previewEl.style.flexDirection = 'column';
 		this.previewEl.style.gap = '10px';
 
+		const swapBtn = actionsDiv.createEl('button', { text: 'Swap' });
+		swapBtn.onclick = (): void => this.swapColors();
+
+		const randomBtn = actionsDiv.createEl('button', { text: 'Randomize' });
+		randomBtn.onclick = (): void => this.randomizeColors();
+
+		const suggestBtn = actionsDiv.createEl('button', { text: 'Suggest' });
+		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
+
 		this.largeTextPreviewEl = this.previewEl.createDiv();
 		this.largeTextPreviewEl.setText('Contrast');
 		this.largeTextPreviewEl.style.fontSize = '24px';
@@ -148,6 +151,37 @@ export class ColorContrastCheckerModal extends Modal {
 	private randomizeColors(): void {
 		this.fgColor = chroma.random().hex();
 		this.bgColor = chroma.random().hex();
+
+		this.fgPickr?.setColor(this.fgColor);
+		this.bgPickr?.setColor(this.bgColor);
+
+		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
+		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
+
+		this.updateResults();
+	}
+
+	private suggestAccessibleColors(): void {
+		this.bgColor = chroma.random().hex();
+		let fgColor = chroma.random();
+
+		let attempts = 0;
+		while (chroma.contrast(fgColor, this.bgColor) < 4.5 && attempts < 20) {
+			if (chroma(this.bgColor).luminance() > 0.5) {
+				fgColor = fgColor.darken(0.1);
+			} else {
+				fgColor = fgColor.brighten(0.1);
+			}
+			attempts++;
+		}
+
+		if (chroma.contrast(fgColor, this.bgColor) < 4.5) {
+			const whiteContrast = chroma.contrast('#FFFFFF', this.bgColor);
+			const blackContrast = chroma.contrast('#000000', this.bgColor);
+			this.fgColor = whiteContrast > blackContrast ? '#FFFFFF' : '#000000';
+		} else {
+			this.fgColor = fgColor.hex();
+		}
 
 		this.fgPickr?.setColor(this.fgColor);
 		this.bgPickr?.setColor(this.bgColor);
