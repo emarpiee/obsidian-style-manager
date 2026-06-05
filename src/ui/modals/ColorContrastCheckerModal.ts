@@ -26,6 +26,21 @@ export class ColorContrastCheckerModal extends Modal {
 
 		contentEl.addClass('style-manager-color-contrast-modal');
 
+		const actionsDiv = contentEl.createDiv();
+		actionsDiv.style.display = 'flex';
+		actionsDiv.style.justifyContent = 'center';
+		actionsDiv.style.gap = '10px';
+		actionsDiv.style.margin = '10px 0';
+
+		const swapBtn = actionsDiv.createEl('button', { text: 'Swap' });
+		swapBtn.onclick = (): void => this.swapColors();
+
+		const randomBtn = actionsDiv.createEl('button', { text: 'Randomize' });
+		randomBtn.onclick = (): void => this.randomizeColors();
+
+		const suggestBtn = actionsDiv.createEl('button', { text: 'Suggest' });
+		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
+
 		const fgSetting = new Setting(contentEl)
 			.setName('Foreground color')
 			.setDesc('Text or icon color');
@@ -57,11 +72,7 @@ export class ColorContrastCheckerModal extends Modal {
 			}
 		);
 
-		const actionsDiv = contentEl.createDiv();
-		actionsDiv.style.display = 'flex';
-		actionsDiv.style.justifyContent = 'center';
-		actionsDiv.style.gap = '10px';
-		actionsDiv.style.margin = '10px 0';
+
 
 		const bgSetting = new Setting(contentEl)
 			.setName('Background color')
@@ -103,15 +114,6 @@ export class ColorContrastCheckerModal extends Modal {
 		this.previewEl.style.display = 'flex';
 		this.previewEl.style.flexDirection = 'column';
 		this.previewEl.style.gap = '10px';
-
-		const swapBtn = actionsDiv.createEl('button', { text: 'Swap' });
-		swapBtn.onclick = (): void => this.swapColors();
-
-		const randomBtn = actionsDiv.createEl('button', { text: 'Randomize' });
-		randomBtn.onclick = (): void => this.randomizeColors();
-
-		const suggestBtn = actionsDiv.createEl('button', { text: 'Suggest' });
-		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
 
 		this.largeTextPreviewEl = this.previewEl.createDiv();
 		this.largeTextPreviewEl.setText('Contrast');
