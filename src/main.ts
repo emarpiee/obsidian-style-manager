@@ -43,6 +43,7 @@ import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
 import './css/main.css';
 import { CSSCompatibilityTool } from './tools/CSSCompatibilityTool';
+import { ColorContrastCheckerTool } from './tools/ColorContrastCheckerTool';
 import { CopyAccentColorTool } from './tools/CopyAccentColorTool';
 import { FreezeObsidianTool } from './tools/FreezeObsidianTool';
 import { GarbledTextTool } from './tools/GarbledTextTool';
@@ -75,6 +76,7 @@ export default class StyleManagerPlugin extends Plugin {
 	redOutlinesTool: RedOutlinesTool;
 	testNoticeTool: TestNoticeTool;
 	copyAccentColorTool: CopyAccentColorTool;
+	colorContrastCheckerTool: ColorContrastCheckerTool;
 	cssCompatibilityTool: CSSCompatibilityTool;
 	mobileEmulationTool: MobileEmulationTool;
 	toggleDevToolsTool: ToggleDevToolsTool;
@@ -104,6 +106,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.garbledTextTool = new GarbledTextTool(this);
 		this.redOutlinesTool = new RedOutlinesTool(this);
 		this.testNoticeTool = new TestNoticeTool(this);
+		this.colorContrastCheckerTool = new ColorContrastCheckerTool(this);
 		this.copyAccentColorTool = new CopyAccentColorTool(this);
 		this.cssCompatibilityTool = new CSSCompatibilityTool(this);
 		this.mobileEmulationTool = new MobileEmulationTool(this);
@@ -201,6 +204,12 @@ export default class StyleManagerPlugin extends Plugin {
 			id: 'style-manager-command-copy-accent-color',
 			name: 'Copy current accent color',
 			callback: async () => this.copyAccentColorTool.copy(),
+		});
+
+		this.addCommand({
+			id: 'style-manager-command-color-contrast-checker',
+			name: 'Color contrast checker',
+			callback: () => this.colorContrastCheckerTool.show(),
 		});
 
 		this.addCommand({
