@@ -1,6 +1,6 @@
 import Pickr from '@simonwep/pickr';
 import chroma from 'chroma-js';
-import { App, Modal, Setting } from 'obsidian';
+import { App, Modal, Setting, Notice, setIcon, setTooltip } from 'obsidian';
 
 import { getPickrSettings } from '../../utils/UIUtils';
 
@@ -33,13 +33,19 @@ export class ColorContrastCheckerModal extends Modal {
 			cls: 'style-manager-contrast-actions',
 		});
 
-		const swapBtn = actionsDiv.createEl('button', { text: 'Swap' });
+		const swapBtn = actionsDiv.createEl('button');
+		setIcon(swapBtn, 'repeat');
+		setTooltip(swapBtn, 'Swap');
 		swapBtn.onclick = (): void => this.swapColors();
 
-		const randomBtn = actionsDiv.createEl('button', { text: 'Random' });
+		const randomBtn = actionsDiv.createEl('button');
+		setIcon(randomBtn, 'dice');
+		setTooltip(randomBtn, 'Random');
 		randomBtn.onclick = (): void => this.randomizeColors();
 
-		const suggestBtn = actionsDiv.createEl('button', { text: 'Suggest' });
+		const suggestBtn = actionsDiv.createEl('button');
+		setIcon(suggestBtn, 'wand-2');
+		setTooltip(suggestBtn, 'Suggest');
 		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
 
 		this.fgSetting = new Setting(contentEl)
@@ -52,9 +58,12 @@ export class ColorContrastCheckerModal extends Modal {
 		this.fgSingle = fgWrapper.createDiv({ cls: 'single-color' });
 		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 
-		const fgCopyBtn = fgWrapper.createEl('button', { text: 'Copy' });
+		const fgCopyBtn = fgWrapper.createEl('button');
+		setIcon(fgCopyBtn, 'copy');
+		setTooltip(fgCopyBtn, 'Copy');
 		fgCopyBtn.onclick = async (): Promise<void> => {
 			await this.copyToClipboard(this.fgColor);
+			new Notice('Copied!');
 		};
 
 		this.fgPickr = Pickr.create(
@@ -89,9 +98,12 @@ export class ColorContrastCheckerModal extends Modal {
 		this.bgSingle = bgWrapper.createDiv({ cls: 'single-color' });
 		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 
-		const bgCopyBtn = bgWrapper.createEl('button', { text: 'Copy' });
+		const bgCopyBtn = bgWrapper.createEl('button');
+		setIcon(bgCopyBtn, 'copy');
+		setTooltip(bgCopyBtn, 'Copy');
 		bgCopyBtn.onclick = async (): Promise<void> => {
 			await this.copyToClipboard(this.bgColor);
+			new Notice('Copied!');
 		};
 
 		this.bgPickr = Pickr.create(
