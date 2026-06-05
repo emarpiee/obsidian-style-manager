@@ -22,8 +22,8 @@ import {
 	ACCENT_COLOR_KEY,
 	APPEARANCE_KEY,
 	THEME_KEY,
-	TOOL_FREEZE_DELAY,
 	TOOL_BOX_OUTLINE_COLOR,
+	TOOL_FREEZE_DELAY,
 } from './constants';
 import {
 	ClassToggle,
@@ -43,13 +43,13 @@ import { StyleBlockService } from './application/StyleBlockService';
 import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
 import './css/main.css';
+import { BoxOutlineTool } from './tools/BoxOutlineTool';
 import { CSSCompatibilityTool } from './tools/CSSCompatibilityTool';
 import { ColorContrastCheckerTool } from './tools/ColorContrastCheckerTool';
 import { CopyAccentColorTool } from './tools/CopyAccentColorTool';
 import { FreezeObsidianTool } from './tools/FreezeObsidianTool';
 import { GarbledTextTool } from './tools/GarbledTextTool';
 import { MobileEmulationTool } from './tools/MobileEmulationTool';
-import { BoxOutlineTool } from './tools/BoxOutlineTool';
 import { TestNoticeTool } from './tools/TestNoticeTool';
 import { ToggleDevToolsTool } from './tools/ToggleDevToolsTool';
 import { ActiveTab } from './ui/StyleManagerLayoutRenderer';
@@ -57,10 +57,10 @@ import { StyleManagerSettingTab } from './ui/StyleManagerSettingTab';
 import { StyleManagerView, viewType } from './ui/StyleManagerView';
 import { SettingType } from './ui/components/base/types';
 import { StatusBarManager } from './ui/elements/StatusBarManager';
+import { BoxOutlineColorPromptModal } from './ui/modals/BoxOutlineColorPromptModal';
 import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
-import { BoxOutlineColorPromptModal } from './ui/modals/BoxOutlineColorPromptModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
@@ -234,12 +234,16 @@ export default class StyleManagerPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'style-manager-command-change-box-outline-color',
-			name: 'Change box outline color',
+			name: 'Change CSS box outline color',
 			callback: () => {
-				new BoxOutlineColorPromptModal(this.app, (value) => {
+				const currentColor = (this.settingsService.getSetting(
+					TOOL_BOX_OUTLINE_COLOR
+				) ?? 'red') as string;
+				new BoxOutlineColorPromptModal(this.app, currentColor, (value) => {
 					if (value !== null) {
 						this.settingsService.setSetting(TOOL_BOX_OUTLINE_COLOR, value);
-						new Notice(`Box outline color set to ${value}`);
+						this.boxOutlineTool.updateColor();
+						new Notice(` CSS Box outline color set to ${value}`);
 					}
 				}).open();
 			},

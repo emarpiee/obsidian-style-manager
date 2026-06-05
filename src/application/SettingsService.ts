@@ -531,6 +531,9 @@ export class SettingsService extends Events {
 	}
 
 	getSetting(sectionId: string, settingId?: string): SettingValue | undefined {
+		if (settingId === undefined) {
+			return this.settings[sectionId];
+		}
 		if (sectionId === THEME_KEY) return this.settings[THEME_KEY];
 		if (sectionId === APPEARANCE_KEY) return this.settings[APPEARANCE_KEY];
 		if (sectionId === ACCENT_COLOR_KEY) return this.settings[ACCENT_COLOR_KEY];

@@ -44,4 +44,12 @@ export class BoxOutlineTool {
 		}
 		this.plugin.app.workspace.trigger('css-change');
 	}
+
+	updateColor(): void {
+		if (this.styleEl && this.styleEl.textContent) {
+			const color = this.plugin.settingsService.settings[TOOL_BOX_OUTLINE_COLOR] ?? 'red';
+			this.styleEl.textContent = `* {outline: ${color} 1px solid !important}`;
+			this.plugin.app.workspace.trigger('css-change');
+		}
+	}
 }

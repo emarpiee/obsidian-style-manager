@@ -16,8 +16,8 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Modal } from 'obsidian';
 import Pickr from '@simonwep/pickr';
+import { App, Modal } from 'obsidian';
 
 import { getPickrSettings, onPickrCancel } from '../../utils/UIUtils';
 
@@ -27,22 +27,29 @@ export class BoxOutlineColorPromptModal extends Modal {
 	resolved = false;
 	pickr: Pickr | null = null;
 
-	constructor(app: App, resolve: (value: string | null) => void) {
+	constructor(
+		app: App,
+		initialColor: string,
+		resolve: (value: string | null) => void
+	) {
 		super(app);
 		this.resolve = resolve;
+		this.value = initialColor;
 	}
 
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
 		modalEl.addClass('modal-style-manager');
-		this.setTitle('Box Outline Color');
+		this.setTitle('Box outline color');
 
 		contentEl.createEl('p', {
 			text: 'Choose the color for the box outlines:',
 			cls: 'style-manager-modal-description',
 		});
 
-		const wrapper = contentEl.createDiv({ cls: 'style-manager-color-picker-wrapper' });
+		const wrapper = contentEl.createDiv({
+			cls: 'style-manager-color-picker-wrapper',
+		});
 		const pickrEl = wrapper.createDiv({ cls: 'pickr-reset' });
 
 		this.pickr = Pickr.create(
@@ -52,7 +59,7 @@ export class BoxOutlineColorPromptModal extends Modal {
 				containerEl: contentEl,
 				swatches: [],
 				opacity: true,
-				defaultColor: 'red',
+				defaultColor: this.value ?? 'red',
 			})
 		);
 

@@ -16,12 +16,15 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Plugin, Notice } from 'obsidian';
+import { Notice, Plugin } from 'obsidian';
 
 export class TestNoticeTool {
 	constructor(private plugin: Plugin) {}
 
 	show(): void {
-		new Notice('I am a test notice. 👋 \n\nI will stay here until you click me.', 0);
+		new Notice(
+			'I am a test notice. 👋 \nI will stay here until you click me.',
+			0
+		);
 	}
 }
