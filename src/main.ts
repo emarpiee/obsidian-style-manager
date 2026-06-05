@@ -34,15 +34,16 @@ import { PresetImportService } from './application/PresetImportService';
 import { PresetService } from './application/PresetService';
 import { SettingsService } from './application/SettingsService';
 import { StyleBlockService } from './application/StyleBlockService';
-import { GarbledTextTool } from './tools/GarbledTextTool';
-import { RedOutlinesTool } from './tools/RedOutlinesTool';
-import { TestNoticeTool } from './tools/TestNoticeTool';
-import { CopyAccentColorTool } from './tools/CopyAccentColorTool';
-import { MobileEmulationTool } from './tools/MobileEmulationTool';
-import { ToggleDevToolsTool } from './tools/ToggleDevToolsTool';
 import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
 import './css/main.css';
+import { CopyAccentColorTool } from './tools/CopyAccentColorTool';
+import { FreezeObsidianTool } from './tools/FreezeObsidianTool';
+import { GarbledTextTool } from './tools/GarbledTextTool';
+import { MobileEmulationTool } from './tools/MobileEmulationTool';
+import { RedOutlinesTool } from './tools/RedOutlinesTool';
+import { TestNoticeTool } from './tools/TestNoticeTool';
+import { ToggleDevToolsTool } from './tools/ToggleDevToolsTool';
 import { ActiveTab } from './ui/StyleManagerLayoutRenderer';
 import { StyleManagerSettingTab } from './ui/StyleManagerSettingTab';
 import { StyleManagerView, viewType } from './ui/StyleManagerView';
@@ -69,7 +70,7 @@ export default class StyleManagerPlugin extends Plugin {
 	copyAccentColorTool: CopyAccentColorTool;
 	mobileEmulationTool: MobileEmulationTool;
 	toggleDevToolsTool: ToggleDevToolsTool;
-
+	freezeObsidianTool: FreezeObsidianTool;
 
 	settingsList: ParsedCSSSettings[] = [];
 	errorList: ErrorList = [];
@@ -98,7 +99,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.copyAccentColorTool = new CopyAccentColorTool(this);
 		this.mobileEmulationTool = new MobileEmulationTool(this);
 		this.toggleDevToolsTool = new ToggleDevToolsTool(this);
-
+		this.freezeObsidianTool = new FreezeObsidianTool(this);
 
 		this.settingsService.refreshService.setDelegates({
 			parseCSS: () => this.parseCSS(),
@@ -127,7 +128,11 @@ export default class StyleManagerPlugin extends Plugin {
 			id: 'style-manager-command-apply-preset-shared',
 			name: 'Apply preset to shared locker',
 			callback: () => {
-				new CommandApplyPresetModal(this.app, this.presetService, 'shared').open();
+				new CommandApplyPresetModal(
+					this.app,
+					this.presetService,
+					'shared'
+				).open();
 			},
 		});
 
@@ -159,7 +164,8 @@ export default class StyleManagerPlugin extends Plugin {
 			id: 'style-manager-command-reset-styles',
 			name: 'Reset current styles',
 			callback: () => {
-				const sectionsWithData = this.settingsService.statsService.getResetSectionsData();
+				const sectionsWithData =
+					this.settingsService.statsService.getResetSectionsData();
 				new ResetSettingsModal(
 					this.app,
 					this,
@@ -204,6 +210,12 @@ export default class StyleManagerPlugin extends Plugin {
 			id: 'style-manager-command-toggle-devtools',
 			name: 'Toggle Devtools',
 			callback: () => this.toggleDevToolsTool.toggle(),
+		});
+
+		this.addCommand({
+			id: 'style-manager-command-freeze-obsidian',
+			name: 'Freeze Obsidian (4s delay)',
+			callback: () => this.freezeObsidianTool.freeze(),
 		});
 
 		if (!(this.app as unknown as { isMobile: boolean }).isMobile) {
