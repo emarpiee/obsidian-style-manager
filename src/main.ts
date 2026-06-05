@@ -39,6 +39,7 @@ import { RedOutlinesTool } from './tools/RedOutlinesTool';
 import { TestNoticeTool } from './tools/TestNoticeTool';
 import { CopyAccentColorTool } from './tools/CopyAccentColorTool';
 import { MobileEmulationTool } from './tools/MobileEmulationTool';
+import { ToggleDevToolsTool } from './tools/ToggleDevToolsTool';
 import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
 import './css/main.css';
@@ -67,6 +68,7 @@ export default class StyleManagerPlugin extends Plugin {
 	testNoticeTool: TestNoticeTool;
 	copyAccentColorTool: CopyAccentColorTool;
 	mobileEmulationTool: MobileEmulationTool;
+	toggleDevToolsTool: ToggleDevToolsTool;
 
 
 	settingsList: ParsedCSSSettings[] = [];
@@ -95,6 +97,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.testNoticeTool = new TestNoticeTool(this);
 		this.copyAccentColorTool = new CopyAccentColorTool(this);
 		this.mobileEmulationTool = new MobileEmulationTool(this);
+		this.toggleDevToolsTool = new ToggleDevToolsTool(this);
 
 
 		this.settingsService.refreshService.setDelegates({
@@ -195,6 +198,12 @@ export default class StyleManagerPlugin extends Plugin {
 			id: 'style-manager-command-toggle-red-outlines',
 			name: 'Toggle Red Outlines for Debugging',
 			callback: () => this.redOutlinesTool.toggle(),
+		});
+
+		this.addCommand({
+			id: 'style-manager-command-toggle-devtools',
+			name: 'Toggle Devtools',
+			callback: () => this.toggleDevToolsTool.toggle(),
 		});
 
 		if (!(this.app as unknown as { isMobile: boolean }).isMobile) {
