@@ -37,6 +37,7 @@ import { StyleBlockService } from './application/StyleBlockService';
 import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
 import './css/main.css';
+import { CSSCompatibilityTool } from './tools/CSSCompatibilityTool';
 import { CopyAccentColorTool } from './tools/CopyAccentColorTool';
 import { FreezeObsidianTool } from './tools/FreezeObsidianTool';
 import { GarbledTextTool } from './tools/GarbledTextTool';
@@ -68,6 +69,7 @@ export default class StyleManagerPlugin extends Plugin {
 	redOutlinesTool: RedOutlinesTool;
 	testNoticeTool: TestNoticeTool;
 	copyAccentColorTool: CopyAccentColorTool;
+	cssCompatibilityTool: CSSCompatibilityTool;
 	mobileEmulationTool: MobileEmulationTool;
 	toggleDevToolsTool: ToggleDevToolsTool;
 	freezeObsidianTool: FreezeObsidianTool;
@@ -97,6 +99,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.redOutlinesTool = new RedOutlinesTool(this);
 		this.testNoticeTool = new TestNoticeTool(this);
 		this.copyAccentColorTool = new CopyAccentColorTool(this);
+		this.cssCompatibilityTool = new CSSCompatibilityTool(this);
 		this.mobileEmulationTool = new MobileEmulationTool(this);
 		this.toggleDevToolsTool = new ToggleDevToolsTool(this);
 		this.freezeObsidianTool = new FreezeObsidianTool(this);
@@ -195,20 +198,26 @@ export default class StyleManagerPlugin extends Plugin {
 		});
 
 		this.addCommand({
+			id: 'style-manager-command-css-compatibility',
+			name: 'Obsidian tech stack versions',
+			callback: () => this.cssCompatibilityTool.show(),
+		});
+
+		this.addCommand({
 			id: 'style-manager-command-toggle-garbled-text',
-			name: 'Toggle Garbled Text',
+			name: 'Toggle garbled text',
 			callback: () => this.garbledTextTool.toggle(),
 		});
 
 		this.addCommand({
 			id: 'style-manager-command-toggle-red-outlines',
-			name: 'Toggle Red Outlines for Debugging',
+			name: 'Toggle red outlines for CSS debugging',
 			callback: () => this.redOutlinesTool.toggle(),
 		});
 
 		this.addCommand({
 			id: 'style-manager-command-toggle-devtools',
-			name: 'Toggle Devtools',
+			name: 'Toggle devtools',
 			callback: () => this.toggleDevToolsTool.toggle(),
 		});
 
@@ -221,14 +230,14 @@ export default class StyleManagerPlugin extends Plugin {
 		if (!(this.app as unknown as { isMobile: boolean }).isMobile) {
 			this.addCommand({
 				id: 'style-manager-command-toggle-mobile-emulation',
-				name: 'Toggle Mobile Emulation',
+				name: 'Toggle mobile emulation',
 				callback: () => this.mobileEmulationTool.toggle(),
 			});
 		}
 
 		this.addCommand({
 			id: 'style-manager-command-show-test-notice',
-			name: 'Show Test Notice',
+			name: 'Show test notice',
 			callback: () => this.testNoticeTool.show(),
 		});
 
