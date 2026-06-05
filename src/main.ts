@@ -16,9 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Command, Plugin, normalizePath } from 'obsidian';
+import { Command, Plugin, normalizePath, Notice } from 'obsidian';
 
-import { ACCENT_COLOR_KEY, APPEARANCE_KEY, THEME_KEY } from './constants';
+import { ACCENT_COLOR_KEY, APPEARANCE_KEY, THEME_KEY, TOOL_FREEZE_DELAY } from './constants';
 import {
 	ClassToggle,
 	ErrorList,
@@ -27,7 +27,6 @@ import {
 	SettingsSeachResource,
 	SnippetMetadata,
 } from './types';
-
 import { BackupService } from './application/BackupService';
 import { BundleService } from './application/BundleService';
 import { PresetImportService } from './application/PresetImportService';
@@ -53,8 +52,10 @@ import { StatusBarManager } from './ui/elements/StatusBarManager';
 import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
+import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
+
 
 export default class StyleManagerPlugin extends Plugin {
 	settingsService: SettingsService;
@@ -223,8 +224,21 @@ export default class StyleManagerPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'style-manager-command-freeze-obsidian',
-			name: 'Freeze Obsidian (4s delay)',
+			name: 'Freeze Obsidian',
 			callback: () => this.freezeObsidianTool.freeze(),
+		});
+
+		this.addCommand({
+			id: 'style-manager-command-change-freeze-delay',
+			name: 'Change Freeze Obsidian delay',
+			callback: () => {
+				new FreezeDelayPromptModal(this.app, (value) => {
+					if (value !== null) {
+						this.settingsService.setSetting(TOOL_FREEZE_DELAY, value);
+						new Notice(`Freeze Obsidian delay set to ${value}s`);
+					}
+				}).open();
+			},
 		});
 
 		if (!(this.app as unknown as { isMobile: boolean }).isMobile) {

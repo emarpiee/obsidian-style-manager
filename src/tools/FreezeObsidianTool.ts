@@ -16,7 +16,9 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Notice, Plugin } from 'obsidian';
+import { Notice } from 'obsidian';
+import { TOOL_FREEZE_DELAY } from '../constants';
+import type StyleManagerPlugin from '../main';
 
 declare const electronWindow: {
 	openDevTools: () => void;
@@ -24,18 +26,22 @@ declare const electronWindow: {
 };
 
 export class FreezeObsidianTool {
-	constructor(private plugin: Plugin) {}
+	constructor(private plugin: StyleManagerPlugin) {}
 
-	freeze(delay: number = 4): void {
+	freeze(delay?: number): void {
+		const finalDelay = (delay ?? 
+            this.plugin.settingsService.settings[TOOL_FREEZE_DELAY] ?? 
+            4) as number;
+
 		const freezeNotice = new Notice(
-			`⚠ Will freeze Obsidian in ${delay}s`,
-			(delay - 0.2) * 1000
+			`⚠ Will freeze Obsidian in ${finalDelay}s`,
+			(finalDelay - 0.2) * 1000
 		);
 		electronWindow.openDevTools();
 
 		let passSecs = 0;
 		const timer = setInterval(() => {
-			const timePassed = (delay - passSecs).toFixed(1);
+			const timePassed = (finalDelay - passSecs).toFixed(1);
 			freezeNotice.setMessage(`⚠ Will freeze Obsidian in ${timePassed}s`);
 			passSecs += 0.1;
 		}, 100);
@@ -44,6 +50,6 @@ export class FreezeObsidianTool {
 			// eslint-disable-next-line no-debugger
 			debugger;
 			clearInterval(timer);
-		}, delay * 1000);
+		}, finalDelay * 1000);
 	}
 }
