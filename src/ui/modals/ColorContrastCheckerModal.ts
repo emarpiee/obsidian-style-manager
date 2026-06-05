@@ -9,6 +9,8 @@ export class ColorContrastCheckerModal extends Modal {
 	private bgColor = '#7A3198';
 	private fgPickr: Pickr | null = null;
 	private bgPickr: Pickr | null = null;
+	private fgSingle: HTMLElement;
+	private bgSingle: HTMLElement;
 	private previewEl: HTMLElement;
 	private normalTextPreviewEl: HTMLElement;
 	private largeTextPreviewEl: HTMLElement;
@@ -31,12 +33,12 @@ export class ColorContrastCheckerModal extends Modal {
 		const fgWrapper = fgSetting.controlEl.createDiv({
 			cls: 'themed-color-wrapper',
 		});
-		const fgSingle = fgWrapper.createDiv({ cls: 'single-color' });
-		fgSingle.style.setProperty('--pcr-color', this.fgColor);
+		this.fgSingle = fgWrapper.createDiv({ cls: 'single-color' });
+		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 		this.fgPickr = Pickr.create(
 			getPickrSettings({
 				isView: false,
-				el: fgSingle.createDiv({ cls: 'picker' }),
+				el: this.fgSingle.createDiv({ cls: 'picker' }),
 				containerEl: contentEl,
 				swatches: [this.fgColor],
 				opacity: false,
@@ -48,12 +50,24 @@ export class ColorContrastCheckerModal extends Modal {
 			(color: Pickr.HSVaColor | null, instance: Pickr) => {
 				if (color) {
 					this.fgColor = color.toHEXA().toString();
-					fgSingle.style.setProperty('--pcr-color', this.fgColor);
+					this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 					this.updateResults();
 				}
 				instance.hide();
 			}
 		);
+
+		const actionsDiv = contentEl.createDiv();
+		actionsDiv.style.display = 'flex';
+		actionsDiv.style.justifyContent = 'center';
+		actionsDiv.style.gap = '10px';
+		actionsDiv.style.margin = '10px 0';
+
+		const swapBtn = actionsDiv.createEl('button', { text: 'Swap' });
+		swapBtn.onclick = (): void => this.swapColors();
+
+		const randomBtn = actionsDiv.createEl('button', { text: 'Randomize' });
+		randomBtn.onclick = (): void => this.randomizeColors();
 
 		const bgSetting = new Setting(contentEl)
 			.setName('Background color')
@@ -62,12 +76,12 @@ export class ColorContrastCheckerModal extends Modal {
 		const bgWrapper = bgSetting.controlEl.createDiv({
 			cls: 'themed-color-wrapper',
 		});
-		const bgSingle = bgWrapper.createDiv({ cls: 'single-color' });
-		bgSingle.style.setProperty('--pcr-color', this.bgColor);
+		this.bgSingle = bgWrapper.createDiv({ cls: 'single-color' });
+		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 		this.bgPickr = Pickr.create(
 			getPickrSettings({
 				isView: false,
-				el: bgSingle.createDiv({ cls: 'picker' }),
+				el: this.bgSingle.createDiv({ cls: 'picker' }),
 				containerEl: contentEl,
 				swatches: [this.bgColor],
 				opacity: false,
@@ -79,7 +93,7 @@ export class ColorContrastCheckerModal extends Modal {
 			(color: Pickr.HSVaColor | null, instance: Pickr) => {
 				if (color) {
 					this.bgColor = color.toHEXA().toString();
-					bgSingle.style.setProperty('--pcr-color', this.bgColor);
+					this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 					this.updateResults();
 				}
 				instance.hide();
@@ -115,6 +129,31 @@ export class ColorContrastCheckerModal extends Modal {
 
 		this.resultsEl = contentEl.createDiv();
 		this.resultsEl.style.marginTop = '10px';
+
+		this.updateResults();
+	}
+
+	private swapColors(): void {
+		[this.fgColor, this.bgColor] = [this.bgColor, this.fgColor];
+
+		this.fgPickr?.setColor(this.fgColor);
+		this.bgPickr?.setColor(this.bgColor);
+
+		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
+		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
+
+		this.updateResults();
+	}
+
+	private randomizeColors(): void {
+		this.fgColor = chroma.random().hex();
+		this.bgColor = chroma.random().hex();
+
+		this.fgPickr?.setColor(this.fgColor);
+		this.bgPickr?.setColor(this.bgColor);
+
+		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
+		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 
 		this.updateResults();
 	}
