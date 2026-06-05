@@ -26,16 +26,14 @@ export class ColorContrastCheckerModal extends Modal {
 
 		contentEl.addClass('style-manager-color-contrast-modal');
 
-		const actionsDiv = contentEl.createDiv();
-		actionsDiv.style.display = 'flex';
-		actionsDiv.style.justifyContent = 'center';
-		actionsDiv.style.gap = '10px';
-		actionsDiv.style.margin = '10px 0';
+		const actionsDiv = contentEl.createDiv({
+			cls: 'style-manager-contrast-actions',
+		});
 
 		const swapBtn = actionsDiv.createEl('button', { text: 'Swap' });
 		swapBtn.onclick = (): void => this.swapColors();
 
-		const randomBtn = actionsDiv.createEl('button', { text: 'Randomize' });
+		const randomBtn = actionsDiv.createEl('button', { text: 'Random' });
 		randomBtn.onclick = (): void => this.randomizeColors();
 
 		const suggestBtn = actionsDiv.createEl('button', { text: 'Suggest' });
@@ -72,8 +70,6 @@ export class ColorContrastCheckerModal extends Modal {
 			}
 		);
 
-
-
 		const bgSetting = new Setting(contentEl)
 			.setName('Background color')
 			.setDesc('Surface color');
@@ -105,35 +101,30 @@ export class ColorContrastCheckerModal extends Modal {
 			}
 		);
 
-		this.previewEl = contentEl.createDiv();
-		this.previewEl.style.marginTop = '20px';
-		this.previewEl.style.padding = '20px';
-		this.previewEl.style.borderRadius = '8px';
-		this.previewEl.style.textAlign = 'center';
-		this.previewEl.style.border = '1px solid var(--background-modifier-border)';
-		this.previewEl.style.display = 'flex';
-		this.previewEl.style.flexDirection = 'column';
-		this.previewEl.style.gap = '10px';
+		this.previewEl = contentEl.createDiv({
+			cls: 'style-manager-contrast-preview',
+		});
 
-		this.largeTextPreviewEl = this.previewEl.createDiv();
+		this.largeTextPreviewEl = this.previewEl.createDiv({
+			cls: 'style-manager-contrast-preview-large',
+		});
 		this.largeTextPreviewEl.setText('Contrast');
-		this.largeTextPreviewEl.style.fontSize = '24px';
-		this.largeTextPreviewEl.style.fontWeight = 'bold';
 
-		this.normalTextPreviewEl = this.previewEl.createDiv();
+		this.normalTextPreviewEl = this.previewEl.createDiv({
+			cls: 'style-manager-contrast-preview-normal',
+		});
 		this.normalTextPreviewEl.setText(
 			'Contrast is the difference in luminance or color that makes an object or its representation in an image or display distinguishable. In visual perception of the real world, contrast is determined by the difference in the color and brightness of the object and other objects within the same field of view.'
 		);
-		this.normalTextPreviewEl.style.fontSize = '16px';
-		this.normalTextPreviewEl.style.fontWeight = 'normal';
 
-		this.normalTextPreviewEl = this.previewEl.createDiv();
-		this.normalTextPreviewEl.setText('from Wikipedia, the free encyclopedia');
-		this.normalTextPreviewEl.style.fontSize = '8px';
-		this.normalTextPreviewEl.style.fontWeight = 'normal';
+		const smallTextPreviewEl = this.previewEl.createDiv({
+			cls: 'style-manager-contrast-preview-small',
+		});
+		smallTextPreviewEl.setText('from Wikipedia, the free encyclopedia');
 
-		this.resultsEl = contentEl.createDiv();
-		this.resultsEl.style.marginTop = '10px';
+		this.resultsEl = contentEl.createDiv({
+			cls: 'style-manager-contrast-results',
+		});
 
 		this.updateResults();
 	}
@@ -165,7 +156,12 @@ export class ColorContrastCheckerModal extends Modal {
 
 	private suggestAccessibleColors(): void {
 		let bgColor = chroma.random();
-		while (Math.max(chroma.contrast('#FFFFFF', bgColor), chroma.contrast('#000000', bgColor)) < 7) {
+		while (
+			Math.max(
+				chroma.contrast('#FFFFFF', bgColor),
+				chroma.contrast('#000000', bgColor)
+			) < 7
+		) {
 			bgColor = chroma.random();
 		}
 		this.bgColor = bgColor.hex();
@@ -218,12 +214,7 @@ export class ColorContrastCheckerModal extends Modal {
 				.setDesc(`Ratio: ${contrast.toFixed(2)}:1`);
 
 			const createBadge = (text: string, pass: boolean): HTMLElement => {
-				const badge = createSpan({ text });
-				badge.style.padding = '4px 8px';
-				badge.style.borderRadius = '4px';
-				badge.style.marginRight = '8px';
-				badge.style.fontSize = '12px';
-				badge.style.fontWeight = 'bold';
+				const badge = createSpan({ text, cls: 'style-manager-contrast-badge' });
 				badge.style.backgroundColor = pass
 					? 'var(--color-green)'
 					: 'var(--color-red)';
@@ -231,10 +222,9 @@ export class ColorContrastCheckerModal extends Modal {
 				return badge;
 			};
 
-			const badgesDiv = resultsSetting.controlEl.createDiv();
-			badgesDiv.style.display = 'flex';
-			badgesDiv.style.flexDirection = 'column';
-			badgesDiv.style.gap = '8px';
+			const badgesDiv = resultsSetting.controlEl.createDiv({
+				cls: 'style-manager-contrast-badges-container',
+			});
 
 			const normalDiv = badgesDiv.createDiv();
 			normalDiv.setText('Normal text: ');

@@ -629,6 +629,59 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	display: block;
 }
 
+
+/* Color Contrast Checker */
+.style-manager-contrast-actions {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	margin: 10px 0;
+}
+
+.style-manager-contrast-preview {
+	margin-top: 20px;
+	padding: 20px;
+	border-radius: 8px;
+	text-align: center;
+	border: 1px solid var(--background-modifier-border);
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+}
+
+.style-manager-contrast-preview-large {
+	font-size: 24px;
+	font-weight: bold;
+}
+
+.style-manager-contrast-preview-normal {
+	font-size: 16px;
+	font-weight: normal;
+}
+
+.style-manager-contrast-preview-small {
+	font-size: 8px;
+	font-weight: normal;
+}
+
+.style-manager-contrast-results {
+	margin-top: 10px;
+}
+
+.style-manager-contrast-badge {
+	padding: 4px 8px;
+	border-radius: 4px;
+	margin-right: 8px;
+	font-size: 12px;
+	font-weight: bold;
+}
+
+.style-manager-contrast-badges-container {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+}
+
 /* Input Validation */
 .is-invalid {
 	border: 1px solid var(--text-error) !important;
