@@ -23,6 +23,7 @@ import {
 	APPEARANCE_KEY,
 	THEME_KEY,
 	TOOL_FREEZE_DELAY,
+	TOOL_BOX_OUTLINE_COLOR,
 } from './constants';
 import {
 	ClassToggle,
@@ -48,7 +49,7 @@ import { CopyAccentColorTool } from './tools/CopyAccentColorTool';
 import { FreezeObsidianTool } from './tools/FreezeObsidianTool';
 import { GarbledTextTool } from './tools/GarbledTextTool';
 import { MobileEmulationTool } from './tools/MobileEmulationTool';
-import { RedOutlinesTool } from './tools/RedOutlinesTool';
+import { BoxOutlineTool } from './tools/BoxOutlineTool';
 import { TestNoticeTool } from './tools/TestNoticeTool';
 import { ToggleDevToolsTool } from './tools/ToggleDevToolsTool';
 import { ActiveTab } from './ui/StyleManagerLayoutRenderer';
@@ -59,6 +60,7 @@ import { StatusBarManager } from './ui/elements/StatusBarManager';
 import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
+import { BoxOutlineColorPromptModal } from './ui/modals/BoxOutlineColorPromptModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
@@ -73,7 +75,7 @@ export default class StyleManagerPlugin extends Plugin {
 	styleSheetManager: StyleSheetManager;
 	statusBarManager: StatusBarManager;
 	garbledTextTool: GarbledTextTool;
-	redOutlinesTool: RedOutlinesTool;
+	boxOutlineTool: BoxOutlineTool;
 	testNoticeTool: TestNoticeTool;
 	copyAccentColorTool: CopyAccentColorTool;
 	colorContrastCheckerTool: ColorContrastCheckerTool;
@@ -104,7 +106,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.styleSheetManager = this.settingsService.styleSheetManager;
 		this.statusBarManager = new StatusBarManager(this);
 		this.garbledTextTool = new GarbledTextTool(this);
-		this.redOutlinesTool = new RedOutlinesTool(this);
+		this.boxOutlineTool = new BoxOutlineTool(this);
 		this.testNoticeTool = new TestNoticeTool(this);
 		this.colorContrastCheckerTool = new ColorContrastCheckerTool(this);
 		this.copyAccentColorTool = new CopyAccentColorTool(this);
@@ -225,9 +227,22 @@ export default class StyleManagerPlugin extends Plugin {
 		});
 
 		this.addCommand({
-			id: 'style-manager-command-toggle-red-outlines',
-			name: 'Toggle red outlines for CSS debugging',
-			callback: () => this.redOutlinesTool.toggle(),
+			id: 'style-manager-command-toggle-box-outlines',
+			name: 'Toggle CSS box outlines for debugging',
+			callback: () => this.boxOutlineTool.toggle(),
+		});
+
+		this.addCommand({
+			id: 'style-manager-command-change-box-outline-color',
+			name: 'Change box outline color',
+			callback: () => {
+				new BoxOutlineColorPromptModal(this.app, (value) => {
+					if (value !== null) {
+						this.settingsService.setSetting(TOOL_BOX_OUTLINE_COLOR, value);
+						new Notice(`Box outline color set to ${value}`);
+					}
+				}).open();
+			},
 		});
 
 		this.addCommand({

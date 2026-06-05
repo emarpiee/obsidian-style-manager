@@ -16,19 +16,21 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Plugin } from 'obsidian';
+import { TOOL_BOX_OUTLINE_COLOR } from '../constants';
+import type StyleManagerPlugin from '../main';
 
-export class RedOutlinesTool {
+export class BoxOutlineTool {
 	private styleEl: HTMLElement | undefined;
 
-	constructor(private plugin: Plugin) {}
+	constructor(private plugin: StyleManagerPlugin) {}
 
 	toggle(): void {
 		const currentCSS = this.styleEl?.textContent;
 		let cssToApply = '';
 
 		if (!currentCSS) {
-			cssToApply = '* {outline: red 1px solid !important}';
+			const color = this.plugin.settingsService.settings[TOOL_BOX_OUTLINE_COLOR] ?? 'red';
+			cssToApply = `* {outline: ${color} 1px solid !important}`;
 			this.styleEl = document.createElement('style');
 			this.styleEl.setAttribute('type', 'text/css');
 			document.head.appendChild(this.styleEl);
