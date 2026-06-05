@@ -16,9 +16,14 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Command, Plugin, normalizePath, Notice } from 'obsidian';
+import { Command, Notice, Plugin, normalizePath } from 'obsidian';
 
-import { ACCENT_COLOR_KEY, APPEARANCE_KEY, THEME_KEY, TOOL_FREEZE_DELAY } from './constants';
+import {
+	ACCENT_COLOR_KEY,
+	APPEARANCE_KEY,
+	THEME_KEY,
+	TOOL_FREEZE_DELAY,
+} from './constants';
 import {
 	ClassToggle,
 	ErrorList,
@@ -27,6 +32,7 @@ import {
 	SettingsSeachResource,
 	SnippetMetadata,
 } from './types';
+
 import { BackupService } from './application/BackupService';
 import { BundleService } from './application/BundleService';
 import { PresetImportService } from './application/PresetImportService';
@@ -51,11 +57,10 @@ import { SettingType } from './ui/components/base/types';
 import { StatusBarManager } from './ui/elements/StatusBarManager';
 import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
-import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
 import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
+import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
-
 
 export default class StyleManagerPlugin extends Plugin {
 	settingsService: SettingsService;
@@ -230,7 +235,7 @@ export default class StyleManagerPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'style-manager-command-change-freeze-delay',
-			name: 'Change Freeze Obsidian delay',
+			name: 'Change freeze Obsidian delay',
 			callback: () => {
 				new FreezeDelayPromptModal(this.app, (value) => {
 					if (value !== null) {
