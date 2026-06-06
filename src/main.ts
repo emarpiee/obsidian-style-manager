@@ -595,8 +595,12 @@ export default class StyleManagerPlugin extends Plugin {
 						section.id,
 						setting.id
 					) as boolean);
-					this.settingsService.setSetting(section.id, setting.id, value);
-					this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
+					this.settingsService.setSetting(
+						section.id,
+						setting.id,
+						value,
+						{ silentUI: true }
+					);
 				},
 			})
 		);
