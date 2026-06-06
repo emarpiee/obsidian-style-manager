@@ -179,7 +179,7 @@ export class StatusBarManager {
 				.setIcon(icon)
 				.onClick(async () => {
 					const next = appearance === 'light' ? 'dark' : 'light';
-					await this.plugin.settingsService.setSetting(APPEARANCE_KEY, next);
+					await this.plugin.settingsService.setSetting(APPEARANCE_KEY, next, { silentUI: true });
 					this.refresh();
 				});
 		});

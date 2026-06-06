@@ -196,7 +196,7 @@ export class SettingsHeaderComponent extends Component {
 		setTooltip(toggleBtn, label);
 		toggleBtn.onclick = async (): Promise<void> => {
 			const next = appearance === 'light' ? 'dark' : 'light';
-			this.plugin.settingsService.setSetting(APPEARANCE_KEY, next);
+			this.plugin.settingsService.setSetting(APPEARANCE_KEY, next, { silentUI: true });
 			this.plugin.settingsService.applyAppearance(
 				next,
 				!this.plugin.settingsService.isIsolateMode()

@@ -39,7 +39,7 @@ export function addThemeOptionsToMenu(
 			.setTitle('Default')
 			.setChecked(currentValue === 'default')
 			.onClick(async () => {
-				await plugin.settingsService.setSetting(THEME_KEY, 'default');
+				await plugin.settingsService.setSetting(THEME_KEY, 'default', { silentUI: true });
 				onDone();
 			});
 	});
@@ -51,7 +51,7 @@ export function addThemeOptionsToMenu(
 				.setTitle(themeName)
 				.setChecked(currentValue === themeId)
 				.onClick(async () => {
-					await plugin.settingsService.setSetting(THEME_KEY, themeId);
+					await plugin.settingsService.setSetting(THEME_KEY, themeId, { silentUI: true });
 					onDone();
 				});
 		});
