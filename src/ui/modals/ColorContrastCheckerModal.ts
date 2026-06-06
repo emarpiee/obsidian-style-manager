@@ -30,30 +30,34 @@ export class ColorContrastCheckerModal extends Modal {
 		contentEl.addClass('style-manager-color-contrast-modal');
 
 		const actionsDiv = contentEl.createDiv({
-			cls: 'style-manager-contrast-actions',
+			cls: 'style-manager-tool-contrast-actions',
 		});
 
 		const swapBtn = actionsDiv.createEl('button');
 		setIcon(swapBtn, 'repeat');
-		setTooltip(swapBtn, 'Swap');
+		swapBtn.createSpan({ text: 'Swap' });
+		setTooltip(swapBtn, 'Swap the FG and BG color');
 		swapBtn.onclick = (): void => this.swapColors();
 
 		const randomBtn = actionsDiv.createEl('button');
 		setIcon(randomBtn, 'dice');
-		setTooltip(randomBtn, 'Random');
+		randomBtn.createSpan({ text: 'Random' });
+		setTooltip(randomBtn, 'Randomize FG and BG color');
 		randomBtn.onclick = (): void => this.randomizeColors();
 
 		const suggestBtn = actionsDiv.createEl('button');
 		setIcon(suggestBtn, 'wand-2');
-		setTooltip(suggestBtn, 'Suggest');
+		suggestBtn.createSpan({ text: 'Suggest' });
+		setTooltip(suggestBtn, 'Suggest passing colors');
 		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
 
 		this.fgSetting = new Setting(contentEl)
+			.setClass('style-manager-tool-contrast-color-row')
 			.setName('Foreground color')
 			.setDesc('Text or icon color');
 
 		const fgWrapper = this.fgSetting.controlEl.createDiv({
-			cls: 'themed-color-wrapper',
+			cls: 'single-color-wrapper',
 		});
 		this.fgSingle = fgWrapper.createDiv({ cls: 'single-color' });
 		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
@@ -89,11 +93,12 @@ export class ColorContrastCheckerModal extends Modal {
 		);
 
 		this.bgSetting = new Setting(contentEl)
+			.setClass('style-manager-tool-contrast-color-row')
 			.setName('Background color')
 			.setDesc('Surface color');
 
 		const bgWrapper = this.bgSetting.controlEl.createDiv({
-			cls: 'themed-color-wrapper',
+			cls: 'single-color-wrapper',
 		});
 		this.bgSingle = bgWrapper.createDiv({ cls: 'single-color' });
 		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
@@ -129,28 +134,28 @@ export class ColorContrastCheckerModal extends Modal {
 		);
 
 		this.previewEl = contentEl.createDiv({
-			cls: 'style-manager-contrast-preview',
+			cls: 'style-manager-tool-contrast-preview',
 		});
 
 		this.largeTextPreviewEl = this.previewEl.createDiv({
-			cls: 'style-manager-contrast-preview-large',
+			cls: 'style-manager-tool-contrast-preview-large',
 		});
 		this.largeTextPreviewEl.setText('Contrast');
 
 		this.normalTextPreviewEl = this.previewEl.createDiv({
-			cls: 'style-manager-contrast-preview-normal',
+			cls: 'style-manager-tool-contrast-preview-normal',
 		});
 		this.normalTextPreviewEl.setText(
 			'Contrast is the difference in luminance or color that makes an object or its representation in an image or display distinguishable. In visual perception of the real world, contrast is determined by the difference in the color and brightness of the object and other objects within the same field of view.'
 		);
 
 		const smallTextPreviewEl = this.previewEl.createDiv({
-			cls: 'style-manager-contrast-preview-small',
+			cls: 'style-manager-tool-contrast-preview-small',
 		});
 		smallTextPreviewEl.setText('from Wikipedia, the free encyclopedia');
 
 		this.resultsEl = contentEl.createDiv({
-			cls: 'style-manager-contrast-results',
+			cls: 'style-manager-tool-contrast-results',
 		});
 
 		this.updateResults();
@@ -242,7 +247,10 @@ export class ColorContrastCheckerModal extends Modal {
 				.setDesc(`Ratio: ${contrast.toFixed(2)}:1`);
 
 			const createBadge = (text: string, pass: boolean): HTMLElement => {
-				const badge = createSpan({ text, cls: 'style-manager-contrast-badge' });
+				const badge = createSpan({
+					text,
+					cls: 'style-manager-tool-contrast-badge',
+				});
 				badge.style.backgroundColor = pass
 					? 'var(--color-green)'
 					: 'var(--color-red)';
@@ -251,7 +259,7 @@ export class ColorContrastCheckerModal extends Modal {
 			};
 
 			const badgesDiv = resultsSetting.controlEl.createDiv({
-				cls: 'style-manager-contrast-badges-container',
+				cls: 'style-manager-tool-contrast-badges-container',
 			});
 
 			const normalDiv = badgesDiv.createDiv();

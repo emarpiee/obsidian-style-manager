@@ -29,9 +29,11 @@ export class MobileEmulationTool {
 	toggle(): void {
 		const app = this.plugin.app as unknown as UndocumentedApp;
 		if (typeof app.emulateMobile === 'function') {
-			app.emulateMobile(!app.isMobile);
+			app.emulateMobile(true);
 		} else {
-			console.error('Mobile emulation is not supported in this version of Obsidian.');
+			console.error(
+				'Mobile emulation is not supported in this version of Obsidian.'
+			);
 		}
 	}
 }

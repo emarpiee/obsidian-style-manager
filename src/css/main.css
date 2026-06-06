@@ -159,9 +159,10 @@ body {
 
 	/* --- Color Picker Wrapper --- */
 	--sm-color-picker-bg: var(--background-secondary);
-	--sm-color-picker-border-color: var(--background-modifier-border);
-	--sm-color-picker-border-size: 1px;
-	--sm-color-picker-border-radius: 8px;
+	--sm-color-picker-themed-border-radius: var(--radius-m);
+	--sm-color-picker-border-radius: var(--radius-m);
+	--sm-color-picker-width: 2em;
+	--sm-color-picker-height: 2em;
 
 	/* --- Preset Item (selected state) --- */
 	--sm-item-selected-bg: var(--background-modifier-hover);
@@ -633,14 +634,28 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 }
 
 /* Color Contrast Checker */
-.style-manager-contrast-actions {
+.style-manager-tool-contrast-actions {
 	display: flex;
 	justify-content: center;
 	gap: 10px;
 	margin: 10px 0;
 }
 
-.style-manager-contrast-preview {
+.style-manager-tool-contrast-actions button {
+	display: inline-flex;
+	align-items: center;
+	gap: 6px;
+}
+
+.style-manager-tool-contrast-color-row {
+	flex-direction: row !important;
+}
+
+.style-manager-tool-contrast-color-row .setting-item-control {
+	width: auto !important;
+}
+
+.style-manager-tool-contrast-preview {
 	margin-top: 20px;
 	padding: 20px;
 	border-radius: 8px;
@@ -651,26 +666,26 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	gap: 10px;
 }
 
-.style-manager-contrast-preview-large {
+.style-manager-tool-contrast-preview-large {
 	font-size: 24px;
 	font-weight: bold;
 }
 
-.style-manager-contrast-preview-normal {
+.style-manager-tool-contrast-preview-normal {
 	font-size: 16px;
 	font-weight: normal;
 }
 
-.style-manager-contrast-preview-small {
+.style-manager-tool-contrast-preview-small {
 	font-size: 8px;
 	font-weight: normal;
 }
 
-.style-manager-contrast-results {
+.style-manager-tool-contrast-results {
 	margin-top: 10px;
 }
 
-.style-manager-contrast-badge {
+.style-manager-tool-contrast-badge {
 	padding: 4px 8px;
 	border-radius: 4px;
 	margin-right: 8px;
@@ -678,7 +693,7 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	font-weight: bold;
 }
 
-.style-manager-contrast-badges-container {
+.style-manager-tool-contrast-badges-container {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
@@ -736,13 +751,6 @@ body.is-mobile
 	.setting-item:not(.setting-item-heading)
 	.setting-item-control {
 	padding-top: 0.5em;
-}
-
-.view-content
-	.style-manager-style-settings-container
-	.setting-item:not(.setting-item-heading)
-	.themed-color-wrapper {
-	display: flex;
 }
 
 .style-manager-ref {
@@ -1294,20 +1302,6 @@ button.style-manager-icon-button {
 	);
 	color: var(--sm-badge-dynamic-color);
 	border-color: var(--sm-badge-dynamic-color);
-}
-
-.style-manager-accent-trigger {
-	background-color: var(--sm-accent-trigger-color, #8a5cf5);
-	width: 24px;
-	height: 24px;
-	border-radius: 50%;
-	cursor: pointer;
-}
-
-.style-manager-accent-trigger-container {
-	display: inline-flex;
-	align-items: center;
-	justify-content: center;
 }
 
 /* State Banner (Isolate Method focus) */
@@ -1903,44 +1897,6 @@ body.is-mobile .style-manager-editor-title-container {
 	color: var(--text-normal) !important;
 }
 
-/* Accent Color Selector */
-.style-manager-accent-trigger-container {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	padding: 0;
-	height: 32px;
-	width: 32px;
-}
-
-/* Target the Pickr button inside our container for maximum reliability */
-.style-manager-accent-trigger-container .pcr-button {
-	width: 18px !important;
-	height: 18px !important;
-	border-radius: 50% !important;
-	padding: 0 !important;
-	margin: 0 !important;
-	display: block !important;
-	border: 1px solid var(--background-modifier-border-hover) !important;
-	box-shadow: none !important;
-	transition: transform 0.2s ease;
-	flex-shrink: 0;
-	box-sizing: border-box;
-	overflow: hidden !important;
-}
-
-/* Ensure Pickr's internal color layers follow the circular shape and fill the area */
-.style-manager-accent-trigger-container .pcr-button::before,
-.style-manager-accent-trigger-container .pcr-button::after {
-	border-radius: 50% !important;
-	width: 100% !important;
-	height: 100% !important;
-}
-
-.style-manager-accent-trigger-container .pcr-button:hover {
-	transform: scale(1.1);
-}
-
 /* --- Conflict Modal --- */
 .style-manager-conflict-modal {
 	max-width: 500px;
@@ -1985,7 +1941,6 @@ body.is-mobile .style-manager-editor-title-container {
 	width: 100%;
 }
 
-/* --- Required Fields Design Improvement (Option B) --- */
 .style-manager-required-setting .setting-item-name {
 	display: flex;
 	align-items: center;
@@ -2058,14 +2013,63 @@ body.is-mobile .style-manager-editor-title-container {
 
 /* CUSTOM PICKR STYLE */
 
-.style-manager-wrapper .pickr .pcr-button,
-.style-manager-wrapper .pickr .pcr-button::before,
-.style-manager-wrapper .pickr .pcr-button::after {
+.style-manager-wrapper:not(.style-manager-accent-trigger-container)
+	.pickr
+	.pcr-button,
+.style-manager-wrapper:not(.style-manager-accent-trigger-container)
+	.pickr
+	.pcr-button::before,
+.style-manager-wrapper:not(.style-manager-accent-trigger-container)
+	.pickr
+	.pcr-button::after,
+.style-manager-color-contrast-modal .pickr .pcr-button,
+.style-manager-color-contrast-modal .pickr .pcr-button::before,
+.style-manager-color-contrast-modal .pickr .pcr-button::after {
 	border-radius: var(--sm-color-picker-border-radius);
+	width: var(--sm-color-picker-width) !important;
+	height: var(--sm-color-picker-height) !important;
 }
 
 .style-manager-wrapper .pickr-reset button {
 	padding: revert;
 	background: revert;
 	color: revert;
+	border-radius: var(--sm-color-picker-border-radius);
+	width: var(--sm-color-picker-width) !important;
+	height: var(--sm-color-picker-height) !important;
+}
+
+.single-color-wrapper {
+	background: var(--sm-color-picker-bg);
+	padding: var(--size-4-1) var(--size-4-2);
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
+	border-radius: var(--sm-color-picker-themed-border-radius);
+}
+
+.themed-color-wrapper > div {
+	background: var(--sm-color-picker-bg);
+	padding: var(--size-4-2);
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
+	border-radius: var(--sm-color-picker-themed-border-radius);
+}
+
+.themed-color-wrapper > div.theme-light {
+	background: #ffffff !important;
+	border-bottom-left-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+}
+
+.themed-color-wrapper > div.theme-dark {
+	background: #1a1a1a !important;
+	border-top-left-radius: 0 !important;
+	border-top-right-radius: 0 !important;
+}
+
+.style-manager-accent-trigger-container {
+	padding: var(--size-4-1);
+	cursor: pointer;
 }

@@ -26,6 +26,7 @@ import {
 	getTitle,
 	isValidDefaultColor,
 } from '../../../utils/CommonUtils';
+import { Logger } from '../../../utils/Logger';
 import {
 	createDescription,
 	getPickrSettings,
@@ -33,7 +34,6 @@ import {
 	resolveDefaultColor,
 } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
-import { Logger } from '../../../utils/Logger';
 
 export class VariableColorSettingComponent extends AbstractSettingComponent {
 	settingEl: Setting;
@@ -90,10 +90,12 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 		);
 
 		const wrapper = this.settingEl.controlEl.createDiv({
-			cls: 'themed-color-wrapper',
+			cls: 'single-color-wrapper',
 		});
 
-		const singleColorWrapper = wrapper.createDiv({ cls: 'single-color' });
+		const singleColorWrapper = wrapper.createDiv({
+			cls: 'single-color',
+		});
 
 		// fix, so that the color is correctly shown before the color picker has been opened
 		const defaultColor =
