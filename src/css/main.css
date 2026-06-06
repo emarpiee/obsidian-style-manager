@@ -686,13 +686,14 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	margin-top: 10px;
 }
 
-.style-manager-tool-contrast-results .setting-item {
-	flex-direction: column !important;
-}
+/* NOTE:*/
+/* .style-manager-tool-contrast-results .setting-item { */
+/* flex-direction: column !important; */
+/* } */
 
-.style-manager-tool-contrast-results .setting-item-control {
-	text-align: start !important;
-}
+/* .style-manager-tool-contrast-results .setting-item-control { */
+/* text-align: start !important; */
+/* } */
 
 .style-manager-tool-contrast-badge {
 	padding: 2px 4px;
