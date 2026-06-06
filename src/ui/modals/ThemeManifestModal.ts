@@ -247,6 +247,7 @@ export class ThemeManifestModal extends Modal {
 									id: themeId,
 								}).open();
 							}
+							await this.plugin.settingsService.save({ force: true });
 							this.onSave();
 							this.close();
 						} catch (e) {

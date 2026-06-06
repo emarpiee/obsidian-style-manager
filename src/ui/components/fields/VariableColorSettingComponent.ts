@@ -111,7 +111,7 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 			})
 		));
 
-		const updateVisuals = (color: string | null) => {
+		const updateVisuals = (color: string | null): void => {
 			const displayColor = color || resolvedDefault || 'transparent';
 			singleColorWrapper.style.setProperty('--pcr-color', displayColor);
 			const pickrRoot = (pickr.getRoot() as { root: HTMLElement }).root;

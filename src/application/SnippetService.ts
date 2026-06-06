@@ -222,6 +222,7 @@ export class SnippetService {
 		this.options.plugin.snippetMetadataMap.delete(id);
 
 		this.options.bridge.forceLoadSnippets();
+		await this.options.plugin.settingsService.save({ force: true });
 
 		// Give file system time to sync on mobile
 		setTimeout(() => {

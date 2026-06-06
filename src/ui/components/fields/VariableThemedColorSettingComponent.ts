@@ -187,7 +187,7 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 			})
 		));
 
-		const updateVisuals = (color: string | null) => {
+		const updateVisuals = (color: string | null): void => {
 			const displayColor = color || resolvedDefault || 'transparent';
 			themeLightWrapper.style.setProperty('--pcr-color', displayColor);
 			const pickrRoot = (pickrLight.getRoot() as unknown as { root: HTMLElement }).root;
@@ -266,7 +266,7 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 			})
 		));
 
-		const updateVisuals = (color: string | null) => {
+		const updateVisuals = (color: string | null): void => {
 			const displayColor = color || resolvedDefault || 'transparent';
 			themeDarkWrapper.style.setProperty('--pcr-color', displayColor);
 			const pickrRoot = (pickrDark.getRoot() as unknown as { root: HTMLElement }).root;
