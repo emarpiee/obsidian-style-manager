@@ -51,6 +51,18 @@ export class ColorContrastCheckerModal extends Modal {
 		setTooltip(suggestBtn, 'Suggest passing colors');
 		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
 
+		const suggestFgBtn = actionsDiv.createEl('button');
+		setIcon(suggestFgBtn, 'wand-2');
+		suggestFgBtn.createSpan({ text: 'Suggest FG' });
+		setTooltip(suggestFgBtn, 'Suggest passing foreground color');
+		suggestFgBtn.onclick = (): void => this.suggestForegroundColor();
+
+		const suggestBgBtn = actionsDiv.createEl('button');
+		setIcon(suggestBgBtn, 'wand-2');
+		suggestBgBtn.createSpan({ text: 'Suggest BG' });
+		setTooltip(suggestBgBtn, 'Suggest passing background color');
+		suggestBgBtn.onclick = (): void => this.suggestBackgroundColor();
+
 		this.fgSetting = new Setting(contentEl)
 			.setClass('style-manager-tool-contrast-color-row')
 			.setName('Foreground color')
@@ -192,7 +204,7 @@ export class ColorContrastCheckerModal extends Modal {
 			Math.max(
 				chroma.contrast('#FFFFFF', bgColor),
 				chroma.contrast('#000000', bgColor)
-			) < 7
+			) < 4.5
 		) {
 			bgColor = chroma.random();
 		}
@@ -201,7 +213,7 @@ export class ColorContrastCheckerModal extends Modal {
 		let fgColor = chroma.random();
 
 		let attempts = 0;
-		while (chroma.contrast(fgColor, this.bgColor) < 7 && attempts < 20) {
+		while (chroma.contrast(fgColor, this.bgColor) < 4.5 && attempts < 1000) {
 			if (chroma(this.bgColor).luminance() > 0.5) {
 				fgColor = fgColor.darken(0.1);
 			} else {
@@ -210,7 +222,7 @@ export class ColorContrastCheckerModal extends Modal {
 			attempts++;
 		}
 
-		if (chroma.contrast(fgColor, this.bgColor) < 7) {
+		if (chroma.contrast(fgColor, this.bgColor) < 4.5) {
 			const whiteContrast = chroma.contrast('#FFFFFF', this.bgColor);
 			const blackContrast = chroma.contrast('#000000', this.bgColor);
 			this.fgColor = whiteContrast > blackContrast ? '#FFFFFF' : '#000000';
@@ -222,6 +234,60 @@ export class ColorContrastCheckerModal extends Modal {
 		this.bgPickr?.setColor(this.bgColor);
 
 		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
+		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
+
+		this.updateResults();
+	}
+
+	private suggestForegroundColor(): void {
+		let fgColor = chroma.random();
+
+		let attempts = 0;
+		while (chroma.contrast(fgColor, this.bgColor) < 4.5 && attempts < 1000) {
+			if (chroma(this.bgColor).luminance() > 0.5) {
+				fgColor = fgColor.darken(0.1);
+			} else {
+				fgColor = fgColor.brighten(0.1);
+			}
+			attempts++;
+		}
+
+		if (chroma.contrast(fgColor, this.bgColor) < 4.5) {
+			const whiteContrast = chroma.contrast('#FFFFFF', this.bgColor);
+			const blackContrast = chroma.contrast('#000000', this.bgColor);
+			this.fgColor = whiteContrast > blackContrast ? '#FFFFFF' : '#000000';
+		} else {
+			this.fgColor = fgColor.hex();
+		}
+
+		this.fgPickr?.setColor(this.fgColor);
+		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
+
+		this.updateResults();
+	}
+
+	private suggestBackgroundColor(): void {
+		let bgColor = chroma.random();
+
+		let attempts = 0;
+		while (chroma.contrast(this.fgColor, bgColor) < 4.5 && attempts < 1000) {
+			if (chroma(this.fgColor).luminance() > 0.5) {
+				bgColor = bgColor.darken(0.1);
+			} else {
+				bgColor = bgColor.brighten(0.1);
+			}
+			attempts++;
+		}
+
+		if (chroma.contrast(this.fgColor, bgColor) < 4.5) {
+			const whiteContrast = chroma.contrast(this.fgColor, '#FFFFFF');
+			const blackContrast = chroma.contrast(this.fgColor, '#000000');
+			this.bgColor = whiteContrast > blackContrast ? '#FFFFFF' : '#000000';
+		} else {
+			this.bgColor = bgColor.hex();
+		}
+
+		this.bgPickr?.setColor(this.bgColor);
 		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 
 		this.updateResults();
