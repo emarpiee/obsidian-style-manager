@@ -60,6 +60,7 @@ import { SettingType } from './ui/components/base/types';
 import { StatusBarManager } from './ui/elements/StatusBarManager';
 import { BoxOutlineColorPromptModal } from './ui/modals/BoxOutlineColorPromptModal';
 import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
+import { ColorContrastCheckerModal } from './ui/modals/ColorContrastCheckerModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
@@ -214,7 +215,12 @@ export default class StyleManagerPlugin extends Plugin {
 		this.addCommand({
 			id: 'style-manager-command-color-contrast-checker',
 			name: 'Color contrast checker',
-			callback: () => this.activateContrastView(),
+			callback: () => {
+				if (this.isContrastViewActive()) {
+					return;
+				}
+				new ColorContrastCheckerModal(this.app, this).open();
+			},
 		});
 
 		this.addCommand({
@@ -636,6 +642,10 @@ export default class StyleManagerPlugin extends Plugin {
 
 	deactivateContrastView(): void {
 		this.app.workspace.detachLeavesOfType(colorContrastViewType);
+	}
+
+	isContrastViewActive(): boolean {
+		return this.app.workspace.getLeavesOfType(colorContrastViewType).length > 0;
 	}
 
 	async activateView(tab?: ActiveTab): Promise<void> {

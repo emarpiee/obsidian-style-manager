@@ -2,6 +2,7 @@ import Pickr from '@simonwep/pickr';
 import chroma from 'chroma-js';
 import { App, Modal, Notice, Setting, setIcon, setTooltip } from 'obsidian';
 
+import StyleManagerPlugin from '../../main';
 import { getPickrSettings } from '../../utils/UIUtils';
 
 export class ColorContrastCheckerModal extends Modal {
@@ -18,7 +19,7 @@ export class ColorContrastCheckerModal extends Modal {
 	private largeTextPreviewEl: HTMLElement;
 	private resultsEl: HTMLElement;
 
-	constructor(app: App) {
+	constructor(app: App, private plugin: StyleManagerPlugin) {
 		super(app);
 	}
 
@@ -62,6 +63,15 @@ export class ColorContrastCheckerModal extends Modal {
 		suggestBgBtn.createSpan({ text: 'Suggest BG' });
 		setTooltip(suggestBgBtn, 'Suggest passing background color');
 		suggestBgBtn.onclick = (): void => this.suggestBackgroundColor();
+
+		const openInTabBtn = actionsDiv.createEl('button');
+		setIcon(openInTabBtn, 'external-link');
+		openInTabBtn.createSpan({ text: 'Open in Tab' });
+		setTooltip(openInTabBtn, 'Open this tool in a new tab');
+		openInTabBtn.onclick = async (): Promise<void> => {
+			await this.plugin.activateContrastView();
+			this.close();
+		};
 
 		this.fgSetting = new Setting(contentEl)
 			.setClass('style-manager-tool-contrast-color-row')
