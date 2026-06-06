@@ -1,6 +1,6 @@
 import Pickr from '@simonwep/pickr';
 import chroma from 'chroma-js';
-import { App, Modal, Setting, Notice, setIcon, setTooltip } from 'obsidian';
+import { App, Modal, Notice, Setting, setIcon, setTooltip } from 'obsidian';
 
 import { getPickrSettings } from '../../utils/UIUtils';
 
