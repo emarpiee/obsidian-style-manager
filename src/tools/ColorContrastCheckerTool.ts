@@ -16,13 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Plugin } from 'obsidian';
-import { ColorContrastCheckerModal } from '../ui/modals/ColorContrastCheckerModal';
+import StyleManagerPlugin from '../main';
 
 export class ColorContrastCheckerTool {
-	constructor(private plugin: Plugin) {}
+	constructor(private plugin: StyleManagerPlugin) {}
 
 	show(): void {
-		new ColorContrastCheckerModal(this.plugin.app).open();
+		this.plugin.activateContrastView();
 	}
 }

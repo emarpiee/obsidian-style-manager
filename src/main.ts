@@ -55,6 +55,7 @@ import { ToggleDevToolsTool } from './tools/ToggleDevToolsTool';
 import { ActiveTab } from './ui/StyleManagerLayoutRenderer';
 import { StyleManagerSettingTab } from './ui/StyleManagerSettingTab';
 import { StyleManagerView, viewType } from './ui/StyleManagerView';
+import { ColorContrastCheckerView, colorContrastViewType } from './ui/views/ColorContrastCheckerView';
 import { SettingType } from './ui/components/base/types';
 import { StatusBarManager } from './ui/elements/StatusBarManager';
 import { BoxOutlineColorPromptModal } from './ui/modals/BoxOutlineColorPromptModal';
@@ -213,7 +214,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.addCommand({
 			id: 'style-manager-command-color-contrast-checker',
 			name: 'Color contrast checker',
-			callback: () => this.colorContrastCheckerTool.show(),
+			callback: () => this.activateContrastView(),
 		});
 
 		this.addCommand({
@@ -303,6 +304,7 @@ export default class StyleManagerPlugin extends Plugin {
 		);
 
 		this.registerView(viewType, (leaf) => new StyleManagerView(this, leaf));
+		this.registerView(colorContrastViewType, (leaf) => new ColorContrastCheckerView(leaf));
 
 		this.addCommand({
 			id: 'style-manager-show-leaf',
@@ -632,6 +634,10 @@ export default class StyleManagerPlugin extends Plugin {
 		this.app.workspace.detachLeavesOfType(viewType);
 	}
 
+	deactivateContrastView(): void {
+		this.app.workspace.detachLeavesOfType(colorContrastViewType);
+	}
+
 	async activateView(tab?: ActiveTab): Promise<void> {
 		this.deactivateView();
 		const leaf = this.app.workspace.getLeaf('tab');
@@ -647,5 +653,15 @@ export default class StyleManagerPlugin extends Plugin {
 		if (tab && view.settingsMarkup) {
 			view.settingsMarkup.openTab(tab);
 		}
+	}
+
+	async activateContrastView(): Promise<void> {
+		this.deactivateContrastView();
+		const leaf = this.app.workspace.getLeaf('tab');
+
+		await leaf.setViewState({
+			type: colorContrastViewType,
+			active: true,
+		});
 	}
 }
