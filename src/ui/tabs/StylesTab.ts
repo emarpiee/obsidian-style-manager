@@ -137,7 +137,9 @@ export class StylesTab {
 					sourceId: s.sourceId,
 					isDuplicate: s.isDuplicate,
 					resetFn: (): void => {
-						plugin.settingsService.clearSection(s.id);
+						plugin.settingsService.clearSection(s.id, false, {
+							silentUI: true,
+						});
 					},
 				},
 				...s.settings,

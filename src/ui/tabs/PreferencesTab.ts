@@ -311,6 +311,7 @@ export class PreferencesTab {
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings({
 							__style_manager_export_extension: val,
+							silentUI: true,
 						});
 					});
 			});

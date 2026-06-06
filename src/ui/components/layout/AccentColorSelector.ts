@@ -70,7 +70,9 @@ export function renderAccentColorSelect(
 
 	pickr.on('save', async (color: Pickr.HSVaColor | null) => {
 		const hexValue = color ? color.toHEXA().toString() : '';
-		await plugin.settingsService.setSetting(ACCENT_COLOR_KEY, hexValue);
+		await plugin.settingsService.setSetting(ACCENT_COLOR_KEY, hexValue, {
+			silentUI: true,
+		});
 		// Visual application is handled by the setSetting -> applyAccentColor flow
 		plugin.settingsService.applyAccentColor(hexValue);
 		pickr.hide();
@@ -89,7 +91,9 @@ export function renderAccentColorSelect(
 				.setIcon('rotate-ccw')
 				.onClick(async () => {
 					// Explicitly set to #8a5cf5 to ensure the setting persists for all UI components
-					await plugin.settingsService.setSetting(ACCENT_COLOR_KEY, '#8a5cf5');
+					await plugin.settingsService.setSetting(ACCENT_COLOR_KEY, '#8a5cf5', {
+						silentUI: true,
+					});
 					plugin.settingsService.applyAccentColor('#8a5cf5');
 					onRerender();
 				});

@@ -47,12 +47,13 @@ export class PresetService {
 	}
 
 	set presets(val: Preset[]) {
-		this.plugin.settingsService.setSettings({ _manager_presets: val });
+		this.plugin.settingsService.setSettings({ _manager_presets: val }, { silentUI: true });
 	}
 
 	async savePresets(): Promise<void> {
 		await this.plugin.settingsService.setSettings({
 			_manager_presets: this.presets,
+			silentUI: true,
 		});
 	}
 

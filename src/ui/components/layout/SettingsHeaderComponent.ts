@@ -310,7 +310,9 @@ export class SettingsHeaderComponent extends Component {
 							this.plugin,
 							sectionsWithData,
 							async (selectedIds) => {
-								this.plugin.settingsService.clearSections(selectedIds);
+								this.plugin.settingsService.clearSections(selectedIds, false, {
+									silentUI: true,
+								});
 								this.options.onRerender();
 							}
 						).open();

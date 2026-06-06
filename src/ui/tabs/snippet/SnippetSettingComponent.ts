@@ -72,7 +72,9 @@ export class SnippetSettingComponent extends Component {
 					else snippets.delete(this.snippetId);
 
 					const list = Array.from(snippets);
-					await this.plugin.settingsService.setSetting(SNIPPETS_KEY, list);
+					await this.plugin.settingsService.setSetting(SNIPPETS_KEY, list, {
+						silentUI: true,
+					});
 				});
 			})
 			.addExtraButton((btn) => {

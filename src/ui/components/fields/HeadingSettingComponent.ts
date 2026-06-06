@@ -483,7 +483,9 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 					resetFn();
 				} else {
 					const ids = this.getAllChildrenIds();
-					this.settingsService.resetSettings(this.sectionId, ids);
+					this.settingsService.resetSettings(this.sectionId, ids, {
+						silentUI: true,
+					});
 				}
 				this.updateCountBadge();
 			});

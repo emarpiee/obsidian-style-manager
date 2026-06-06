@@ -184,10 +184,12 @@ export default class StyleManagerPlugin extends Plugin {
 					this.app,
 					this,
 					sectionsWithData,
-					async (selectedIds) => {
-						this.settingsService.clearSections(selectedIds);
-						this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
-					}
+							async (selectedIds) => {
+								this.settingsService.clearSections(selectedIds, false, {
+									silentUI: true,
+								});
+								this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
+							}
 				).open();
 			},
 		});
@@ -241,7 +243,9 @@ export default class StyleManagerPlugin extends Plugin {
 				) ?? 'red') as string;
 				new BoxOutlineColorPromptModal(this.app, currentColor, (value) => {
 					if (value !== null) {
-						this.settingsService.setSetting(TOOL_BOX_OUTLINE_COLOR, value);
+						this.settingsService.setSetting(TOOL_BOX_OUTLINE_COLOR, value, {
+							silentUI: true,
+						});
 						this.boxOutlineTool.updateColor();
 						new Notice(` CSS Box outline color set to ${value}`);
 					}
@@ -267,7 +271,9 @@ export default class StyleManagerPlugin extends Plugin {
 			callback: () => {
 				new FreezeDelayPromptModal(this.app, (value) => {
 					if (value !== null) {
-						this.settingsService.setSetting(TOOL_FREEZE_DELAY, value);
+						this.settingsService.setSetting(TOOL_FREEZE_DELAY, value, {
+							silentUI: true,
+						});
 						new Notice(`Freeze Obsidian delay set to ${value}s`);
 					}
 				}).open();
