@@ -111,6 +111,19 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 			})
 		));
 
+		const updateVisuals = (color: string | null) => {
+			const displayColor = color || resolvedDefault || 'transparent';
+			singleColorWrapper.style.setProperty('--pcr-color', displayColor);
+			const pickrRoot = (pickr.getRoot() as { root: HTMLElement }).root;
+			if (pickrRoot) {
+				pickrRoot.style.setProperty('--pcr-color', displayColor);
+				const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
+				if (button) {
+					button.style.setProperty('--pcr-color', displayColor);
+				}
+			}
+		};
+
 		const onColorChange = (
 			color: Pickr.HSVaColor | null,
 			instance: Pickr
@@ -140,6 +153,7 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 				}
 			}
 
+			updateVisuals(color ? color.toHEXA().toString() : null);
 			this.updateModifiedClass();
 		};
 
@@ -159,28 +173,21 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 		);
 		resetButton.setIcon('reset');
 		resetButton.onClick(() => {
-			const defaultColor = this.setting.default;
+			const defaultColorRaw = this.setting.default;
+			const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
 			const isColorValid = (color: string | undefined): color is string =>
 				!!color && color.trim() !== '' && color.trim() !== '#';
-
-			const pickrRoot = (pickr.getRoot() as { root: HTMLElement }).root;
 
 			this.settingsService.clearSetting(this.sectionId, this.setting.id, {
 				silentUI: true,
 			});
 
-			if (isColorValid(defaultColor)) {
-				pickr.setColor(defaultColor, true);
-				if (pickrRoot) {
-					pickrRoot.style.setProperty('--pcr-color', defaultColor);
-				}
-				singleColorWrapper.style.setProperty('--pcr-color', defaultColor);
+			if (isColorValid(resolvedDefaultValue)) {
+				pickr.setColor(resolvedDefaultValue, true);
+				updateVisuals(resolvedDefaultValue);
 			} else {
-				pickr.setColor(null, true);
-				if (pickrRoot) {
-					pickrRoot.style.setProperty('--pcr-color', 'transparent');
-				}
-				singleColorWrapper.style.setProperty('--pcr-color', 'unset');
+				pickr.setColor('#00000000', true);
+				updateVisuals(null);
 			}
 
 			this.updateModifiedClass();

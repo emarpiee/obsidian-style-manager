@@ -187,13 +187,27 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 			})
 		));
 
+		const updateVisuals = (color: string | null) => {
+			const displayColor = color || resolvedDefault || 'transparent';
+			themeLightWrapper.style.setProperty('--pcr-color', displayColor);
+			const pickrRoot = (pickrLight.getRoot() as unknown as { root: HTMLElement }).root;
+			if (pickrRoot) {
+				pickrRoot.style.setProperty('--pcr-color', displayColor);
+				const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
+				if (button) {
+					button.style.setProperty('--pcr-color', displayColor);
+				}
+			}
+		};
+
 		pickrLight.on('show', () => {
 			// Do not auto-focus result input as it opens the keyboard on mobile
 		});
 
-		pickrLight.on('save', (color: Pickr.HSVaColor | null, instance: Pickr) =>
-			this.onSave(idLight, color, instance)
-		);
+		pickrLight.on('save', (color: Pickr.HSVaColor | null, instance: Pickr) => {
+			this.onSave(idLight, color, instance);
+			updateVisuals(color ? color.toHEXA().toString() : null);
+		});
 
 		pickrLight.on('cancel', onPickrCancel);
 
@@ -202,30 +216,21 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 		);
 		themeLightReset.setIcon('reset');
 		themeLightReset.onClick(() => {
-			const defaultColor = this.setting['default-light'];
+			const defaultColorRaw = this.setting['default-light'];
+			const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
 			const isColorValid = (color: string | undefined): color is string =>
 				!!color && color.trim() !== '' && color.trim() !== '#';
-
-			const pickrRoot = (
-				pickrLight.getRoot() as unknown as { root: HTMLElement }
-			).root;
 
 			this.settingsService.clearSetting(this.sectionId, idLight, {
 				silentUI: true,
 			});
 
-			if (isColorValid(defaultColor)) {
-				pickrLight.setColor(defaultColor, true);
-				if (pickrRoot) {
-					pickrRoot.style.setProperty('--pcr-color', defaultColor);
-				}
-				themeLightWrapper.style.setProperty('--pcr-color', defaultColor);
+			if (isColorValid(resolvedDefaultValue)) {
+				pickrLight.setColor(resolvedDefaultValue, true);
+				updateVisuals(resolvedDefaultValue);
 			} else {
-				pickrLight.setColor(null, true);
-				if (pickrRoot) {
-					pickrRoot.style.setProperty('--pcr-color', 'transparent');
-				}
-				themeLightWrapper.style.setProperty('--pcr-color', 'unset');
+				pickrLight.setColor('#00000000', true);
+				updateVisuals(null);
 			}
 
 			this.updateModifiedClass();
@@ -261,13 +266,27 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 			})
 		));
 
+		const updateVisuals = (color: string | null) => {
+			const displayColor = color || resolvedDefault || 'transparent';
+			themeDarkWrapper.style.setProperty('--pcr-color', displayColor);
+			const pickrRoot = (pickrDark.getRoot() as unknown as { root: HTMLElement }).root;
+			if (pickrRoot) {
+				pickrRoot.style.setProperty('--pcr-color', displayColor);
+				const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
+				if (button) {
+					button.style.setProperty('--pcr-color', displayColor);
+				}
+			}
+		};
+
 		pickrDark.on('show', () => {
 			// Do not auto-focus result input as it opens the keyboard on mobile
 		});
 
-		pickrDark.on('save', (color: Pickr.HSVaColor | null, instance: Pickr) =>
-			this.onSave(idDark, color, instance)
-		);
+		pickrDark.on('save', (color: Pickr.HSVaColor | null, instance: Pickr) => {
+			this.onSave(idDark, color, instance);
+			updateVisuals(color ? color.toHEXA().toString() : null);
+		});
 
 		pickrDark.on('cancel', onPickrCancel);
 
@@ -276,30 +295,21 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 		);
 		themeDarkReset.setIcon('reset');
 		themeDarkReset.onClick(() => {
-			const defaultColor = this.setting['default-dark'];
+			const defaultColorRaw = this.setting['default-dark'];
+			const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
 			const isColorValid = (color: string | undefined): color is string =>
 				!!color && color.trim() !== '' && color.trim() !== '#';
-
-			const pickrRoot = (
-				pickrDark.getRoot() as unknown as { root: HTMLElement }
-			).root;
 
 			this.settingsService.clearSetting(this.sectionId, idDark, {
 				silentUI: true,
 			});
 
-			if (isColorValid(defaultColor)) {
-				pickrDark.setColor(defaultColor, true);
-				if (pickrRoot) {
-					pickrRoot.style.setProperty('--pcr-color', defaultColor);
-				}
-				themeDarkWrapper.style.setProperty('--pcr-color', defaultColor);
+			if (isColorValid(resolvedDefaultValue)) {
+				pickrDark.setColor(resolvedDefaultValue, true);
+				updateVisuals(resolvedDefaultValue);
 			} else {
-				pickrDark.setColor(null, true);
-				if (pickrRoot) {
-					pickrRoot.style.setProperty('--pcr-color', 'transparent');
-				}
-				themeDarkWrapper.style.setProperty('--pcr-color', 'unset');
+				pickrDark.setColor('#00000000', true);
+				updateVisuals(null);
 			}
 
 			this.updateModifiedClass();
