@@ -182,7 +182,7 @@ export class StylesTab {
 			wrapper.createDiv({ cls: 'style-manager-empty-desc' }).appendChild(
 				createFragment((frag) => {
 					frag.appendText(
-						'Styles configured by theme and plugin authors will show up here. You can also create your own configuration by creating a CSS snippet in your vault. '
+						'Styles configured by theme and plugin authors will show up here. You can also create your own configuration by creating a CSS snippet or theme in your vault. '
 					);
 					frag.createEl('a', {
 						text: 'Click here for details and examples.',

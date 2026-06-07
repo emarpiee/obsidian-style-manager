@@ -27,13 +27,15 @@
 		) !important;
 	}
 	.style-manager-tabs-container {
-		flex-direction: column;
+		flex-direction: column-reverse;
 	}
 
 	.style-manager-tabs-scroll-wrap {
 		min-width: 100%;
 		justify-content: space-evenly;
 		gap: 0 !important;
+		flex-grow: unset !important;
+		height: unset !important;
 	}
 
 	.style-manager-tab {
@@ -51,20 +53,35 @@
 	}
 }
 
-@container (max-width: 500px) {
-	body:not(.is-mobile) .style-manager-tab-text,
-	body:not(.is-mobile) .style-manager-theme-current-name {
+@container (max-width: 350px) {
+	.style-manager-tab-text,
+	.style-manager-theme-current-name {
 		display: none !important;
 	}
 
-	body:not(.is-mobile) .style-manager-tab {
-		padding: 0 var(--size-4-3);
+	.style-manager-tab {
+		padding: 0 var(--size-4-3) !important;
+	}
+
+	.style-manager-style-settings-item {
+		flex-direction: column !important;
+	}
+
+	body.is-mobile
+		.modal
+		.style-manager-plugin
+		.style-manager-style-settings-item {
+		flex-direction: column !important;
+	}
+
+	.style-manager-style-settings-item .setting-item-control {
+		align-self: flex-end;
 	}
 }
 
 body {
 	/* Style Manager Main Wrapper */
-	--sm-wrapper-bg: var(--settings-background);
+	--sm-wrapper-bg: var(--background-primary);
 
 	/* --- Heading --- */
 	--sm-heading-bg: var(--background-primary);
@@ -181,16 +198,30 @@ body {
 	--sm-bulk-actions-border-color: var(--background-modifier-border);
 }
 
+.style-manager-plugin {
+	--sm-sticky-tabs-height: 48px;
+	--sm-sticky-search-height: 56px;
+	--sm-sticky-top-offset: calc(
+		var(--sm-sticky-tabs-height) + var(--sm-sticky-search-height)
+	);
+	--sm-sticky-heading-height: 38px;
+	display: flex;
+	flex-direction: column;
+	min-height: 0;
+	box-sizing: border-box;
+	position: relative;
+	container-type: inline-size;
+	background: var(--sm-wrapper-bg);
+}
+
+/* NOTE: tovar*/
+.style-manager-item-row,
+.style-manager-settings-tab-content .setting-item {
+	background: var(--setting-items-background);
+	outline: 1px solid var(--sm-style-settings-item-border-color);
+}
+
 /* NOTE: */
-
-.style-manager-plugin .setting-item {
-	flex-direction: row !important;
-}
-
-.style-manager-plugin .setting-item .setting-item-control {
-	justify-content: flex-end;
-	width: auto;
-}
 
 .style-manager-plugin
 	.setting-item:has(
@@ -217,6 +248,18 @@ body {
 .style-manager-plugin .setting-item .setting-item-control textarea {
 	width: 100% !important;
 	max-width: unset !important;
+}
+
+.style-manager-style-settings-item {
+	margin: var(--size-4-2);
+}
+
+body.is-mobile .style-manager-style-settings-item {
+	flex-direction: row !important;
+}
+
+.style-manager-style-settings-item .setting-item-control {
+	width: auto !important;
 }
 
 /* ---- */
@@ -251,21 +294,6 @@ body.is-phone .modal:has(.style-manager-plugin) .vertical-tab-content {
 
 body:not(.is-phone) .modal:has(.style-manager-plugin) .modal-close-button {
 	display: none;
-}
-
-.style-manager-plugin {
-	--sm-sticky-tabs-height: 48px;
-	--sm-sticky-search-height: 56px;
-	--sm-sticky-top-offset: calc(
-		var(--sm-sticky-tabs-height) + var(--sm-sticky-search-height)
-	);
-	--sm-sticky-heading-height: 38px;
-	display: flex;
-	flex-direction: column;
-	min-height: 0;
-	box-sizing: border-box;
-	position: relative;
-	container-type: inline-size;
 }
 
 body.is-phone .style-manager-plugin {
@@ -314,7 +342,7 @@ body.is-phone .style-manager-plugin {
 }
 
 .style-manager-style-heading-description {
-	padding: 0 var(--size-4-3) var(--size-4-1);
+	padding: 0 var(--size-4-2) var(--size-4-1);
 	font-size: var(--font-ui-smaller);
 	color: var(--text-muted);
 	line-height: var(--line-height-tight);
@@ -331,7 +359,6 @@ body.is-phone .style-manager-plugin {
 .style-manager-style-heading[data-level='1'] {
 	top: calc(var(--sm-sticky-top-offset) + var(--sm-sticky-heading-height));
 	z-index: 14;
-	padding-left: var(--size-4-3) !important;
 }
 
 .style-manager-style-heading[data-level='2'] {
@@ -339,7 +366,6 @@ body.is-phone .style-manager-plugin {
 		var(--sm-sticky-top-offset) + (2 * var(--sm-sticky-heading-height))
 	);
 	z-index: 13;
-	padding-left: var(--size-4-4) !important;
 }
 
 .style-manager-style-heading[data-level='3'] {
@@ -347,7 +373,6 @@ body.is-phone .style-manager-plugin {
 		var(--sm-sticky-top-offset) + (3 * var(--sm-sticky-heading-height))
 	);
 	z-index: 12;
-	padding-left: var(--size-4-5) !important;
 }
 
 .style-manager-style-heading[data-level='4'],
@@ -356,7 +381,6 @@ body.is-phone .style-manager-plugin {
 		var(--sm-sticky-top-offset) + (4 * var(--sm-sticky-heading-height))
 	);
 	z-index: 11;
-	padding-left: var(--size-4-6) !important;
 }
 
 .style-manager-style-heading:not(.is-collapsed) {
@@ -556,7 +580,7 @@ body.is-phone .style-manager-plugin {
 
 .style-manager-style-settings-container
 	.setting-item:not(.style-manager-style-heading) {
-	border: 1px solid var(--sm-style-settings-item-border-color);
+	outline: 1px solid var(--sm-style-settings-item-border-color);
 	border-radius: var(--sm-style-settings-item-border-radius);
 }
 
@@ -762,15 +786,22 @@ body.is-phone .style-manager-plugin {
 	) !important;
 }
 
+/* NOTE: temporary solution for modals in mobile when the keyboard is active */
 body.is-mobile
 	.modal-style-manager:not(
 		.style-manager-confirm-modal,
 		.style-manager-model-pre,
 		.style-manager-export-modal,
-		.style-manager-preview-modal
+		.style-manager-preview-modal,
+		.style-manager-color-contrast-modal
 	) {
-	padding-bottom: var(--safe-area-inset-bottom) !important;
+	position: absolute !important;
+	top: calc(var(--safe-area-inset-top) + 24px) !important;
+	bottom: calc(var(--safe-area-inset-bottom) + 24px) !important;
+	height: auto !important;
+	justify-self: center;
 }
+/* ---- */
 
 .style-manager-modal-pre {
 	max-height: 50vh;
@@ -834,12 +865,6 @@ body.is-mobile
 	gap: var(--size-4-2);
 	height: var(--sm-sticky-tabs-height);
 	overflow: visible;
-}
-
-body.is-phone .style-manager-tabs-container {
-	flex-direction: column;
-	height: var(--sm-sticky-tabs-height);
-	align-items: center;
 }
 
 .style-manager-tabs-scroll-wrap {
@@ -1343,15 +1368,18 @@ button.style-manager-icon-button {
 	white-space: nowrap;
 }
 
+/* NOTE: self, don't forget to create dedicated var for light and dark mode */
 .style-manager-badge-primary.dynamic {
-	background-color: color-mix(
-		in oklch,
-		var(--sm-badge-dynamic-color),
-		transparent 85%
-	);
-	color: var(--sm-badge-dynamic-color);
-	border-color: var(--sm-badge-dynamic-color);
+	background-color: oklch(from var(--sm-badge-dynamic-color) l c h / 0.1);
+	color: oklch(from var(--sm-badge-dynamic-color) 0.5 c h);
+	border-color: oklch(from var(--sm-badge-dynamic-color) 0.5 c h);
 }
+body.theme-dark .style-manager-badge-primary.dynamic {
+	background-color: oklch(from var(--sm-badge-dynamic-color) l c h / 0.1);
+	color: oklch(from var(--sm-badge-dynamic-color) 0.8 c h);
+	border-color: oklch(from var(--sm-badge-dynamic-color) 0.8 c h);
+}
+/* ---- */
 
 /* State Banner (Isolate Method focus) */
 /* Compact Isolate Badge */
@@ -2033,6 +2061,7 @@ body.is-mobile .style-manager-editor-title-container {
 	opacity: 0.7;
 }
 
+/* NOTE: tovar */
 /* CUSTOM PICKR STYLE */
 
 .style-manager-plugin:not(.style-manager-accent-trigger-container)
@@ -2061,16 +2090,29 @@ body.is-mobile .style-manager-editor-title-container {
 	height: var(--sm-color-picker-height) !important;
 }
 
-.single-color-wrapper {
-	background: var(--sm-color-picker-bg);
+.style-manager-plugin .single-color-wrapper {
+	background: gray;
 	padding: var(--size-4-1) var(--size-4-2);
 	display: flex;
 	align-items: center;
-	gap: var(--size-4-2);
-	border-radius: var(--sm-color-picker-themed-border-radius);
+	outline: 1px dashed gray;
+	outline-offset: 2px;
+	border-radius: calc(var(--sm-color-picker-themed-border-radius) - 2px);
 }
 
-.themed-color-wrapper > div {
+.style-manager-plugin .single-color-wrapper > div {
+	display: flex;
+	flex-direction: row;
+	gap: var(--size-4-2);
+}
+
+.style-manager-plugin .themed-color-wrapper {
+	outline: 1px dashed gray;
+	outline-offset: 2px;
+	border-radius: calc(var(--sm-color-picker-themed-border-radius) - 2px);
+}
+
+.style-manager-plugin .themed-color-wrapper > div {
 	background: var(--sm-color-picker-bg);
 	padding: var(--size-4-2);
 	display: flex;
@@ -2079,13 +2121,13 @@ body.is-mobile .style-manager-editor-title-container {
 	border-radius: var(--sm-color-picker-themed-border-radius);
 }
 
-.themed-color-wrapper > div.theme-light {
+.style-manager-plugin .themed-color-wrapper > div.theme-light {
 	background: #ffffff !important;
 	border-bottom-left-radius: 0 !important;
 	border-bottom-right-radius: 0 !important;
 }
 
-.themed-color-wrapper > div.theme-dark {
+.style-manager-plugin .themed-color-wrapper > div.theme-dark {
 	background: #1a1a1a !important;
 	border-top-left-radius: 0 !important;
 	border-top-right-radius: 0 !important;
