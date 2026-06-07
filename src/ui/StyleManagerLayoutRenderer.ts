@@ -132,7 +132,8 @@ export class StyleManagerLayoutRenderer extends Component {
 		const { containerEl } = this;
 		containerEl.empty();
 
-		const masterContainer = containerEl.createDiv('style-manager-wrapper');
+		const masterContainer = containerEl.createDiv('style-manager-plugin');
+		masterContainer.addClass('style-manager-wrapper');
 		if (Platform.isMobile) {
 			masterContainer.addClass('is-mobile');
 		}

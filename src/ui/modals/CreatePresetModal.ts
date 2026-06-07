@@ -67,6 +67,7 @@ export class CreatePresetModal extends Modal {
 
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
+		modalEl.addClass('style-manager-plugin');
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-save-preset-modal');
 
@@ -129,7 +130,9 @@ export class CreatePresetModal extends Modal {
 					.setCta()
 					.onClick(async () => {
 						if (this.selectedPrefixes.size === 0) {
-							this.service.plugin.settingsService.notifications.preset('You must select at least one setting to save.');
+							this.service.plugin.settingsService.notifications.preset(
+								'You must select at least one setting to save.'
+							);
 							return;
 						}
 

@@ -39,6 +39,7 @@ export class BoxOutlineColorPromptModal extends Modal {
 
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
+		modalEl.addClass('style-manager-plugin');
 		modalEl.addClass('modal-style-manager');
 		this.setTitle('Box outline color');
 

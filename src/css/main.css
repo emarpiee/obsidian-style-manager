@@ -20,7 +20,7 @@
 */
 
 @container (max-width: 720px) {
-	.style-manager-wrapper > * {
+	.style-manager-plugin > * {
 		--sm-sticky-tabs-height: 104px !important;
 		--sm-sticky-top-offset: calc(
 			var(--sm-sticky-tabs-height) + var(--sm-sticky-search-height)
@@ -34,11 +34,6 @@
 		min-width: 100%;
 		justify-content: space-evenly;
 		gap: 0 !important;
-	}
-
-	.style-manager-tab-text {
-		margin-left: var(--size-4-2);
-		display: inline;
 	}
 
 	.style-manager-tab {
@@ -77,9 +72,10 @@ body {
 	--sm-heading-border-size: 1px;
 
 	/* --- Settings Container --- */
-	--sm-container-border-color: var(--background-modifier-border);
-	--sm-container-border-size: 2px;
-	--sm-container-item-border-color: var(--background-modifier-border);
+	--sm-style-settings-container-border-color: var(--background-modifier-border);
+	--sm-style-settings-container-border-size: 2px;
+	--sm-style-settings-item-border-color: var(--background-modifier-border);
+	--sm-style-settings-item-border-radius: var(--radius-s);
 
 	/* --- State/Mode Badge (.style-manager-badge-secondary) --- */
 	--sm-badge-secondary-bg-active: color-mix(
@@ -185,6 +181,46 @@ body {
 	--sm-bulk-actions-border-color: var(--background-modifier-border);
 }
 
+/* NOTE: */
+
+.style-manager-plugin .setting-item {
+	flex-direction: row !important;
+}
+
+.style-manager-plugin .setting-item .setting-item-control {
+	justify-content: flex-end;
+	width: auto;
+}
+
+.style-manager-plugin
+	.setting-item:has(
+		.setting-item-control input[type='text'],
+		.setting-item-control input[type='range'],
+		.setting-item-control select,
+		.setting-item-control textarea
+	) {
+	flex-direction: column !important;
+	align-items: flex-start !important;
+}
+
+.style-manager-plugin
+	.setting-item
+	.setting-item-control:has(
+		input[type='text'],
+		input[type='range'],
+		select,
+		textarea
+	),
+.style-manager-plugin .setting-item .setting-item-control input[type='text'],
+.style-manager-plugin .setting-item .setting-item-control input[type='range'],
+.style-manager-plugin .setting-item .setting-item-control select,
+.style-manager-plugin .setting-item .setting-item-control textarea {
+	width: 100% !important;
+	max-width: unset !important;
+}
+
+/* ---- */
+
 .style-manager-conflict-bulk-actions {
 	display: flex;
 	gap: 8px;
@@ -195,29 +231,29 @@ body {
 	color: var(--sm-icon-dynamic-color, var(--text-accent));
 }
 
-body .vertical-tab-content:has(.style-manager-wrapper),
-body .view-content:has(.style-manager-wrapper) {
+body .vertical-tab-content:has(.style-manager-plugin),
+body .view-content:has(.style-manager-plugin) {
 	padding: 0;
 	padding-bottom: var(--view-bottom-spacing);
 }
 
-body.is-phone .vertical-tab-content:has(.style-manager-wrapper) {
+body.is-phone .vertical-tab-content:has(.style-manager-plugin) {
 	padding-inline: 0 !important;
 }
 
-body.is-phone .modal:has(.style-manager-wrapper).mod-settings .modal-header {
+body.is-phone .modal:has(.style-manager-plugin).mod-settings .modal-header {
 	background: var(--background-primary);
 }
 
-body.is-phone .modal:has(.style-manager-wrapper) .vertical-tab-content {
+body.is-phone .modal:has(.style-manager-plugin) .vertical-tab-content {
 	padding-top: var(--modal-header-height) !important;
 }
 
-body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
+body:not(.is-phone) .modal:has(.style-manager-plugin) .modal-close-button {
 	display: none;
 }
 
-.style-manager-wrapper {
+.style-manager-plugin {
 	--sm-sticky-tabs-height: 48px;
 	--sm-sticky-search-height: 56px;
 	--sm-sticky-top-offset: calc(
@@ -227,18 +263,16 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	display: flex;
 	flex-direction: column;
 	min-height: 0;
-	width: 100%;
 	box-sizing: border-box;
 	position: relative;
-	background: var(--sm-wrapper-bg);
 	container-type: inline-size;
 }
 
-body.is-phone .style-manager-wrapper {
+body.is-phone .style-manager-plugin {
 	--sm-sticky-tabs-height: 104px;
 }
 
-.style-manager-wrapper .search-input-container {
+.style-manager-plugin .search-input-container {
 	flex-grow: 1 !important;
 	width: 100%;
 }
@@ -510,8 +544,8 @@ body.is-phone .style-manager-wrapper {
 .style-manager-style-settings-container {
 	margin-left: var(--size-4-2);
 	padding-left: var(--size-4-2);
-	border-left: var(--sm-container-border-size) solid
-		var(--sm-container-border-color);
+	border-left: var(--sm-style-settings-container-border-size) solid
+		var(--sm-style-settings-container-border-color);
 }
 
 .style-manager-collapse-indicator {
@@ -522,9 +556,8 @@ body.is-phone .style-manager-wrapper {
 
 .style-manager-style-settings-container
 	.setting-item:not(.style-manager-style-heading) {
-	border-bottom: 1px dashed var(--sm-container-item-border-color);
-	margin: 0;
-	border-radius: var(--radius-s);
+	border: 1px solid var(--sm-style-settings-item-border-color);
+	border-radius: var(--sm-style-settings-item-border-radius);
 }
 
 .style-manager-style-settings-container .setting-item:last-child {
@@ -754,23 +787,7 @@ body.is-mobile
 .style-manager-modal-buttons {
 	margin-top: auto;
 }
-/* NOTE: */
-.modal-style-manager
-	.setting-item:has(.setting-item-control input[type='text']),
-.modal-style-manager .setting-item:has(.setting-item-control textarea) {
-	align-items: flex-start;
-	flex-direction: column;
-}
 
-.modal-style-manager .setting-item .setting-item-control {
-	width: 100%;
-}
-
-.modal-style-manager .setting-item .setting-item-control input[type='text'],
-.modal-style-manager .setting-item .setting-item-control textarea {
-	width: 100%;
-}
-/* ---- */
 .view-content
 	.style-manager-style-settings-container
 	.setting-item:not(.setting-item-heading) {
@@ -900,6 +917,11 @@ body.is-phone .style-manager-tabs-scroll-wrap {
 	justify-content: center;
 }
 
+.style-manager-tab-text {
+	margin-left: var(--size-4-2);
+	display: inline;
+}
+
 .style-manager-tab:not(.is-active) .style-manager-tab-text {
 	display: none;
 }
@@ -926,6 +948,9 @@ body.is-phone .style-manager-tab-spacer {
 }
 
 .style-manager-tab-actions {
+	--sm-color-picker-height: 1.5em;
+	--sm-color-picker-width: 1.5em;
+	--sm-color-picker-border-radius: 50%;
 	display: flex;
 	align-items: center;
 	align-self: center;
@@ -1589,31 +1614,6 @@ body.is-phone .style-manager-item-select-icon {
 	align-self: center;
 }
 
-.style-manager-style-settings-item {
-	flex-direction: row !important;
-}
-
-.style-manager-style-settings-item .setting-item-control {
-	justify-content: flex-end !important;
-	width: auto !important;
-}
-
-.style-manager-style-settings-item:has(
-	.setting-item-control input[type='text'],
-	.setting-item-control input[type='range'],
-	.setting-item-control select
-) {
-	flex-direction: column !important;
-}
-
-.style-manager-style-settings-item
-	.setting-item-control:has(input[type='text'], input[type='range'], select),
-.style-manager-style-settings-item .setting-item-control input[type='text'],
-.style-manager-style-settings-item .setting-item-control input[type='range'],
-.style-manager-style-settings-item .setting-item-control select {
-	width: 100% !important;
-}
-
 body.is-phone
 	.style-manager-style-heading
 	.style-manager-badge-container.mod-left,
@@ -2035,13 +2035,13 @@ body.is-mobile .style-manager-editor-title-container {
 
 /* CUSTOM PICKR STYLE */
 
-.style-manager-wrapper:not(.style-manager-accent-trigger-container)
+.style-manager-plugin:not(.style-manager-accent-trigger-container)
 	.pickr
 	.pcr-button,
-.style-manager-wrapper:not(.style-manager-accent-trigger-container)
+.style-manager-plugin:not(.style-manager-accent-trigger-container)
 	.pickr
 	.pcr-button::before,
-.style-manager-wrapper:not(.style-manager-accent-trigger-container)
+.style-manager-plugin:not(.style-manager-accent-trigger-container)
 	.pickr
 	.pcr-button::after,
 .style-manager-color-contrast-modal .pickr .pcr-button,
@@ -2052,7 +2052,7 @@ body.is-mobile .style-manager-editor-title-container {
 	height: var(--sm-color-picker-height) !important;
 }
 
-.style-manager-wrapper .pickr-reset button {
+.style-manager-plugin .pickr-reset button {
 	padding: revert;
 	background: revert;
 	color: revert;

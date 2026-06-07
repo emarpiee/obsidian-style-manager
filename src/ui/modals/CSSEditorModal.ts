@@ -78,6 +78,7 @@ export class CSSEditorModal extends Modal {
 
 	async onOpen(): Promise<void> {
 		const { contentEl, modalEl } = this;
+		modalEl.addClass('style-manager-plugin');
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-editor-modal');
 		this.newName = this.source.id;

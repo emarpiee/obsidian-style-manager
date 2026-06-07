@@ -33,6 +33,7 @@ export class PresetPreviewModal extends Modal {
 
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
+		modalEl.addClass('style-manager-plugin');
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-preview-modal');
 
@@ -53,7 +54,9 @@ export class PresetPreviewModal extends Modal {
 					await navigator.clipboard.writeText(
 						JSON.stringify(this.preset.data, null, 2)
 					);
-					this.plugin.settingsService.notifications.util('Settings copied to clipboard!');
+					this.plugin.settingsService.notifications.util(
+						'Settings copied to clipboard!'
+					);
 				})
 			)
 			.addButton((btn) =>

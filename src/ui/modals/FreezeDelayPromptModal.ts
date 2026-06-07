@@ -35,6 +35,7 @@ export class FreezeDelayPromptModal extends Modal {
 
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
+		modalEl.addClass('style-manager-plugin');
 		modalEl.addClass('modal-style-manager');
 		this.setTitle('Freeze Obsidian Delay');
 		contentEl.createEl('p', {

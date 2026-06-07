@@ -38,6 +38,7 @@ export class ImportPresetModal extends Modal {
 
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
+		modalEl.addClass('style-manager-plugin');
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-import-preset-modal');
 
@@ -71,7 +72,9 @@ export class ImportPresetModal extends Modal {
 					);
 				if (total > 0) {
 					this.onImport();
-					this.service.plugin.settingsService.notifications.preset(`Imported ${total} preset${total !== 1 ? 's' : ''}.`);
+					this.service.plugin.settingsService.notifications.preset(
+						`Imported ${total} preset${total !== 1 ? 's' : ''}.`
+					);
 					this.close();
 				}
 			};

@@ -27,6 +27,7 @@ export class ColorContrastChecker {
 	render(contentEl: HTMLElement, options: RenderOptions = {}): void {
 		const { plugin, onOpenInTab } = options;
 
+		contentEl.addClass('style-manager-plugin');
 		contentEl.addClass('modal-style-manager');
 		contentEl.addClass('style-manager-color-contrast-modal');
 

@@ -70,6 +70,7 @@ export class ResetSettingsModal extends Modal {
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
 
+		modalEl.addClass('style-manager-plugin');
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-reset-modal');
 
@@ -115,7 +116,9 @@ export class ResetSettingsModal extends Modal {
 					.setWarning()
 					.onClick(async () => {
 						if (this.selectedIds.size === 0) {
-							this.plugin.settingsService.notifications.preset('Please select at least one item to reset');
+							this.plugin.settingsService.notifications.preset(
+								'Please select at least one item to reset'
+							);
 							return;
 						}
 						await this.onConfirm(Array.from(this.selectedIds));

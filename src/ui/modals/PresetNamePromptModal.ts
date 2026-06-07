@@ -36,6 +36,7 @@ export class PresetNamePromptModal extends Modal {
 
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
+		modalEl.addClass('style-manager-plugin');
 		modalEl.addClass('modal-style-manager');
 		this.setTitle('Save as preset');
 		contentEl.createEl('p', {
