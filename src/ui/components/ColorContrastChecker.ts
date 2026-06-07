@@ -92,7 +92,7 @@ export class ColorContrastChecker {
 		setTooltip(fgCopyBtn, 'Copy');
 		fgCopyBtn.onclick = async (): Promise<void> => {
 			await this.copyToClipboard(this.fgColor);
-			new Notice('Copied!');
+			new Notice('Copied foreground color!', 500);
 		};
 
 		this.fgPickr = Pickr.create(
@@ -133,7 +133,7 @@ export class ColorContrastChecker {
 		setTooltip(bgCopyBtn, 'Copy');
 		bgCopyBtn.onclick = async (): Promise<void> => {
 			await this.copyToClipboard(this.bgColor);
-			new Notice('Copied!');
+			new Notice('Copied background color!', 500);
 		};
 
 		this.bgPickr = Pickr.create(

@@ -19,30 +19,15 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 
-body {
-	--sm-sticky-tabs-height: 48px;
-	/* Height of the tab bar */
-	--sm-sticky-search-height: 56px;
-	/* Height of the search bar row */
-	--sm-sticky-top-offset: calc(
-		var(--sm-sticky-tabs-height) + var(--sm-sticky-search-height)
-	);
-	--sm-sticky-heading-height: 38px;
-	/* Height of each sticky heading */
-}
-
-body.is-phone {
-	--sm-sticky-tabs-height: 104px;
-}
-
-@media (max-width: 900px) {
-	body {
-		--sm-sticky-tabs-height: 104px;
+@container (max-width: 720px) {
+	.style-manager-wrapper > * {
+		--sm-sticky-tabs-height: 104px !important;
+		--sm-sticky-top-offset: calc(
+			var(--sm-sticky-tabs-height) + var(--sm-sticky-search-height)
+		) !important;
 	}
-
 	.style-manager-tabs-container {
 		flex-direction: column;
-		overflow: scroll !important;
 	}
 
 	.style-manager-tabs-scroll-wrap {
@@ -52,11 +37,8 @@ body.is-phone {
 	}
 
 	.style-manager-tab-text {
+		margin-left: var(--size-4-2);
 		display: inline;
-	}
-
-	.style-manager-tab-icon {
-		margin-right: var(--size-4-2);
 	}
 
 	.style-manager-tab {
@@ -71,6 +53,17 @@ body.is-phone {
 		margin-bottom: 0 !important;
 		min-width: 100%;
 		justify-content: space-evenly;
+	}
+}
+
+@container (max-width: 500px) {
+	body:not(.is-mobile) .style-manager-tab-text,
+	body:not(.is-mobile) .style-manager-theme-current-name {
+		display: none !important;
+	}
+
+	body:not(.is-mobile) .style-manager-tab {
+		padding: 0 var(--size-4-3);
 	}
 }
 
@@ -225,6 +218,12 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 }
 
 .style-manager-wrapper {
+	--sm-sticky-tabs-height: 48px;
+	--sm-sticky-search-height: 56px;
+	--sm-sticky-top-offset: calc(
+		var(--sm-sticky-tabs-height) + var(--sm-sticky-search-height)
+	);
+	--sm-sticky-heading-height: 38px;
 	display: flex;
 	flex-direction: column;
 	min-height: 0;
@@ -232,6 +231,11 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	box-sizing: border-box;
 	position: relative;
 	background: var(--sm-wrapper-bg);
+	container-type: inline-size;
+}
+
+body.is-phone .style-manager-wrapper {
+	--sm-sticky-tabs-height: 104px;
 }
 
 .style-manager-wrapper .search-input-container {
@@ -493,12 +497,28 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	display: inline-flex;
 }
 
+/* NOTE: set to zero to disable left spaces */
+/* .style-manager-style-settings-container { */
+/* margin-left: 0; */
+/* padding-left: 0; */
+/* border-left: 0; */
+/* } */
+/* .style-manager-collapse-indicator { */
+/* display: block; */
+/* } */
+
 .style-manager-style-settings-container {
-	margin-left: var(--size-4-4);
-	padding-left: var(--size-4-4);
+	margin-left: var(--size-4-2);
+	padding-left: var(--size-4-2);
 	border-left: var(--sm-container-border-size) solid
 		var(--sm-container-border-color);
 }
+
+.style-manager-collapse-indicator {
+	display: none;
+}
+
+/* ---- */
 
 .style-manager-style-settings-container
 	.setting-item:not(.style-manager-style-heading) {
@@ -524,16 +544,11 @@ body:not(.is-phone) .modal:has(.style-manager-wrapper) .modal-close-button {
 	display: none;
 }
 
-.style-manager-collapse-indicator {
-	display: none;
-}
-
 .style-manager-style-heading[data-level='0'] .style-manager-collapse-indicator {
 	color: var(--text-faint);
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	margin-right: 8px;
 	width: var(--size-4-3);
 }
 
@@ -739,15 +754,26 @@ body.is-mobile
 .style-manager-modal-buttons {
 	margin-top: auto;
 }
-
-.modal-style-manager .setting-item {
+/* NOTE: */
+.modal-style-manager
+	.setting-item:has(.setting-item-control input[type='text']),
+.modal-style-manager .setting-item:has(.setting-item-control textarea) {
 	align-items: flex-start;
+	flex-direction: column;
 }
 
+.modal-style-manager .setting-item .setting-item-control {
+	width: 100%;
+}
+
+.modal-style-manager .setting-item .setting-item-control input[type='text'],
+.modal-style-manager .setting-item .setting-item-control textarea {
+	width: 100%;
+}
+/* ---- */
 .view-content
 	.style-manager-style-settings-container
 	.setting-item:not(.setting-item-heading) {
-	flex-direction: column;
 	align-items: flex-start;
 }
 
@@ -872,15 +898,10 @@ body.is-phone .style-manager-tabs-scroll-wrap {
 	display: flex;
 	align-items: center;
 	justify-content: center;
-	margin-right: var(--size-4-2);
 }
 
 .style-manager-tab:not(.is-active) .style-manager-tab-text {
 	display: none;
-}
-
-.style-manager-tab:not(.is-active) .style-manager-tab-icon {
-	margin-right: 0;
 }
 
 .style-manager-tab-icon svg {
@@ -890,10 +911,6 @@ body.is-phone .style-manager-tabs-scroll-wrap {
 
 body.is-phone .style-manager-tab-text {
 	display: inline;
-}
-
-body.is-phone .style-manager-tab-icon {
-	margin-right: var(--size-4-2);
 }
 
 body.is-phone .style-manager-tab {
@@ -1021,6 +1038,7 @@ button.style-manager-icon-button {
 }
 
 .style-manager-item-row {
+	flex-direction: row !important;
 	border-radius: var(--radius-s);
 }
 
@@ -1250,6 +1268,7 @@ button.style-manager-icon-button {
 	display: flex;
 	gap: var(--size-4-1);
 	align-items: center;
+	width: auto !important;
 }
 
 .style-manager-item-select-icon {
@@ -1570,27 +1589,29 @@ body.is-phone .style-manager-item-select-icon {
 	align-self: center;
 }
 
-body.is-phone .style-manager-style-heading {
+.style-manager-style-settings-item {
 	flex-direction: row !important;
-	gap: var(--size-4-2);
 }
 
-body.is-phone .style-manager-style-heading .setting-item-info {
-	flex: 1 1 auto !important;
-	margin-bottom: 0 !important;
-}
-
-body.is-phone .style-manager-style-heading .setting-item-control {
-	flex: 0 0 auto !important;
-	display: flex !important;
-	align-items: center !important;
+.style-manager-style-settings-item .setting-item-control {
 	justify-content: flex-end !important;
 	width: auto !important;
-	padding: 0 !important;
 }
 
-body.is-phone .style-manager-style-heading .setting-item-name {
-	flex-wrap: nowrap !important;
+.style-manager-style-settings-item:has(
+	.setting-item-control input[type='text'],
+	.setting-item-control input[type='range'],
+	.setting-item-control select
+) {
+	flex-direction: column !important;
+}
+
+.style-manager-style-settings-item
+	.setting-item-control:has(input[type='text'], input[type='range'], select),
+.style-manager-style-settings-item .setting-item-control input[type='text'],
+.style-manager-style-settings-item .setting-item-control input[type='range'],
+.style-manager-style-settings-item .setting-item-control select {
+	width: 100% !important;
 }
 
 body.is-phone
@@ -1747,10 +1768,6 @@ body.is-phone
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
-}
-
-.style-manager-metadata-field.mod-description .style-manager-metadata-value {
-	white-space: normal;
 }
 
 .style-manager-metadata-value[href] {

@@ -49,7 +49,7 @@ export class NotificationService {
 	public notify(
 		message: string,
 		type: NotificationType = NotificationType.UTILITY,
-		duration: number = 4000
+		duration: number = 2000
 	): void {
 		const settings = this.getSettings();
 		let show = false;

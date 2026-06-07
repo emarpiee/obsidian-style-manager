@@ -61,7 +61,7 @@ export class ThemeManifestModal extends Modal {
 	onOpen(): void {
 		const { contentEl, modalEl } = this;
 		modalEl.addClass('modal-style-manager');
-		modalEl.addClass('style-manager-create-theme-modal');
+		modalEl.addClass('style-manager-theme-manifest-modal');
 
 		this.setTitle(this.themeId ? 'Edit theme manifest' : 'Create new theme');
 		contentEl.createEl('p', {
@@ -203,7 +203,6 @@ export class ThemeManifestModal extends Modal {
 
 		new Setting(contentEl)
 
-
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
 				btn.setButtonText('Cancel').onClick(() => this.close())
@@ -310,7 +309,10 @@ export class ThemeManifestModal extends Modal {
 		return null;
 	}
 
-	private setupValidationListeners(key: string, el: HTMLInputElement | HTMLTextAreaElement): void {
+	private setupValidationListeners(
+		key: string,
+		el: HTMLInputElement | HTMLTextAreaElement
+	): void {
 		const showTooltip = (): void => {
 			const error = this.getFieldError(key);
 			if (error) {
@@ -323,9 +325,13 @@ export class ThemeManifestModal extends Modal {
 	}
 
 	private setupScrollListener(): void {
-		this.contentEl.addEventListener('scroll', () => {
-			const tooltips = document.querySelectorAll('.tooltip');
-			tooltips.forEach((tooltip) => tooltip.remove());
-		}, { passive: true });
+		this.contentEl.addEventListener(
+			'scroll',
+			() => {
+				const tooltips = document.querySelectorAll('.tooltip');
+				tooltips.forEach((tooltip) => tooltip.remove());
+			},
+			{ passive: true }
+		);
 	}
 }
