@@ -606,6 +606,9 @@ export class ObsidianBridge {
 				// system
 				try {
 					await adapter.trashSystem(path);
+					if (await adapter.exists(path)) {
+						throw new Error('File still exists after trashSystem');
+					}
 				} catch (_e) {
 					Logger.log(
 						`Style Manager | System trash failed for ${name}, trying local trash.`
