@@ -18,6 +18,12 @@
 */
 import type StyleManagerPlugin from '../main';
 
+import { 
+	SNIPPETS_KEY, 
+	THEME_KEY, 
+	APPEARANCE_KEY, 
+	ACCENT_COLOR_KEY 
+} from '../constants';
 import { generateUuid } from '../utils/CommonUtils';
 
 const DEVICE_ID_KEY = 'style-manager-device-id';
@@ -105,7 +111,40 @@ export class IdentityService {
 		const devices = this.adapter.getDevices();
 		if (devices && devices[deviceId]) {
 			const locker = devices[deviceId];
-			const mergedData = Object.assign({}, ...dataArray);
+
+			if (dataArray.length === 1) {
+				Object.keys(locker.isolateSettings).forEach((key) => {
+					if (
+						key.includes('@@') ||
+						key === THEME_KEY ||
+						key === APPEARANCE_KEY ||
+						key === ACCENT_COLOR_KEY ||
+						key === SNIPPETS_KEY
+					) {
+						delete locker.isolateSettings[key];
+					}
+				});
+			}
+
+			const mergedData: Record<string, unknown> = {};
+			const mergedSnippets = new Set<string>();
+			let snippetsEncountered = false;
+
+			for (const data of dataArray) {
+				for (const [key, value] of Object.entries(data)) {
+					if (key === SNIPPETS_KEY && Array.isArray(value)) {
+						snippetsEncountered = true;
+						value.forEach((s) => mergedSnippets.add(s));
+					} else {
+						mergedData[key] = value;
+					}
+				}
+			}
+
+			if (snippetsEncountered) {
+				mergedData[SNIPPETS_KEY] = Array.from(mergedSnippets);
+			}
+
 			locker.isolateSettings = { ...locker.isolateSettings, ...mergedData };
 			locker.isIsolateMode = true;
 			await this.adapter.save();
