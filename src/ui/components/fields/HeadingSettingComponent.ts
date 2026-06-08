@@ -428,6 +428,9 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 
 	private renderChildren(): void {
 		this.removeChildren();
+		if (this.setting.collapsed) {
+			return;
+		}
 		if (this.filterMode) {
 			for (const child of this.filteredChildren) {
 				this.addChild(child);
