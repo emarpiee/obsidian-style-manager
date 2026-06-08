@@ -79,6 +79,27 @@ export class IsolateTab {
 						this.onRerender();
 					});
 			});
+
+		new Setting(isolateContainer)
+			.setName('Always show shared presets')
+			.setDesc(
+				'When enabled, the preset list will always show the shared locker presets, even if Isolate Mode is enabled.'
+			)
+			.addToggle((toggle) => {
+				toggle
+					.setValue(
+						(plugin.settingsService.settings[
+							'__style_manager_always_shared_presets'
+						] as boolean) || false
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSetting(
+							'__style_manager_always_shared_presets',
+							val
+						);
+						plugin.presetService.targetView = 'auto';
+					});
+			});
 	}
 
 	private renderLockerIdentitySection(): void {

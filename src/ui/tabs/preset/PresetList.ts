@@ -70,6 +70,28 @@ export class PresetList {
 				);
 			})
 			.addExtraButton((btn) => {
+				const updateBtn = () => {
+					const mode = service.getEffectiveViewMode();
+					if (mode === 'isolate') {
+						btn.setIcon('globe');
+						btn.setTooltip('View shared presets');
+					} else {
+						btn.setIcon('laptop');
+						btn.setTooltip('View isolated presets');
+					}
+				};
+
+				updateBtn();
+
+				btn.onClick(() => {
+					const mode = service.getEffectiveViewMode();
+					service.targetView = mode === 'isolate' ? 'shared' : 'isolate';
+					service.selectedPresets.clear();
+					updateBtn();
+					this.renderPresetListItems();
+				});
+			})
+			.addExtraButton((btn) => {
 				btn
 					.setIcon('plus')
 					.setTooltip('Create new preset')

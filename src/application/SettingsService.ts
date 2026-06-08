@@ -588,6 +588,7 @@ export class SettingsService extends Events {
 			persistNative?: boolean;
 			silentUI?: boolean;
 			skipSave?: boolean;
+			target?: 'shared' | 'isolate';
 		}
 	): Promise<void> {
 		return this.applySettingsUpdate({ [key]: value }, options);
@@ -601,6 +602,7 @@ export class SettingsService extends Events {
 			persistNative?: boolean;
 			silentUI?: boolean;
 			skipSave?: boolean;
+			target?: 'shared' | 'isolate';
 		}
 	): Promise<void> {
 		return this.applySettingsUpdate(
@@ -614,11 +616,12 @@ export class SettingsService extends Events {
 		keyOrValue: SettingValue | string,
 		valueOrOptions?:
 			| SettingValue
-			| { persistNative?: boolean; silentUI?: boolean; skipSave?: boolean },
+			| { persistNative?: boolean; silentUI?: boolean; skipSave?: boolean; target?: 'shared' | 'isolate' },
 		options?: {
 			persistNative?: boolean;
 			silentUI?: boolean;
 			skipSave?: boolean;
+			target?: 'shared' | 'isolate';
 		}
 	): Promise<void> {
 		let section: string | null = null;
@@ -636,7 +639,7 @@ export class SettingsService extends Events {
 			key = sectionOrKey;
 			val = keyOrValue as SettingValue;
 			opts = valueOrOptions as
-				| { persistNative?: boolean; silentUI?: boolean; skipSave?: boolean }
+				| { persistNative?: boolean; silentUI?: boolean; skipSave?: boolean; target?: 'shared' | 'isolate' }
 				| undefined;
 		} else {
 			section = sectionOrKey;
@@ -656,6 +659,7 @@ export class SettingsService extends Events {
 			persistNative?: boolean;
 			silentUI?: boolean;
 			skipSave?: boolean;
+			target?: 'shared' | 'isolate';
 		}
 	): Promise<void> {
 		return this.applySettingsUpdate(settings, options);
@@ -667,12 +671,20 @@ export class SettingsService extends Events {
 			persistNative?: boolean;
 			silentUI?: boolean;
 			skipSave?: boolean;
+			target?: 'shared' | 'isolate';
 		}
 	): Promise<void> {
 		const isIsolate = this.isolateModeService.isIsolateMode();
-		const targetBuffer = isIsolate
-			? this.isolateModeService.isolateSettings
-			: this.sharedSettings;
+		let targetBuffer;
+		if (options?.target === 'isolate') {
+			targetBuffer = this.isolateModeService.isolateSettings;
+		} else if (options?.target === 'shared') {
+			targetBuffer = this.sharedSettings;
+		} else {
+			targetBuffer = isIsolate
+				? this.isolateModeService.isolateSettings
+				: this.sharedSettings;
+		}
 
 		Object.assign(targetBuffer, updates);
 

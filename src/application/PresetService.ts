@@ -35,25 +35,47 @@ export class PresetService {
 	presetSearchQuery: string = '';
 	selectedPresets: Set<string> = new Set();
 	public lastSelectedIndex: number | null = null;
+	public targetView: 'auto' | 'shared' | 'isolate' = 'auto';
 
 	constructor(plugin: StyleManagerPlugin) {
 		this.plugin = plugin;
+		this.plugin.settingsService.on('isolate-mode-changed', () => {
+			this.targetView = 'auto';
+		});
+	}
+
+	public getEffectiveViewMode(): 'shared' | 'isolate' {
+		if (this.targetView !== 'auto') return this.targetView;
+		if (
+			this.plugin.settingsService.settings[
+				'__style_manager_always_shared_presets'
+			]
+		) {
+			return 'shared';
+		}
+		return this.plugin.settingsService.isIsolateMode() ? 'isolate' : 'shared';
 	}
 
 	get presets(): Preset[] {
+		const mode = this.getEffectiveViewMode();
+		if (mode === 'isolate') {
+			return (this.plugin.settingsService.isolateModeService.isolateSettings._manager_presets as Preset[]) || [];
+		}
 		return (
-			(this.plugin.settingsService.settings._manager_presets as Preset[]) || []
+			(this.plugin.settingsService.sharedSettings._manager_presets as Preset[]) || []
 		);
 	}
 
 	set presets(val: Preset[]) {
-		this.plugin.settingsService.setSettings({ _manager_presets: val }, { silentUI: true });
+		const mode = this.getEffectiveViewMode();
+		this.plugin.settingsService.setSettings({ _manager_presets: val }, { silentUI: true, target: mode });
 	}
 
 	async savePresets(): Promise<void> {
+		const mode = this.getEffectiveViewMode();
 		await this.plugin.settingsService.setSettings({
 			_manager_presets: this.presets,
-		}, { silentUI: true });
+		}, { silentUI: true, target: mode });
 	}
 
 	public async trashPresets(presets: Preset[]): Promise<void> {
