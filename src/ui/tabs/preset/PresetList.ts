@@ -313,9 +313,7 @@ export class PresetList {
 
 				const applyAll = async (isolate: boolean): Promise<void> => {
 					const performApply = async (): Promise<void> => {
-						for (const id of Array.from(service.selectedPresets)) {
-							await service.applyPreset(id, isolate);
-						}
+						await service.applyPresets(Array.from(service.selectedPresets), isolate);
 						service.selectedPresets.clear();
 						this.onRefresh();
 					};
@@ -333,8 +331,8 @@ export class PresetList {
 								? 'Apply to this device (isolate)'
 								: 'Apply to shared locker',
 							isolate
-								? `Are you sure you want to apply ${service.selectedPresets.size} presets sequentially to this device?`
-								: `Are you sure you want to apply ${service.selectedPresets.size} presets sequentially to the shared locker?`,
+								? `Are you sure you want to apply ${service.selectedPresets.size} presets to this device?`
+								: `Are you sure you want to apply ${service.selectedPresets.size} presets to the shared locker?`,
 							isolate ? 'Confirm' : 'Confirm',
 							false,
 							performApply
@@ -352,15 +350,14 @@ export class PresetList {
 						onApplyIsolate: async () => await applyAll(true),
 						onApplyRemote: async (deviceId: string) => {
 							const selectedIds = Array.from(service.selectedPresets);
-							for (const id of selectedIds) {
-								const preset = service.presets.find((p) => p.id === id);
-								if (preset) {
-									await plugin.settingsService.identity.applyPresetToLocker(
-										deviceId,
-										preset.data
-									);
-								}
-							}
+							const presetDataArray = selectedIds
+								.map((id) => service.presets.find((p) => p.id === id)?.data)
+								.filter((data): data is Record<string, unknown> => !!data);
+
+							await plugin.settingsService.identity.applyPresetsToLocker(
+								deviceId,
+								presetDataArray
+							);
 							service.selectedPresets.clear();
 							this.renderPresetListItems();
 							plugin.settingsService.notifications.isolate(

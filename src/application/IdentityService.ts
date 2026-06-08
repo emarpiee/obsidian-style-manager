@@ -95,10 +95,18 @@ export class IdentityService {
 		deviceId: string,
 		data: Record<string, unknown>
 	): Promise<void> {
+		await this.applyPresetsToLocker(deviceId, [data]);
+	}
+
+	public async applyPresetsToLocker(
+		deviceId: string,
+		dataArray: Record<string, unknown>[]
+	): Promise<void> {
 		const devices = this.adapter.getDevices();
 		if (devices && devices[deviceId]) {
 			const locker = devices[deviceId];
-			locker.isolateSettings = { ...locker.isolateSettings, ...data };
+			const mergedData = Object.assign({}, ...dataArray);
+			locker.isolateSettings = { ...locker.isolateSettings, ...mergedData };
 			locker.isIsolateMode = true;
 			await this.adapter.save();
 			this.adapter.trigger('device-lockers-updated');

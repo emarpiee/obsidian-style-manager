@@ -251,21 +251,33 @@ export class PresetService {
 		presetId: string,
 		isolateOnly: boolean = false
 	): Promise<void> {
-		const preset = this.presets.find((p) => p.id === presetId);
-		if (!preset) return;
+		await this.applyPresets([presetId], isolateOnly);
+	}
+
+	async applyPresets(
+		presetIds: string[],
+		isolateOnly: boolean = false
+	): Promise<void> {
+		const selectedPresets = presetIds
+			.map((id) => this.presets.find((p) => p.id === id))
+			.filter((p): p is Preset => !!p);
+
+		if (selectedPresets.length === 0) return;
+
+		const mergedData = Object.assign({}, ...selectedPresets.map((p) => p.data));
 
 		try {
 			await this.plugin.settingsService.applySettingsOverlay(
-				preset.data,
+				mergedData,
 				isolateOnly
 			);
 			this.plugin.settingsService.notifications.preset(
-				`Applied preset: ${preset.name}${isolateOnly ? ' (isolated)' : ''}.`
+				`Applied ${selectedPresets.length} preset${selectedPresets.length > 1 ? 's' : ''}${isolateOnly ? ' (isolated)' : ''}.`
 			);
 		} catch (e) {
 			console.error('Style Manager | Preset Error:', e);
 			this.plugin.settingsService.notifications.error(
-				'Failed to apply preset.'
+				'Failed to apply presets.'
 			);
 		}
 	}
