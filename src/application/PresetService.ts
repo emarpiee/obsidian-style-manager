@@ -264,6 +264,10 @@ export class PresetService {
 
 		if (selectedPresets.length === 0) return;
 
+		if (selectedPresets.length === 1) {
+			await this.plugin.settingsService.resetAllStyleSettings(isolateOnly);
+		}
+
 		const mergedData: Record<string, unknown> = {};
 		const mergedSnippets = new Set<string>();
 		let snippetsEncountered = false;

@@ -520,6 +520,30 @@ export class SettingsService extends Events {
 		return this.isolateModeService.isolateSettings[key] !== undefined;
 	}
 
+	public async resetAllStyleSettings(isIsolate: boolean): Promise<void> {
+		const targetBuffer = isIsolate
+			? this.isolateModeService.isolateSettings
+			: this.sharedSettings;
+
+		Object.keys(targetBuffer).forEach((key) => {
+			if (this.isStyleSetting(key)) {
+				delete targetBuffer[key];
+			}
+		});
+
+		targetBuffer[THEME_KEY] = 'default';
+		targetBuffer[APPEARANCE_KEY] = 'light';
+		targetBuffer[ACCENT_COLOR_KEY] = '#8a5cf5';
+		targetBuffer[SNIPPETS_KEY] = [];
+
+		this.updateMerged();
+		this.styleSheetManager.clearCache();
+		this.refreshService.trigger(RefreshLevel.FULL_VISUAL);
+		this.trigger('refresh-status-bar');
+
+		await this.save();
+	}
+
 	private isStyleSetting(key: string): boolean {
 		return (
 			key.includes('@@') ||
