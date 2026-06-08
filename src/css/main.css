@@ -383,12 +383,25 @@ body.is-phone .style-manager-plugin {
 	z-index: 12;
 }
 
-.style-manager-style-heading[data-level='4'],
-.style-manager-style-heading[data-level='5'] {
+.style-manager-style-heading[data-level='4'] {
 	top: calc(
 		var(--sm-sticky-top-offset) + (4 * var(--sm-sticky-heading-height))
 	);
 	z-index: 11;
+}
+
+.style-manager-style-heading[data-level='5'] {
+	top: calc(
+		var(--sm-sticky-top-offset) + (5 * var(--sm-sticky-heading-height))
+	);
+	z-index: 10;
+}
+
+.style-manager-style-heading[data-level='6'] {
+	top: calc(
+		var(--sm-sticky-top-offset) + (6 * var(--sm-sticky-heading-height))
+	);
+	z-index: 9;
 }
 
 .style-manager-style-heading:not(.is-collapsed) {

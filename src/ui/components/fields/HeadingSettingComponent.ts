@@ -503,22 +503,69 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		}
 	}
 
+	private getLocalChildrenIds(): string[] {
+		return this.children
+			.filter((child) => child.setting.type !== SettingType.HEADING)
+			.map((child) => child.setting.id);
+	}
 
-	private getAppliedCount(): number {
+	private getLocalAppliedCount(): number {
+		const ids = this.getLocalChildrenIds();
+		const applied = this.settingsService.getSettings(this.sectionId, ids);
+		return Object.keys(applied).filter((k) => k.includes('@@')).length;
+	}
+
+	private hasModifiedChildren(): boolean {
+		for (const child of this.children) {
+			if (child.setting.type === SettingType.HEADING) {
+				const headingChild = child as HeadingSettingComponent;
+				if (
+					headingChild.getLocalAppliedCount() > 0 ||
+					headingChild.hasModifiedChildren()
+				) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	private getTotalAppliedCount(): number {
 		const ids = this.getAllChildrenIds();
 		const applied = this.settingsService.getSettings(this.sectionId, ids);
-		// Count every key containing '@@' to match JSON physical count
 		return Object.keys(applied).filter((k) => k.includes('@@')).length;
 	}
 
 	private updateCountBadge(): void {
 		if (!this.countEl) return;
-		const count = this.getAppliedCount();
-		if (count === 0) {
+
+		if (this.setting.level === 0) {
+			const totalCount = this.getTotalAppliedCount();
+			if (totalCount === 0) {
+				this.countEl.setText('');
+				this.countEl.removeClass('is-visible');
+			} else {
+				this.countEl.setText(totalCount.toString());
+				this.countEl.addClass('is-visible');
+			}
+			return;
+		}
+
+		const localCount = this.getLocalAppliedCount();
+		const hasChildrenMod = this.hasModifiedChildren();
+
+		if (localCount === 0 && !hasChildrenMod) {
 			this.countEl.setText('');
 			this.countEl.removeClass('is-visible');
 		} else {
-			this.countEl.setText(count.toString());
+			let text = '';
+			if (localCount > 0) {
+				text = localCount.toString();
+			}
+			if (hasChildrenMod) {
+				text += text ? ' ↓' : '↓';
+			}
+			this.countEl.setText(text);
 			this.countEl.addClass('is-visible');
 		}
 	}
