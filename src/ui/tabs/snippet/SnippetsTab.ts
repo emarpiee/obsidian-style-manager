@@ -148,12 +148,12 @@ export class SnippetsTab {
 
 	private applyFilter(): void {
 		const query = this.filterString.toLowerCase();
-		
+
 		const authorMatch = query.match(/@author\s+([^\s@]+)/);
 		const nameMatch = query.match(/@name\s+([^\s@]+)/);
 		const descMatch = query.match(/@description\s+([^\s@]+)/);
 		const licenseMatch = query.match(/@license\s+([^\s@]+)/);
-		
+
 		const cleanedQuery = query
 			.replace(/@author\s+[^\s@]+/g, '')
 			.replace(/@name\s+[^\s@]+/g, '')
@@ -166,17 +166,33 @@ export class SnippetsTab {
 			const displayName = comp.snippetId + '.css';
 			const metadata = this.plugin.snippetMetadataMap.get(comp.snippetId) || {};
 
-			if (authorMatch && !(metadata.author?.toLowerCase().includes(authorMatch[1]))) matches = false;
-			if (nameMatch && !(displayName.toLowerCase().includes(nameMatch[1]))) matches = false;
-			if (descMatch && !(metadata.description?.toLowerCase().includes(descMatch[1]))) matches = false;
-			if (licenseMatch && !(metadata.license?.toLowerCase().includes(licenseMatch[1]))) matches = false;
+			if (
+				authorMatch &&
+				!metadata.author?.toLowerCase().includes(authorMatch[1])
+			)
+				matches = false;
+			if (nameMatch && !displayName.toLowerCase().includes(nameMatch[1]))
+				matches = false;
+			if (
+				descMatch &&
+				!metadata.description?.toLowerCase().includes(descMatch[1])
+			)
+				matches = false;
+			if (
+				licenseMatch &&
+				!metadata.license?.toLowerCase().includes(licenseMatch[1])
+			)
+				matches = false;
 
-			if (cleanedQuery && !(
-				comp.snippetId.toLowerCase().includes(cleanedQuery) ||
-				displayName.toLowerCase().includes(cleanedQuery) ||
-				metadata.author?.toLowerCase().includes(cleanedQuery) ||
-				metadata.description?.toLowerCase().includes(cleanedQuery)
-			)) {
+			if (
+				cleanedQuery &&
+				!(
+					comp.snippetId.toLowerCase().includes(cleanedQuery) ||
+					displayName.toLowerCase().includes(cleanedQuery) ||
+					metadata.author?.toLowerCase().includes(cleanedQuery) ||
+					metadata.description?.toLowerCase().includes(cleanedQuery)
+				)
+			) {
 				matches = false;
 			}
 
@@ -230,7 +246,7 @@ export class SnippetsTab {
 
 		const actions = bulkContainer.createDiv('style-manager-bulk-buttons');
 
-		new ButtonComponent(actions).setButtonText('Select All').onClick(() => {
+		new ButtonComponent(actions).setButtonText('Select all').onClick(() => {
 			const customCss = (
 				this.app as unknown as { customCss?: { snippets?: string[] } }
 			).customCss;
@@ -244,7 +260,7 @@ export class SnippetsTab {
 			.onClick(() => this.bulkDuplicate());
 
 		new ButtonComponent(actions)
-			.setButtonText('Toggle All')
+			.setButtonText('Toggle')
 			.setCta()
 			.onClick(() => {
 				this.toggleAllSelected();
@@ -298,9 +314,9 @@ export class SnippetsTab {
 		const count = this.plugin.selectedSnippets.size;
 		new ConfirmModal(
 			this.app,
-			'Delete Snippets',
+			'Delete snippets',
 			`Are you sure you want to delete ${count} selected snippets? This action cannot be undone.`,
-			'Delete All',
+			'Delete all',
 			true,
 			async () => {
 				const selectedIds = Array.from(this.plugin.selectedSnippets);

@@ -66,7 +66,10 @@ settings:
     - 
         id: 
         title: 
-        type: 
+        description: 
+        type: heading
+        level: 1
+        collapsed: false
 */`,
 		},
 		{
