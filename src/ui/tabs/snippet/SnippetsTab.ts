@@ -302,7 +302,8 @@ export class SnippetsTab {
 
 		await this.plugin.settingsService.setSetting(
 			SNIPPETS_KEY,
-			Array.from(snippets)
+			Array.from(snippets),
+			{ silentUI: true }
 		);
 		this.plugin.settingsService.notifications.snippet(
 			`${targetState ? 'Enabled' : 'Disabled'} ${this.plugin.selectedSnippets.size} snippets`

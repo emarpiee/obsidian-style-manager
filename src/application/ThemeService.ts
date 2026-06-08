@@ -31,7 +31,7 @@ export interface ThemeServiceDeps {
 	bridge: ObsidianBridge;
 	isIsolateMode: () => boolean;
 	getSetting: (key: string) => unknown;
-	setSetting: (key: string, value: unknown) => void;
+	setSetting: (key: string, value: unknown, options?: { silentUI?: boolean }) => void;
 	triggerEvent: (name: string) => void;
 	notifications: NotificationService;
 }
@@ -326,7 +326,7 @@ export class ThemeService {
 	/** Installs monkey-patches on vault.getConfig/setConfig and customCss.setTheme. */
 	installPatches(): void {
 		this.deps.bridge.installPatches(
-			(theme: string) => this.deps.setSetting(THEME_KEY, theme),
+			(theme: string) => this.deps.setSetting(THEME_KEY, theme, { silentUI: true }),
 			() => {
 				const appearance = this.deps.getSetting(APPEARANCE_KEY) as string;
 				if (appearance && appearance !== 'system')
@@ -335,12 +335,12 @@ export class ThemeService {
 			},
 			(appearance: string) => {
 				const val = appearance === 'obsidian' ? 'dark' : 'light';
-				this.deps.setSetting(APPEARANCE_KEY, val);
+				this.deps.setSetting(APPEARANCE_KEY, val, { silentUI: true });
 				this.applyAppearance(val);
 			},
 			() => (this.deps.getSetting(ACCENT_COLOR_KEY) as string) || '',
 			(color: string) => {
-				this.deps.setSetting(ACCENT_COLOR_KEY, color);
+				this.deps.setSetting(ACCENT_COLOR_KEY, color, { silentUI: true });
 				this.applyAccentColor(color);
 			},
 			() => this.isApplyingPersistentTheme,

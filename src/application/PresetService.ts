@@ -53,8 +53,7 @@ export class PresetService {
 	async savePresets(): Promise<void> {
 		await this.plugin.settingsService.setSettings({
 			_manager_presets: this.presets,
-			silentUI: true,
-		});
+		}, { silentUI: true });
 	}
 
 	public async trashPresets(presets: Preset[]): Promise<void> {
