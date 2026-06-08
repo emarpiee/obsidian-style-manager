@@ -21,6 +21,7 @@ import { Command, Notice, Plugin, normalizePath } from 'obsidian';
 import {
 	ACCENT_COLOR_KEY,
 	APPEARANCE_KEY,
+	SNIPPETS_KEY,
 	THEME_KEY,
 	TOOL_BOX_OUTLINE_COLOR,
 	TOOL_FREEZE_DELAY,
@@ -55,15 +56,18 @@ import { ToggleDevToolsTool } from './tools/ToggleDevToolsTool';
 import { ActiveTab } from './ui/StyleManagerLayoutRenderer';
 import { StyleManagerSettingTab } from './ui/StyleManagerSettingTab';
 import { StyleManagerView, viewType } from './ui/StyleManagerView';
-import { ColorContrastCheckerView, colorContrastViewType } from './ui/views/ColorContrastCheckerView';
 import { SettingType } from './ui/components/base/types';
 import { StatusBarManager } from './ui/elements/StatusBarManager';
 import { BoxOutlineColorPromptModal } from './ui/modals/BoxOutlineColorPromptModal';
-import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
 import { ColorContrastCheckerModal } from './ui/modals/ColorContrastCheckerModal';
+import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
+import {
+	ColorContrastCheckerView,
+	colorContrastViewType,
+} from './ui/views/ColorContrastCheckerView';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
 
@@ -186,12 +190,12 @@ export default class StyleManagerPlugin extends Plugin {
 					this.app,
 					this,
 					sectionsWithData,
-							async (selectedIds) => {
-								this.settingsService.clearSections(selectedIds, false, {
-									silentUI: true,
-								});
-								this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
-							}
+					async (selectedIds) => {
+						this.settingsService.clearSections(selectedIds, false, {
+							silentUI: true,
+						});
+						this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
+					}
 				).open();
 			},
 		});
@@ -310,7 +314,10 @@ export default class StyleManagerPlugin extends Plugin {
 		);
 
 		this.registerView(viewType, (leaf) => new StyleManagerView(this, leaf));
-		this.registerView(colorContrastViewType, (leaf) => new ColorContrastCheckerView(leaf));
+		this.registerView(
+			colorContrastViewType,
+			(leaf) => new ColorContrastCheckerView(leaf)
+		);
 
 		this.addCommand({
 			id: 'style-manager-show-leaf',
@@ -324,6 +331,28 @@ export default class StyleManagerPlugin extends Plugin {
 			this.app.workspace.on('css-change', (data?: { source: string }) => {
 				if (data?.source !== 'style-manager') {
 					this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS);
+
+					if (
+						!this.settingsService.isApplyingTheme &&
+						!this.settingsService.isIsolateMode()
+					) {
+						const currentEnabled =
+							this.settingsService.bridge.getEnabledSnippets();
+						const lockerEnabled =
+							(this.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+
+						const currentString = JSON.stringify([...currentEnabled].sort());
+						const lockerString = JSON.stringify([...lockerEnabled].sort());
+
+						if (currentString !== lockerString) {
+							Logger.log(
+								'Style Manager | Snippets: Adopting native snippet change.'
+							);
+							this.settingsService.setSetting(SNIPPETS_KEY, currentEnabled, {
+								silentUI: false,
+							});
+						}
+					}
 
 					if (this.settingsService.isApplyingTheme) return;
 
@@ -609,12 +638,9 @@ export default class StyleManagerPlugin extends Plugin {
 						section.id,
 						setting.id
 					) as boolean);
-					this.settingsService.setSetting(
-						section.id,
-						setting.id,
-						value,
-						{ silentUI: true }
-					);
+					this.settingsService.setSetting(section.id, setting.id, value, {
+						silentUI: true,
+					});
 				},
 			})
 		);
