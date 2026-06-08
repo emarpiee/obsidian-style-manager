@@ -126,7 +126,7 @@ export class ThemeManifestModal extends Modal {
 		new Setting(contentEl)
 			.setClass('style-manager-required-setting')
 			.setName('Version')
-			.setDesc('The version, using Semantic Versioning in the format x.y.z.')
+			.setDesc('The version, using Semantic Versioning in the format x.y or x.y.z.')
 			.addText((text) => {
 				text
 					.setPlaceholder('1.0.0')

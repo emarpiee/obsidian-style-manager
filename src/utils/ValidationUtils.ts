@@ -23,10 +23,11 @@ export type Validator = (value: string) => string | null;
 export const Validators: Record<string, Validator> = {
 	required: (val) => (val.trim() === '' ? 'This field is required' : null),
 	semver: (val) => {
-		const semverRegex = /^\d+\.\d+\.\d+$/;
-		return !semverRegex.test(val) ? 'Version must follow x.y.z format' : null;
+		const semverRegex = /^\d+\.\d+(\.\d+)?$/;
+		return !semverRegex.test(val) ? 'Version must follow x.y or x.y.z format' : null;
 	},
 	url: (val) => {
+		if (val.trim() === '') return null;
 		try {
 			new URL(val);
 			return null;
