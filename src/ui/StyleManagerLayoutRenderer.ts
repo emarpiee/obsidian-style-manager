@@ -44,6 +44,7 @@ export class StyleManagerLayoutRenderer extends Component {
 	plugin: StyleManagerPlugin;
 	settingsComponentTrees: HeadingSettingComponent[] = [];
 	filterString: string = '';
+	showModifiedOnly: boolean = false;
 	settings: ParsedCSSSettings[] = [];
 	errorList: ErrorList = [];
 	containerEl: HTMLElement;
@@ -205,6 +206,7 @@ export class StyleManagerLayoutRenderer extends Component {
 			plugin: this.plugin,
 			isView: this.isView,
 			filterString: this.filterString,
+			showModifiedOnly: this.showModifiedOnly,
 			onFilterChange: (value: string): void => {
 				this.filterString = value;
 				this.filter();
@@ -212,6 +214,10 @@ export class StyleManagerLayoutRenderer extends Component {
 			onFilterClear: (): void => {
 				this.filterString = '';
 				this.clearFilter();
+			},
+			onToggleModifiedOnly: (): void => {
+				this.showModifiedOnly = !this.showModifiedOnly;
+				this.filter();
 			},
 			addChild: (child: HeadingSettingComponent): HeadingSettingComponent => {
 				this.addChild(child);
@@ -252,12 +258,17 @@ export class StyleManagerLayoutRenderer extends Component {
 	}
 
 	filter(): void {
+		if (!this.filterString && !this.showModifiedOnly) {
+			this.clearFilter();
+			return;
+		}
 		for (const tree of this.settingsComponentTrees) {
-			tree.filter(this.filterString);
+			tree.filter(this.filterString, this.showModifiedOnly);
 		}
 	}
 
 	clearFilter(): void {
+		this.showModifiedOnly = false;
 		for (const tree of this.settingsComponentTrees) {
 			tree.clearFilter();
 		}

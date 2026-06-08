@@ -119,12 +119,7 @@ export abstract class AbstractSettingComponent extends Component {
 				?.settingEl;
 		if (!target) return;
 
-		const value = this.settingsService.getSetting(
-			this.sectionId,
-			this.setting.id
-		);
-
-		if (value !== undefined) {
+		if (this.isModified()) {
 			target.addClass('is-modified');
 		} else {
 			target.removeClass('is-modified');
@@ -141,5 +136,15 @@ export abstract class AbstractSettingComponent extends Component {
 			}
 			currentParent = (currentParent as { parent?: unknown }).parent;
 		}
+	}
+
+	/**
+	 * Returns true if this setting has been modified.
+	 */
+	isModified(): boolean {
+		return this.settingsService.getSetting(
+			this.sectionId,
+			this.setting.id
+		) !== undefined;
 	}
 }

@@ -367,35 +367,52 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		this.childEl = null as unknown as HTMLElement;
 	}
 
-	filter(filterString: string): number {
+	filter(filterString: string, showModifiedOnly: boolean = false): number {
 		this.filteredChildren = [];
 		this.filterResultCount = 0;
 
-		const headingMatches = this.decisiveMatch(filterString);
+		const headingMatchesString = filterString ? this.decisiveMatch(filterString) : false;
 
 		for (const child of this.children) {
 			if (child.setting.type === SettingType.HEADING) {
 				const headingChild = child as HeadingSettingComponent;
-				// If the parent heading matched, automatically include all children.
+				
+				// Pass empty string if this heading explicitly matched the text search,
+				// so children don't get filtered out by text.
 				const childResultCount = headingChild.filter(
-					headingMatches ? '' : filterString
+					headingMatchesString ? '' : filterString,
+					showModifiedOnly
 				);
 
-				if (childResultCount > 0 || headingMatches) {
+				// Include this child heading if:
+				// 1. It contains matching children (childResultCount > 0)
+				// 2. OR it explicitly matched the search string AND (we aren't filtering by modified OR it has modified children)
+				if (
+					childResultCount > 0 || 
+					(headingMatchesString && (!showModifiedOnly || headingChild.getTotalAppliedCount() > 0))
+				) {
 					this.filterResultCount += childResultCount;
 					this.filteredChildren.push(child);
 				}
 			} else {
-				if (headingMatches || child.decisiveMatch(filterString)) {
+				// For a leaf setting, it matches if:
+				// 1. (The parent heading explicitly matched the string OR there's no string OR the setting itself matched the string)
+				// AND
+				// 2. (We aren't filtering by modified OR it is modified)
+				
+				const matchesText = headingMatchesString || !filterString || child.decisiveMatch(filterString);
+				const matchesModified = !showModifiedOnly || child.isModified();
+				
+				if (matchesText && matchesModified) {
 					this.filteredChildren.push(child);
 					this.filterResultCount += 1;
 				}
 			}
 		}
 
-		this.filterMode = !!filterString || headingMatches;
+		this.filterMode = !!filterString || headingMatchesString || showModifiedOnly;
 
-		if (this.filterResultCount > 0 || headingMatches) {
+		if (this.filterResultCount > 0 || (headingMatchesString && (!showModifiedOnly || this.getTotalAppliedCount() > 0))) {
 			this.setCollapsed(false);
 		} else {
 			this.setCollapsed(true);

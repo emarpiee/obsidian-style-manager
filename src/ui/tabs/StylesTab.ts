@@ -29,8 +29,10 @@ export interface StylesTabDeps {
 	plugin: StyleManagerPlugin;
 	isView: boolean;
 	filterString: string;
+	showModifiedOnly: boolean;
 	onFilterChange: (value: string) => void;
 	onFilterClear: () => void;
+	onToggleModifiedOnly: () => void;
 	addChild: (child: HeadingSettingComponent) => HeadingSettingComponent;
 	getSettingsComponentTrees: () => HeadingSettingComponent[];
 	setSettingsComponentTrees: (trees: HeadingSettingComponent[]) => void;
@@ -85,6 +87,16 @@ export class StylesTab {
 					)
 				);
 				searchComponent.setPlaceholder('Search styles...');
+			})
+			.addExtraButton((btn) => {
+				btn
+					.setIcon('list-filter')
+					.setTooltip('Show modified only')
+					.onClick(() => {
+						this.deps.onToggleModifiedOnly();
+						btn.extraSettingsEl.toggleClass('is-active', this.deps.showModifiedOnly);
+					});
+				btn.extraSettingsEl.toggleClass('is-active', this.deps.showModifiedOnly);
 			})
 			.addExtraButton((btn) => {
 				btn

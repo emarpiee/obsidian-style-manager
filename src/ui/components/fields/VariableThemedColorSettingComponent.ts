@@ -357,6 +357,16 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 		instance.hide();
 	}
 
+	isModified(): boolean {
+		const idLight = `${this.setting.id}@@light`;
+		const idDark = `${this.setting.id}@@dark`;
+
+		const valueLight = this.settingsService.getSetting(this.sectionId, idLight);
+		const valueDark = this.settingsService.getSetting(this.sectionId, idDark);
+
+		return valueLight !== undefined || valueDark !== undefined;
+	}
+
 	/**
 	 * Adds or removes the 'is-modified' class based on whether the themed colors are customized.
 	 */
@@ -364,13 +374,7 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 		const target = el ?? this.settingEl?.settingEl;
 		if (!target) return;
 
-		const idLight = `${this.setting.id}@@light`;
-		const idDark = `${this.setting.id}@@dark`;
-
-		const valueLight = this.settingsService.getSetting(this.sectionId, idLight);
-		const valueDark = this.settingsService.getSetting(this.sectionId, idDark);
-
-		if (valueLight !== undefined || valueDark !== undefined) {
+		if (this.isModified()) {
 			target.addClass('is-modified');
 		} else {
 			target.removeClass('is-modified');
