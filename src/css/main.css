@@ -223,6 +223,14 @@ body {
 
 /* NOTE: */
 
+body.is-mobile .style-manager-plugin input[type='range'] {
+	pointer-events: none;
+}
+
+body.is-mobile .style-manager-plugin input[type='range']::-webkit-slider-thumb {
+	pointer-events: auto;
+}
+
 .style-manager-plugin
 	.setting-item:has(
 		.setting-item-control input[type='text'],
