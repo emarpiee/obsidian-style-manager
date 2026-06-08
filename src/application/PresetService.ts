@@ -46,11 +46,10 @@ export class PresetService {
 
 	public getEffectiveViewMode(): 'shared' | 'isolate' {
 		if (this.targetView !== 'auto') return this.targetView;
-		if (
-			this.plugin.settingsService.settings[
-				'__style_manager_always_shared_presets'
-			]
-		) {
+		const alwaysShared = this.plugin.settingsService.settings[
+			'__style_manager_always_shared_presets'
+		];
+		if (alwaysShared === undefined || alwaysShared === true) {
 			return 'shared';
 		}
 		return this.plugin.settingsService.isIsolateMode() ? 'isolate' : 'shared';

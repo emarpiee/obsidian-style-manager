@@ -73,11 +73,11 @@ export class PresetList {
 				const updateBtn = () => {
 					const mode = service.getEffectiveViewMode();
 					if (mode === 'isolate') {
-						btn.setIcon('globe');
-						btn.setTooltip('View shared presets');
+						btn.setIcon('eye');
+						btn.setTooltip('Hide isolated presets');
 					} else {
-						btn.setIcon('laptop');
-						btn.setTooltip('View isolated presets');
+						btn.setIcon('eye-closed');
+						btn.setTooltip('Show isolated presets');
 					}
 				};
 
@@ -109,7 +109,7 @@ export class PresetList {
 			})
 			.addExtraButton((btn) => {
 				btn
-					.setIcon('layers')
+					.setIcon('download')
 					.setTooltip('Import preset')
 					.onClick(() => {
 						new ImportPresetModal(plugin.app, plugin.presetService, () => {
@@ -271,9 +271,9 @@ export class PresetList {
 					this.renderPresetListItems();
 				} catch (err) {
 					console.error('Style Manager | Bulk export failed:', err);
-						plugin.settingsService.notifications.error(
-							`Export failed: ${err instanceof Error ? err.message : String(err)}`
-						);
+					plugin.settingsService.notifications.error(
+						`Export failed: ${err instanceof Error ? err.message : String(err)}`
+					);
 				}
 			};
 
@@ -335,7 +335,10 @@ export class PresetList {
 
 				const applyAll = async (isolate: boolean): Promise<void> => {
 					const performApply = async (): Promise<void> => {
-						await service.applyPresets(Array.from(service.selectedPresets), isolate);
+						await service.applyPresets(
+							Array.from(service.selectedPresets),
+							isolate
+						);
 						service.selectedPresets.clear();
 						this.onRefresh();
 					};
@@ -372,7 +375,10 @@ export class PresetList {
 						onApplyIsolate: async () => await applyAll(true),
 						onApplyRemote: async (deviceId: string) => {
 							const selectedIds = Array.from(service.selectedPresets);
-							await plugin.presetService.applyPresetsToLocker(deviceId, selectedIds);
+							await plugin.presetService.applyPresetsToLocker(
+								deviceId,
+								selectedIds
+							);
 							service.selectedPresets.clear();
 							this.renderPresetListItems();
 							plugin.settingsService.notifications.isolate(

@@ -196,7 +196,9 @@ export class SettingsHeaderComponent extends Component {
 		setTooltip(toggleBtn, label);
 		toggleBtn.onclick = async (): Promise<void> => {
 			const next = appearance === 'light' ? 'dark' : 'light';
-			this.plugin.settingsService.setSetting(APPEARANCE_KEY, next, { silentUI: true });
+			this.plugin.settingsService.setSetting(APPEARANCE_KEY, next, {
+				silentUI: true,
+			});
 			this.plugin.settingsService.applyAppearance(
 				next,
 				!this.plugin.settingsService.isIsolateMode()
@@ -260,7 +262,7 @@ export class SettingsHeaderComponent extends Component {
 			menu.addItem((item) => {
 				item
 					.setTitle('Import preset...')
-					.setIcon('layers')
+					.setIcon('download')
 					.onClick(() => {
 						new ImportPresetModal(this.app, this.plugin.presetService, () => {
 							this.options.onTabChange('presets');

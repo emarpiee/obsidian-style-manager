@@ -69,7 +69,7 @@ export class IsolateTab {
 		new Setting(isolateContainer)
 			.setName('Enable isolate mode')
 			.setDesc(
-				"Isolate style, theme modifications, enabled snippets to a private Locker for this device. When enabled, your local adjustments won't overwrite the shared configuration. (Preset, snippet and theme list remains shared)."
+				"Isolate style, theme modifications, enabled snippets to a private Locker for this device. When enabled, your local adjustments won't overwrite the shared configuration."
 			)
 			.addToggle((toggle) => {
 				toggle
@@ -90,7 +90,7 @@ export class IsolateTab {
 					.setValue(
 						(plugin.settingsService.settings[
 							'__style_manager_always_shared_presets'
-						] as boolean) || false
+						] as boolean) ?? true
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSetting(
