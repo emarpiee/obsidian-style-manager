@@ -108,12 +108,12 @@ export class IsolateModeService {
 
 		if (!enabled) {
 			await this.delegate.plugin.settingsService.refreshService.trigger(
-				RefreshLevel.SYSTEM_RELOAD
+				RefreshLevel.STYLES_ONLY
 			);
 		} else {
 			await this.delegate.plugin.settingsService.syncSnippetState();
 			this.delegate.plugin.settingsService.refreshService.trigger(
-				RefreshLevel.PARSE_CSS
+				RefreshLevel.STYLES_ONLY
 			);
 		}
 
@@ -230,7 +230,7 @@ export class IsolateModeService {
 		await this.delegate.save();
 		this.delegate.updateMerged();
 		await this.delegate.plugin.settingsService.refreshService.trigger(
-			RefreshLevel.SYSTEM_RELOAD
+			RefreshLevel.STYLES_ONLY
 		);
 		this.delegate.triggerGlobal('isolate-mode-changed');
 		this.delegate.triggerGlobal('device-lockers-updated');

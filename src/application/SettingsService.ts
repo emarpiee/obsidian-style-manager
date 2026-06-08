@@ -430,7 +430,7 @@ export class SettingsService extends Events {
 		await this.applySettingsUpdate(settings, { persistNative: !isIsolate });
 
 		if (!isIsolate) {
-			await this.refreshService.trigger(RefreshLevel.SYSTEM_RELOAD, {
+			await this.refreshService.trigger(RefreshLevel.STYLES_ONLY, {
 				skipAdopt: true,
 			});
 		}
