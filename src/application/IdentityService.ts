@@ -101,18 +101,19 @@ export class IdentityService {
 		deviceId: string,
 		data: Record<string, unknown>
 	): Promise<void> {
-		await this.applyPresetsToLocker(deviceId, [data]);
+		await this.updateLockerSettings(deviceId, data, true);
 	}
 
-	public async applyPresetsToLocker(
+	public async updateLockerSettings(
 		deviceId: string,
-		dataArray: Record<string, unknown>[]
+		settings: Record<string, unknown>,
+		overwrite: boolean = false
 	): Promise<void> {
 		const devices = this.adapter.getDevices();
 		if (devices && devices[deviceId]) {
 			const locker = devices[deviceId];
 
-			if (dataArray.length === 1) {
+			if (overwrite) {
 				Object.keys(locker.isolateSettings).forEach((key) => {
 					if (
 						key.includes('@@') ||
@@ -126,26 +127,7 @@ export class IdentityService {
 				});
 			}
 
-			const mergedData: Record<string, unknown> = {};
-			const mergedSnippets = new Set<string>();
-			let snippetsEncountered = false;
-
-			for (const data of dataArray) {
-				for (const [key, value] of Object.entries(data)) {
-					if (key === SNIPPETS_KEY && Array.isArray(value)) {
-						snippetsEncountered = true;
-						value.forEach((s) => mergedSnippets.add(s));
-					} else {
-						mergedData[key] = value;
-					}
-				}
-			}
-
-			if (snippetsEncountered) {
-				mergedData[SNIPPETS_KEY] = Array.from(mergedSnippets);
-			}
-
-			locker.isolateSettings = { ...locker.isolateSettings, ...mergedData };
+			locker.isolateSettings = { ...locker.isolateSettings, ...settings };
 			locker.isIsolateMode = true;
 			await this.adapter.save();
 			this.adapter.trigger('device-lockers-updated');

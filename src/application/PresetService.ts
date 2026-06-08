@@ -247,26 +247,12 @@ export class PresetService {
 		);
 	}
 
-	async applyPreset(
-		presetId: string,
-		isolateOnly: boolean = false
-	): Promise<void> {
-		await this.applyPresets([presetId], isolateOnly);
-	}
-
-	async applyPresets(
-		presetIds: string[],
-		isolateOnly: boolean = false
-	): Promise<void> {
+	private mergePresets(presetIds: string[]): { mergedData: Record<string, unknown>; isSingle: boolean } {
 		const selectedPresets = presetIds
 			.map((id) => this.presets.find((p) => p.id === id))
 			.filter((p): p is Preset => !!p);
 
-		if (selectedPresets.length === 0) return;
-
-		if (selectedPresets.length === 1) {
-			await this.plugin.settingsService.resetAllStyleSettings(isolateOnly);
-		}
+		const isSingle = selectedPresets.length === 1;
 
 		const mergedData: Record<string, unknown> = {};
 		const mergedSnippets = new Set<string>();
@@ -287,13 +273,35 @@ export class PresetService {
 			mergedData[SNIPPETS_KEY] = Array.from(mergedSnippets);
 		}
 
+		return { mergedData, isSingle };
+	}
+
+	async applyPreset(
+		presetId: string,
+		isolateOnly: boolean = false
+	): Promise<void> {
+		await this.applyPresets([presetId], isolateOnly);
+	}
+
+	async applyPresets(
+		presetIds: string[],
+		isolateOnly: boolean = false
+	): Promise<void> {
+		const { mergedData, isSingle } = this.mergePresets(presetIds);
+		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY]) return;
+
+		if (isSingle) {
+			await this.plugin.settingsService.resetAllStyleSettings(isolateOnly);
+		}
+
 		try {
 			await this.plugin.settingsService.applySettingsOverlay(
 				mergedData,
 				isolateOnly
 			);
+			const count = presetIds.length;
 			this.plugin.settingsService.notifications.preset(
-				`Applied ${selectedPresets.length} preset${selectedPresets.length > 1 ? 's' : ''}${isolateOnly ? ' (isolated)' : ''}.`
+				`Applied ${count} preset${count > 1 ? 's' : ''}${isolateOnly ? ' (isolated)' : ''}.`
 			);
 		} catch (e) {
 			console.error('Style Manager | Preset Error:', e);
@@ -301,6 +309,17 @@ export class PresetService {
 				'Failed to apply presets.'
 			);
 		}
+	}
+
+	async applyPresetsToLocker(deviceId: string, presetIds: string[]): Promise<void> {
+		const { mergedData, isSingle } = this.mergePresets(presetIds);
+		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY]) return;
+
+		await this.plugin.settingsService.identity.updateLockerSettings(
+			deviceId,
+			mergedData,
+			isSingle
+		);
 	}
 
 	public confirmApply(

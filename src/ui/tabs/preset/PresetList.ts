@@ -350,14 +350,7 @@ export class PresetList {
 						onApplyIsolate: async () => await applyAll(true),
 						onApplyRemote: async (deviceId: string) => {
 							const selectedIds = Array.from(service.selectedPresets);
-							const presetDataArray = selectedIds
-								.map((id) => service.presets.find((p) => p.id === id)?.data)
-								.filter((data): data is Record<string, unknown> => !!data);
-
-							await plugin.settingsService.identity.applyPresetsToLocker(
-								deviceId,
-								presetDataArray
-							);
+							await plugin.presetService.applyPresetsToLocker(deviceId, selectedIds);
 							service.selectedPresets.clear();
 							this.renderPresetListItems();
 							plugin.settingsService.notifications.isolate(
