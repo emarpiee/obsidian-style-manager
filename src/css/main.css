@@ -2091,7 +2091,7 @@ body.is-mobile .style-manager-editor-title-container {
 }
 
 .style-manager-plugin .single-color-wrapper {
-	background: gray;
+	background: var(--setting-items-background);
 	padding: var(--size-4-1) var(--size-4-2);
 	display: flex;
 	align-items: center;
