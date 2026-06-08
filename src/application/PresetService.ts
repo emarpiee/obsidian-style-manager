@@ -264,7 +264,24 @@ export class PresetService {
 
 		if (selectedPresets.length === 0) return;
 
-		const mergedData = Object.assign({}, ...selectedPresets.map((p) => p.data));
+		const mergedData: Record<string, unknown> = {};
+		const mergedSnippets = new Set<string>();
+		let snippetsEncountered = false;
+
+		for (const preset of selectedPresets) {
+			for (const [key, value] of Object.entries(preset.data)) {
+				if (key === SNIPPETS_KEY && Array.isArray(value)) {
+					snippetsEncountered = true;
+					value.forEach((s) => mergedSnippets.add(s));
+				} else {
+					mergedData[key] = value;
+				}
+			}
+		}
+
+		if (snippetsEncountered) {
+			mergedData[SNIPPETS_KEY] = Array.from(mergedSnippets);
+		}
 
 		try {
 			await this.plugin.settingsService.applySettingsOverlay(
