@@ -22,6 +22,7 @@ import {
 	ACCENT_COLOR_KEY,
 	APPEARANCE_KEY,
 	SNIPPETS_KEY,
+	STICKY_HEADING_KEY,
 	THEME_KEY,
 	SHOW_STATUS_BAR_KEY,
 	ENABLE_CONSOLE_LOGGING_KEY,
@@ -552,7 +553,7 @@ export class SettingsService extends Events {
 			key === APPEARANCE_KEY ||
 			key === ACCENT_COLOR_KEY ||
 			key === SNIPPETS_KEY ||
-			key === '__style_manager_sticky_heading'
+			key === STICKY_HEADING_KEY
 		);
 	}
 

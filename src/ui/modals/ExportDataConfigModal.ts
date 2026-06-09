@@ -19,6 +19,10 @@
 import { App, Modal, Setting } from 'obsidian';
 
 import StyleManagerPlugin from '../../main';
+import {
+	EXPORT_DATE_FORMAT_KEY,
+	EXPORT_EXTENSION_KEY,
+} from '../../constants';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
 
 /**
@@ -76,13 +80,13 @@ export class ExportDataConfigModal extends Modal {
 						a.href = url;
 						const timestamp = getFormattedTimestamp(
 							this.plugin.settingsService.settings[
-								'__style_manager_export_date_format'
+								EXPORT_DATE_FORMAT_KEY
 							] as string
 						);
 						const timestampPart = timestamp ? `-${timestamp}` : '';
 						const preferredExtension =
 							(this.plugin.settingsService.settings[
-								'__style_manager_export_extension'
+								EXPORT_EXTENSION_KEY
 							] as string) || '.json';
 
 						const safeName = this.title

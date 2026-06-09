@@ -23,9 +23,14 @@ import { addApplyOptionsToMenu } from './PresetMenuHelper';
 import {
 	ACCENT_COLOR_KEY,
 	APPEARANCE_KEY,
+	CREATED_DATE_FORMAT_KEY,
+	EXPORT_DATE_FORMAT_KEY,
+	EXPORT_EXTENSION_KEY,
+	SKIP_DELETE_CONFIRM_KEY,
+	SKIP_EXPORT_CONFIRM_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
-} from '../../../application/SettingsService';
+} from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { Preset } from '../../../types';
 import { formatPresetDate } from '../../../utils/CommonUtils';
@@ -64,14 +69,15 @@ export class PresetItem {
 			.setName(preset.name)
 			.setDesc(
 				`Created: ${
-					preset.created
-						? formatPresetDate(
+						preset.created
+							? formatPresetDate(
 								preset.created,
 								plugin.settingsService.settings[
-									'__style_manager_created_date_format'
+									CREATED_DATE_FORMAT_KEY
 								] as string
 							)
-						: 'Unknown Date'
+							: 'Unknown Date'
+
 				}`
 			);
 
@@ -167,7 +173,7 @@ export class PresetItem {
 									try {
 										const preferredExtension =
 											(plugin.settingsService.settings[
-												'__style_manager_export_extension'
+												EXPORT_EXTENSION_KEY
 											] as string) || '.json';
 
 										const extension: string = includeSnippets
@@ -180,7 +186,7 @@ export class PresetItem {
 										const timestamp =
 											plugin.presetService.getFormattedTimestamp(
 												plugin.settingsService.settings[
-													'__style_manager_export_date_format'
+													EXPORT_DATE_FORMAT_KEY
 												] as string
 											);
 										const timestampPart = timestamp ? `-${timestamp}` : '';
@@ -212,7 +218,7 @@ export class PresetItem {
 
 								const preferredExtension =
 									(plugin.settingsService.settings[
-										'__style_manager_export_extension'
+										EXPORT_EXTENSION_KEY
 									] as string) || '.json';
 
 								const snippetList =
@@ -247,7 +253,7 @@ export class PresetItem {
 								} else {
 									if (
 										plugin.settingsService.settings[
-											'__style_manager_skip_export_confirm'
+											SKIP_EXPORT_CONFIRM_KEY
 										]
 									) {
 										performExport(false);
@@ -289,7 +295,7 @@ export class PresetItem {
 
 								if (
 									plugin.settingsService.settings[
-										'__style_manager_skip_delete_confirm'
+										SKIP_DELETE_CONFIRM_KEY
 									]
 								) {
 									performDelete();

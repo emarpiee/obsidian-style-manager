@@ -22,10 +22,15 @@ import StyleManagerPlugin from '../main';
 import { PrefixMetadata, Preset } from '../types';
 import {
 	ACCENT_COLOR_KEY,
+	ALWAYS_SHARED_PRESETS_KEY,
 	APPEARANCE_KEY,
+	EXPORT_DATE_FORMAT_KEY,
+	EXPORT_EXTENSION_KEY,
+	EXPORT_PATH_KEY,
+	SKIP_APPLY_CONFIRM_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
-} from './SettingsService';
+} from '../constants';
 
 import { ConfirmModal } from '../ui/modals/ConfirmModal';
 import { getFormattedTimestamp } from '../utils/CommonUtils';
@@ -47,7 +52,7 @@ export class PresetService {
 	public getEffectiveViewMode(): 'shared' | 'isolate' {
 		if (this.targetView !== 'auto') return this.targetView;
 		const alwaysShared = this.plugin.settingsService.settings[
-			'__style_manager_always_shared_presets'
+			ALWAYS_SHARED_PRESETS_KEY
 		];
 		if (alwaysShared === undefined || alwaysShared === true) {
 			return 'shared';
@@ -84,7 +89,7 @@ export class PresetService {
 
 		const timestamp = getFormattedTimestamp(
 			this.plugin.settingsService.settings[
-				'__style_manager_export_date_format'
+				EXPORT_DATE_FORMAT_KEY
 			] as string
 		);
 		const timestampPart = timestamp ? `-${timestamp}` : '';
@@ -115,7 +120,7 @@ export class PresetService {
 	): Promise<void> {
 		let exportPath: string =
 			(this.plugin.settingsService.settings[
-				'__style_manager_export_path'
+				EXPORT_PATH_KEY
 			] as string) || '';
 
 		const isZip =
@@ -127,7 +132,7 @@ export class PresetService {
 		const extension: string = isZip
 			? '.zip'
 			: (this.plugin.settingsService.settings[
-					'__style_manager_export_extension'
+					EXPORT_EXTENSION_KEY
 				] as string) || '.json';
 
 		// Ensure filename has the correct extension
@@ -349,7 +354,7 @@ export class PresetService {
 		isolateOnly: boolean = false
 	): void {
 		if (
-			this.plugin.settingsService.settings['__style_manager_skip_apply_confirm']
+			this.plugin.settingsService.settings[SKIP_APPLY_CONFIRM_KEY]
 		) {
 			onConfirm();
 		} else {

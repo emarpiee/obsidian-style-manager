@@ -21,7 +21,7 @@ import { normalizePath } from 'obsidian';
 
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
-import { BACKUP_PATH_KEY } from '../constants';
+import { BACKUP_PATH_KEY, EXPORT_EXTENSION_KEY } from '../constants';
 
 /**
  * Service for managing full plugin backups, safety snapshots, and loop-free restores.
@@ -64,7 +64,7 @@ export class BackupService {
 		const settings = this.plugin.settingsService.sharedSettings;
 		const preferredExtension =
 			(this.plugin.settingsService.settings[
-				'__style_manager_export_extension'
+				EXPORT_EXTENSION_KEY
 			] as string) || '.json';
 
 		// 1. Add settings file (using a unique name for Shared Locker Backups)

@@ -20,7 +20,11 @@ import { App, Modal, Setting } from 'obsidian';
 
 import { PresetNamePromptModal } from './PresetNamePromptModal';
 
-import { THEME_KEY } from '../../application/SettingsService';
+import {
+	EXPORT_DATE_FORMAT_KEY,
+	EXPORT_EXTENSION_KEY,
+	THEME_KEY,
+} from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { Preset, SettingValue } from '../../types';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -80,13 +84,13 @@ export class SectionStyleModal extends Modal {
 					a.href = url;
 					const timestamp = getFormattedTimestamp(
 						this.plugin.settingsService.settings[
-							'__style_manager_export_date_format'
+							EXPORT_DATE_FORMAT_KEY
 						] as string
 					);
 					const timestampPart = timestamp ? `-${timestamp}` : '';
 					const preferredExtension =
 						(this.plugin.settingsService.settings[
-							'__style_manager_export_extension'
+							EXPORT_EXTENSION_KEY
 						] as string) || '.json';
 					a.download = `${this.section
 						.replace(/[^a-z0-9]/gi, '-')

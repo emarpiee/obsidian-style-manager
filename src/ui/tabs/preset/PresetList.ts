@@ -30,7 +30,12 @@ import { addApplyOptionsToMenu } from './PresetMenuHelper';
 
 import {
 	APPEARANCE_KEY,
+	EXPORT_DATE_FORMAT_KEY,
+	EXPORT_EXTENSION_KEY,
 	SEPARATE_BULK_PRESETS_KEY,
+	SKIP_APPLY_CONFIRM_KEY,
+	SKIP_DELETE_CONFIRM_KEY,
+	SKIP_EXPORT_CONFIRM_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from '../../../constants';
@@ -234,7 +239,7 @@ export class PresetList {
 
 			const preferredExtension =
 				(plugin.settingsService.settings[
-					'__style_manager_export_extension'
+					EXPORT_EXTENSION_KEY
 				] as string) || '.json';
 
 			const performExport = async (includeSnippets = false): Promise<void> => {
@@ -245,7 +250,7 @@ export class PresetList {
 
 					const timestamp = getFormattedTimestamp(
 						plugin.settingsService.settings[
-							'__style_manager_export_date_format'
+							EXPORT_DATE_FORMAT_KEY
 						] as string
 					);
 					const timestampPart = timestamp ? `-${timestamp}` : '';
@@ -311,7 +316,7 @@ export class PresetList {
 				).open();
 			} else {
 				if (
-					plugin.settingsService.settings['__style_manager_skip_export_confirm']
+					plugin.settingsService.settings[SKIP_EXPORT_CONFIRM_KEY]
 				) {
 					performExport(false);
 				} else {
@@ -345,7 +350,7 @@ export class PresetList {
 
 					if (
 						plugin.settingsService.settings[
-							'__style_manager_skip_apply_confirm'
+							SKIP_APPLY_CONFIRM_KEY
 						]
 					) {
 						performApply();
@@ -410,7 +415,7 @@ export class PresetList {
 				};
 
 				if (
-					plugin.settingsService.settings['__style_manager_skip_delete_confirm']
+					plugin.settingsService.settings[SKIP_DELETE_CONFIRM_KEY]
 				) {
 					performDelete();
 				} else {

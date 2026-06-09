@@ -23,6 +23,7 @@ import {
 	SettingsService,
 	THEME_KEY,
 } from '../application/SettingsService';
+import { EXPORT_PATH_KEY, LOCAL_FIRST_KEY } from '../constants';
 
 describe('SettingsService', () => {
 	let settingsService: SettingsService;
@@ -128,7 +129,7 @@ describe('SettingsService', () => {
 	it('should route global config to sharedSettings even when in Isolate Mode', async () => {
 		await settingsService.isolateModeService.setIsolateMode(true);
 
-		const configKey = '__style_manager_export_path';
+		const configKey = EXPORT_PATH_KEY;
 		const value = 'Presets';
 
 		await settingsService.setSettings({ [configKey]: value });
@@ -178,7 +179,7 @@ describe('SettingsService', () => {
 	});
 
 	it('should update visual state (CSS variables) when settings change', async () => {
-		settingsService.sharedSettings['__style_manager_local_first'] = false;
+		settingsService.sharedSettings[LOCAL_FIRST_KEY] = false;
 		(mockPlugin.app.vault.getConfig as any).mockReturnValue('old-theme');
 		await settingsService.setSetting(THEME_KEY, 'new-theme');
 
@@ -189,7 +190,7 @@ describe('SettingsService', () => {
 	});
 
 	it('should handle "default" theme correctly by passing empty string to setNativeConfig', async () => {
-		settingsService.sharedSettings['__style_manager_local_first'] = false;
+		settingsService.sharedSettings[LOCAL_FIRST_KEY] = false;
 		(mockPlugin.app.vault.getConfig as any).mockReturnValue('old-theme');
 		await settingsService.setSetting(THEME_KEY, 'default');
 

@@ -20,6 +20,7 @@ import { App, Menu, MenuItem, Setting } from 'obsidian';
 
 import {
 	ACCENT_COLOR_KEY,
+	ALWAYS_SHARED_PRESETS_KEY,
 	APPEARANCE_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
@@ -89,12 +90,12 @@ export class IsolateTab {
 				toggle
 					.setValue(
 						(plugin.settingsService.settings[
-							'__style_manager_always_shared_presets'
+							ALWAYS_SHARED_PRESETS_KEY
 						] as boolean) ?? true
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSetting(
-							'__style_manager_always_shared_presets',
+							ALWAYS_SHARED_PRESETS_KEY,
 							val
 						);
 						plugin.presetService.targetView = 'auto';

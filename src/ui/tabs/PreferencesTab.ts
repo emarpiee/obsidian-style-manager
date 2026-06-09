@@ -33,6 +33,14 @@ import {
 	SHOW_STATUS_BAR_KEY,
 	SHOW_UTILITY_NOTIFICATIONS_KEY,
 	STICKY_HEADING_KEY,
+	EXPORT_PATH_KEY,
+	EXPORT_EXTENSION_KEY,
+	EXPORT_DATE_FORMAT_KEY,
+	CREATED_DATE_FORMAT_KEY,
+	SKIP_APPLY_CONFIRM_KEY,
+	SKIP_DELETE_CONFIRM_KEY,
+	SKIP_EXPORT_CONFIRM_KEY,
+	SKIP_IMPORT_CONFIRM_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -278,7 +286,7 @@ export class PreferencesTab {
 			.addText((text) => {
 				const currentPath =
 					(plugin.settingsService.settings[
-						'__style_manager_export_path'
+						EXPORT_PATH_KEY
 					] as string) || '';
 				text
 					.setPlaceholder('Folder/Path')
@@ -286,7 +294,7 @@ export class PreferencesTab {
 					.onChange(
 						debounce(async (val) => {
 							await plugin.settingsService.setSettings(
-								{ __style_manager_export_path: val.trim() },
+								{ [EXPORT_PATH_KEY]: val.trim() },
 								{ silentUI: true }
 							);
 						}, 500)
@@ -306,12 +314,12 @@ export class PreferencesTab {
 					.addOption('.txt', '.txt')
 					.setValue(
 						(plugin.settingsService.settings[
-							'__style_manager_export_extension'
+							EXPORT_EXTENSION_KEY
 						] as string) || '.json'
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings({
-							__style_manager_export_extension: val,
+							[EXPORT_EXTENSION_KEY]: val,
 							silentUI: true,
 						});
 					});
@@ -327,14 +335,14 @@ export class PreferencesTab {
 					.setPlaceholder('YYYYMMDDHHmmss')
 					.setValue(
 						(plugin.settingsService.settings[
-							'__style_manager_export_date_format'
+							EXPORT_DATE_FORMAT_KEY
 						] as string) ?? 'YYYYMMDDHHmmss'
 					)
 					.onChange(
 						debounce(async (val) => {
 							const sanitized = val.replace(/[:/\\?%*|"<>]/g, '');
 							await plugin.settingsService.setSettings(
-								{ __style_manager_export_date_format: sanitized },
+								{ [EXPORT_DATE_FORMAT_KEY]: sanitized },
 								{ silentUI: true }
 							);
 						}, 500)
@@ -380,14 +388,14 @@ export class PreferencesTab {
 					.setPlaceholder('MMM. DD, YYYY')
 					.setValue(
 						(plugin.settingsService.settings[
-							'__style_manager_created_date_format'
+							CREATED_DATE_FORMAT_KEY
 						] as string) || 'MMM. DD, YYYY'
 					)
 					.onChange(
 						debounce(async (val) => {
 							await plugin.settingsService.setSettings(
 								{
-									__style_manager_created_date_format: val || 'MMM. DD, YYYY',
+									[CREATED_DATE_FORMAT_KEY]: val || 'MMM. DD, YYYY',
 								},
 								{ silentUI: true }
 							);
@@ -533,22 +541,22 @@ export class PreferencesTab {
 			desc: string;
 		}> = [
 			{
-				key: '__style_manager_skip_apply_confirm',
+				key: SKIP_APPLY_CONFIRM_KEY,
 				name: 'Skip apply confirmation',
 				desc: 'Instantly apply presets without showing the confirmation dialog.',
 			},
 			{
-				key: '__style_manager_skip_delete_confirm',
+				key: SKIP_DELETE_CONFIRM_KEY,
 				name: 'Skip delete confirmation',
 				desc: 'Instantly delete presets without showing the confirmation dialog.',
 			},
 			{
-				key: '__style_manager_skip_export_confirm',
+				key: SKIP_EXPORT_CONFIRM_KEY,
 				name: 'Skip export confirmation',
 				desc: 'Instantly export presets without showing the confirmation dialog.',
 			},
 			{
-				key: '__style_manager_skip_import_confirm',
+				key: SKIP_IMPORT_CONFIRM_KEY,
 				name: 'Skip import confirmation',
 				desc: 'Instantly import presets or styles without showing the confirmation dialog.',
 			},
