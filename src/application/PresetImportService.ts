@@ -96,30 +96,34 @@ export class PresetImportService {
 						}
 					}
 				} else {
-					// JSON Import
-					const parsed = JSON.parse(item.content);
+				// JSON Import
+				const parsed = JSON.parse(item.content);
 
-					if (Array.isArray(parsed)) {
-						// Bulk legacy array
-						parsed.forEach((p, idx) => {
-							analysis.presets.push({
-								id: crypto.randomUUID(),
-								name: p.name || `${item.name || 'Import'} ${idx + 1}`,
-								created: p.created || Date.now(),
-								data: p.data || p,
-								targetedPrefixes: p.targetedPrefixes,
-							});
-						});
-					} else {
-						// Single preset
+				if (Array.isArray(parsed)) {
+					// Bulk legacy array
+					parsed.forEach((p, idx) => {
 						analysis.presets.push({
 							id: crypto.randomUUID(),
-							name: parsed.name || item.name || 'Imported Preset',
-							created: parsed.created || Date.now(),
-							data: parsed.data || parsed,
-							targetedPrefixes: parsed.targetedPrefixes,
+							name: p.name || `${item.name || 'Import'} ${idx + 1}`,
+							created: p.created || Date.now(),
+							data: p.data || p,
+							targetedPrefixes: p.targetedPrefixes,
 						});
-					}
+					});
+				} else if (parsed && typeof parsed === 'object' && ('data' in parsed || 'name' in parsed)) {
+					// Single preset
+					analysis.presets.push({
+						id: crypto.randomUUID(),
+						name: parsed.name || item.name || 'Imported Preset',
+						created: parsed.created || Date.now(),
+						data: parsed.data || parsed,
+						targetedPrefixes: parsed.targetedPrefixes,
+					});
+				} else {
+					throw new Error(
+						'This file appears to be a FULL VAULT BACKUP. Please use the "Full Backup & Restore" section in the Preferences tab.'
+					);
+				}
 				}
 			} catch (e) {
 				this.plugin.settingsService.notifications.error(`Error analyzing ${item.name || 'import'}: ${e}`);
