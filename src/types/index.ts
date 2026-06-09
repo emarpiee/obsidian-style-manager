@@ -234,9 +234,19 @@ export interface PrefixMetadata {
 
 export type SettingValue = number | string | boolean | unknown;
 
+export interface PresetSchedule {
+	id: string;
+	presetId: string;
+	rruleString: string;
+	targetLocker: 'shared' | 'isolate' | string;
+	lastExecuted: number;
+	isPaused?: boolean;
+}
+
 export interface StyleManagerSettings {
 	[key: string]: SettingValue;
 	_manager_presets?: Preset[];
+	_manager_schedules?: PresetSchedule[];
 	__devices?: Record<
 		string,
 		{

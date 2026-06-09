@@ -1,0 +1,140 @@
+/*
+    Style Manager - Obsidian Plugin
+    Copyright (c) 2023 mgmeyers
+    Copyright (c) 2026 emarpiee
+
+    This program is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program. If not, see <https://www.gnu.org/licenses/>.
+*/
+import { RRule } from 'rrule';
+import StyleManagerPlugin from '../main';
+import { PresetSchedule } from '../types';
+
+export class PresetScheduleService {
+	plugin: StyleManagerPlugin;
+	private intervalId: number | null = null;
+
+	constructor(plugin: StyleManagerPlugin) {
+		this.plugin = plugin;
+	}
+
+	get schedules(): PresetSchedule[] {
+		return (
+			(this.plugin.settingsService.sharedSettings._manager_schedules as PresetSchedule[]) || []
+		);
+	}
+
+	set schedules(val: PresetSchedule[]) {
+		this.plugin.settingsService.setSettings(
+			{ _manager_schedules: val },
+			{ silentUI: true, target: 'shared' }
+		);
+	}
+
+	public start(): void {
+		if (this.intervalId !== null) return;
+		
+		// Check immediately on start
+		this.checkSchedules();
+		
+		// Then check every 5 seconds for better accuracy
+		this.intervalId = window.setInterval(() => {
+			this.checkSchedules();
+		}, 5 * 1000);
+	}
+
+	public stop(): void {
+		if (this.intervalId !== null) {
+			window.clearInterval(this.intervalId);
+			this.intervalId = null;
+		}
+	}
+
+	public getScheduleForPreset(presetId: string): PresetSchedule | undefined {
+		return this.schedules.find((s) => s.presetId === presetId);
+	}
+
+	public async addSchedule(schedule: PresetSchedule): Promise<void> {
+		const current = this.schedules;
+		current.push(schedule);
+		this.schedules = current;
+		await this.plugin.settingsService.save();
+	}
+
+	public async updateSchedule(schedule: PresetSchedule): Promise<void> {
+		const current = this.schedules;
+		const index = current.findIndex((s) => s.id === schedule.id);
+		if (index !== -1) {
+			current[index] = schedule;
+			this.schedules = current;
+			await this.plugin.settingsService.save();
+		}
+	}
+
+	public async deleteSchedule(id: string): Promise<void> {
+		this.schedules = this.schedules.filter((s) => s.id !== id);
+		await this.plugin.settingsService.save();
+	}
+
+	private async checkSchedules(): Promise<void> {
+		const now = new Date();
+		const currentSchedules = this.schedules;
+		let updated = false;
+
+		const getPretendUTC = (d: Date) => 
+			new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
+		
+		const nowPretendUTC = getPretendUTC(now);
+
+		for (const schedule of currentSchedules) {
+			if (schedule.isPaused) continue;
+			
+			try {
+				const rule = RRule.fromString(schedule.rruleString);
+				
+				const lastExecutedDate = schedule.lastExecuted 
+					? getPretendUTC(new Date(schedule.lastExecuted)) 
+					: new Date(nowPretendUTC.getTime() - 60000);
+				
+				const occurrences = rule.between(lastExecutedDate, nowPretendUTC, false);
+
+				if (occurrences.length > 0) {
+					// We have reached or passed the next designated time.
+					await this.executeSchedule(schedule);
+					schedule.lastExecuted = now.getTime();
+					updated = true;
+				}
+			} catch (err) {
+				console.error(`Style Manager | Error processing schedule ${schedule.id}:`, err);
+			}
+		}
+
+		if (updated) {
+			this.schedules = currentSchedules;
+			await this.plugin.settingsService.save();
+		}
+	}
+
+	private async executeSchedule(schedule: PresetSchedule): Promise<void> {
+		console.log(`Style Manager | Executing scheduled preset: ${schedule.presetId}`);
+		
+		if (schedule.targetLocker === 'shared') {
+			await this.plugin.presetService.applyPresets([schedule.presetId], false);
+		} else if (schedule.targetLocker === 'isolate') {
+			await this.plugin.presetService.applyPresets([schedule.presetId], true);
+		} else {
+			// Remote device locker
+			await this.plugin.presetService.applyPresetsToLocker(schedule.targetLocker, [schedule.presetId]);
+		}
+	}
+}

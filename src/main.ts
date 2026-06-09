@@ -38,6 +38,7 @@ import {
 import { BackupService } from './application/BackupService';
 import { BundleService } from './application/BundleService';
 import { PresetImportService } from './application/PresetImportService';
+import { PresetScheduleService } from './application/PresetScheduleService';
 import { PresetService } from './application/PresetService';
 import { SettingsService } from './application/SettingsService';
 import { StyleBlockService } from './application/StyleBlockService';
@@ -74,6 +75,7 @@ import { Logger } from './utils/Logger';
 export default class StyleManagerPlugin extends Plugin {
 	settingsService: SettingsService;
 	presetService: PresetService;
+	presetScheduleService: PresetScheduleService;
 	bundleService: BundleService;
 	presetImportService: PresetImportService;
 	backupService: BackupService;
@@ -105,6 +107,7 @@ export default class StyleManagerPlugin extends Plugin {
 	async onload(): Promise<void> {
 		this.settingsService = new SettingsService(this);
 		this.presetService = new PresetService(this);
+		this.presetScheduleService = new PresetScheduleService(this);
 		this.bundleService = new BundleService(this.settingsService.bridge);
 		this.presetImportService = new PresetImportService(this);
 		this.backupService = new BackupService(this);
@@ -426,6 +429,8 @@ export default class StyleManagerPlugin extends Plugin {
 					this.errorList
 				);
 			}
+
+			this.presetScheduleService.start();
 		});
 	}
 
@@ -647,6 +652,7 @@ export default class StyleManagerPlugin extends Plugin {
 
 	onunload(): void {
 		try {
+			this.presetScheduleService.stop();
 			clearTimeout(this.debounceTimer);
 			this.styleSheetManager.cleanup();
 			this.settingsService.cleanup();

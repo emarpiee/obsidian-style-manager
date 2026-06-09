@@ -20,6 +20,7 @@ import { Menu } from 'obsidian';
 
 import StyleManagerPlugin from '../../../main';
 import { DeviceSelectionModal } from '../../modals/DeviceSelectionModal';
+import { PresetScheduleModal } from '../../modals/PresetScheduleModal';
 
 /**
  * Data source for applying settings. Can be a Preset object or raw isolate data.
@@ -147,6 +148,18 @@ export function addApplyOptionsToMenu(
 							if (onApplied) onApplied();
 						}
 					).open();
+				})
+		);
+	}
+
+	if (source.id) {
+		menu.addSeparator();
+		menu.addItem((item) =>
+			item
+				.setTitle('Schedule preset')
+				.setIcon('calendar-clock')
+				.onClick(() => {
+					new PresetScheduleModal(plugin.app, plugin, source.id as string).open();
 				})
 		);
 	}

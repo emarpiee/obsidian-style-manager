@@ -45,6 +45,7 @@ import { getFormattedTimestamp } from '../../../utils/CommonUtils';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { CreatePresetModal } from '../../modals/CreatePresetModal';
 import { ImportPresetModal } from '../../modals/ImportPresetModal';
+import { ActiveSchedulesModal } from '../../modals/ActiveSchedulesModal';
 import {
 	handleItemSelection,
 	setupListKeybindings,
@@ -99,6 +100,14 @@ export class PresetList {
 					updateBtn();
 					this.renderPresetListItems();
 				});
+			})
+			.addExtraButton((btn) => {
+				btn
+					.setIcon('calendar-clock')
+					.setTooltip('Active Schedules')
+					.onClick(() => {
+						new ActiveSchedulesModal(plugin.app, plugin).open();
+					});
 			})
 			.addExtraButton((btn) => {
 				btn
