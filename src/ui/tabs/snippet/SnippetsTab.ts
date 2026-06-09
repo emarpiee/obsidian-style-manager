@@ -69,7 +69,7 @@ export class SnippetsTab {
 
 						const openModal = this.plugin.settingsService.settings[
 							OPEN_MODAL_ON_CREATE_KEY
-						] as boolean;
+						] !== false;
 						if (openModal) {
 							new CSSEditorModal(this.app, this.plugin, {
 								type: 'Snippet',

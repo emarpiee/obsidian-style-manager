@@ -101,6 +101,9 @@ body {
 	--sm-style-settings-container-border-size: 2px;
 	--sm-style-settings-item-border-color: var(--background-modifier-border);
 	--sm-style-settings-item-border-radius: var(--radius-m);
+	--sm-style-settings-item-gap: var(--size-4-3);
+	--sm-style-settings-padding: var(--size-4-3);
+	--sm-style-settings-margin: var(--size-4-3);
 
 	/* --- State/Mode Badge (.style-manager-badge-secondary) --- */
 	--sm-badge-secondary-bg-active: color-mix(
@@ -227,8 +230,9 @@ body {
 .style-manager-settings-tab-content .setting-item {
 	background: var(--setting-items-background);
 	outline: 1px solid var(--sm-style-settings-item-border-color);
-	padding: var(--size-4-2) !important;
+	padding: var(--sm-style-settings-margin) !important;
 	border-radius: var(--sm-style-settings-item-border-radius);
+	margin-bottom: var(--sm-style-settings-item-gap);
 }
 
 body.is-mobile .style-manager-settings-tab-content {
@@ -274,8 +278,9 @@ body.is-mobile .style-manager-plugin input[type='range']::-webkit-slider-thumb {
 
 .style-manager-style-settings-item {
 	border-radius: var(--sm-style-settings-item-border-radius);
-	padding: var(--size-4-2) !important;
-	margin: var(--size-4-2);
+	padding: var(--sm-style-settings-padding) !important;
+	margin: var(--sm-style-settings-margin);
+	margin-bottom: var(--sm-style-settings-item-gap);
 }
 
 body.is-mobile .style-manager-style-settings-item {

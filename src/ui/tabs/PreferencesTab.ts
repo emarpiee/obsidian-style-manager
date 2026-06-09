@@ -471,7 +471,7 @@ export class PreferencesTab {
 					.setValue(
 						(plugin.settingsService.settings[
 							OPEN_MODAL_ON_CREATE_KEY
-						] as boolean) || false
+						] as boolean) !== false
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
