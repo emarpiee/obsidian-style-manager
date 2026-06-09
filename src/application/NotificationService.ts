@@ -56,7 +56,7 @@ export class NotificationService {
 
 		switch (type) {
 			case NotificationType.SHARED:
-				show = settings[SHOW_SHARED_NOTIFICATIONS_KEY] !== false; // Default ON
+				show = settings[SHOW_SHARED_NOTIFICATIONS_KEY] === true; // Default OFF
 				break;
 			case NotificationType.PRESET:
 				show = settings[SHOW_PRESET_NOTIFICATIONS_KEY] !== false; // Default ON

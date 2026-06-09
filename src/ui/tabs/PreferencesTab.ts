@@ -623,8 +623,11 @@ export class PreferencesTab {
 				.setDesc(desc)
 				.addToggle((toggle) => {
 					toggle
-						// For SHOW_SHARED_NOTIFICATIONS_KEY we default to false, for others we default to true (unless explicitly false)
-						.setValue(plugin.settingsService.settings[key] !== false)
+						.setValue(
+								key === SHOW_SHARED_NOTIFICATIONS_KEY
+									? plugin.settingsService.settings[key] === true
+									: plugin.settingsService.settings[key] !== false
+							)
 						.onChange(async (val) => {
 							await plugin.settingsService.setSettings(
 								{ [key]: val },
