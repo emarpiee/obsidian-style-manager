@@ -92,7 +92,7 @@ body {
 	--sm-style-settings-container-border-color: var(--background-modifier-border);
 	--sm-style-settings-container-border-size: 2px;
 	--sm-style-settings-item-border-color: var(--background-modifier-border);
-	--sm-style-settings-item-border-radius: var(--radius-s);
+	--sm-style-settings-item-border-radius: var(--setting-items-radius);
 
 	/* --- State/Mode Badge (.style-manager-badge-secondary) --- */
 	--sm-badge-secondary-bg-active: color-mix(
@@ -156,7 +156,7 @@ body {
 	--sm-tab-color-hover: var(--text-accent);
 	--sm-tab-actions-bg: var(--setting-items-background);
 	--sm-tab-actions-border-color: var(--background-modifier-border);
-	--sm-tab-actions-border-radius: var(--radius-l);
+	--sm-tab-actions-border-radius: var(--setting-items-radius);
 	--sm-tab-actions-padding: 2px;
 
 	/* --- Modified Setting Indicator --- */
@@ -219,6 +219,8 @@ body {
 .style-manager-settings-tab-content .setting-item {
 	background: var(--setting-items-background);
 	outline: 1px solid var(--sm-style-settings-item-border-color);
+	padding: var(--size-4-2) !important;
+	border-radius: var(--sm-style-settings-item-border-radius);
 }
 
 /* NOTE: */
@@ -259,7 +261,8 @@ body.is-mobile .style-manager-plugin input[type='range']::-webkit-slider-thumb {
 }
 
 .style-manager-style-settings-item {
-	padding: var(--size-4-2);
+	border-radius: var(--sm-style-settings-item-border-radius);
+	padding: var(--size-4-2) !important;
 	margin: var(--size-4-2);
 }
 
@@ -340,16 +343,12 @@ body.is-phone .style-manager-plugin {
 	display: flex;
 	align-items: center;
 	overflow: hidden !important;
+	border: unset !important;
 }
 
-.style-manager-style-wrapper:not(:first-child) .style-manager-style-heading {
+.style-manager-style-wrapper .style-manager-style-heading {
 	border-top: var(--sm-heading-border-size) solid var(--sm-heading-border-color) !important;
 }
-.style-manager-style-wrapper:is(:last-child) {
-	border-bottom: var(--sm-heading-border-size) solid
-		var(--sm-heading-border-color) !important;
-}
-
 .style-manager-style-heading-description {
 	padding: 0 var(--size-4-2) var(--size-4-1);
 	font-size: var(--font-ui-smaller);
@@ -1111,7 +1110,6 @@ button.style-manager-icon-button {
 
 .style-manager-item-row {
 	flex-direction: row !important;
-	border-radius: var(--radius-s);
 }
 
 .style-manager-item-row.is-selected {
