@@ -53,6 +53,13 @@
 	}
 }
 
+@container (max-width: 500px) {
+	.style-manager-preset-item .setting-item-name {
+		gap: var(--size-4-1) !important;
+		flex-direction: column;
+	}
+}
+
 @container (max-width: 350px) {
 	.style-manager-tab-text,
 	.style-manager-theme-current-name {
@@ -1215,7 +1222,6 @@ button.style-manager-icon-button {
 .is-appearance-item,
 .is-snippets-item,
 .is-accent-item {
-	background: var(--background-secondary-alt);
 	border-left: 3px solid var(--text-accent);
 }
 
@@ -1327,6 +1333,11 @@ button.style-manager-icon-button {
 .is-mobile .style-manager-snippets-list.has-bulk-actions {
 	padding-bottom: 250px !important;
 	/* Large buffer for mobile vertical bars */
+}
+
+.style-manager-preset-item .setting-item-name {
+	display: flex;
+	gap: var(--size-4-2);
 }
 
 .style-manager-bulk-buttons {
@@ -1813,6 +1824,7 @@ body.is-phone
 	color: var(--text-faint);
 	font-size: 9px;
 	text-transform: uppercase;
+	white-space: nowrap;
 	letter-spacing: 0.05em;
 }
 
@@ -2046,10 +2058,6 @@ body.is-mobile .style-manager-editor-title-container {
 
 .style-manager-item-row.is-selected .style-manager-item-select-icon {
 	color: var(--interactive-accent);
-}
-
-.style-manager-modal-textarea {
-	width: 100%;
 }
 
 .style-manager-hidden {
