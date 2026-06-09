@@ -93,7 +93,7 @@ body {
 	--sm-style-settings-container-border-color: var(--background-modifier-border);
 	--sm-style-settings-container-border-size: 2px;
 	--sm-style-settings-item-border-color: var(--background-modifier-border);
-	--sm-style-settings-item-border-radius: var(--setting-items-radius);
+	--sm-style-settings-item-border-radius: var(--radius-m);
 
 	/* --- State/Mode Badge (.style-manager-badge-secondary) --- */
 	--sm-badge-secondary-bg-active: color-mix(
@@ -157,7 +157,7 @@ body {
 	--sm-tab-color-hover: var(--text-accent);
 	--sm-tab-actions-bg: var(--setting-items-background);
 	--sm-tab-actions-border-color: var(--background-modifier-border);
-	--sm-tab-actions-border-radius: var(--setting-items-radius);
+	--sm-tab-actions-border-radius: var(--radius-l);
 	--sm-tab-actions-padding: 2px;
 
 	/* --- Modified Setting Indicator --- */
@@ -222,6 +222,10 @@ body {
 	outline: 1px solid var(--sm-style-settings-item-border-color);
 	padding: var(--size-4-2) !important;
 	border-radius: var(--sm-style-settings-item-border-radius);
+}
+
+body.is-mobile .style-manager-settings-tab-content {
+	padding: var(--size-4-2) !important;
 }
 
 /* NOTE: */
@@ -588,8 +592,8 @@ body.is-phone .style-manager-plugin {
 /* } */
 
 .style-manager-style-settings-container {
-	margin-left: var(--size-4-2);
-	padding-left: var(--size-4-2);
+	margin-left: var(--size-4-2) !important;
+	padding-left: var(--size-4-2) !important;
 	border-left: var(--sm-style-settings-container-border-size) solid
 		var(--sm-style-settings-container-border-color);
 }
@@ -604,6 +608,7 @@ body.is-phone .style-manager-plugin {
 	.setting-item:not(.style-manager-style-heading) {
 	outline: 1px solid var(--sm-style-settings-item-border-color);
 	border-radius: var(--sm-style-settings-item-border-radius);
+	padding: var(--size-4-2) !important;
 }
 
 .style-manager-style-settings-container .setting-item:last-child {
