@@ -90,13 +90,19 @@ export class StylesTab {
 			})
 			.addExtraButton((btn) => {
 				btn
-					.setIcon('list-filter')
+					.setIcon('square-dot')
 					.setTooltip('Show modified only')
 					.onClick(() => {
 						this.deps.onToggleModifiedOnly();
-						btn.extraSettingsEl.toggleClass('is-active', this.deps.showModifiedOnly);
+						btn.extraSettingsEl.toggleClass(
+							'is-active',
+							this.deps.showModifiedOnly
+						);
 					});
-				btn.extraSettingsEl.toggleClass('is-active', this.deps.showModifiedOnly);
+				btn.extraSettingsEl.toggleClass(
+					'is-active',
+					this.deps.showModifiedOnly
+				);
 			})
 			.addExtraButton((btn) => {
 				btn
