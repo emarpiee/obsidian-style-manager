@@ -147,4 +147,11 @@ export abstract class AbstractSettingComponent extends Component {
 			this.setting.id
 		) !== undefined;
 	}
+
+	/**
+	 * Returns the number of results this component represents.
+	 */
+	getMatchCount(showModifiedOnly: boolean): number {
+		return 1;
+	}
 }

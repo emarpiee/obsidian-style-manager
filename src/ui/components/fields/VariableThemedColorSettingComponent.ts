@@ -367,6 +367,20 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 		return valueLight !== undefined || valueDark !== undefined;
 	}
 
+	getMatchCount(showModifiedOnly: boolean): number {
+		if (showModifiedOnly) {
+			let count = 0;
+			const idLight = `${this.setting.id}@@light`;
+			const idDark = `${this.setting.id}@@dark`;
+
+			if (this.settingsService.getSetting(this.sectionId, idLight) !== undefined) count++;
+			if (this.settingsService.getSetting(this.sectionId, idDark) !== undefined) count++;
+
+			return count > 0 ? count : 1; // Fallback to 1 if it matched via text search instead
+		}
+		return 1;
+	}
+
 	/**
 	 * Adds or removes the 'is-modified' class based on whether the themed colors are customized.
 	 */

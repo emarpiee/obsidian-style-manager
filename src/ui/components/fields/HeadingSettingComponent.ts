@@ -405,7 +405,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 				
 				if (matchesText && matchesModified) {
 					this.filteredChildren.push(child);
-					this.filterResultCount += 1;
+					this.filterResultCount += child.getMatchCount(showModifiedOnly);
 				}
 			}
 		}
