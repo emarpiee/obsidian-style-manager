@@ -45,6 +45,10 @@ import { getFormattedTimestamp } from '../../../utils/CommonUtils';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { CreatePresetModal } from '../../modals/CreatePresetModal';
 import { ImportPresetModal } from '../../modals/ImportPresetModal';
+import {
+	handleItemSelection,
+	setupListKeybindings,
+} from '../../../utils/UIUtils';
 
 export class PresetList {
 	private listContainer: HTMLElement;
@@ -135,16 +139,13 @@ export class PresetList {
 		);
 		this.listContainer.tabIndex = 0;
 
-		this.listContainer.addEventListener('keydown', (e) => {
-			if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
-				e.preventDefault();
-				const filteredPresets = this.filterPresets(
-					service.presets,
-					service.presetSearchQuery
-				);
-				filteredPresets.forEach((p) => service.selectedPresets.add(p.id));
-				this.renderPresetListItems();
-			}
+		setupListKeybindings({
+			container: this.listContainer,
+			getItems: () =>
+				this.filterPresets(service.presets, service.presetSearchQuery),
+			getId: (p) => p.id,
+			selectedIds: service.selectedPresets,
+			onSelectionChange: () => this.renderPresetListItems(),
 		});
 
 		this.renderPresetListItems();
@@ -446,23 +447,23 @@ export class PresetList {
 		forceToggle: boolean = false
 	): void {
 		const service = this.plugin.presetService;
-		const lastIndex = service.lastSelectedIndex ?? null;
-
-		if (e.shiftKey && lastIndex !== null) {
-			const start = Math.min(lastIndex, index);
-			const end = Math.max(lastIndex, index);
-			for (let i = start; i <= end; i++) {
-				service.selectedPresets.add(this.filteredPresets[i].id);
-			}
-		} else if (e.ctrlKey || e.metaKey || forceToggle) {
-			if (service.selectedPresets.has(preset.id)) {
-				service.selectedPresets.delete(preset.id);
-			} else {
-				service.selectedPresets.add(preset.id);
-			}
-			service.lastSelectedIndex = index;
-		}
-		this.renderPresetListItems();
+		handleItemSelection(
+			e,
+			index,
+			preset,
+			{
+				container: this.listContainer,
+				getItems: () => this.filteredPresets,
+				getId: (p) => p.id,
+				selectedIds: service.selectedPresets,
+				lastSelectedIndexGetter: () => service.lastSelectedIndex ?? null,
+				lastSelectedIndexSetter: (idx) => {
+					service.lastSelectedIndex = idx;
+				},
+				onSelectionChange: () => this.renderPresetListItems(),
+			},
+			forceToggle
+		);
 	}
 
 	private filterPresets(presets: Preset[], query: string): Preset[] {

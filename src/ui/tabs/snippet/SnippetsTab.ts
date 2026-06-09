@@ -24,6 +24,10 @@ import { OPEN_MODAL_ON_CREATE_KEY, SNIPPETS_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
+import {
+	handleItemSelection,
+	setupListKeybindings,
+} from '../../../utils/UIUtils';
 
 /**
  * Renders the Snippets tab: search, folder actions, and the list of snippets.
@@ -104,8 +108,31 @@ export class SnippetsTab {
 		this.listContainer = this.containerEl.createDiv(
 			'style-manager-snippets-list'
 		);
+		this.listContainer.tabIndex = 0;
+
+		setupListKeybindings({
+			container: this.listContainer,
+			getItems: () => this.getVisibleSnippets(),
+			getId: (id) => id,
+			selectedIds: this.plugin.selectedSnippets,
+			onSelectionChange: () => this.onRerender(),
+		});
+
 		this.renderSnippetList();
 		this.renderBulkActions();
+	}
+
+	private getVisibleSnippets(): string[] {
+		// Wait, snippetComponents has setting which might be undefined if not rendered yet,
+		// but since we only call this after rendering, it's fine.
+		return this.snippetComponents
+			.filter((comp) => {
+				// The component has a setVisibility method that toggles the settingEl
+				// We can check the DOM node's style.display
+				const el = (comp as unknown as { setting: { settingEl: HTMLElement } }).setting?.settingEl;
+				return el && el.style.display !== 'none';
+			})
+			.map((comp) => comp.snippetId);
 	}
 
 	private renderSnippetList(): void {
@@ -206,28 +233,29 @@ export class SnippetsTab {
 		index: number,
 		forceToggle?: boolean
 	): void {
-		if (e.shiftKey && this.plugin.lastSnippetSelectedIndex !== null) {
-			const start = Math.min(this.plugin.lastSnippetSelectedIndex, index);
-			const end = Math.max(this.plugin.lastSnippetSelectedIndex, index);
+		const customCss = (
+			this.app as unknown as { customCss?: { snippets?: string[] } }
+		).customCss;
+		const snippets = customCss.snippets || [];
 
-			const customCss = (
-				this.app as unknown as { customCss?: { snippets?: string[] } }
-			).customCss;
-			const snippets = customCss.snippets || [];
-
-			for (let i = start; i <= end; i++) {
-				this.plugin.selectedSnippets.add(snippets[i]);
-			}
-		} else if (e.ctrlKey || e.metaKey || forceToggle) {
-			if (this.plugin.selectedSnippets.has(id)) {
-				this.plugin.selectedSnippets.delete(id);
-			} else {
-				this.plugin.selectedSnippets.add(id);
-			}
-			this.plugin.lastSnippetSelectedIndex = index;
-		}
-
-		this.onRerender();
+		handleItemSelection(
+			e,
+			index,
+			id,
+			{
+				container: this.listContainer,
+				getItems: () => snippets,
+				getId: (s) => s,
+				selectedIds: this.plugin.selectedSnippets,
+				lastSelectedIndexGetter: () =>
+					this.plugin.lastSnippetSelectedIndex ?? null,
+				lastSelectedIndexSetter: (idx) => {
+					this.plugin.lastSnippetSelectedIndex = idx;
+				},
+				onSelectionChange: () => this.onRerender(),
+			},
+			forceToggle
+		);
 	}
 
 	private renderBulkActions(): void {
@@ -247,11 +275,10 @@ export class SnippetsTab {
 		const actions = bulkContainer.createDiv('style-manager-bulk-buttons');
 
 		new ButtonComponent(actions).setButtonText('Select all').onClick(() => {
-			const customCss = (
-				this.app as unknown as { customCss?: { snippets?: string[] } }
-			).customCss;
-			const snippets = customCss.snippets || [];
-			snippets.forEach((id: string) => this.plugin.selectedSnippets.add(id));
+			const visibleSnippets = this.getVisibleSnippets();
+			visibleSnippets.forEach((id: string) =>
+				this.plugin.selectedSnippets.add(id)
+			);
 			this.onRerender();
 		});
 

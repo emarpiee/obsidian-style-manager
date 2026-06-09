@@ -90,6 +90,7 @@ export class StyleManagerLayoutRenderer extends Component {
 
 	onunload(): void {
 		this.cleanup();
+		this.clearSelections();
 		this.settingsComponentTrees = [];
 	}
 
@@ -111,9 +112,15 @@ export class StyleManagerLayoutRenderer extends Component {
 
 	public openTab(tab: ActiveTab): void {
 		if (this.activeTab !== tab) {
+			this.clearSelections();
 			this.activeTab = tab;
 			this.rerender(false);
 		}
+	}
+
+	private clearSelections(): void {
+		this.plugin.presetService.selectedPresets.clear();
+		this.plugin.selectedSnippets.clear();
 	}
 
 	setSettings(settings: ParsedCSSSettings[], errorList: ErrorList): void {
