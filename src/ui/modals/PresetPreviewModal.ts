@@ -18,6 +18,8 @@
 */
 import { App, Menu, Modal, Setting } from 'obsidian';
 
+import { PresetScheduleModal } from './PresetScheduleModal';
+
 import StyleManagerPlugin from '../../main';
 import { Preset } from '../../types';
 import { addApplyOptionsToMenu } from '../tabs/preset/PresetMenuHelper';
@@ -58,6 +60,19 @@ export class PresetPreviewModal extends Modal {
 						'Settings copied to clipboard!'
 					);
 				})
+			)
+			.addButton((btn) =>
+				btn
+					.setButtonText('Schedule')
+					.setCta()
+					.onClick(() => {
+						this.close();
+						new PresetScheduleModal(
+							this.plugin.app,
+							this.plugin,
+							this.preset.id
+						).open();
+					})
 			)
 			.addButton((btn) =>
 				btn
