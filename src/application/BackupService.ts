@@ -19,9 +19,9 @@
 import JSZip from 'jszip';
 import { normalizePath } from 'obsidian';
 
+import { BACKUP_PATH_KEY, EXPORT_EXTENSION_KEY } from '../constants';
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
-import { BACKUP_PATH_KEY, EXPORT_EXTENSION_KEY } from '../constants';
 
 /**
  * Service for managing full plugin backups, safety snapshots, and loop-free restores.
@@ -50,7 +50,9 @@ export class BackupService {
 				'Safety snapshot created (data.json.bak)'
 			);
 		} else {
-			this.plugin.settingsService.notifications.error('Failed to create snapshot.');
+			this.plugin.settingsService.notifications.error(
+				'Failed to create snapshot.'
+			);
 		}
 		return success;
 	}
@@ -63,9 +65,8 @@ export class BackupService {
 		const zip = new JSZip();
 		const settings = this.plugin.settingsService.sharedSettings;
 		const preferredExtension =
-			(this.plugin.settingsService.settings[
-				EXPORT_EXTENSION_KEY
-			] as string) || '.json';
+			(this.plugin.settingsService.settings[EXPORT_EXTENSION_KEY] as string) ||
+			'.json';
 
 		// 1. Add settings file (using a unique name for Shared Locker Backups)
 		zip.file(
@@ -105,7 +106,8 @@ export class BackupService {
 		}
 
 		// 3. Add themes folder (all installed themes)
-		const installedThemes = this.plugin.settingsService.bridge.getInstalledThemes();
+		const installedThemes =
+			this.plugin.settingsService.bridge.getInstalledThemes();
 		if (installedThemes.length > 0) {
 			const themesFolder = zip.folder('themes');
 			if (themesFolder) {
@@ -114,7 +116,9 @@ export class BackupService {
 						const cssContent =
 							await this.plugin.settingsService.bridge.readThemeCss(themeName);
 						const manifestContent =
-							await this.plugin.settingsService.bridge.readThemeManifest(themeName);
+							await this.plugin.settingsService.bridge.readThemeManifest(
+								themeName
+							);
 						if (cssContent !== null || manifestContent !== null) {
 							const specificThemeFolder = themesFolder.folder(themeName);
 							if (specificThemeFolder) {
@@ -177,11 +181,11 @@ export class BackupService {
 				if (!manifestFile) {
 					if (isPresetBundle) {
 						throw new Error(
-							'This is a PRESET bundle. Please import it from the Presets tab instead of the Backup section.'
+							'Invalid backup file: The file appears to be a preset bundle file.'
 						);
 					}
 					throw new Error(
-						'Invalid Backup: The file is missing the shared_locker_manifest.json signature.'
+						'Invalid backup file: The file is missing the shared_locker_manifest.json signature.'
 					);
 				}
 
@@ -221,7 +225,9 @@ export class BackupService {
 					for (const themeName of themeNames) {
 						const themeFiles: { filename: string; content: string }[] = [];
 						const cssFile = themesFolder.file(`${themeName}/theme.css`);
-						const themeManifestFile = themesFolder.file(`${themeName}/manifest.json`);
+						const themeManifestFile = themesFolder.file(
+							`${themeName}/manifest.json`
+						);
 						if (cssFile) {
 							const content = await cssFile.async('string');
 							themeFiles.push({ filename: 'theme.css', content });
@@ -259,9 +265,14 @@ export class BackupService {
 
 			// SMART DETECTION: If the user is trying to restore a Preset as a Full Backup (legacy or single file),
 			// we should warn them or handle it gracefully.
-			if (Array.isArray(newSettings) || (newSettings && typeof newSettings === 'object' && 'data' in newSettings)) {
+			if (
+				Array.isArray(newSettings) ||
+				(newSettings &&
+					typeof newSettings === 'object' &&
+					'data' in newSettings)
+			) {
 				throw new Error(
-					'This file appears to be a PRESET (single or bulk). To restore your entire vault, please use a Full Backup file, or import presets from the Presets tab.'
+					'Invalid backup file: This appears to be a preset file.'
 				);
 			}
 
@@ -318,7 +329,7 @@ export class BackupService {
 			);
 
 			this.plugin.settingsService.notifications.shared(
-				'Full Restore successful. Loop protection enabled.'
+				'Restore completed successfully.'
 			);
 			return true;
 		} catch (e) {
@@ -334,7 +345,10 @@ export class BackupService {
 	 * Saves a backup ZIP to the vault using backup-specific location settings.
 	 * Defaults to vault root. Does NOT read from preset export settings.
 	 */
-	public async saveBackupToVault(filename: string, data: Uint8Array): Promise<void> {
+	public async saveBackupToVault(
+		filename: string,
+		data: Uint8Array
+	): Promise<void> {
 		const settings = this.plugin.settingsService.settings;
 
 		// Resolve backup path from backup-specific key only; empty = vault root
@@ -361,6 +375,8 @@ export class BackupService {
 		}
 
 		await bridge.createFile(fullPath, data);
-		this.plugin.settingsService.notifications.preset(`Backup saved: ${fullPath}`);
+		this.plugin.settingsService.notifications.preset(
+			`Backup saved: ${fullPath}`
+		);
 	}
 }
