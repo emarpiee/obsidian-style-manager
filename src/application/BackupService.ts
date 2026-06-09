@@ -259,9 +259,9 @@ export class BackupService {
 
 			// SMART DETECTION: If the user is trying to restore a Preset as a Full Backup (legacy or single file),
 			// we should warn them or handle it gracefully.
-			if (newSettings.data && newSettings.id && newSettings.name) {
+			if (Array.isArray(newSettings) || (newSettings && typeof newSettings === 'object' && 'data' in newSettings)) {
 				throw new Error(
-					'This file appears to be a single PRESET. To restore your entire vault, please use a Full Backup file.'
+					'This file appears to be a PRESET (single or bulk). To restore your entire vault, please use a Full Backup file, or import presets from the Presets tab.'
 				);
 			}
 
