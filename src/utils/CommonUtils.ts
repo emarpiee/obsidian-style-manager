@@ -70,7 +70,27 @@ export function sanitizeText(str: string): string {
 		return `""`;
 	}
 
-	return str.replace(/[;<>]/g, '');
+	let sanitized = str.replace(/[;<>]/g, '');
+
+	// Balance quotes to prevent CSS syntax errors / Obsidian crash during typing
+	const singleQuotes = (sanitized.match(/'/g) || []).length;
+	const doubleQuotes = (sanitized.match(/"/g) || []).length;
+
+	if (singleQuotes % 2 !== 0) {
+		sanitized += "'";
+	}
+	if (doubleQuotes % 2 !== 0) {
+		sanitized += '"';
+	}
+
+	// Balance url( without closing )
+	const openUrl = (sanitized.match(/url\(/g) || []).length;
+	const closeUrl = (sanitized.match(/\)/g) || []).length;
+	if (openUrl > closeUrl) {
+		sanitized += ')'.repeat(openUrl - closeUrl);
+	}
+
+	return sanitized;
 }
 
 export function getFormattedTimestamp(
