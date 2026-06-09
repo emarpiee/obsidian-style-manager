@@ -106,6 +106,10 @@ export class IsolateModeService {
 		if (currentAccent)
 			this.delegate.applyAccentColor(currentAccent as string, !enabled);
 
+		const currentSnippets =
+			(this.delegate.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+		await this.delegate.plugin.settingsService.applySnippets(currentSnippets, enabled);
+
 		if (!enabled) {
 			await this.delegate.plugin.settingsService.refreshService.trigger(
 				RefreshLevel.STYLES_ONLY

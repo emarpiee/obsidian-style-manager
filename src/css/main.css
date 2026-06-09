@@ -259,6 +259,7 @@ body.is-mobile .style-manager-plugin input[type='range']::-webkit-slider-thumb {
 }
 
 .style-manager-style-settings-item {
+	padding: var(--size-4-2);
 	margin: var(--size-4-2);
 }
 

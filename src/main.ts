@@ -332,10 +332,8 @@ export default class StyleManagerPlugin extends Plugin {
 				if (data?.source !== 'style-manager') {
 					this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS);
 
-					if (
-						!this.settingsService.isApplyingTheme &&
-						!this.settingsService.isIsolateMode()
-					) {
+					if (!this.settingsService.isApplyingTheme) {
+						const isIsolate = this.settingsService.isIsolateMode();
 						const currentEnabled =
 							this.settingsService.bridge.getEnabledSnippets();
 						const lockerEnabled =
@@ -346,10 +344,11 @@ export default class StyleManagerPlugin extends Plugin {
 
 						if (currentString !== lockerString) {
 							Logger.log(
-								'Style Manager | Snippets: Adopting native snippet change.'
+								`Style Manager | Snippets: Adopting native snippet change (${isIsolate ? 'isolate' : 'shared'}).`
 							);
 							this.settingsService.setSetting(SNIPPETS_KEY, currentEnabled, {
 								silentUI: false,
+								target: isIsolate ? 'isolate' : 'shared',
 							});
 						}
 					}
