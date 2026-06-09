@@ -23,6 +23,7 @@ import {
 	APPEARANCE_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
+	SHOW_STATUS_BAR_KEY,
 	ENABLE_CONSOLE_LOGGING_KEY,
 } from '../constants';
 import { Logger } from '../utils/Logger';
@@ -724,6 +725,10 @@ export class SettingsService extends Events {
 		}
 
 		if (hasStyleChange && !isSnippetOnly) {
+			this.trigger('refresh-status-bar');
+		}
+
+		if (updates[SHOW_STATUS_BAR_KEY] !== undefined) {
 			this.trigger('refresh-status-bar');
 		}
 
