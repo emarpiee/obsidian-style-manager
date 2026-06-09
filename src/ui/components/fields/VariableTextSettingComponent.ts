@@ -57,33 +57,38 @@ export class VariableTextSettingComponent extends AbstractSettingComponent {
 				this.setting.id
 			);
 
-			const onChange = debounce(
-				(value: string) => {
-					const sanitizedValue = sanitizeText(value);
-					if (sanitizedValue === this.setting.default) {
-						this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-							silentUI: true,
-						});
-					} else {
-						this.settingsService.setSetting(
-							this.sectionId,
-							this.setting.id,
-							sanitizedValue,
-							{ silentUI: true }
-						);
-					}
-					this.updateModifiedClass();
-				},
-				250,
-				true
-			);
+			const onCommit = (value: string) => {
+				const sanitizedValue = sanitizeText(value);
+				if (sanitizedValue === this.setting.default) {
+					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+						silentUI: true,
+					});
+				} else {
+					this.settingsService.setSetting(
+						this.sectionId,
+						this.setting.id,
+						sanitizedValue,
+						{ silentUI: true }
+					);
+				}
+				this.updateModifiedClass();
+			};
 
 			if (this.setting.quotes && value === `""`) {
 				value = ``;
 			}
 
 			text.setValue(value ? value.toString() : this.setting.default);
-			text.onChange(onChange);
+			
+			text.inputEl.addEventListener('blur', () => {
+				onCommit(text.getValue());
+			});
+
+			text.inputEl.addEventListener('keydown', (e: KeyboardEvent) => {
+				if (e.key === 'Enter') {
+					onCommit(text.getValue());
+				}
+			});
 
 			this.textComponent = text;
 		});

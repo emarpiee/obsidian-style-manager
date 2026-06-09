@@ -52,33 +52,38 @@ export class VariableNumberSettingComponent extends AbstractSettingComponent {
 				this.sectionId,
 				this.setting.id
 			);
-			const onChange = debounce(
-				(value: string) => {
-					const isFloat = /\./.test(value);
-					const numValue = isFloat ? parseFloat(value) : parseInt(value, 10);
+			const onCommit = (value: string) => {
+				const isFloat = /\./.test(value);
+				const numValue = isFloat ? parseFloat(value) : parseInt(value, 10);
 
-					if (numValue === this.setting.default) {
-						this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-							silentUI: true,
-						});
-					} else {
-						this.settingsService.setSetting(
-							this.sectionId,
-							this.setting.id,
-							numValue,
-							{ silentUI: true }
-						);
-					}
-					this.updateModifiedClass();
-				},
-				250,
-				true
-			);
+				if (numValue === this.setting.default) {
+					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+						silentUI: true,
+					});
+				} else {
+					this.settingsService.setSetting(
+						this.sectionId,
+						this.setting.id,
+						numValue,
+						{ silentUI: true }
+					);
+				}
+				this.updateModifiedClass();
+			};
 
 			text.setValue(
 				value !== undefined ? value.toString() : this.setting.default.toString()
 			);
-			text.onChange(onChange);
+			
+			text.inputEl.addEventListener('blur', () => {
+				onCommit(text.getValue());
+			});
+
+			text.inputEl.addEventListener('keydown', (e: KeyboardEvent) => {
+				if (e.key === 'Enter') {
+					onCommit(text.getValue());
+				}
+			});
 
 			this.textComponent = text;
 		});
