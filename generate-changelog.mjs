@@ -51,7 +51,7 @@ try {
 				console.log(
 					`📍 HEAD is at ${latestTag} (First Tag). Fetching recent history...`
 				);
-				commits = execSync(`git log ${latestTag} -n 20 ${formatStr}`, {
+				commits = execSync(`git log ${latestTag} -n 500 ${formatStr}`, {
 					encoding: 'utf8',
 				}).trim();
 			}
