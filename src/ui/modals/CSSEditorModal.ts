@@ -56,7 +56,7 @@ import {
 } from '@codemirror/view';
 import { App, Menu, Modal, Setting, TextComponent } from 'obsidian';
 
-import { EDITOR_TAB_SIZE_KEY } from '../../constants';
+import { EDITOR_TAB_SIZE_KEY, SNIPPETS_KEY } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { RefreshLevel } from '../../types';
 
@@ -326,10 +326,29 @@ export class CSSEditorModal extends Modal {
 						})
 				);
 		} else {
+			if (this.source.type === 'Snippet') {
+				const currentEnabled =
+					(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+				const isEnabled = currentEnabled.includes(this.source.id);
+				mainBtnsSetting.addToggle((toggle) => {
+					toggle.setValue(isEnabled).onChange(async (value) => {
+						const snippets = new Set(
+							(this.plugin.settingsService.settings[
+								SNIPPETS_KEY
+							] as string[]) || []
+						);
+						if (value) snippets.add(this.source.id);
+						else snippets.delete(this.source.id);
+
+						const list = Array.from(snippets);
+						await this.plugin.settingsService.setSetting(SNIPPETS_KEY, list, {
+							silentUI: true,
+						});
+					});
+				});
+			}
+
 			mainBtnsSetting
-				.addButton((btn) =>
-					btn.setButtonText('Cancel').onClick(() => this.close())
-				)
 				.addButton((btn) =>
 					btn
 						.setButtonText('Save')

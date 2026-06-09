@@ -305,8 +305,8 @@ body.is-mobile .style-manager-style-settings-item {
 
 body .vertical-tab-content:has(.style-manager-plugin),
 body .view-content:has(.style-manager-plugin) {
-	padding: 0;
-	padding-bottom: var(--view-bottom-spacing);
+	padding: 0 !important;
+	padding-bottom: var(--view-bottom-spacing) !important;
 }
 
 body.is-phone .vertical-tab-content:has(.style-manager-plugin) {
