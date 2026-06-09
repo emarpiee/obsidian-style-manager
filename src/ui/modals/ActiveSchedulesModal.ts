@@ -16,10 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, Modal, Setting, ButtonComponent } from 'obsidian';
+import { App, ButtonComponent, Modal, Setting } from 'obsidian';
 import { RRule } from 'rrule';
-import StyleManagerPlugin from '../../main';
+
 import { PresetScheduleModal } from './PresetScheduleModal';
+
+import StyleManagerPlugin from '../../main';
 import { Preset } from '../../types';
 
 export class ActiveSchedulesModal extends Modal {
@@ -38,26 +40,32 @@ export class ActiveSchedulesModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		contentEl.createEl('h2', { text: 'Active Schedules' });
+		this.setTitle('Active schedules');
 
 		const schedules = this.plugin.presetScheduleService.schedules;
 
 		if (schedules.length === 0) {
-			contentEl.createEl('p', { text: 'No active schedules.', cls: 'setting-item-description' });
+			contentEl.createEl('p', {
+				text: 'No active schedules.',
+				cls: 'setting-item-description',
+			});
 			return;
 		}
 
 		for (const schedule of schedules) {
-			const preset = this.plugin.presetService.presets.find((p: Preset) => p.id === schedule.presetId);
-			const presetName = preset ? preset.name : 'Unknown Preset';
-			
-			let scheduleText = 'Unknown Schedule';
+			const preset = this.plugin.presetService.presets.find(
+				(p: Preset) => p.id === schedule.presetId
+			);
+			const presetName = preset ? preset.name : 'Unknown preset';
+
+			let scheduleText = 'Unknown schedule';
 			try {
 				scheduleText = RRule.fromString(schedule.rruleString).toText();
 				// Capitalize first letter
-				scheduleText = scheduleText.charAt(0).toUpperCase() + scheduleText.slice(1);
+				scheduleText =
+					scheduleText.charAt(0).toUpperCase() + scheduleText.slice(1);
 			} catch (e) {
-				console.error("Failed to parse RRule for schedule text", e);
+				console.error('Failed to parse RRule for schedule text', e);
 			}
 
 			const setting = new Setting(contentEl)
@@ -69,8 +77,9 @@ export class ActiveSchedulesModal extends Modal {
 				setting.nameEl.style.opacity = '0.6';
 			}
 
-			setting.addButton(btn => {
-				btn.setIcon(schedule.isPaused ? 'play' : 'pause')
+			setting.addButton((btn) => {
+				btn
+					.setIcon(schedule.isPaused ? 'play' : 'pause')
 					.setTooltip(schedule.isPaused ? 'Resume' : 'Pause')
 					.onClick(async () => {
 						schedule.isPaused = !schedule.isPaused;
@@ -79,17 +88,23 @@ export class ActiveSchedulesModal extends Modal {
 					});
 			});
 
-			setting.addButton(btn => {
-				btn.setIcon('pencil')
-					.setTooltip('Edit Time')
+			setting.addButton((btn) => {
+				btn
+					.setIcon('pencil')
+					.setTooltip('Edit time')
 					.onClick(() => {
 						this.close();
-						new PresetScheduleModal(this.plugin.app, this.plugin, schedule.presetId).open();
+						new PresetScheduleModal(
+							this.plugin.app,
+							this.plugin,
+							schedule.presetId
+						).open();
 					});
 			});
 
-			setting.addButton(btn => {
-				btn.setIcon('trash')
+			setting.addButton((btn) => {
+				btn
+					.setIcon('trash')
 					.setTooltip('Remove')
 					.setWarning()
 					.onClick(async () => {
