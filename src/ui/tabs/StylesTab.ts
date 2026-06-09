@@ -90,7 +90,7 @@ export class StylesTab {
 			})
 			.addExtraButton((btn) => {
 				btn
-					.setIcon('square-dot')
+					.setIcon('asterisk')
 					.setTooltip('Show modified only')
 					.onClick(() => {
 						this.deps.onToggleModifiedOnly();

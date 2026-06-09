@@ -22,6 +22,7 @@ import {
 	ConflictAction,
 	ConflictResolutionModal,
 } from './ConflictResolutionModal';
+import { PresetNamePromptModal } from './PresetNamePromptModal';
 import { VaultFileSelectModal } from './VaultFileSelectModal';
 
 import { PresetService } from '../../application/PresetService';
@@ -61,6 +62,15 @@ export class ImportPresetModal extends Modal {
 				await this.service.plugin.presetImportService.analyzePresetImports(
 					items
 				);
+
+			if (items.length === 1 && analysis.presets.length === 1) {
+				const preset = analysis.presets[0];
+				if (preset.name === 'Imported Preset') {
+					const name = await this.promptForName();
+					if (!name) return;
+					preset.name = name;
+				}
+			}
 
 			const performImport = async (
 				resolutions?: ConflictAction[]
@@ -105,8 +115,8 @@ export class ImportPresetModal extends Modal {
 
 		new Setting(contentEl)
 			.setClass('style-manager-modal-setting')
-			.setName('Import from computer')
-			.setDesc('Select .json or .zip bundle files from your computer.')
+			.setName('Import from files')
+			.setDesc('Select .json or .zip bundle files from device file explorer.')
 			.addButton((btn) => {
 				const input = document.createElement('input');
 				input.addClass('style-manager-modal-input-file');
@@ -220,5 +230,12 @@ export class ImportPresetModal extends Modal {
 
 	onClose(): void {
 		this.contentEl.empty();
+	}
+
+	private promptForName(): Promise<string | null> {
+		return new Promise((resolve) => {
+			const modal = new PresetNamePromptModal(this.app, resolve);
+			modal.open();
+		});
 	}
 }
