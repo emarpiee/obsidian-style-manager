@@ -20,6 +20,7 @@ import chroma from 'chroma-js';
 
 import { ObsidianBridge } from '../../infrastructure/bridge/ObsidianBridge';
 import type StyleManagerPlugin from '../../main';
+import { STICKY_HEADING_KEY } from '../../constants';
 import {
 	CSSSetting,
 	ColorGradient,
@@ -283,6 +284,12 @@ export class StyleGenerator {
 		const vars: VariableKV = [];
 		const themedLight: VariableKV = [];
 		const themedDark: VariableKV = [];
+
+		const stickyHeading = settings[STICKY_HEADING_KEY] !== false;
+		vars.push({
+			key: 'sm-style-heading-position',
+			value: stickyHeading ? 'sticky' : 'static',
+		});
 
 		const gradientCandidates: Record<string, string> = {};
 		const gradientCandidatesLight: Record<string, string> = {};

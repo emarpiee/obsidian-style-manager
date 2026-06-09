@@ -550,7 +550,8 @@ export class SettingsService extends Events {
 			key === THEME_KEY ||
 			key === APPEARANCE_KEY ||
 			key === ACCENT_COLOR_KEY ||
-			key === SNIPPETS_KEY
+			key === SNIPPETS_KEY ||
+			key === '__style_manager_sticky_heading'
 		);
 	}
 

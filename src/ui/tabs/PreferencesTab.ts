@@ -32,6 +32,7 @@ import {
 	SHOW_SNIPPET_NOTIFICATIONS_KEY,
 	SHOW_STATUS_BAR_KEY,
 	SHOW_UTILITY_NOTIFICATIONS_KEY,
+	STICKY_HEADING_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -429,6 +430,24 @@ export class PreferencesTab {
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
 							{ [SHOW_SNIPPET_METADATA_KEY]: val },
+							{ silentUI: true }
+						);
+					});
+			});
+
+		new Setting(uiContainer)
+			.setName('Sticky heading')
+			.setDesc('Enable sticky headings in the styles tab for better navigation.')
+			.addToggle((toggle) => {
+				toggle
+					.setValue(
+						(plugin.settingsService.settings[
+							STICKY_HEADING_KEY
+						] as boolean) !== false
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings(
+							{ [STICKY_HEADING_KEY]: val },
 							{ silentUI: true }
 						);
 					});

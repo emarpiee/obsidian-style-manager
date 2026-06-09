@@ -44,4 +44,5 @@ export const BACKUP_PATH_KEY = '__style_manager_backup_path';
 export const BACKUP_DATE_FORMAT_KEY = '__style_manager_backup_date_format';
 export const TOOL_FREEZE_DELAY = '__style_manager_tool_freeze_delay';
 export const TOOL_BOX_OUTLINE_COLOR = '__style_manager_tool_box_outline_color';
+export const STICKY_HEADING_KEY = '__style_manager_sticky_heading';
 

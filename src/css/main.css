@@ -87,6 +87,7 @@ body {
 	--sm-heading-bg: var(--background-primary);
 	--sm-heading-border-color: var(--background-modifier-border);
 	--sm-heading-border-size: 1px;
+	--sm-style-heading-position: sticky;
 
 	/* --- Settings Container --- */
 	--sm-style-settings-container-border-color: var(--background-modifier-border);
@@ -336,7 +337,7 @@ body.is-phone .style-manager-plugin {
 	margin: 0 !important;
 	padding: 0 var(--size-4-2) !important;
 	border-radius: 0 !important;
-	position: sticky;
+	position: var(--sm-style-heading-position);
 	background-color: var(--sm-heading-bg);
 	z-index: 10;
 	height: var(--sm-sticky-heading-height);
