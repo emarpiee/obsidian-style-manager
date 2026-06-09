@@ -70,6 +70,13 @@ export class PresetService {
 		);
 	}
 
+	public getPresetById(id: string): Preset | undefined {
+		const sharedPresets = (this.plugin.settingsService.sharedSettings._manager_presets as Preset[]) || [];
+		const isolatePresets = (this.plugin.settingsService.isolateModeService.isolateSettings._manager_presets as Preset[]) || [];
+
+		return sharedPresets.find((p) => p.id === id) || isolatePresets.find((p) => p.id === id);
+	}
+
 	set presets(val: Preset[]) {
 		const mode = this.getEffectiveViewMode();
 		this.plugin.settingsService.setSettings({ _manager_presets: val }, { silentUI: true, target: mode });

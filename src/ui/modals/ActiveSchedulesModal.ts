@@ -53,9 +53,7 @@ export class ActiveSchedulesModal extends Modal {
 		}
 
 		for (const schedule of schedules) {
-			const preset = this.plugin.presetService.presets.find(
-				(p: Preset) => p.id === schedule.presetId
-			);
+			const preset = this.plugin.presetService.getPresetById(schedule.presetId);
 			const presetName = preset ? preset.name : 'Unknown preset';
 
 			let scheduleText = 'Unknown schedule';

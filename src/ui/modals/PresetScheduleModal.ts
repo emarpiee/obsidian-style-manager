@@ -170,9 +170,7 @@ export class PresetScheduleModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		const preset = this.plugin.presetService.presets.find(
-			(p: Preset) => p.id === this.presetId
-		);
+		const preset = this.plugin.presetService.getPresetById(this.presetId);
 		this.setTitle(`Schedule preset: ${preset?.name || 'Unknown'}`);
 
 		new Setting(contentEl).setName('Frequency').addDropdown((dd) => {
