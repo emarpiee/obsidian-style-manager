@@ -101,9 +101,21 @@ export class ActiveSchedulesModal extends Modal {
 				console.error('Failed to parse RRule for schedule text', e);
 			}
 
-			const setting = new Setting(contentEl)
-				.setName(presetName)
-				.setDesc(`Target: ${schedule.targetLocker} | ${scheduleText}`);
+			const setting = new Setting(contentEl).setName(presetName);
+
+			const badgeCls =
+				schedule.targetLocker === 'shared' ? 'badge-shared' : 'badge-isolate';
+			const badgeText =
+				schedule.targetLocker === 'shared' ? 'Shared' : 'Isolated';
+
+			const container = setting.descEl.createDiv(
+				'style-manager-badge-container'
+			);
+			container.createSpan({
+				text: badgeText,
+				cls: `style-manager-badge-primary ${badgeCls}`,
+			});
+			container.createSpan({ text: `  ${scheduleText}` });
 
 			if (schedule.isPaused) {
 				setting.nameEl.style.textDecoration = 'line-through';
