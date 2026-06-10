@@ -260,8 +260,9 @@ export class PresetScheduleService {
 	}
 
 	private async executeSchedule(schedule: PresetSchedule): Promise<void> {
-		console.log(
-			`Style Manager | Executing scheduled preset: ${schedule.presetId}`
+		const preset = this.plugin.presetService.getPresetById(schedule.presetId);
+		this.plugin.settingsService.notifications.preset(
+			`Executing scheduled preset: ${preset?.name || 'Unknown'}`
 		);
 
 		if (schedule.targetLocker === 'shared') {
