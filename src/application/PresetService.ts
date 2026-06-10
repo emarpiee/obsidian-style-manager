@@ -280,7 +280,7 @@ export class PresetService {
 		);
 	}
 
-	private mergePresets(presetIds: string[]): { mergedData: Record<string, unknown>; isSingle: boolean } {
+	private async mergePresets(presetIds: string[]): Promise<{ mergedData: Record<string, unknown>; isSingle: boolean }> {
 		const selectedPresets = presetIds
 			.map((id) => this.presets.find((p) => p.id === id))
 			.filter((p): p is Preset => !!p);
@@ -303,7 +303,13 @@ export class PresetService {
 		}
 
 		if (snippetsEncountered) {
-			mergedData[SNIPPETS_KEY] = Array.from(mergedSnippets);
+			const existingSnippets = await Promise.all(
+				Array.from(mergedSnippets).map(async (s) => {
+					const exists = await this.plugin.settingsService.bridge.snippetExists(s);
+					return exists ? s : null;
+				})
+			);
+			mergedData[SNIPPETS_KEY] = existingSnippets.filter((s): s is string => s !== null);
 		}
 
 		return { mergedData, isSingle };
@@ -320,7 +326,7 @@ export class PresetService {
 		presetIds: string[],
 		isolateOnly: boolean = false
 	): Promise<void> {
-		const { mergedData, isSingle } = this.mergePresets(presetIds);
+		const { mergedData, isSingle } = await this.mergePresets(presetIds);
 		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY]) return;
 
 		if (isSingle) {
@@ -345,7 +351,7 @@ export class PresetService {
 	}
 
 	async applyPresetsToLocker(deviceId: string, presetIds: string[]): Promise<void> {
-		const { mergedData, isSingle } = this.mergePresets(presetIds);
+		const { mergedData, isSingle } = await this.mergePresets(presetIds);
 		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY]) return;
 
 		await this.plugin.settingsService.identity.updateLockerSettings(
