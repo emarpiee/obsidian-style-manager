@@ -37,11 +37,13 @@ import { formatPresetDate } from '../../../utils/CommonUtils';
 import {
 	renderAppearanceBadge,
 	renderCountBadge,
+	renderScheduleBadge,
 	renderSnippetBadge,
 	renderThemeBadge,
 } from '../../components/fields/BadgeRenderer';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { PresetPreviewModal } from '../../modals/PresetPreviewModal';
+import { PresetScheduleModal } from '../../modals/PresetScheduleModal';
 import { RenameModal } from '../../modals/RenameModal';
 
 export class PresetItem {
@@ -112,6 +114,19 @@ export class PresetItem {
 			plugin,
 			preset.data[SNIPPETS_KEY] as string[]
 		);
+
+		// Schedule Badge
+		const schedule = plugin.presetScheduleService.getScheduleForPreset(preset.id);
+		if (schedule) {
+			const description = plugin.presetScheduleService.getScheduleDescription(schedule);
+			renderScheduleBadge(
+				badgesContainer,
+				description,
+				() => {
+					new PresetScheduleModal(plugin.app, plugin, preset.id).open();
+				}
+			);
+		}
 
 		const starIcon = document.createElement('div');
 		starIcon.classList.add('clickable-icon', 'style-manager-preset-star-icon');

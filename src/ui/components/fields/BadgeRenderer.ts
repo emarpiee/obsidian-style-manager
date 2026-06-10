@@ -131,3 +131,27 @@ export function renderAccentBadge(
 
 	return badge;
 }
+
+/** Renders the schedule badge showing a calendar icon. */
+export function renderScheduleBadge(
+	container: HTMLElement,
+	description: string,
+	onClick?: () => void
+): HTMLElement {
+	const badge = container.createSpan({
+		cls: 'style-manager-badge-primary schedule',
+	});
+	setIcon(badge, 'calendar-clock');
+	setTooltip(badge, description);
+	badge.addClass('is-clickable');
+	badge.onclick = (e: MouseEvent): void => {
+		e.preventDefault();
+		e.stopPropagation();
+		if (onClick) {
+			onClick();
+		} else {
+			displayTooltip(badge, description);
+		}
+	};
+	return badge;
+}

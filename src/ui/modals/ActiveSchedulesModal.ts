@@ -65,37 +65,12 @@ export class ActiveSchedulesModal extends Modal {
 
 			let scheduleText = 'Unknown schedule';
 			try {
-				const rule = RRule.fromString(schedule.rruleString);
-				if (rule.options.count === 1) {
-					const date = rule.all()[0];
-					scheduleText = `One-time on ${this.plugin.presetScheduleService.formatDate(date)}`;
+				const scheduleObj = this.plugin.presetScheduleService.getScheduleForPreset(schedule.presetId);
+				if (scheduleObj) {
+					scheduleText = this.plugin.presetScheduleService.getScheduleDescription(scheduleObj);
 				} else {
-					const sampleDate = rule.after(new Date(), true);
-					if (!sampleDate) {
-						scheduleText = rule.toText();
-					} else {
-						const timeStr = sampleDate.toLocaleString('en-US', {
-							hour: 'numeric',
-							minute: '2-digit',
-							hour12: true,
-							timeZone: 'UTC',
-						});
-
-						if (rule.options.freq === RRule.DAILY) {
-							scheduleText = `Daily at ${timeStr}`;
-						} else if (rule.options.freq === RRule.WEEKLY) {
-							const dayStr = sampleDate.toLocaleString('en-US', {
-								weekday: 'long',
-								timeZone: 'UTC',
-							});
-							scheduleText = `Weekly on ${dayStr} at ${timeStr}`;
-						} else {
-							scheduleText = rule.toText();
-						}
-					}
-					// Capitalize first letter
-					scheduleText =
-						scheduleText.charAt(0).toUpperCase() + scheduleText.slice(1);
+					const rule = RRule.fromString(schedule.rruleString);
+					scheduleText = rule.toText();
 				}
 			} catch (e) {
 				console.error('Failed to parse RRule for schedule text', e);

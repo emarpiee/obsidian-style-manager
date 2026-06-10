@@ -81,6 +81,40 @@ export class PresetScheduleService {
 		return `${p.month} ${p.day}, ${p.year} ${p.weekday}. ${p.hour}:${p.minute} ${p.dayPeriod}`;
 	}
 
+	public getScheduleDescription(schedule: PresetSchedule): string {
+		try {
+			const rule = RRule.fromString(schedule.rruleString);
+			if (rule.options.count === 1) {
+				const date = rule.all()[0];
+				return `One-time on ${this.formatDate(date)}`;
+			}
+
+			const sampleDate = rule.after(new Date(), true);
+			if (!sampleDate) return rule.toText();
+
+			const timeStr = sampleDate.toLocaleString('en-US', {
+				hour: 'numeric',
+				minute: '2-digit',
+				hour12: true,
+				timeZone: 'UTC',
+			});
+
+			if (rule.options.freq === RRule.DAILY) {
+				return `Every day at ${timeStr}`;
+			} else if (rule.options.freq === RRule.WEEKLY) {
+				const dayStr = sampleDate.toLocaleString('en-US', {
+					weekday: 'long',
+					timeZone: 'UTC',
+				});
+				return `Weekly on ${dayStr} at ${timeStr}`;
+			}
+
+			return rule.toText();
+		} catch (_e) {
+			return 'Unknown schedule';
+		}
+	}
+
 	public checkConflict(schedule: PresetSchedule, excludeId?: string): string | null {
 		const currentSchedules = this.schedules;
 		const rule = RRule.fromString(schedule.rruleString);
