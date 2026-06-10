@@ -52,18 +52,6 @@ export class ColorContrastChecker {
 		setTooltip(suggestBtn, 'Suggest passing colors');
 		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
 
-		const suggestFgBtn = actionsDiv.createEl('button');
-		setIcon(suggestFgBtn, 'wand-2');
-		suggestFgBtn.createSpan({ text: 'FG' });
-		setTooltip(suggestFgBtn, 'Suggest passing foreground color');
-		suggestFgBtn.onclick = (): void => this.suggestForegroundColor();
-
-		const suggestBgBtn = actionsDiv.createEl('button');
-		setIcon(suggestBgBtn, 'wand-2');
-		suggestBgBtn.createSpan({ text: 'BG' });
-		setTooltip(suggestBgBtn, 'Suggest passing background color');
-		suggestBgBtn.onclick = (): void => this.suggestBackgroundColor();
-
 		if (plugin) {
 			const openInTabBtn = actionsDiv.createDiv({
 				cls: 'clickable-icon',
@@ -89,13 +77,10 @@ export class ColorContrastChecker {
 		this.fgSingle = fgWrapper.createDiv({ cls: 'single-color' });
 		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 
-		const fgCopyBtn = fgWrapper.createDiv({ cls: 'clickable-icon' });
-		setIcon(fgCopyBtn, 'copy');
-		setTooltip(fgCopyBtn, 'Copy');
-		fgCopyBtn.onclick = async (): Promise<void> => {
-			await this.copyToClipboard(this.fgColor);
-			new Notice('Copied foreground color!', 500);
-		};
+		const fgSuggestBtn = fgWrapper.createDiv({ cls: 'clickable-icon' });
+		setIcon(fgSuggestBtn, 'wand-2');
+		setTooltip(fgSuggestBtn, 'Suggest passing foreground color');
+		fgSuggestBtn.onclick = (): void => this.suggestForegroundColor();
 
 		this.fgPickr = Pickr.create(
 			getPickrSettings({
@@ -130,13 +115,10 @@ export class ColorContrastChecker {
 		this.bgSingle = bgWrapper.createDiv({ cls: 'single-color' });
 		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 
-		const bgCopyBtn = bgWrapper.createDiv({ cls: 'clickable-icon' });
-		setIcon(bgCopyBtn, 'copy');
-		setTooltip(bgCopyBtn, 'Copy');
-		bgCopyBtn.onclick = async (): Promise<void> => {
-			await this.copyToClipboard(this.bgColor);
-			new Notice('Copied background color!', 500);
-		};
+		const bgSuggestBtn = bgWrapper.createDiv({ cls: 'clickable-icon' });
+		setIcon(bgSuggestBtn, 'wand-2');
+		setTooltip(bgSuggestBtn, 'Suggest passing background color');
+		bgSuggestBtn.onclick = (): void => this.suggestBackgroundColor();
 
 		this.bgPickr = Pickr.create(
 			getPickrSettings({
@@ -366,8 +348,27 @@ export class ColorContrastChecker {
 	}
 
 	private updateLabels(): void {
-		this.fgSetting.setName(`Foreground color: ${this.fgColor}`);
-		this.bgSetting.setName(`Background color: ${this.bgColor}`);
+		this.fgSetting.setName('Foreground color: ');
+		const fgHex = this.fgSetting.nameEl.createSpan({
+			cls: 'clickable-hex',
+			text: this.fgColor,
+		});
+		setTooltip(fgHex, 'Copy');
+		fgHex.onclick = async (): Promise<void> => {
+			await this.copyToClipboard(this.fgColor);
+			new Notice('Copied foreground color!', 500);
+		};
+
+		this.bgSetting.setName('Background color: ');
+		const bgHex = this.bgSetting.nameEl.createSpan({
+			cls: 'clickable-hex',
+			text: this.bgColor,
+		});
+		setTooltip(bgHex, 'Copy');
+		bgHex.onclick = async (): Promise<void> => {
+			await this.copyToClipboard(this.bgColor);
+			new Notice('Copied background color!', 500);
+		};
 	}
 
 	private async copyToClipboard(text: string): Promise<void> {

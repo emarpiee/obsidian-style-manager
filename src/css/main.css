@@ -808,6 +808,18 @@ body.is-phone .style-manager-plugin {
 	margin-top: 10px;
 }
 
+.clickable-hex {
+	cursor: pointer;
+	text-decoration: underline;
+	text-decoration-style: dotted;
+	text-underline-offset: 3px;
+}
+
+.clickable-hex:hover {
+	text-decoration-style: solid;
+	color: var(--text-accent);
+}
+
 .style-manager-tool-contrast-results .setting-item {
 	flex-wrap: wrap;
 }
