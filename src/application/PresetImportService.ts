@@ -56,7 +56,9 @@ export class PresetImportService {
 					// VALIDATION: Reject Full Vault Backups
 					if (
 						zip.file('vault_manifest.json') ||
-						zip.file(/vault_state\.(json|md|txt)$/i).length > 0
+						zip.file('shared_locker_manifest.json') ||
+						zip.file(/vault_state\.(json|md|txt)$/i).length > 0 ||
+						zip.file(/shared_locker_state\.(json|md|txt)$/i).length > 0
 					) {
 						throw new Error(
 							'This file appears to be a backup file. To restore a configuration, please navigate to the Preferences tab and use the Full Backup & Restore section.'
@@ -112,16 +114,27 @@ export class PresetImportService {
 						});
 					} else if (
 						parsed &&
-						typeof parsed === 'object' &&
-						('data' in parsed || 'name' in parsed)
+						typeof parsed === 'object'
 					) {
+						// VALIDATION: Reject Full Backups
+						if (
+							'_manager_presets' in parsed ||
+							'_manager_schedules' in parsed ||
+							'__devices' in parsed ||
+							'__shared_version' in parsed
+						) {
+							throw new Error(
+								'This file appears to be a backup file. To restore a configuration, please navigate to the Preferences tab and use the Full Backup & Restore section.'
+							);
+						}
+
 						// Single preset
 						analysis.presets.push({
 							id: crypto.randomUUID(),
 							name: parsed.name || item.name || 'Imported Preset',
 							created: parsed.created || Date.now(),
-							data: parsed.data || parsed,
-							targetedPrefixes: parsed.targetedPrefixes,
+							data: ('data' in parsed) ? parsed.data : parsed,
+							targetedPrefixes: (parsed as { targetedPrefixes?: string[] }).targetedPrefixes,
 						});
 					} else {
 						throw new Error(
