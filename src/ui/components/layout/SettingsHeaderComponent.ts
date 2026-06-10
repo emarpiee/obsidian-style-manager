@@ -281,9 +281,9 @@ export class SettingsHeaderComponent extends Component {
 						const id =
 							await this.plugin.settingsService.snippetService.createSnippet();
 
-						const openModal = this.plugin.settingsService.settings[
-							OPEN_MODAL_ON_CREATE_KEY
-						] !== false;
+						const openModal =
+							this.plugin.settingsService.settings[OPEN_MODAL_ON_CREATE_KEY] !==
+							false;
 						if (openModal) {
 							new CSSEditorModal(this.app, this.plugin, {
 								type: 'Snippet',

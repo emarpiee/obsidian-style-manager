@@ -35,17 +35,16 @@ export class ColorContrastChecker {
 			cls: 'style-manager-tool-contrast-actions',
 		});
 
+		const randomBtn = actionsDiv.createEl('button');
+		setIcon(randomBtn, 'dice');
+		setTooltip(randomBtn, 'Randomize FG and BG color');
+		randomBtn.onclick = (): void => this.randomizeColors();
+
 		const swapBtn = actionsDiv.createEl('button');
 		setIcon(swapBtn, 'repeat');
 		swapBtn.createSpan({ text: 'Swap' });
 		setTooltip(swapBtn, 'Swap the FG and BG color');
 		swapBtn.onclick = (): void => this.swapColors();
-
-		const randomBtn = actionsDiv.createEl('button');
-		setIcon(randomBtn, 'dice');
-		randomBtn.createSpan({ text: 'Random' });
-		setTooltip(randomBtn, 'Randomize FG and BG color');
-		randomBtn.onclick = (): void => this.randomizeColors();
 
 		const suggestBtn = actionsDiv.createEl('button');
 		setIcon(suggestBtn, 'wand-2');
@@ -66,7 +65,9 @@ export class ColorContrastChecker {
 		suggestBgBtn.onclick = (): void => this.suggestBackgroundColor();
 
 		if (plugin) {
-			const openInTabBtn = actionsDiv.createEl('button');
+			const openInTabBtn = actionsDiv.createDiv({
+				cls: 'clickable-icon',
+			});
 			setIcon(openInTabBtn, 'external-link');
 			setTooltip(openInTabBtn, 'Open this tool in a tab');
 			openInTabBtn.onclick = async (): Promise<void> => {
@@ -88,7 +89,7 @@ export class ColorContrastChecker {
 		this.fgSingle = fgWrapper.createDiv({ cls: 'single-color' });
 		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 
-		const fgCopyBtn = fgWrapper.createEl('button');
+		const fgCopyBtn = fgWrapper.createDiv({ cls: 'clickable-icon' });
 		setIcon(fgCopyBtn, 'copy');
 		setTooltip(fgCopyBtn, 'Copy');
 		fgCopyBtn.onclick = async (): Promise<void> => {
@@ -129,7 +130,7 @@ export class ColorContrastChecker {
 		this.bgSingle = bgWrapper.createDiv({ cls: 'single-color' });
 		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 
-		const bgCopyBtn = bgWrapper.createEl('button');
+		const bgCopyBtn = bgWrapper.createDiv({ cls: 'clickable-icon' });
 		setIcon(bgCopyBtn, 'copy');
 		setTooltip(bgCopyBtn, 'Copy');
 		bgCopyBtn.onclick = async (): Promise<void> => {
