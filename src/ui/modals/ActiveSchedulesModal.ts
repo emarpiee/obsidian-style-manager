@@ -25,13 +25,16 @@ import StyleManagerPlugin from '../../main';
 
 export class ActiveSchedulesModal extends Modal {
 	plugin: StyleManagerPlugin;
-
+	private updateHandler: () => void;
+ 
 	constructor(app: App, plugin: StyleManagerPlugin) {
 		super(app);
 		this.plugin = plugin;
+		this.updateHandler = (): void => this.render();
 	}
-
+ 
 	onOpen(): void {
+		this.plugin.settingsService.on('preset-schedules-updated', this.updateHandler);
 		this.render();
 	}
 
@@ -137,5 +140,6 @@ export class ActiveSchedulesModal extends Modal {
 	onClose(): void {
 		const { contentEl } = this;
 		contentEl.empty();
+		this.plugin.settingsService.off('preset-schedules-updated', this.updateHandler);
 	}
 }

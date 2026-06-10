@@ -159,7 +159,11 @@ export function addApplyOptionsToMenu(
 				.setTitle('Schedule preset')
 				.setIcon('calendar-clock')
 				.onClick(() => {
-					new PresetScheduleModal(plugin.app, plugin, source.id as string).open();
+					new PresetScheduleModal(
+						plugin.app,
+						plugin,
+						source.id as string
+					).open();
 				})
 		);
 	}

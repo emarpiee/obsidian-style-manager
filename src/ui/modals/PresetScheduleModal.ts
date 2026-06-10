@@ -16,12 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import {
-	App,
-	Modal,
-	Setting,
-	Notice,
-} from 'obsidian';
+import { App, Modal, Notice, Setting } from 'obsidian';
 import { Options, RRule } from 'rrule';
 
 import StyleManagerPlugin from '../../main';
@@ -38,11 +33,16 @@ export class PresetScheduleModal extends Modal {
 	dayOfWeek: string = 'MO'; // MO, TU, WE, TH, FR, SA, SU
 	targetLocker: string = 'shared';
 
-	constructor(app: App, plugin: StyleManagerPlugin, presetId: string) {
+	constructor(
+		app: App,
+		plugin: StyleManagerPlugin,
+		presetId: string
+	) {
 		super(app);
 		this.plugin = plugin;
 		this.presetId = presetId;
-		let schedule = this.plugin.presetScheduleService.getScheduleForPreset(presetId);
+		let schedule =
+			this.plugin.presetScheduleService.getScheduleForPreset(presetId);
 		if (
 			schedule &&
 			schedule.targetLocker === 'isolate' &&
@@ -233,26 +233,28 @@ export class PresetScheduleModal extends Modal {
 			setting.controlEl.appendChild(inputEl);
 		}
 
-		new Setting(contentEl)
-			.setName('Target locker')
-			.addDropdown((dd) => {
-				dd.addOption('shared', 'Shared locker');
-				dd.addOption('isolate', 'This device (isolate)');
+		new Setting(contentEl).setName('Target locker').addDropdown((dd) => {
+			dd.addOption('shared', 'Shared locker');
+			dd.addOption('isolate', 'This device (isolate)');
 
-				const devices = this.plugin.settingsService.settings.__devices || {};
-				for (const [id, dev] of Object.entries(
-					devices as Record<string, { name?: string }>
-				)) {
-					dd.addOption(id, dev.name || id);
-				}
+			const devices = this.plugin.settingsService.settings.__devices || {};
+			for (const [id, dev] of Object.entries(
+				devices as Record<string, { name?: string }>
+			)) {
+				dd.addOption(id, dev.name || id);
+			}
 
-				dd.setValue(this.targetLocker);
-				dd.onChange((val) => {
-					this.targetLocker = val;
-				});
+			dd.setValue(this.targetLocker);
+			dd.onChange((val) => {
+				this.targetLocker = val;
 			});
+		});
 
 		const buttonsSetting = new Setting(contentEl);
+
+		buttonsSetting.addButton((btn) => {
+			btn.setButtonText('Cancel').onClick(() => this.close());
+		});
 
 		if (this.schedule) {
 			buttonsSetting.addButton((btn) => {
@@ -264,19 +266,16 @@ export class PresetScheduleModal extends Modal {
 							await this.plugin.presetScheduleService.deleteSchedule(
 								this.schedule.id
 							);
+							this.schedule = undefined;
 						}
-						this.close();
+						this.render();
 					});
 			});
 		}
 
 		buttonsSetting.addButton((btn) => {
-			btn.setButtonText('Cancel').onClick(() => this.close());
-		});
-
-		buttonsSetting.addButton((btn) => {
 			btn
-				.setButtonText('Save')
+				.setButtonText(this.schedule ? 'Save' : 'Set Schedule')
 				.setCta()
 				.onClick(async () => {
 					const rruleStr = this.buildRRuleString();
@@ -296,6 +295,7 @@ export class PresetScheduleModal extends Modal {
 						await this.plugin.presetScheduleService.updateSchedule(
 							this.schedule
 						);
+						this.render();
 					} else {
 						const newSchedule: PresetSchedule = {
 							id: crypto.randomUUID(),
@@ -305,17 +305,17 @@ export class PresetScheduleModal extends Modal {
 							lastExecuted: 0,
 						};
 
-						const conflict = this.plugin.presetScheduleService.checkConflict(
-							newSchedule
-						);
+						const conflict =
+							this.plugin.presetScheduleService.checkConflict(newSchedule);
 						if (conflict) {
 							new Notice(conflict);
 							return;
 						}
 
 						await this.plugin.presetScheduleService.addSchedule(newSchedule);
+						this.schedule = newSchedule;
+						this.render();
 					}
-					this.close();
 				});
 		});
 	}

@@ -119,13 +119,13 @@ export class PresetItem {
 		const schedule = plugin.presetScheduleService.getScheduleForPreset(preset.id);
 		if (schedule) {
 			const description = plugin.presetScheduleService.getScheduleDescription(schedule);
-			renderScheduleBadge(
-				badgesContainer,
-				description,
-				() => {
-					new PresetScheduleModal(plugin.app, plugin, preset.id).open();
-				}
-			);
+									renderScheduleBadge(
+										badgesContainer,
+										description,
+										() => {
+											new PresetScheduleModal(plugin.app, plugin, preset.id).open();
+										}
+									);
 		}
 
 		const starIcon = document.createElement('div');
