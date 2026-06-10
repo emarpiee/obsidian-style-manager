@@ -24,6 +24,8 @@ export class ColorContrastChecker {
 	private largeTextPreviewEl: HTMLElement;
 	private resultsEl: HTMLElement;
 	private swapBtn: HTMLElement;
+	private randomBtn: HTMLElement;
+	private suggestBtn: HTMLElement;
 
 	render(contentEl: HTMLElement, options: RenderOptions = {}): void {
 		const { plugin, onOpenInTab } = options;
@@ -40,13 +42,33 @@ export class ColorContrastChecker {
 			cls: 'style-manager-tool-contrast-preview',
 		});
 
-		const swapBtn = this.previewEl.createDiv({
+		const iconsDiv = this.previewEl.createDiv({
+			cls: 'style-manager-tool-contrast-icons',
+		});
+
+		const swapBtn = iconsDiv.createDiv({
 			cls: 'clickable-icon style-manager-tool-contrast-swap-btn',
 		});
 		this.swapBtn = swapBtn;
 		setIcon(swapBtn, 'arrow-down-up');
 		setTooltip(swapBtn, 'Swap the FG and BG color');
 		swapBtn.onclick = (): void => this.swapColors();
+
+		const randomBtn = this.previewEl.createDiv({
+			cls: 'clickable-icon style-manager-tool-contrast-random-btn',
+		});
+		this.randomBtn = randomBtn;
+		setIcon(randomBtn, 'dice');
+		setTooltip(randomBtn, 'Randomize FG and BG color');
+		randomBtn.onclick = (): void => this.randomizeColors();
+
+		const suggestBtn = this.previewEl.createDiv({
+			cls: 'clickable-icon style-manager-tool-contrast-suggest-btn',
+		});
+		this.suggestBtn = suggestBtn;
+		setIcon(suggestBtn, 'wand-2');
+		setTooltip(suggestBtn, 'Suggest passing colors');
+		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
 
 		this.largeTextPreviewEl = this.previewEl.createDiv({
 			cls: 'style-manager-tool-contrast-preview-large',
@@ -141,23 +163,8 @@ export class ColorContrastChecker {
 			}
 		);
 
-		const actionsDiv = contentEl.createDiv({
-			cls: 'style-manager-tool-contrast-actions',
-		});
-
-		const randomBtn = actionsDiv.createEl('button');
-		setIcon(randomBtn, 'dice');
-		setTooltip(randomBtn, 'Randomize FG and BG color');
-		randomBtn.onclick = (): void => this.randomizeColors();
-
-		const suggestBtn = actionsDiv.createEl('button');
-		setIcon(suggestBtn, 'wand-2');
-		suggestBtn.createSpan({ text: 'Suggest' });
-		setTooltip(suggestBtn, 'Suggest passing colors');
-		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
-
 		if (plugin) {
-			const openInTabBtn = actionsDiv.createDiv({
+			const openInTabBtn = contentEl.createDiv({
 				cls: 'clickable-icon',
 			});
 			setIcon(openInTabBtn, 'external-link');
@@ -298,6 +305,8 @@ export class ColorContrastChecker {
 		this.previewEl.style.backgroundColor = this.bgColor;
 		this.previewEl.style.color = this.fgColor;
 		this.swapBtn.style.color = this.fgColor;
+		this.randomBtn.style.color = this.fgColor;
+		this.suggestBtn.style.color = this.fgColor;
 
 		try {
 			const contrast = chroma.contrast(this.fgColor, this.bgColor);
