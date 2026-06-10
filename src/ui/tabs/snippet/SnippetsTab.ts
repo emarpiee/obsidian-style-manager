@@ -22,12 +22,12 @@ import { SnippetSettingComponent } from './SnippetSettingComponent';
 
 import { OPEN_MODAL_ON_CREATE_KEY, SNIPPETS_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
-import { CSSEditorModal } from '../../modals/CSSEditorModal';
-import { ConfirmModal } from '../../modals/ConfirmModal';
 import {
 	handleItemSelection,
 	setupListKeybindings,
 } from '../../../utils/UIUtils';
+import { CSSEditorModal } from '../../modals/CSSEditorModal';
+import { ConfirmModal } from '../../modals/ConfirmModal';
 
 /**
  * Renders the Snippets tab: search, folder actions, and the list of snippets.
@@ -71,9 +71,9 @@ export class SnippetsTab {
 						const id =
 							await this.plugin.settingsService.snippetService.createSnippet();
 
-						const openModal = this.plugin.settingsService.settings[
-							OPEN_MODAL_ON_CREATE_KEY
-						] !== false;
+						const openModal =
+							this.plugin.settingsService.settings[OPEN_MODAL_ON_CREATE_KEY] !==
+							false;
 						if (openModal) {
 							new CSSEditorModal(this.app, this.plugin, {
 								type: 'Snippet',
@@ -129,7 +129,8 @@ export class SnippetsTab {
 			.filter((comp) => {
 				// The component has a setVisibility method that toggles the settingEl
 				// We can check the DOM node's style.display
-				const el = (comp as unknown as { setting: { settingEl: HTMLElement } }).setting?.settingEl;
+				const el = (comp as unknown as { setting: { settingEl: HTMLElement } })
+					.setting?.settingEl;
 				return el && el.style.display !== 'none';
 			})
 			.map((comp) => comp.snippetId);
@@ -287,16 +288,16 @@ export class SnippetsTab {
 			.onClick(() => this.bulkDuplicate());
 
 		new ButtonComponent(actions)
+			.setButtonText('Delete')
+			.setWarning()
+			.onClick(() => this.bulkDelete());
+
+		new ButtonComponent(actions)
 			.setButtonText('Toggle')
 			.setCta()
 			.onClick(() => {
 				this.toggleAllSelected();
 			});
-
-		new ButtonComponent(actions)
-			.setButtonText('Delete')
-			.setWarning()
-			.onClick(() => this.bulkDelete());
 
 		new ButtonComponent(actions)
 			.setIcon('cross')

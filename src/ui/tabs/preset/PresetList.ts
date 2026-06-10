@@ -42,14 +42,14 @@ import {
 import StyleManagerPlugin from '../../../main';
 import { Preset } from '../../../types';
 import { getFormattedTimestamp } from '../../../utils/CommonUtils';
-import { ConfirmModal } from '../../modals/ConfirmModal';
-import { CreatePresetModal } from '../../modals/CreatePresetModal';
-import { ImportPresetModal } from '../../modals/ImportPresetModal';
-import { ActiveSchedulesModal } from '../../modals/ActiveSchedulesModal';
 import {
 	handleItemSelection,
 	setupListKeybindings,
 } from '../../../utils/UIUtils';
+import { ActiveSchedulesModal } from '../../modals/ActiveSchedulesModal';
+import { ConfirmModal } from '../../modals/ConfirmModal';
+import { CreatePresetModal } from '../../modals/CreatePresetModal';
+import { ImportPresetModal } from '../../modals/ImportPresetModal';
 
 export class PresetList {
 	private listContainer: HTMLElement;
@@ -248,9 +248,8 @@ export class PresetList {
 			);
 
 			const preferredExtension =
-				(plugin.settingsService.settings[
-					EXPORT_EXTENSION_KEY
-				] as string) || '.json';
+				(plugin.settingsService.settings[EXPORT_EXTENSION_KEY] as string) ||
+				'.json';
 
 			const performExport = async (includeSnippets = false): Promise<void> => {
 				try {
@@ -259,9 +258,7 @@ export class PresetList {
 						: preferredExtension;
 
 					const timestamp = getFormattedTimestamp(
-						plugin.settingsService.settings[
-							EXPORT_DATE_FORMAT_KEY
-						] as string
+						plugin.settingsService.settings[EXPORT_DATE_FORMAT_KEY] as string
 					);
 					const timestampPart = timestamp ? `-${timestamp}` : '';
 					const filename = `bulk-export-style-manager${timestampPart}${extension}`;
@@ -325,9 +322,7 @@ export class PresetList {
 					() => performExport(false)
 				).open();
 			} else {
-				if (
-					plugin.settingsService.settings[SKIP_EXPORT_CONFIRM_KEY]
-				) {
+				if (plugin.settingsService.settings[SKIP_EXPORT_CONFIRM_KEY]) {
 					performExport(false);
 				} else {
 					new ConfirmModal(
@@ -341,6 +336,38 @@ export class PresetList {
 				}
 			}
 		});
+
+		new ButtonComponent(actionsDiv)
+			.setButtonText('Delete')
+			.setWarning()
+			.onClick(() => {
+				const performDelete = async (): Promise<void> => {
+					const presetsToDelete = service.presets.filter((p) =>
+						service.selectedPresets.has(p.id)
+					);
+					await service.trashPresets(presetsToDelete);
+
+					service.presets = service.presets.filter(
+						(p) => !service.selectedPresets.has(p.id)
+					);
+					service.selectedPresets.clear();
+					await service.savePresets();
+					this.onRefresh();
+				};
+
+				if (plugin.settingsService.settings[SKIP_DELETE_CONFIRM_KEY]) {
+					performDelete();
+				} else {
+					new ConfirmModal(
+						plugin.app,
+						'Delete multiple presets',
+						`Are you sure you want to delete ${service.selectedPresets.size} presets? This action cannot be undone.`,
+						'Delete selected',
+						true,
+						performDelete
+					).open();
+				}
+			});
 
 		new ButtonComponent(actionsDiv)
 			.setButtonText('Apply')
@@ -358,11 +385,7 @@ export class PresetList {
 						this.onRefresh();
 					};
 
-					if (
-						plugin.settingsService.settings[
-							SKIP_APPLY_CONFIRM_KEY
-						]
-					) {
+					if (plugin.settingsService.settings[SKIP_APPLY_CONFIRM_KEY]) {
 						performApply();
 					} else {
 						new ConfirmModal(
@@ -404,40 +427,6 @@ export class PresetList {
 				);
 
 				menu.showAtMouseEvent(e as MouseEvent);
-			});
-
-		new ButtonComponent(actionsDiv)
-			.setButtonText('Delete')
-			.setWarning()
-			.onClick(() => {
-				const performDelete = async (): Promise<void> => {
-					const presetsToDelete = service.presets.filter((p) =>
-						service.selectedPresets.has(p.id)
-					);
-					await service.trashPresets(presetsToDelete);
-
-					service.presets = service.presets.filter(
-						(p) => !service.selectedPresets.has(p.id)
-					);
-					service.selectedPresets.clear();
-					await service.savePresets();
-					this.onRefresh();
-				};
-
-				if (
-					plugin.settingsService.settings[SKIP_DELETE_CONFIRM_KEY]
-				) {
-					performDelete();
-				} else {
-					new ConfirmModal(
-						plugin.app,
-						'Delete multiple presets',
-						`Are you sure you want to delete ${service.selectedPresets.size} presets? This action cannot be undone.`,
-						'Delete selected',
-						true,
-						performDelete
-					).open();
-				}
 			});
 
 		new ButtonComponent(actionsDiv)

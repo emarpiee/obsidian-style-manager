@@ -1329,7 +1329,6 @@ button.style-manager-icon-button {
 .style-manager-bulk-actions {
 	display: flex;
 	align-items: center;
-	justify-content: space-between;
 	padding: var(--size-4-2) var(--size-4-4);
 	background-color: var(--sm-bulk-actions-bg);
 	border-radius: calc(var(--radius-m) * 2);
@@ -1342,25 +1341,11 @@ button.style-manager-icon-button {
 	margin-right: auto;
 	z-index: 100;
 	box-shadow: var(--shadow-l);
-	backdrop-filter: blur(8px);
-	-webkit-backdrop-filter: blur(8px);
 	width: fit-content;
-	min-width: 300px;
 	margin-top: auto;
 	margin-bottom: var(--size-4-4);
-}
-
-.is-mobile .style-manager-bulk-actions {
-	width: 92%;
-	max-width: 400px;
-	min-width: unset;
 	gap: var(--size-4-3);
 	flex-direction: column;
-	padding: var(--size-4-4);
-}
-
-.is-phone .style-manager-bulk-actions {
-	bottom: var(--size-4-12);
 }
 
 .style-manager-bulk-count {
@@ -1375,12 +1360,6 @@ button.style-manager-icon-button {
 .style-manager-presets-list.has-bulk-actions,
 .style-manager-snippets-list.has-bulk-actions {
 	padding-bottom: var(--size-4-32) !important;
-}
-
-.is-mobile .style-manager-presets-list.has-bulk-actions,
-.is-mobile .style-manager-snippets-list.has-bulk-actions {
-	padding-bottom: 250px !important;
-	/* Large buffer for mobile vertical bars */
 }
 
 .style-manager-preset-item .setting-item-name {
