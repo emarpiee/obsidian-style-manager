@@ -503,7 +503,8 @@ body.is-phone .style-manager-plugin {
 		var(--sm-badge-primary-theme-border-color);
 }
 
-.style-manager-badge-primary.appearance {
+.style-manager-badge-primary.appearance,
+.style-manager-badge-primary.schedule {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -512,6 +513,16 @@ body.is-phone .style-manager-plugin {
 	height: 16px;
 }
 
+.style-manager-badge-primary.schedule svg {
+	width: 100%;
+	height: 100%;
+	stroke-width: 2px;
+}
+
+.style-manager-badge-primary.schedule {
+	background: none;
+	border: none;
+}
 .style-manager-badge-primary.appearance svg {
 	width: 100%;
 	height: 100%;

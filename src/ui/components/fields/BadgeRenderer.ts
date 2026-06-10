@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { setIcon, setTooltip, displayTooltip } from 'obsidian';
+import { displayTooltip, setIcon, setTooltip } from 'obsidian';
 
 import StyleManagerPlugin from '../../../main';
 import { copyToClipboard } from '../../../utils/UIUtils';
@@ -141,7 +141,7 @@ export function renderScheduleBadge(
 	const badge = container.createSpan({
 		cls: 'style-manager-badge-primary schedule',
 	});
-	setIcon(badge, 'calendar-clock');
+	setIcon(badge, 'clock');
 	setTooltip(badge, description);
 	badge.addClass('is-clickable');
 	badge.onclick = (e: MouseEvent): void => {
