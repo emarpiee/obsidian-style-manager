@@ -44,6 +44,7 @@ export interface ApplyMenuOptions {
 	hideShared?: boolean;
 	hideIsolate?: boolean;
 	hideRemote?: boolean;
+	hideSchedule?: boolean;
 }
 
 export function addApplyOptionsToMenu(
@@ -152,7 +153,7 @@ export function addApplyOptionsToMenu(
 		);
 	}
 
-	if (source.id) {
+	if (source.id && options?.hideSchedule !== true) {
 		menu.addSeparator();
 		menu.addItem((item) =>
 			item

@@ -82,6 +82,7 @@ export class PresetPreviewModal extends Modal {
 
 						addApplyOptionsToMenu(menu, this.plugin, this.preset, {
 							onApplied: () => this.close(),
+							hideSchedule: true,
 						});
 
 						if (e instanceof MouseEvent) {
