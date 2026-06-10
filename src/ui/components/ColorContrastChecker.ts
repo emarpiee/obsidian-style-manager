@@ -31,40 +31,30 @@ export class ColorContrastChecker {
 		contentEl.addClass('modal-style-manager');
 		contentEl.addClass('style-manager-color-contrast-modal');
 
-		const actionsDiv = contentEl.createDiv({
-			cls: 'style-manager-tool-contrast-actions',
+		this.resultsEl = contentEl.createDiv({
+			cls: 'style-manager-tool-contrast-results',
 		});
 
-		const randomBtn = actionsDiv.createEl('button');
-		setIcon(randomBtn, 'dice');
-		setTooltip(randomBtn, 'Randomize FG and BG color');
-		randomBtn.onclick = (): void => this.randomizeColors();
+		this.previewEl = contentEl.createDiv({
+			cls: 'style-manager-tool-contrast-preview',
+		});
 
-		const swapBtn = actionsDiv.createEl('button');
-		setIcon(swapBtn, 'repeat');
-		swapBtn.createSpan({ text: 'Swap' });
-		setTooltip(swapBtn, 'Swap the FG and BG color');
-		swapBtn.onclick = (): void => this.swapColors();
+		this.largeTextPreviewEl = this.previewEl.createDiv({
+			cls: 'style-manager-tool-contrast-preview-large',
+		});
+		this.largeTextPreviewEl.setText('Contrast');
 
-		const suggestBtn = actionsDiv.createEl('button');
-		setIcon(suggestBtn, 'wand-2');
-		suggestBtn.createSpan({ text: 'Suggest' });
-		setTooltip(suggestBtn, 'Suggest passing colors');
-		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
+		this.normalTextPreviewEl = this.previewEl.createDiv({
+			cls: 'style-manager-tool-contrast-preview-normal',
+		});
+		this.normalTextPreviewEl.setText(
+			'Contrast is the difference in luminance or color that makes an object or its representation in an image or display distinguishable. In visual perception of the real world, contrast is determined by the difference in the color and brightness of the object and other objects within the same field of view.'
+		);
 
-		if (plugin) {
-			const openInTabBtn = actionsDiv.createDiv({
-				cls: 'clickable-icon',
-			});
-			setIcon(openInTabBtn, 'external-link');
-			setTooltip(openInTabBtn, 'Open this tool in a tab');
-			openInTabBtn.onclick = async (): Promise<void> => {
-				await plugin.activateContrastView();
-				if (onOpenInTab) {
-					onOpenInTab();
-				}
-			};
-		}
+		const smallTextPreviewEl = this.previewEl.createDiv({
+			cls: 'style-manager-tool-contrast-preview-small',
+		});
+		smallTextPreviewEl.setText('from Wikipedia, the free encyclopedia');
 
 		this.fgSetting = new Setting(contentEl)
 			.setClass('style-manager-tool-contrast-color-row')
@@ -142,30 +132,40 @@ export class ColorContrastChecker {
 			}
 		);
 
-		this.previewEl = contentEl.createDiv({
-			cls: 'style-manager-tool-contrast-preview',
+		const actionsDiv = contentEl.createDiv({
+			cls: 'style-manager-tool-contrast-actions',
 		});
 
-		this.largeTextPreviewEl = this.previewEl.createDiv({
-			cls: 'style-manager-tool-contrast-preview-large',
-		});
-		this.largeTextPreviewEl.setText('Contrast');
+		const randomBtn = actionsDiv.createEl('button');
+		setIcon(randomBtn, 'dice');
+		setTooltip(randomBtn, 'Randomize FG and BG color');
+		randomBtn.onclick = (): void => this.randomizeColors();
 
-		this.normalTextPreviewEl = this.previewEl.createDiv({
-			cls: 'style-manager-tool-contrast-preview-normal',
-		});
-		this.normalTextPreviewEl.setText(
-			'Contrast is the difference in luminance or color that makes an object or its representation in an image or display distinguishable. In visual perception of the real world, contrast is determined by the difference in the color and brightness of the object and other objects within the same field of view.'
-		);
+		const swapBtn = actionsDiv.createEl('button');
+		setIcon(swapBtn, 'repeat');
+		swapBtn.createSpan({ text: 'Swap' });
+		setTooltip(swapBtn, 'Swap the FG and BG color');
+		swapBtn.onclick = (): void => this.swapColors();
 
-		const smallTextPreviewEl = this.previewEl.createDiv({
-			cls: 'style-manager-tool-contrast-preview-small',
-		});
-		smallTextPreviewEl.setText('from Wikipedia, the free encyclopedia');
+		const suggestBtn = actionsDiv.createEl('button');
+		setIcon(suggestBtn, 'wand-2');
+		suggestBtn.createSpan({ text: 'Suggest' });
+		setTooltip(suggestBtn, 'Suggest passing colors');
+		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
 
-		this.resultsEl = contentEl.createDiv({
-			cls: 'style-manager-tool-contrast-results',
-		});
+		if (plugin) {
+			const openInTabBtn = actionsDiv.createDiv({
+				cls: 'clickable-icon',
+			});
+			setIcon(openInTabBtn, 'external-link');
+			setTooltip(openInTabBtn, 'Open this tool in a tab');
+			openInTabBtn.onclick = async (): Promise<void> => {
+				await plugin.activateContrastView();
+				if (onOpenInTab) {
+					onOpenInTab();
+				}
+			};
+		}
 
 		this.updateResults();
 	}
