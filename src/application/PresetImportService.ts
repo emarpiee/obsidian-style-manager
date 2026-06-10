@@ -61,7 +61,7 @@ export class PresetImportService {
 						zip.file(/shared_locker_state\.(json|md|txt)$/i).length > 0
 					) {
 						throw new Error(
-							'This file appears to be a backup file. To restore a configuration, please navigate to the Preferences tab and use the Full Backup & Restore section.'
+							'Invalid preset file. This file appears to be a backup or configuration file..'
 						);
 					}
 
@@ -112,10 +112,7 @@ export class PresetImportService {
 								targetedPrefixes: p.targetedPrefixes,
 							});
 						});
-					} else if (
-						parsed &&
-						typeof parsed === 'object'
-					) {
+					} else if (parsed && typeof parsed === 'object') {
 						// VALIDATION: Reject Full Backups
 						if (
 							'_manager_presets' in parsed ||
@@ -124,7 +121,7 @@ export class PresetImportService {
 							'__shared_version' in parsed
 						) {
 							throw new Error(
-								'This file appears to be a backup file. To restore a configuration, please navigate to the Preferences tab and use the Full Backup & Restore section.'
+								'Invalid preset file. This file appears to be a backup or configuration file..'
 							);
 						}
 
@@ -133,18 +130,19 @@ export class PresetImportService {
 							id: crypto.randomUUID(),
 							name: parsed.name || item.name || 'Imported Preset',
 							created: parsed.created || Date.now(),
-							data: ('data' in parsed) ? parsed.data : parsed,
-							targetedPrefixes: (parsed as { targetedPrefixes?: string[] }).targetedPrefixes,
+							data: 'data' in parsed ? parsed.data : parsed,
+							targetedPrefixes: (parsed as { targetedPrefixes?: string[] })
+								.targetedPrefixes,
 						});
 					} else {
 						throw new Error(
-							'This file appears to be a backup file. To restore a configuration, please navigate to the Preferences tab and use the Full Backup & Restore section.'
+							'Invalid preset file. This file appears to be a backup or configuration file..'
 						);
 					}
 				}
 			} catch (e) {
 				this.plugin.settingsService.notifications.error(
-					`Error analyzing ${item.name || 'import'}: ${e}`
+					`Error analyzing ${item.name || 'import'}. ${e}`
 				);
 			}
 		}

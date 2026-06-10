@@ -50,11 +50,6 @@ export class ImportPresetModal extends Modal {
 			cls: 'style-manager-modal-description',
 		});
 
-		const errorSpan = contentEl.createEl('p', {
-			cls: 'style-manager-import-error style-manager-modal-error style-manager-hidden',
-			text: '',
-		});
-
 		const processImports = async (
 			items: { content: string | ArrayBuffer; name?: string }[]
 		): Promise<void> => {
@@ -192,9 +187,6 @@ export class ImportPresetModal extends Modal {
 				text.setPlaceholder('Paste your JSON here...');
 				text.inputEl.addClass('style-manager-modal-textarea');
 				text.inputEl.rows = 10;
-				text.onChange(() => {
-					errorSpan.addClass('style-manager-hidden');
-				});
 				return text;
 			});
 
@@ -212,8 +204,10 @@ export class ImportPresetModal extends Modal {
 							textArea.components[0] as TextAreaComponent
 						).getValue();
 						if (!val.trim()) {
-							errorSpan.setText('Please paste some JSON data.');
-							errorSpan.removeClass('style-manager-hidden');
+							this.service.plugin.settingsService.notifications.error(
+								'Invalid preset JSON data.',
+								1000
+							);
 							return;
 						}
 
@@ -221,8 +215,10 @@ export class ImportPresetModal extends Modal {
 							JSON.parse(val);
 							await processImports([{ content: val }]);
 						} catch {
-							errorSpan.setText('Invalid JSON data.');
-							errorSpan.removeClass('style-manager-hidden');
+							this.service.plugin.settingsService.notifications.error(
+								'Invalid preset JSON data.',
+								1000
+							);
 						}
 					});
 			});

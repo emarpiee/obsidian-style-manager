@@ -482,7 +482,11 @@ export class SettingsService extends Events {
 				? this.isolateModeService.isolateSettings
 				: locker.isolateSettings;
 
-		Object.assign(data, isolateSettings);
+		const filteredIsolateSettings = { ...isolateSettings };
+		delete filteredIsolateSettings._manager_presets;
+		delete filteredIsolateSettings._manager_schedules;
+
+		Object.assign(data, filteredIsolateSettings);
 
 		// 4. Fallback for core settings if still missing
 		// This ensures the preset is "complete" even if some keys weren't explicitly set.

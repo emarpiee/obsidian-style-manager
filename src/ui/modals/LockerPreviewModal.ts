@@ -57,18 +57,8 @@ export class LockerPreviewModal extends Modal {
 				})
 			)
 			.addButton((btn) =>
-				btn.setButtonText('Copy to clipboard').onClick(async () => {
-					await navigator.clipboard.writeText(
-						JSON.stringify(this.data, null, 2)
-					);
-					this.plugin.settingsService.notifications.util(
-						'Copied to clipboard!'
-					);
-				})
-			)
-			.addButton((btn) =>
 				btn
-					.setButtonText('Save as preset')
+					.setButtonText('Save active styles as preset')
 					.setCta()
 					.onClick(async () => {
 						const effectiveData =
