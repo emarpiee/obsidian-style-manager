@@ -43,8 +43,16 @@ export class PresetScheduleModal extends Modal {
 		super(app);
 		this.plugin = plugin;
 		this.presetId = presetId;
-		this.schedule =
-			this.plugin.presetScheduleService.getScheduleForPreset(presetId);
+		let schedule = this.plugin.presetScheduleService.getScheduleForPreset(presetId);
+		if (
+			schedule &&
+			schedule.targetLocker === 'isolate' &&
+			schedule.deviceId &&
+			schedule.deviceId !== this.plugin.settingsService.deviceId
+		) {
+			schedule = undefined;
+		}
+		this.schedule = schedule;
 
 		const devices = this.plugin.settingsService.settings.__devices || {};
 		const defaultTarget = Object.keys(devices).length > 0 ? 'shared' : 'shared';

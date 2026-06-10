@@ -240,6 +240,7 @@ export interface PresetSchedule {
 	rruleString: string;
 	targetLocker: 'shared' | 'isolate' | string;
 	lastExecuted: number;
+	deviceId?: string;
 	isPaused?: boolean;
 }
 

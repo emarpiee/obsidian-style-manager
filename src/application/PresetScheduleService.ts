@@ -66,6 +66,7 @@ export class PresetScheduleService {
 
 	public async addSchedule(schedule: PresetSchedule): Promise<void> {
 		const current = this.schedules;
+		schedule.deviceId = this.plugin.settingsService.deviceId;
 		current.push(schedule);
 		this.schedules = current;
 		await this.plugin.settingsService.save();
@@ -91,7 +92,7 @@ export class PresetScheduleService {
 		const currentSchedules = this.schedules;
 		let updated = false;
 
-		const getPretendUTC = (d: Date) => 
+		const getPretendUTC = (d: Date): Date => 
 			new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
 		
 		const nowPretendUTC = getPretendUTC(now);
@@ -99,6 +100,10 @@ export class PresetScheduleService {
 		for (const schedule of currentSchedules) {
 			if (schedule.isPaused) continue;
 			
+			if (schedule.targetLocker === 'isolate' && schedule.deviceId && schedule.deviceId !== this.plugin.settingsService.deviceId) {
+				continue;
+			}
+
 			try {
 				const rule = RRule.fromString(schedule.rruleString);
 				

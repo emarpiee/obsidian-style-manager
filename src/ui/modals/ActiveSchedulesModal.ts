@@ -53,6 +53,10 @@ export class ActiveSchedulesModal extends Modal {
 		}
 
 		for (const schedule of schedules) {
+			if (schedule.targetLocker === 'isolate' && schedule.deviceId && schedule.deviceId !== this.plugin.settingsService.deviceId) {
+				continue;
+			}
+
 			const preset = this.plugin.presetService.getPresetById(schedule.presetId);
 			const presetName = preset ? preset.name : 'Unknown preset';
 
