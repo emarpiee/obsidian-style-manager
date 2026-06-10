@@ -16,17 +16,17 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, SuggestModal } from 'obsidian';
+import { App } from 'obsidian';
 
 import { DeviceSelectionModal } from './DeviceSelectionModal';
+import { PresetSuggestModal } from './PresetSuggestModal';
 
 import { PresetService } from '../../application/PresetService';
 import { Preset } from '../../types';
 
 export type ApplyPresetTarget = 'shared' | 'this-device' | 'other-device';
 
-export class CommandApplyPresetModal extends SuggestModal<Preset> {
-	presetService: PresetService;
+export class CommandApplyPresetModal extends PresetSuggestModal {
 	target: ApplyPresetTarget;
 
 	constructor(
@@ -34,25 +34,8 @@ export class CommandApplyPresetModal extends SuggestModal<Preset> {
 		presetService: PresetService,
 		target: ApplyPresetTarget
 	) {
-		super(app);
-		this.presetService = presetService;
+		super(app, presetService, 'Search presets...');
 		this.target = target;
-	}
-
-	onOpen(): void {
-		this.setPlaceholder('Search presets...');
-		if (this.inputEl) {
-			this.inputEl.value = '';
-			this.inputEl.dispatchEvent(new Event('input'));
-		}
-	}
-
-	getSuggestions(query: string): Preset[] {
-		if (!query) return this.presetService.presets;
-
-		return this.presetService.presets.filter((preset) =>
-			preset.name.toLowerCase().includes(query.toLowerCase())
-		);
 	}
 
 	onChooseSuggestion(preset: Preset, _evt: MouseEvent | KeyboardEvent): void {
@@ -95,8 +78,5 @@ export class CommandApplyPresetModal extends SuggestModal<Preset> {
 				break;
 		}
 	}
-
-	renderSuggestion(preset: Preset, el: HTMLElement): void {
-		el.createEl('div', { text: preset.name });
-	}
 }
+

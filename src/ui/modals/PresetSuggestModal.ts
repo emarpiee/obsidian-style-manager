@@ -16,27 +16,42 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App } from 'obsidian';
+import { App, SuggestModal } from 'obsidian';
 
-import { PresetScheduleModal } from './PresetScheduleModal';
-import { PresetSuggestModal } from './PresetSuggestModal';
 import { PresetService } from '../../application/PresetService';
 import { Preset } from '../../types';
 
-export class CommandSchedulePresetModal extends PresetSuggestModal {
+export abstract class PresetSuggestModal extends SuggestModal<Preset> {
+	presetService: PresetService;
+	placeholder: string;
+
 	constructor(
 		app: App,
-		presetService: PresetService
+		presetService: PresetService,
+		placeholder: string
 	) {
-		super(app, presetService, 'Search presets to schedule...');
+		super(app);
+		this.presetService = presetService;
+		this.placeholder = placeholder;
 	}
 
-	onChooseSuggestion(preset: Preset, _evt: MouseEvent | KeyboardEvent): void {
-		new PresetScheduleModal(
-			this.app,
-			this.presetService.plugin,
-			preset.id
-		).open();
-		this.close();
+	onOpen(): void {
+		this.setPlaceholder(this.placeholder);
+		if (this.inputEl) {
+			this.inputEl.value = '';
+			this.inputEl.dispatchEvent(new Event('input'));
+		}
+	}
+
+	getSuggestions(query: string): Preset[] {
+		if (!query) return this.presetService.presets;
+
+		return this.presetService.presets.filter((preset) =>
+			preset.name.toLowerCase().includes(query.toLowerCase())
+		);
+	}
+
+	renderSuggestion(preset: Preset, el: HTMLElement): void {
+		el.createEl('div', { text: preset.name });
 	}
 }
