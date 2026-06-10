@@ -62,6 +62,8 @@ import { StatusBarManager } from './ui/elements/StatusBarManager';
 import { BoxOutlineColorPromptModal } from './ui/modals/BoxOutlineColorPromptModal';
 import { ColorContrastCheckerModal } from './ui/modals/ColorContrastCheckerModal';
 import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
+import { ActiveSchedulesModal } from './ui/modals/ActiveSchedulesModal';
+import { CommandSchedulePresetModal } from './ui/modals/CommandSchedulePresetModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
@@ -135,6 +137,22 @@ export default class StyleManagerPlugin extends Plugin {
 		this.settingsService.viewManager.registerSettingsTab(
 			new StyleManagerSettingTab(this.app, this)
 		);
+
+		this.addCommand({
+			id: 'style-manager-command-view-active-schedules',
+			name: 'View active schedules',
+			callback: () => {
+				new ActiveSchedulesModal(this.app, this).open();
+			},
+		});
+
+		this.addCommand({
+			id: 'style-manager-command-set-preset-schedule',
+			name: 'Set schedule for a preset',
+			callback: () => {
+				new CommandSchedulePresetModal(this.app, this.presetService).open();
+			},
+		});
 
 		this.addCommand({
 			id: 'style-manager-command-save-preset',
