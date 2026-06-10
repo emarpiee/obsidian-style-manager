@@ -55,13 +55,13 @@ export class ColorContrastChecker {
 
 		const suggestFgBtn = actionsDiv.createEl('button');
 		setIcon(suggestFgBtn, 'wand-2');
-		suggestFgBtn.createSpan({ text: 'Suggest FG' });
+		suggestFgBtn.createSpan({ text: 'FG' });
 		setTooltip(suggestFgBtn, 'Suggest passing foreground color');
 		suggestFgBtn.onclick = (): void => this.suggestForegroundColor();
 
 		const suggestBgBtn = actionsDiv.createEl('button');
 		setIcon(suggestBgBtn, 'wand-2');
-		suggestBgBtn.createSpan({ text: 'Suggest BG' });
+		suggestBgBtn.createSpan({ text: 'BG' });
 		setTooltip(suggestBgBtn, 'Suggest passing background color');
 		suggestBgBtn.onclick = (): void => this.suggestBackgroundColor();
 
