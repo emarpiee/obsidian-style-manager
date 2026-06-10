@@ -84,7 +84,7 @@ export class IsolateTab {
 		new Setting(isolateContainer)
 			.setName('Always show shared presets')
 			.setDesc(
-				'When enabled, the preset list will always show the shared locker presets, even if Isolate Mode is enabled.'
+				'When enabled, the preset list will always show the shared locker presets, even if isolate mode is enabled.'
 			)
 			.addToggle((toggle) => {
 				toggle

@@ -46,6 +46,8 @@ export class PresetScheduleService {
 	public start(): void {
 		if (this.intervalId !== null) return;
 
+		this.cleanupOrphanedSchedules();
+
 		// Check immediately on start
 		this.checkSchedules();
 
@@ -176,6 +178,22 @@ export class PresetScheduleService {
 		this.schedules = this.schedules.filter((s) => s.id !== id);
 		await this.plugin.settingsService.save();
 		this.plugin.settingsService.trigger('preset-schedules-updated');
+	}
+
+	private async cleanupOrphanedSchedules(): Promise<void> {
+		const knownDeviceIds = this.plugin.settingsService.identity.getAllDeviceIds();
+		const currentSchedules = this.schedules;
+		const filteredSchedules = currentSchedules.filter((s) => {
+			if (s.targetLocker === 'isolate' && s.deviceId && !knownDeviceIds.includes(s.deviceId)) {
+				return false;
+			}
+			return true;
+		});
+
+		if (filteredSchedules.length !== currentSchedules.length) {
+			this.schedules = filteredSchedules;
+			await this.plugin.settingsService.save();
+		}
 	}
 
 	private async checkSchedules(): Promise<void> {
