@@ -66,7 +66,6 @@ export class PresetPreviewModal extends Modal {
 					.setButtonText('Schedule')
 					.setCta()
 					.onClick(() => {
-						this.close();
 						new PresetScheduleModal(
 							this.plugin.app,
 							this.plugin,

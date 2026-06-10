@@ -91,7 +91,6 @@ export class ActiveSchedulesModal extends Modal {
 					.setIcon('pencil')
 					.setTooltip('Edit time')
 					.onClick(() => {
-						this.close();
 						new PresetScheduleModal(
 							this.plugin.app,
 							this.plugin,
