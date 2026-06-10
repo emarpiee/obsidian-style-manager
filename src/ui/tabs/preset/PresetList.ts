@@ -80,7 +80,7 @@ export class PresetList {
 				);
 			})
 			.addExtraButton((btn) => {
-				const updateBtn = () => {
+				const updateBtn = (): void => {
 					const mode = service.getEffectiveViewMode();
 					if (mode === 'isolate') {
 						btn.setIcon('eye');

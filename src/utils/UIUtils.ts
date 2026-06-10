@@ -145,7 +145,7 @@ export interface ListSelectionOptions<T> {
 export function setupListKeybindings<T>(
 	options: ListSelectionOptions<T>
 ): () => void {
-	const handler = (e: KeyboardEvent) => {
+	const handler = (e: KeyboardEvent): void => {
 		if (!document.contains(options.container)) {
 			// Auto-cleanup if container is removed
 			document.removeEventListener('keydown', handler, true);

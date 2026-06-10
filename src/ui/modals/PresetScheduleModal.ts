@@ -18,15 +18,14 @@
 */
 import {
 	App,
-	ButtonComponent,
-	DropdownComponent,
 	Modal,
 	Setting,
+	Notice,
 } from 'obsidian';
 import { Options, RRule } from 'rrule';
 
 import StyleManagerPlugin from '../../main';
-import { Preset, PresetSchedule } from '../../types';
+import { PresetSchedule } from '../../types';
 
 export class PresetScheduleModal extends Modal {
 	plugin: StyleManagerPlugin;
@@ -74,7 +73,7 @@ export class PresetScheduleModal extends Modal {
 		}
 	}
 
-	parseRRuleString(rruleString: string) {
+	parseRRuleString(rruleString: string): void {
 		try {
 			const options = RRule.fromString(rruleString).options;
 
@@ -170,11 +169,11 @@ export class PresetScheduleModal extends Modal {
 		return new RRule(ruleOpts).toString();
 	}
 
-	onOpen() {
+	onOpen(): void {
 		this.render();
 	}
 
-	render() {
+	render(): void {
 		const { contentEl } = this;
 		contentEl.empty();
 
@@ -200,7 +199,7 @@ export class PresetScheduleModal extends Modal {
 			const inputEl = document.createElement('input');
 			inputEl.type = 'datetime-local';
 			inputEl.value = this.datetimeValue;
-			inputEl.onchange = (e) => {
+			inputEl.onchange = (e): void => {
 				this.datetimeValue = (e.target as HTMLInputElement).value;
 			};
 			setting.controlEl.appendChild(inputEl);
@@ -228,13 +227,13 @@ export class PresetScheduleModal extends Modal {
 			const inputEl = document.createElement('input');
 			inputEl.type = 'time';
 			inputEl.value = this.timeValue;
-			inputEl.onchange = (e) => {
+			inputEl.onchange = (e): void => {
 				this.timeValue = (e.target as HTMLInputElement).value;
 			};
 			setting.controlEl.appendChild(inputEl);
 		}
 
-		const lockerSetting = new Setting(contentEl)
+		new Setting(contentEl)
 			.setName('Target locker')
 			.addDropdown((dd) => {
 				dd.addOption('shared', 'Shared locker');
@@ -284,6 +283,16 @@ export class PresetScheduleModal extends Modal {
 					if (this.schedule) {
 						this.schedule.rruleString = rruleStr;
 						this.schedule.targetLocker = this.targetLocker;
+
+						const conflict = this.plugin.presetScheduleService.checkConflict(
+							this.schedule,
+							this.schedule.id
+						);
+						if (conflict) {
+							new Notice(conflict);
+							return;
+						}
+
 						await this.plugin.presetScheduleService.updateSchedule(
 							this.schedule
 						);
@@ -295,6 +304,15 @@ export class PresetScheduleModal extends Modal {
 							targetLocker: this.targetLocker,
 							lastExecuted: 0,
 						};
+
+						const conflict = this.plugin.presetScheduleService.checkConflict(
+							newSchedule
+						);
+						if (conflict) {
+							new Notice(conflict);
+							return;
+						}
+
 						await this.plugin.presetScheduleService.addSchedule(newSchedule);
 					}
 					this.close();
@@ -302,7 +320,7 @@ export class PresetScheduleModal extends Modal {
 		});
 	}
 
-	onClose() {
+	onClose(): void {
 		const { contentEl } = this;
 		contentEl.empty();
 	}

@@ -151,7 +151,7 @@ export abstract class AbstractSettingComponent extends Component {
 	/**
 	 * Returns the number of results this component represents.
 	 */
-	getMatchCount(showModifiedOnly: boolean): number {
+	getMatchCount(_showModifiedOnly: boolean): number {
 		return 1;
 	}
 }

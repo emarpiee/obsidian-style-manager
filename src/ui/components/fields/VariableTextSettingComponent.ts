@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Setting, TextComponent, debounce } from 'obsidian';
+import { Setting, TextComponent } from 'obsidian';
 
 import { t } from '../../../infrastructure/lang/helpers';
 import { VariableText, resetTooltip } from '../../../types';
@@ -57,7 +57,7 @@ export class VariableTextSettingComponent extends AbstractSettingComponent {
 				this.setting.id
 			);
 
-			const onCommit = (value: string) => {
+			const onCommit = (value: string): void => {
 				const sanitizedValue = sanitizeText(value);
 				if (sanitizedValue === this.setting.default) {
 					this.settingsService.clearSetting(this.sectionId, this.setting.id, {

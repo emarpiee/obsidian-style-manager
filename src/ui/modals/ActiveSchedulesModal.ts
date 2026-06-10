@@ -16,13 +16,12 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { App, ButtonComponent, Modal, Setting } from 'obsidian';
+import { App, Modal, Setting } from 'obsidian';
 import { RRule } from 'rrule';
 
 import { PresetScheduleModal } from './PresetScheduleModal';
 
 import StyleManagerPlugin from '../../main';
-import { Preset } from '../../types';
 
 export class ActiveSchedulesModal extends Modal {
 	plugin: StyleManagerPlugin;
@@ -32,11 +31,11 @@ export class ActiveSchedulesModal extends Modal {
 		this.plugin = plugin;
 	}
 
-	onOpen() {
+	onOpen(): void {
 		this.render();
 	}
 
-	render() {
+	render(): void {
 		const { contentEl } = this;
 		contentEl.empty();
 
@@ -116,7 +115,7 @@ export class ActiveSchedulesModal extends Modal {
 		}
 	}
 
-	onClose() {
+	onClose(): void {
 		const { contentEl } = this;
 		contentEl.empty();
 	}

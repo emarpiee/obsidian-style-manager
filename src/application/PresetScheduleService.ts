@@ -64,6 +64,57 @@ export class PresetScheduleService {
 		return this.schedules.find((s) => s.presetId === presetId);
 	}
 
+	public checkConflict(schedule: PresetSchedule, excludeId?: string): string | null {
+		const currentSchedules = this.schedules;
+		const rule = RRule.fromString(schedule.rruleString);
+
+		// We check for collisions within a reasonable window (e.g., the next year)
+		// because recurring rules can technically go on forever.
+		const now = new Date();
+		const oneYearFromNow = new Date();
+		oneYearFromNow.setFullYear(now.getFullYear() + 1);
+
+		const targetOccurrences = rule.between(now, oneYearFromNow);
+
+		for (const other of currentSchedules) {
+			if (excludeId && other.id === excludeId) continue;
+			if (other.isPaused) continue;
+
+			const otherRule = RRule.fromString(other.rruleString);
+			
+			for (const tOcc of targetOccurrences) {
+				// Check if the other rule has an occurrence at the exact same time
+				// We use .between with a small window around the target occurrence
+				const start = new Date(tOcc.getTime() - 1000);
+				const end = new Date(tOcc.getTime() + 1000);
+				const matches = otherRule.between(start, end);
+				
+				if (matches.length > 0) {
+					const otherPreset = this.plugin.presetService.getPresetById(other.presetId);
+					
+					const formatter = new Intl.DateTimeFormat('en-US', {
+						month: 'long',
+						day: 'numeric',
+						year: 'numeric',
+						weekday: 'short',
+						hour: 'numeric',
+						minute: '2-digit',
+						hour12: true,
+						timeZone: 'UTC',
+					});
+
+					const parts = formatter.formatToParts(tOcc);
+					const p = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+					const formattedDate = `${p.month} ${p.day}, ${p.year} ${p.weekday}. ${p.hour}:${p.minute} ${p.dayPeriod}`;
+					
+					return `Conflict with preset "${otherPreset?.name || 'Unknown'}" at ${formattedDate}`;
+				}
+			}
+		}
+
+		return null;
+	}
+
 	public async addSchedule(schedule: PresetSchedule): Promise<void> {
 		const current = this.schedules;
 		schedule.deviceId = this.plugin.settingsService.deviceId;

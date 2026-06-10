@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Setting, TextComponent, debounce } from 'obsidian';
+import { Setting, TextComponent } from 'obsidian';
 
 import { t } from '../../../infrastructure/lang/helpers';
 import { VariableNumber, resetTooltip } from '../../../types';
@@ -52,7 +52,7 @@ export class VariableNumberSettingComponent extends AbstractSettingComponent {
 				this.sectionId,
 				this.setting.id
 			);
-			const onCommit = (value: string) => {
+			const onCommit = (value: string): void => {
 				const isFloat = /\./.test(value);
 				const numValue = isFloat ? parseFloat(value) : parseInt(value, 10);
 
