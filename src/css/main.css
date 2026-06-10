@@ -779,6 +779,7 @@ body.is-phone .style-manager-plugin {
 }
 
 .style-manager-tool-contrast-preview {
+	position: relative;
 	margin-top: 20px;
 	padding: 20px;
 	border-radius: 8px;
@@ -787,6 +788,18 @@ body.is-phone .style-manager-plugin {
 	display: flex;
 	flex-direction: column;
 	gap: 10px;
+}
+
+.style-manager-tool-contrast-swap-btn {
+	position: absolute;
+	top: 10px;
+	left: 10px;
+	cursor: pointer;
+}
+
+.style-manager-tool-contrast-swap-btn svg {
+	stroke: currentColor;
+	fill: currentColor;
 }
 
 .style-manager-tool-contrast-preview-large {

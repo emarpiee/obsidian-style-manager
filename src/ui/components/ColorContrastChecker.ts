@@ -23,6 +23,7 @@ export class ColorContrastChecker {
 	private normalTextPreviewEl: HTMLElement;
 	private largeTextPreviewEl: HTMLElement;
 	private resultsEl: HTMLElement;
+	private swapBtn: HTMLElement;
 
 	render(contentEl: HTMLElement, options: RenderOptions = {}): void {
 		const { plugin, onOpenInTab } = options;
@@ -38,6 +39,14 @@ export class ColorContrastChecker {
 		this.previewEl = contentEl.createDiv({
 			cls: 'style-manager-tool-contrast-preview',
 		});
+
+		const swapBtn = this.previewEl.createDiv({
+			cls: 'clickable-icon style-manager-tool-contrast-swap-btn',
+		});
+		this.swapBtn = swapBtn;
+		setIcon(swapBtn, 'arrow-down-up');
+		setTooltip(swapBtn, 'Swap the FG and BG color');
+		swapBtn.onclick = (): void => this.swapColors();
 
 		this.largeTextPreviewEl = this.previewEl.createDiv({
 			cls: 'style-manager-tool-contrast-preview-large',
@@ -140,12 +149,6 @@ export class ColorContrastChecker {
 		setIcon(randomBtn, 'dice');
 		setTooltip(randomBtn, 'Randomize FG and BG color');
 		randomBtn.onclick = (): void => this.randomizeColors();
-
-		const swapBtn = actionsDiv.createEl('button');
-		setIcon(swapBtn, 'repeat');
-		swapBtn.createSpan({ text: 'Swap' });
-		setTooltip(swapBtn, 'Swap the FG and BG color');
-		swapBtn.onclick = (): void => this.swapColors();
 
 		const suggestBtn = actionsDiv.createEl('button');
 		setIcon(suggestBtn, 'wand-2');
@@ -294,6 +297,7 @@ export class ColorContrastChecker {
 		this.updateLabels();
 		this.previewEl.style.backgroundColor = this.bgColor;
 		this.previewEl.style.color = this.fgColor;
+		this.swapBtn.style.color = this.fgColor;
 
 		try {
 			const contrast = chroma.contrast(this.fgColor, this.bgColor);
