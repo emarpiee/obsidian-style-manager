@@ -151,6 +151,7 @@ export class PresetScheduleService {
 		current.push(schedule);
 		this.schedules = current;
 		await this.plugin.settingsService.save();
+		this.plugin.settingsService.trigger('preset-schedules-updated');
 	}
 
 	public async updateSchedule(schedule: PresetSchedule): Promise<void> {
@@ -160,12 +161,14 @@ export class PresetScheduleService {
 			current[index] = schedule;
 			this.schedules = current;
 			await this.plugin.settingsService.save();
+			this.plugin.settingsService.trigger('preset-schedules-updated');
 		}
 	}
 
 	public async deleteSchedule(id: string): Promise<void> {
 		this.schedules = this.schedules.filter((s) => s.id !== id);
 		await this.plugin.settingsService.save();
+		this.plugin.settingsService.trigger('preset-schedules-updated');
 	}
 
 	private async checkSchedules(): Promise<void> {

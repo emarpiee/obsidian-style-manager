@@ -65,7 +65,7 @@ export class StatusBarManager {
 	 */
 	public refresh(): void {
 		const showStatusBar =
-			this.plugin.settingsService.settings[SHOW_STATUS_BAR_KEY] !== false;
+			this.plugin.settingsService.settings[SHOW_STATUS_BAR_KEY] === true;
 
 		if (!showStatusBar) {
 			this.cleanup();

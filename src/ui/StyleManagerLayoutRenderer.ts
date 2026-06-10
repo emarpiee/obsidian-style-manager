@@ -86,6 +86,12 @@ export class StyleManagerLayoutRenderer extends Component {
 				if (this.activeTab === 'isolate') this.rerender();
 			})
 		);
+
+		this.registerEvent(
+			this.plugin.settingsService.on('preset-schedules-updated', () => {
+				if (this.activeTab === 'presets') this.rerender();
+			})
+		);
 	}
 
 	onunload(): void {

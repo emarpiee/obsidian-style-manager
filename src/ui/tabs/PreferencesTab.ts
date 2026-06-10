@@ -413,7 +413,7 @@ export class PreferencesTab {
 					.setValue(
 						(plugin.settingsService.settings[
 							SHOW_STATUS_BAR_KEY
-						] as boolean) !== false
+						] as boolean) === true
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
