@@ -26,15 +26,18 @@ import StyleManagerPlugin from '../../main';
 export class ActiveSchedulesModal extends Modal {
 	plugin: StyleManagerPlugin;
 	private updateHandler: () => void;
- 
+
 	constructor(app: App, plugin: StyleManagerPlugin) {
 		super(app);
 		this.plugin = plugin;
 		this.updateHandler = (): void => this.render();
 	}
- 
+
 	onOpen(): void {
-		this.plugin.settingsService.on('preset-schedules-updated', this.updateHandler);
+		this.plugin.settingsService.on(
+			'preset-schedules-updated',
+			this.updateHandler
+		);
 		this.render();
 	}
 
@@ -68,9 +71,15 @@ export class ActiveSchedulesModal extends Modal {
 
 			let scheduleText = 'Unknown schedule';
 			try {
-				const scheduleObj = this.plugin.presetScheduleService.getScheduleForPreset(schedule.presetId);
+				const scheduleObj =
+					this.plugin.presetScheduleService.getScheduleForPreset(
+						schedule.presetId
+					);
 				if (scheduleObj) {
-					scheduleText = this.plugin.presetScheduleService.getScheduleDescription(scheduleObj);
+					scheduleText =
+						this.plugin.presetScheduleService.getScheduleDescription(
+							scheduleObj
+						);
 				} else {
 					const rule = RRule.fromString(schedule.rruleString);
 					scheduleText = rule.toText();
@@ -84,7 +93,7 @@ export class ActiveSchedulesModal extends Modal {
 			const badgeCls =
 				schedule.targetLocker === 'shared' ? 'badge-shared' : 'badge-isolate';
 			const badgeText =
-				schedule.targetLocker === 'shared' ? 'Shared' : 'Isolated';
+				schedule.targetLocker === 'shared' ? 'Shared' : 'Isolate';
 
 			const container = setting.descEl.createDiv(
 				'style-manager-badge-container'
@@ -140,6 +149,9 @@ export class ActiveSchedulesModal extends Modal {
 	onClose(): void {
 		const { contentEl } = this;
 		contentEl.empty();
-		this.plugin.settingsService.off('preset-schedules-updated', this.updateHandler);
+		this.plugin.settingsService.off(
+			'preset-schedules-updated',
+			this.updateHandler
+		);
 	}
 }

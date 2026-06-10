@@ -17,6 +17,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import { RRule } from 'rrule';
+
 import StyleManagerPlugin from '../main';
 import { PresetSchedule } from '../types';
 
@@ -30,7 +31,8 @@ export class PresetScheduleService {
 
 	get schedules(): PresetSchedule[] {
 		return (
-			(this.plugin.settingsService.sharedSettings._manager_schedules as PresetSchedule[]) || []
+			(this.plugin.settingsService.sharedSettings
+				._manager_schedules as PresetSchedule[]) || []
 		);
 	}
 
@@ -43,10 +45,10 @@ export class PresetScheduleService {
 
 	public start(): void {
 		if (this.intervalId !== null) return;
-		
+
 		// Check immediately on start
 		this.checkSchedules();
-		
+
 		// Then check every 5 seconds for better accuracy
 		this.intervalId = window.setInterval(() => {
 			this.checkSchedules();
@@ -86,7 +88,7 @@ export class PresetScheduleService {
 			const rule = RRule.fromString(schedule.rruleString);
 			if (rule.options.count === 1) {
 				const date = rule.all()[0];
-				return `One-time on ${this.formatDate(date)}`;
+				return `ONE-TIME | ${this.formatDate(date)}`;
 			}
 
 			const sampleDate = rule.after(new Date(), true);
@@ -100,13 +102,13 @@ export class PresetScheduleService {
 			});
 
 			if (rule.options.freq === RRule.DAILY) {
-				return `Every day at ${timeStr}`;
+				return `DAILY | ${timeStr}`;
 			} else if (rule.options.freq === RRule.WEEKLY) {
 				const dayStr = sampleDate.toLocaleString('en-US', {
 					weekday: 'long',
 					timeZone: 'UTC',
 				});
-				return `Weekly on ${dayStr} at ${timeStr}`;
+				return `WEEKLY | ${dayStr} at ${timeStr}`;
 			}
 
 			return rule.toText();
@@ -115,7 +117,10 @@ export class PresetScheduleService {
 		}
 	}
 
-	public checkConflict(schedule: PresetSchedule, excludeId?: string): string | null {
+	public checkConflict(
+		schedule: PresetSchedule,
+		excludeId?: string
+	): string | null {
 		const currentSchedules = this.schedules;
 		const rule = RRule.fromString(schedule.rruleString);
 		const now = new Date();
@@ -129,14 +134,16 @@ export class PresetScheduleService {
 			if (other.isPaused) continue;
 
 			const otherRule = RRule.fromString(other.rruleString);
-			
+
 			for (const tOcc of targetOccurrences) {
 				const start = new Date(tOcc.getTime() - 1000);
 				const end = new Date(tOcc.getTime() + 1000);
 				const matches = otherRule.between(start, end);
-				
+
 				if (matches.length > 0) {
-					const otherPreset = this.plugin.presetService.getPresetById(other.presetId);
+					const otherPreset = this.plugin.presetService.getPresetById(
+						other.presetId
+					);
 					return `Conflict with preset "${otherPreset?.name || 'Unknown'}" at ${this.formatDate(tOcc)}`;
 				}
 			}
@@ -176,26 +183,43 @@ export class PresetScheduleService {
 		const currentSchedules = this.schedules;
 		let updated = false;
 
-		const getPretendUTC = (d: Date): Date => 
-			new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(), d.getSeconds()));
-		
+		const getPretendUTC = (d: Date): Date =>
+			new Date(
+				Date.UTC(
+					d.getFullYear(),
+					d.getMonth(),
+					d.getDate(),
+					d.getHours(),
+					d.getMinutes(),
+					d.getSeconds()
+				)
+			);
+
 		const nowPretendUTC = getPretendUTC(now);
 
 		for (const schedule of currentSchedules) {
 			if (schedule.isPaused) continue;
-			
-			if (schedule.targetLocker === 'isolate' && schedule.deviceId && schedule.deviceId !== this.plugin.settingsService.deviceId) {
+
+			if (
+				schedule.targetLocker === 'isolate' &&
+				schedule.deviceId &&
+				schedule.deviceId !== this.plugin.settingsService.deviceId
+			) {
 				continue;
 			}
 
 			try {
 				const rule = RRule.fromString(schedule.rruleString);
-				
-				const lastExecutedDate = schedule.lastExecuted 
-					? getPretendUTC(new Date(schedule.lastExecuted)) 
+
+				const lastExecutedDate = schedule.lastExecuted
+					? getPretendUTC(new Date(schedule.lastExecuted))
 					: new Date(nowPretendUTC.getTime() - 60000);
-				
-				const occurrences = rule.between(lastExecutedDate, nowPretendUTC, false);
+
+				const occurrences = rule.between(
+					lastExecutedDate,
+					nowPretendUTC,
+					false
+				);
 
 				if (occurrences.length > 0) {
 					// We have reached or passed the next designated time.
@@ -204,7 +228,10 @@ export class PresetScheduleService {
 					updated = true;
 				}
 			} catch (err) {
-				console.error(`Style Manager | Error processing schedule ${schedule.id}:`, err);
+				console.error(
+					`Style Manager | Error processing schedule ${schedule.id}:`,
+					err
+				);
 			}
 		}
 
@@ -215,15 +242,20 @@ export class PresetScheduleService {
 	}
 
 	private async executeSchedule(schedule: PresetSchedule): Promise<void> {
-		console.log(`Style Manager | Executing scheduled preset: ${schedule.presetId}`);
-		
+		console.log(
+			`Style Manager | Executing scheduled preset: ${schedule.presetId}`
+		);
+
 		if (schedule.targetLocker === 'shared') {
 			await this.plugin.presetService.applyPresets([schedule.presetId], false);
 		} else if (schedule.targetLocker === 'isolate') {
 			await this.plugin.presetService.applyPresets([schedule.presetId], true);
 		} else {
 			// Remote device locker
-			await this.plugin.presetService.applyPresetsToLocker(schedule.targetLocker, [schedule.presetId]);
+			await this.plugin.presetService.applyPresetsToLocker(
+				schedule.targetLocker,
+				[schedule.presetId]
+			);
 		}
 	}
 }
