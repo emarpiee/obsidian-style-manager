@@ -767,30 +767,21 @@ body.is-phone .style-manager-plugin {
 
 .style-manager-tool-contrast-preview {
 	position: relative;
-	margin-block: var(--size-4-4);
 	padding: var(--size-4-4);
 	border-radius: var(--radius-m);
 	text-align: center;
 	border: 2px solid var(--background-modifier-border);
 	display: flex;
 	flex-direction: column;
-}
-
-.style-manager-tool-contrast-icons,
-.style-manager-tool-contrast-preview-large,
-.style-manager-tool-contrast-preview-normal {
+	gap: var(--size-4-3);
 	margin-bottom: var(--size-4-3);
 }
 
 .style-manager-tool-contrast-icons {
 	display: flex;
 	gap: var(--size-4-2);
-}
-
-.style-manager-tool-contrast-swap-btn svg,
-.style-manager-tool-contrast-random-btn svg,
-.style-manager-tool-contrast-suggest-btn svg {
-	stroke: currentColor;
+	margin-top: var(--size-4-4);
+	margin-bottom: var(--size-4-2);
 }
 
 .style-manager-tool-contrast-preview-large {
@@ -804,12 +795,8 @@ body.is-phone .style-manager-plugin {
 }
 
 .style-manager-tool-contrast-preview-small {
-	font-size: 12px;
+	font-size: 10px;
 	font-weight: normal;
-}
-
-.style-manager-tool-contrast-results {
-	margin-top: 10px;
 }
 
 .clickable-hex {

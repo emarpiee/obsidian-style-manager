@@ -38,11 +38,7 @@ export class ColorContrastChecker {
 			cls: 'style-manager-tool-contrast-results',
 		});
 
-		this.previewEl = contentEl.createDiv({
-			cls: 'style-manager-tool-contrast-preview',
-		});
-
-		const iconsDiv = this.previewEl.createDiv({
+		const iconsDiv = contentEl.createDiv({
 			cls: 'style-manager-tool-contrast-icons',
 		});
 
@@ -69,6 +65,10 @@ export class ColorContrastChecker {
 		setIcon(suggestBtn, 'wand-2');
 		setTooltip(suggestBtn, 'Suggest passing colors');
 		suggestBtn.onclick = (): void => this.suggestAccessibleColors();
+
+		this.previewEl = contentEl.createDiv({
+			cls: 'style-manager-tool-contrast-preview',
+		});
 
 		this.largeTextPreviewEl = this.previewEl.createDiv({
 			cls: 'style-manager-tool-contrast-preview-large',
@@ -310,9 +310,6 @@ export class ColorContrastChecker {
 		this.updateLabels();
 		this.previewEl.style.backgroundColor = this.bgColor;
 		this.previewEl.style.color = this.fgColor;
-		this.swapBtn.style.color = this.fgColor;
-		this.randomBtn.style.color = this.fgColor;
-		this.suggestBtn.style.color = this.fgColor;
 
 		try {
 			const contrast = chroma.contrast(this.fgColor, this.bgColor);
