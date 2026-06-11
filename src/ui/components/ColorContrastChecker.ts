@@ -54,7 +54,7 @@ export class ColorContrastChecker {
 		setTooltip(swapBtn, 'Swap the FG and BG color');
 		swapBtn.onclick = (): void => this.swapColors();
 
-		const randomBtn = this.previewEl.createDiv({
+		const randomBtn = iconsDiv.createDiv({
 			cls: 'clickable-icon style-manager-tool-contrast-random-btn',
 		});
 		this.randomBtn = randomBtn;
@@ -62,7 +62,7 @@ export class ColorContrastChecker {
 		setTooltip(randomBtn, 'Randomize FG and BG color');
 		randomBtn.onclick = (): void => this.randomizeColors();
 
-		const suggestBtn = this.previewEl.createDiv({
+		const suggestBtn = iconsDiv.createDiv({
 			cls: 'clickable-icon style-manager-tool-contrast-suggest-btn',
 		});
 		this.suggestBtn = suggestBtn;

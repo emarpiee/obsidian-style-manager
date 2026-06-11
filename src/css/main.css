@@ -767,40 +767,24 @@ body.is-phone .style-manager-plugin {
 
 .style-manager-tool-contrast-preview {
 	position: relative;
-	margin-block: 20px;
-	padding: 20px;
-	border-radius: 8px;
+	margin-block: var(--size-4-4);
+	padding: var(--size-4-4);
+	border-radius: var(--radius-m);
 	text-align: center;
-	border: 1px solid var(--background-modifier-border);
+	border: 2px solid var(--background-modifier-border);
 	display: flex;
 	flex-direction: column;
-	gap: 10px;
+}
+
+.style-manager-tool-contrast-icons,
+.style-manager-tool-contrast-preview-large,
+.style-manager-tool-contrast-preview-normal {
+	margin-bottom: var(--size-4-3);
 }
 
 .style-manager-tool-contrast-icons {
-	position: absolute;
-	top: 10px;
-	left: 10px;
 	display: flex;
-	gap: 8px;
-}
-
-.style-manager-tool-contrast-swap-btn {
-	cursor: pointer;
-}
-
-.style-manager-tool-contrast-random-btn {
-	position: absolute;
-	bottom: 10px;
-	left: 10px;
-	cursor: pointer;
-}
-
-.style-manager-tool-contrast-suggest-btn {
-	position: absolute;
-	bottom: 10px;
-	right: 10px;
-	cursor: pointer;
+	gap: var(--size-4-2);
 }
 
 .style-manager-tool-contrast-swap-btn svg,
