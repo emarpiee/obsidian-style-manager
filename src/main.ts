@@ -51,6 +51,7 @@ import { ColorContrastCheckerTool } from './tools/ColorContrastCheckerTool';
 import { CopyAccentColorTool } from './tools/CopyAccentColorTool';
 import { FreezeObsidianTool } from './tools/FreezeObsidianTool';
 import { GarbledTextTool } from './tools/GarbledTextTool';
+import { LoremIpsumTool } from './tools/LoremIpsumTool';
 import { MobileEmulationTool } from './tools/MobileEmulationTool';
 import { TestNoticeTool } from './tools/TestNoticeTool';
 import { ToggleDevToolsTool } from './tools/ToggleDevToolsTool';
@@ -61,6 +62,7 @@ import { SettingType } from './ui/components/base/types';
 import { StatusBarManager } from './ui/elements/StatusBarManager';
 import { BoxOutlineColorPromptModal } from './ui/modals/BoxOutlineColorPromptModal';
 import { ColorContrastCheckerModal } from './ui/modals/ColorContrastCheckerModal';
+import { LoremIpsumModal } from './ui/modals/LoremIpsumModal';
 import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
 import { ActiveSchedulesModal } from './ui/modals/ActiveSchedulesModal';
 import { CommandSchedulePresetModal } from './ui/modals/CommandSchedulePresetModal';
@@ -71,6 +73,10 @@ import {
 	ColorContrastCheckerView,
 	colorContrastViewType,
 } from './ui/views/ColorContrastCheckerView';
+import {
+	LoremIpsumView,
+	loremIpsumViewType,
+} from './ui/views/LoremIpsumView';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
 
@@ -93,6 +99,7 @@ export default class StyleManagerPlugin extends Plugin {
 	mobileEmulationTool: MobileEmulationTool;
 	toggleDevToolsTool: ToggleDevToolsTool;
 	freezeObsidianTool: FreezeObsidianTool;
+	loremIpsumTool: LoremIpsumTool;
 
 	settingsList: ParsedCSSSettings[] = [];
 	errorList: ErrorList = [];
@@ -125,6 +132,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.mobileEmulationTool = new MobileEmulationTool(this);
 		this.toggleDevToolsTool = new ToggleDevToolsTool(this);
 		this.freezeObsidianTool = new FreezeObsidianTool(this);
+		this.loremIpsumTool = new LoremIpsumTool(this);
 
 		this.settingsService.refreshService.setDelegates({
 			parseCSS: () => this.parseCSS(),
@@ -326,6 +334,12 @@ export default class StyleManagerPlugin extends Plugin {
 			callback: () => this.testNoticeTool.show(),
 		});
 
+		this.addCommand({
+			id: 'style-manager-command-lorem-ipsum',
+			name: 'Lorem Ipsum Generator',
+			callback: () => new LoremIpsumModal(this.app, this).open(),
+		});
+
 		this.addSettingTab(
 			(
 				this.settingsService.viewManager as unknown as {
@@ -338,6 +352,10 @@ export default class StyleManagerPlugin extends Plugin {
 		this.registerView(
 			colorContrastViewType,
 			(leaf) => new ColorContrastCheckerView(leaf)
+		);
+		this.registerView(
+			loremIpsumViewType,
+			(leaf) => new LoremIpsumView(leaf)
 		);
 
 		this.addCommand({
@@ -696,6 +714,10 @@ export default class StyleManagerPlugin extends Plugin {
 		this.app.workspace.detachLeavesOfType(colorContrastViewType);
 	}
 
+	deactivateLoremIpsumView(): void {
+		this.app.workspace.detachLeavesOfType(loremIpsumViewType);
+	}
+
 	isContrastViewActive(): boolean {
 		return this.app.workspace.getLeavesOfType(colorContrastViewType).length > 0;
 	}
@@ -723,6 +745,16 @@ export default class StyleManagerPlugin extends Plugin {
 
 		await leaf.setViewState({
 			type: colorContrastViewType,
+			active: true,
+		});
+	}
+
+	async activateLoremIpsumView(): Promise<void> {
+		this.deactivateLoremIpsumView();
+		const leaf = this.app.workspace.getLeaf('tab');
+
+		await leaf.setViewState({
+			type: loremIpsumViewType,
 			active: true,
 		});
 	}

@@ -60,6 +60,7 @@
 		"fuzzysort": "^3.1.0",
 		"js-yaml": "^4.1.1",
 		"jszip": "^3.10.1",
+		"lorem-ipsum": "^3.0.0",
 		"rrule": "^2.8.1"
 	}
 }

@@ -844,6 +844,42 @@ body.is-phone .style-manager-plugin {
 	flex-wrap: wrap;
 }
 
+.style-manager-tool-lorem-ipsum-generator {
+	display: flex;
+	flex-direction: column;
+	gap: var(--size-4-4);
+	padding: var(--size-4-4);
+}
+
+.style-manager-tool-lorem-ipsum-controls {
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
+	flex-wrap: wrap;
+}
+
+.style-manager-tool-lorem-ipsum-input {
+	width: 60px;
+	margin-right: 10px;
+}
+
+.style-manager-tool-lorem-ipsum-output {
+	margin-top: var(--size-4-4);
+	white-space: pre-wrap;
+	font-family: var(--font-monospace);
+	background: var(--background-secondary);
+	padding: var(--size-4-3);
+	border-radius: var(--radius-m);
+	border: 1px solid var(--background-modifier-border);
+	min-width: 100%;
+	max-width: 100%;
+	overflow-y: auto;
+}
+
+.style-manager-tool-contrast-results .setting-item {
+	flex-wrap: wrap;
+}
+
 .style-manager-tool-contrast-badge {
 	padding: 2px 4px;
 	border-radius: 4px;
