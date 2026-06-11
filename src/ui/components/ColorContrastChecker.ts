@@ -73,11 +73,15 @@ export class ColorContrastChecker {
 		this.largeTextPreviewEl = this.previewEl.createDiv({
 			cls: 'style-manager-tool-contrast-preview-large',
 		});
+		this.largeTextPreviewEl.contentEditable = 'true';
+		this.largeTextPreviewEl.spellcheck = false;
 		this.largeTextPreviewEl.setText('Contrast');
 
 		this.normalTextPreviewEl = this.previewEl.createDiv({
 			cls: 'style-manager-tool-contrast-preview-normal',
 		});
+		this.normalTextPreviewEl.contentEditable = 'true';
+		this.normalTextPreviewEl.spellcheck = false;
 		this.normalTextPreviewEl.setText(
 			'Contrast is the difference in luminance or color that makes an object or its representation in an image or display distinguishable. In visual perception of the real world, contrast is determined by the difference in the color and brightness of the object and other objects within the same field of view.'
 		);
@@ -85,6 +89,8 @@ export class ColorContrastChecker {
 		const smallTextPreviewEl = this.previewEl.createDiv({
 			cls: 'style-manager-tool-contrast-preview-small',
 		});
+		smallTextPreviewEl.contentEditable = 'true';
+		smallTextPreviewEl.spellcheck = false;
 		smallTextPreviewEl.setText('from Wikipedia, the free encyclopedia');
 
 		this.fgSetting = new Setting(contentEl)
