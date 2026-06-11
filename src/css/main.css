@@ -858,13 +858,7 @@ body.is-phone .style-manager-plugin {
 	flex-wrap: wrap;
 }
 
-.style-manager-tool-lorem-ipsum-input {
-	width: 60px;
-	margin-right: 10px;
-}
-
 .style-manager-tool-lorem-ipsum-output {
-	margin-top: var(--size-4-4);
 	white-space: pre-wrap;
 	font-family: var(--font-monospace);
 	background: var(--background-secondary);

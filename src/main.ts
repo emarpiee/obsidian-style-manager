@@ -60,23 +60,20 @@ import { StyleManagerSettingTab } from './ui/StyleManagerSettingTab';
 import { StyleManagerView, viewType } from './ui/StyleManagerView';
 import { SettingType } from './ui/components/base/types';
 import { StatusBarManager } from './ui/elements/StatusBarManager';
+import { ActiveSchedulesModal } from './ui/modals/ActiveSchedulesModal';
 import { BoxOutlineColorPromptModal } from './ui/modals/BoxOutlineColorPromptModal';
 import { ColorContrastCheckerModal } from './ui/modals/ColorContrastCheckerModal';
-import { LoremIpsumModal } from './ui/modals/LoremIpsumModal';
 import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
-import { ActiveSchedulesModal } from './ui/modals/ActiveSchedulesModal';
 import { CommandSchedulePresetModal } from './ui/modals/CommandSchedulePresetModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
+import { LoremIpsumModal } from './ui/modals/LoremIpsumModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
 import {
 	ColorContrastCheckerView,
 	colorContrastViewType,
 } from './ui/views/ColorContrastCheckerView';
-import {
-	LoremIpsumView,
-	loremIpsumViewType,
-} from './ui/views/LoremIpsumView';
+import { LoremIpsumView, loremIpsumViewType } from './ui/views/LoremIpsumView';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
 
@@ -336,7 +333,7 @@ export default class StyleManagerPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'style-manager-command-lorem-ipsum',
-			name: 'Lorem Ipsum Generator',
+			name: 'Lorem ipsum generator',
 			callback: () => new LoremIpsumModal(this.app, this).open(),
 		});
 
@@ -353,10 +350,7 @@ export default class StyleManagerPlugin extends Plugin {
 			colorContrastViewType,
 			(leaf) => new ColorContrastCheckerView(leaf)
 		);
-		this.registerView(
-			loremIpsumViewType,
-			(leaf) => new LoremIpsumView(leaf)
-		);
+		this.registerView(loremIpsumViewType, (leaf) => new LoremIpsumView(leaf));
 
 		this.addCommand({
 			id: 'style-manager-show-leaf',
@@ -678,12 +672,12 @@ export default class StyleManagerPlugin extends Plugin {
 						section.id,
 						setting.id
 					) as boolean);
-						const defaultValue = setting.default ?? false;
-						if (value === defaultValue) {
-							this.settingsService.clearSetting(section.id, setting.id);
-						} else {
-							this.settingsService.setSetting(section.id, setting.id, value);
-						}
+					const defaultValue = setting.default ?? false;
+					if (value === defaultValue) {
+						this.settingsService.clearSetting(section.id, setting.id);
+					} else {
+						this.settingsService.setSetting(section.id, setting.id, value);
+					}
 				},
 			})
 		);

@@ -48,6 +48,6 @@ export class LoremIpsumView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'Lorem Ipsum Generator';
+		return 'Lorem ipsum generator';
 	}
 }

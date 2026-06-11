@@ -51,14 +51,19 @@ export class LoremIpsumGenerator {
 			cls: 'style-manager-tool-lorem-ipsum-controls',
 		});
 
+		this.generateBtn = controls.createEl('button', {
+			text: 'Generate',
+			cls: 'mod-cta',
+		});
+
 		// Amount Input
 		this.inputEl = controls.createEl('input', {
 			type: 'number',
 			attr: {
-				value: '3',
+				value: '7',
 				min: '1',
-				max: '1000',
-				cls: 'style-manager-tool-lorem-ipsum-input',
+				max: '10000',
+				class: 'style-manager-tool-lorem-ipsum-input',
 			},
 		});
 
@@ -73,7 +78,6 @@ export class LoremIpsumGenerator {
 			this.unitSelect.createEl('option', { text: label, attr: { value } });
 		});
 
-		this.generateBtn = controls.createEl('button', { text: 'Generate' });
 		this.copyBtn = controls.createEl('button', {
 			text: 'Copy',
 			attr: { style: 'display: none;' },
@@ -96,7 +100,7 @@ export class LoremIpsumGenerator {
 		// Output Area
 		this.outputEl = this.container.createEl('textarea', {
 			attr: {
-				cls: 'style-manager-tool-lorem-ipsum-output',
+				class: 'style-manager-tool-lorem-ipsum-output',
 				readOnly: 'true',
 				rows: '10',
 			},
@@ -136,7 +140,7 @@ export class LoremIpsumGenerator {
 				this.outputEl.select();
 				document.execCommand('copy');
 			}
-			new Notice('Lorem Ipsum copied to clipboard');
+			new Notice('Lorem ipsum copied to clipboard');
 		} catch (err) {
 			new Notice('Failed to copy text to clipboard');
 			console.error('Clipboard error:', err);
