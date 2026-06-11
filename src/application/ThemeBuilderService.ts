@@ -114,7 +114,9 @@ export class ThemeBuilderService {
 		await adapter.mkdir(newPath);
 
 		// Copy manifest and update name
-		const manifestContent = await adapter.read(normalizePath(`${sourcePath}/manifest.json`));
+		const manifestContent = await adapter.read(
+			normalizePath(`${sourcePath}/manifest.json`)
+		);
 		const manifest = JSON.parse(manifestContent) as ThemeManifest;
 		manifest.name = newName;
 		await adapter.write(
@@ -123,7 +125,9 @@ export class ThemeBuilderService {
 		);
 
 		// Copy theme.css
-		const cssContent = await adapter.read(normalizePath(`${sourcePath}/theme.css`));
+		const cssContent = await adapter.read(
+			normalizePath(`${sourcePath}/theme.css`)
+		);
 		await adapter.write(normalizePath(`${newPath}/theme.css`), cssContent);
 
 		this.notifications.util(`Duplicated theme to: ${newName}`);
@@ -189,7 +193,9 @@ export class ThemeBuilderService {
 			currentThemeId = newThemeId;
 		}
 
-		const manifestPath = normalizePath(`.obsidian/themes/${currentThemeId}/manifest.json`);
+		const manifestPath = normalizePath(
+			`.obsidian/themes/${currentThemeId}/manifest.json`
+		);
 
 		if (!(await adapter.exists(manifestPath))) {
 			throw new Error(`Manifest not found for theme: ${currentThemeId}`);

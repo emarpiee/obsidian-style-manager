@@ -18,8 +18,6 @@
 */
 import { normalizePath } from 'obsidian';
 
-import StyleManagerPlugin from '../main';
-import { PrefixMetadata, Preset } from '../types';
 import {
 	ACCENT_COLOR_KEY,
 	ALWAYS_SHARED_PRESETS_KEY,
@@ -31,6 +29,8 @@ import {
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from '../constants';
+import StyleManagerPlugin from '../main';
+import { PrefixMetadata, Preset } from '../types';
 
 import { ConfirmModal } from '../ui/modals/ConfirmModal';
 import { getFormattedTimestamp } from '../utils/CommonUtils';
@@ -51,9 +51,8 @@ export class PresetService {
 
 	public getEffectiveViewMode(): 'shared' | 'isolate' {
 		if (this.targetView !== 'auto') return this.targetView;
-		const alwaysShared = this.plugin.settingsService.settings[
-			ALWAYS_SHARED_PRESETS_KEY
-		];
+		const alwaysShared =
+			this.plugin.settingsService.settings[ALWAYS_SHARED_PRESETS_KEY];
 		if (alwaysShared === undefined || alwaysShared === true) {
 			return 'shared';
 		}
@@ -63,30 +62,47 @@ export class PresetService {
 	get presets(): Preset[] {
 		const mode = this.getEffectiveViewMode();
 		if (mode === 'isolate') {
-			return (this.plugin.settingsService.isolateModeService.isolateSettings._manager_presets as Preset[]) || [];
+			return (
+				(this.plugin.settingsService.isolateModeService.isolateSettings
+					._manager_presets as Preset[]) || []
+			);
 		}
 		return (
-			(this.plugin.settingsService.sharedSettings._manager_presets as Preset[]) || []
+			(this.plugin.settingsService.sharedSettings
+				._manager_presets as Preset[]) || []
 		);
 	}
 
 	public getPresetById(id: string): Preset | undefined {
-		const sharedPresets = (this.plugin.settingsService.sharedSettings._manager_presets as Preset[]) || [];
-		const isolatePresets = (this.plugin.settingsService.isolateModeService.isolateSettings._manager_presets as Preset[]) || [];
+		const sharedPresets =
+			(this.plugin.settingsService.sharedSettings
+				._manager_presets as Preset[]) || [];
+		const isolatePresets =
+			(this.plugin.settingsService.isolateModeService.isolateSettings
+				._manager_presets as Preset[]) || [];
 
-		return sharedPresets.find((p) => p.id === id) || isolatePresets.find((p) => p.id === id);
+		return (
+			sharedPresets.find((p) => p.id === id) ||
+			isolatePresets.find((p) => p.id === id)
+		);
 	}
 
 	set presets(val: Preset[]) {
 		const mode = this.getEffectiveViewMode();
-		this.plugin.settingsService.setSettings({ _manager_presets: val }, { silentUI: true, target: mode });
+		this.plugin.settingsService.setSettings(
+			{ _manager_presets: val },
+			{ silentUI: true, target: mode }
+		);
 	}
 
 	async savePresets(): Promise<void> {
 		const mode = this.getEffectiveViewMode();
-		await this.plugin.settingsService.setSettings({
-			_manager_presets: this.presets,
-		}, { silentUI: true, target: mode });
+		await this.plugin.settingsService.setSettings(
+			{
+				_manager_presets: this.presets,
+			},
+			{ silentUI: true, target: mode }
+		);
 	}
 
 	public async trashPresets(presets: Preset[]): Promise<void> {
@@ -95,9 +111,7 @@ export class PresetService {
 		if (trashOption === 'none') return;
 
 		const timestamp = getFormattedTimestamp(
-			this.plugin.settingsService.settings[
-				EXPORT_DATE_FORMAT_KEY
-			] as string
+			this.plugin.settingsService.settings[EXPORT_DATE_FORMAT_KEY] as string
 		);
 		const timestampPart = timestamp ? `-${timestamp}` : '';
 		const bridge = this.plugin.settingsService.bridge;
@@ -126,9 +140,7 @@ export class PresetService {
 		content: string | ArrayBuffer | Uint8Array
 	): Promise<void> {
 		let exportPath: string =
-			(this.plugin.settingsService.settings[
-				EXPORT_PATH_KEY
-			] as string) || '';
+			(this.plugin.settingsService.settings[EXPORT_PATH_KEY] as string) || '';
 
 		const isZip =
 			content instanceof ArrayBuffer ||
@@ -280,7 +292,9 @@ export class PresetService {
 		);
 	}
 
-	private async mergePresets(presetIds: string[]): Promise<{ mergedData: Record<string, unknown>; isSingle: boolean }> {
+	private async mergePresets(
+		presetIds: string[]
+	): Promise<{ mergedData: Record<string, unknown>; isSingle: boolean }> {
 		const selectedPresets = presetIds
 			.map((id) => this.presets.find((p) => p.id === id))
 			.filter((p): p is Preset => !!p);
@@ -305,11 +319,14 @@ export class PresetService {
 		if (snippetsEncountered) {
 			const existingSnippets = await Promise.all(
 				Array.from(mergedSnippets).map(async (s) => {
-					const exists = await this.plugin.settingsService.bridge.snippetExists(s);
+					const exists =
+						await this.plugin.settingsService.bridge.snippetExists(s);
 					return exists ? s : null;
 				})
 			);
-			mergedData[SNIPPETS_KEY] = existingSnippets.filter((s): s is string => s !== null);
+			mergedData[SNIPPETS_KEY] = existingSnippets.filter(
+				(s): s is string => s !== null
+			);
 		}
 
 		return { mergedData, isSingle };
@@ -327,7 +344,8 @@ export class PresetService {
 		isolateOnly: boolean = false
 	): Promise<void> {
 		const { mergedData, isSingle } = await this.mergePresets(presetIds);
-		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY]) return;
+		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY])
+			return;
 
 		if (isSingle) {
 			await this.plugin.settingsService.resetAllStyleSettings(isolateOnly);
@@ -350,9 +368,13 @@ export class PresetService {
 		}
 	}
 
-	async applyPresetsToLocker(deviceId: string, presetIds: string[]): Promise<void> {
+	async applyPresetsToLocker(
+		deviceId: string,
+		presetIds: string[]
+	): Promise<void> {
 		const { mergedData, isSingle } = await this.mergePresets(presetIds);
-		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY]) return;
+		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY])
+			return;
 
 		await this.plugin.settingsService.identity.updateLockerSettings(
 			deviceId,
@@ -366,9 +388,7 @@ export class PresetService {
 		onConfirm: () => void,
 		isolateOnly: boolean = false
 	): void {
-		if (
-			this.plugin.settingsService.settings[SKIP_APPLY_CONFIRM_KEY]
-		) {
+		if (this.plugin.settingsService.settings[SKIP_APPLY_CONFIRM_KEY]) {
 			onConfirm();
 		} else {
 			new ConfirmModal(

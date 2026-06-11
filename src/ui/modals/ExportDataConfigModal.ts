@@ -18,11 +18,8 @@
 */
 import { App, Modal, Setting } from 'obsidian';
 
+import { EXPORT_DATE_FORMAT_KEY, EXPORT_EXTENSION_KEY } from '../../constants';
 import StyleManagerPlugin from '../../main';
-import {
-	EXPORT_DATE_FORMAT_KEY,
-	EXPORT_EXTENSION_KEY,
-} from '../../constants';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
 
 /**

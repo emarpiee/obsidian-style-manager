@@ -21,9 +21,9 @@ import { Setting, TextComponent } from 'obsidian';
 import { t } from '../../../infrastructure/lang/helpers';
 import { VariableNumber, resetTooltip } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
+import { Logger } from '../../../utils/Logger';
 import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
-import { Logger } from '../../../utils/Logger';
 
 export class VariableNumberSettingComponent extends AbstractSettingComponent {
 	settingEl: Setting;
@@ -74,7 +74,7 @@ export class VariableNumberSettingComponent extends AbstractSettingComponent {
 			text.setValue(
 				value !== undefined ? value.toString() : this.setting.default.toString()
 			);
-			
+
 			text.inputEl.addEventListener('blur', () => {
 				onCommit(text.getValue());
 			});

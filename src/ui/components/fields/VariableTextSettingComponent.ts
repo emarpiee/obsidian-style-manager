@@ -25,9 +25,9 @@ import {
 	getTitle,
 	sanitizeText,
 } from '../../../utils/CommonUtils';
+import { Logger } from '../../../utils/Logger';
 import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
-import { Logger } from '../../../utils/Logger';
 
 export class VariableTextSettingComponent extends AbstractSettingComponent {
 	settingEl: Setting;
@@ -79,7 +79,7 @@ export class VariableTextSettingComponent extends AbstractSettingComponent {
 			}
 
 			text.setValue(value ? value.toString() : this.setting.default);
-			
+
 			text.inputEl.addEventListener('blur', () => {
 				onCommit(text.getValue());
 			});

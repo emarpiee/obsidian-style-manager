@@ -54,8 +54,6 @@ export class StyleSheetManager {
 		document.body.classList.add('style-manager-css');
 	}
 
-
-
 	public cleanup(): void {
 		this.lightEl?.remove();
 		this.darkEl?.remove();
@@ -108,7 +106,6 @@ export class StyleSheetManager {
 		}
 		return undefined;
 	}
-
 
 	private fileCache: Map<
 		string,

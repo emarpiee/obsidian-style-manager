@@ -142,10 +142,10 @@ export abstract class AbstractSettingComponent extends Component {
 	 * Returns true if this setting has been modified.
 	 */
 	isModified(): boolean {
-		return this.settingsService.getSetting(
-			this.sectionId,
-			this.setting.id
-		) !== undefined;
+		return (
+			this.settingsService.getSetting(this.sectionId, this.setting.id) !==
+			undefined
+		);
 	}
 
 	/**

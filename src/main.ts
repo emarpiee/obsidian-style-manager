@@ -102,7 +102,6 @@ export default class StyleManagerPlugin extends Plugin {
 	errorList: ErrorList = [];
 	commandList: Command[] = [];
 
-	// Snippet Tab Persistent State
 	selectedSnippets: Set<string> = new Set();
 	snippetMetadataMap: Map<string, SnippetMetadata> = new Map();
 	lastSnippetSelectedIndex: number | null = null;

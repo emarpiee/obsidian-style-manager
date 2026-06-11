@@ -17,12 +17,12 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import { StyleManagerSettings } from '../types';
-import { Logger } from '../utils/Logger';
 import { NotificationService } from './NotificationService';
 import { SharedStateService } from './SharedStateService';
 
 import { SharedStore } from '../infrastructure/storage/SharedStore';
 import { DataUtils } from '../utils/CommonUtils';
+import { Logger } from '../utils/Logger';
 
 export interface PersistenceServiceOptions {
 	sharedStore: SharedStore;
@@ -168,11 +168,15 @@ export class PersistenceService {
 		if (isMissing && !hasBackup) {
 			this.isSafeToSave = true;
 		} else if (isMissing && hasBackup) {
-			Logger.warn('Style Manager | Settings file is missing or corrupted but a backup exists. Attempting recovery...');
+			Logger.warn(
+				'Style Manager | Settings file is missing or corrupted but a backup exists. Attempting recovery...'
+			);
 			const restored = await this.options.sharedStore.restoreFromBackup();
 			if (restored) {
 				Logger.log('Style Manager | Successfully restored from backup.');
-				this.options.notifications.shared('Style Manager: Recovered settings from backup');
+				this.options.notifications.shared(
+					'Style Manager: Recovered settings from backup'
+				);
 				return this.doLoad(forcePull); // Retry loading after restore
 			} else {
 				this.isSafeToSave = false;

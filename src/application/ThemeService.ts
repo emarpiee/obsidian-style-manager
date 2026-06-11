@@ -31,7 +31,11 @@ export interface ThemeServiceDeps {
 	bridge: ObsidianBridge;
 	isIsolateMode: () => boolean;
 	getSetting: (key: string) => unknown;
-	setSetting: (key: string, value: unknown, options?: { silentUI?: boolean }) => void;
+	setSetting: (
+		key: string,
+		value: unknown,
+		options?: { silentUI?: boolean }
+	) => void;
 	triggerEvent: (name: string) => void;
 	notifications: NotificationService;
 }
@@ -326,7 +330,8 @@ export class ThemeService {
 	/** Installs monkey-patches on vault.getConfig/setConfig and customCss.setTheme. */
 	installPatches(): void {
 		this.deps.bridge.installPatches(
-			(theme: string) => this.deps.setSetting(THEME_KEY, theme, { silentUI: true }),
+			(theme: string) =>
+				this.deps.setSetting(THEME_KEY, theme, { silentUI: true }),
 			() => {
 				const appearance = this.deps.getSetting(APPEARANCE_KEY) as string;
 				if (appearance && appearance !== 'system')

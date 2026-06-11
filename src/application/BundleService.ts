@@ -105,7 +105,8 @@ export class BundleService {
 			if (themesFolder) {
 				for (const themeName of allThemeNames) {
 					const cssContent = await this.bridge.readThemeCss(themeName);
-					const manifestContent = await this.bridge.readThemeManifest(themeName);
+					const manifestContent =
+						await this.bridge.readThemeManifest(themeName);
 					if (cssContent !== null || manifestContent !== null) {
 						const specificThemeFolder = themesFolder.folder(themeName);
 						if (specificThemeFolder) {
@@ -183,7 +184,10 @@ export class BundleService {
 			}
 		}
 
-		const themes: { name: string; files: { filename: string; content: string }[] }[] = [];
+		const themes: {
+			name: string;
+			files: { filename: string; content: string }[];
+		}[] = [];
 		const themesFolder = zip.folder('themes');
 		if (themesFolder) {
 			const themeNames = new Set<string>();
@@ -214,4 +218,3 @@ export class BundleService {
 		return { presets, snippets, themes };
 	}
 }
-

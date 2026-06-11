@@ -181,10 +181,15 @@ export class PresetScheduleService {
 	}
 
 	private async cleanupOrphanedSchedules(): Promise<void> {
-		const knownDeviceIds = this.plugin.settingsService.identity.getAllDeviceIds();
+		const knownDeviceIds =
+			this.plugin.settingsService.identity.getAllDeviceIds();
 		const currentSchedules = this.schedules;
 		const filteredSchedules = currentSchedules.filter((s) => {
-			if (s.targetLocker === 'isolate' && s.deviceId && !knownDeviceIds.includes(s.deviceId)) {
+			if (
+				s.targetLocker === 'isolate' &&
+				s.deviceId &&
+				!knownDeviceIds.includes(s.deviceId)
+			) {
 				return false;
 			}
 			return true;

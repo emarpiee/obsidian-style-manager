@@ -20,14 +20,12 @@ import { App } from 'obsidian';
 
 import { PresetScheduleModal } from './PresetScheduleModal';
 import { PresetSuggestModal } from './PresetSuggestModal';
+
 import { PresetService } from '../../application/PresetService';
 import { Preset } from '../../types';
 
 export class CommandSchedulePresetModal extends PresetSuggestModal {
-	constructor(
-		app: App,
-		presetService: PresetService
-	) {
+	constructor(app: App, presetService: PresetService) {
 		super(app, presetService, 'Search presets to schedule...');
 	}
 

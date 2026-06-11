@@ -43,6 +43,7 @@ module.exports = {
 		'linebreak-style': ['error', 'unix'],
 		indent: 'off',
 		quotes: 'off',
+		'no-mixed-spaces-and-tabs': 'off',
 	},
 	overrides: [
 		{

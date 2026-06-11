@@ -79,4 +79,3 @@ export class CommandApplyPresetModal extends PresetSuggestModal {
 		}
 	}
 }
-

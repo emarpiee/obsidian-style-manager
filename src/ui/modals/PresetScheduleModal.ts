@@ -33,11 +33,7 @@ export class PresetScheduleModal extends Modal {
 	dayOfWeek: string = 'MO'; // MO, TU, WE, TH, FR, SA, SU
 	targetLocker: string = 'shared';
 
-	constructor(
-		app: App,
-		plugin: StyleManagerPlugin,
-		presetId: string
-	) {
+	constructor(app: App, plugin: StyleManagerPlugin, presetId: string) {
 		super(app);
 		this.plugin = plugin;
 		this.presetId = presetId;

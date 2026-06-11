@@ -25,8 +25,8 @@ import {
 import { ParsedCSSSettings, StyleManagerSettings } from '../types';
 import { IsolateModeService } from './IsolateModeService';
 
-import { StyleGenerator } from '../core/style/StyleGenerator';
 import { StyleSheetManager } from '../core/css/StyleSheetManager';
+import { StyleGenerator } from '../core/style/StyleGenerator';
 
 export interface StatsServiceOptions {
 	getSettings: () => StyleManagerSettings;
@@ -157,9 +157,11 @@ export class StatsService {
 								? 'Accent Color'
 								: s.id === '__snippets'
 									? 'Snippets'
-									: this.options.getSettingsList?.().find((active) => active.id === s.id)?.name ||
-									this.options.styleSheetManager?.getSectionName(s.id) ||
-									s.id,
+									: this.options
+											.getSettingsList?.()
+											.find((active) => active.id === s.id)?.name ||
+										this.options.styleSheetManager?.getSectionName(s.id) ||
+										s.id,
 				isActive: s.isActive,
 				count:
 					s.id === '__theme' ||

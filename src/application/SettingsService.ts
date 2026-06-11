@@ -21,15 +21,19 @@ import { Events } from 'obsidian';
 import {
 	ACCENT_COLOR_KEY,
 	APPEARANCE_KEY,
+	ENABLE_CONSOLE_LOGGING_KEY,
+	SHOW_STATUS_BAR_KEY,
 	SNIPPETS_KEY,
 	STICKY_HEADING_KEY,
 	THEME_KEY,
-	SHOW_STATUS_BAR_KEY,
-	ENABLE_CONSOLE_LOGGING_KEY,
 } from '../constants';
-import { Logger } from '../utils/Logger';
 import type StyleManagerPlugin from '../main';
-import { ParsedCSSSettings, RefreshLevel, SettingValue, StyleManagerSettings } from '../types';
+import {
+	ParsedCSSSettings,
+	RefreshLevel,
+	SettingValue,
+	StyleManagerSettings,
+} from '../types';
 import { IdentityService } from './IdentityService';
 import { IsolateModeService } from './IsolateModeService';
 import { NotificationService } from './NotificationService';
@@ -48,6 +52,7 @@ import { DeviceBucketStore } from '../infrastructure/storage/DeviceBucketStore';
 import { SharedStore } from '../infrastructure/storage/SharedStore';
 import { ViewManager } from '../ui/ViewManager';
 import { DataUtils } from '../utils/CommonUtils';
+import { Logger } from '../utils/Logger';
 
 export { THEME_KEY, APPEARANCE_KEY, SNIPPETS_KEY, ACCENT_COLOR_KEY };
 
@@ -371,7 +376,9 @@ export class SettingsService extends Events {
 		}
 
 		this._mergedSettings = merged;
-		Logger.setEnabled(this._mergedSettings[ENABLE_CONSOLE_LOGGING_KEY] === true);
+		Logger.setEnabled(
+			this._mergedSettings[ENABLE_CONSOLE_LOGGING_KEY] === true
+		);
 	}
 
 	async applyTheme(themeName: string, persist: boolean): Promise<void> {
@@ -388,7 +395,7 @@ export class SettingsService extends Events {
 
 	/**
 	 * Visually applies a list of enabled snippets to Obsidian.
-	 * In Isolate Mode, it overrides memory only. In Sync Mode, it writes to disk.
+	 * In isolate mode, it overrides memory only. In shared mode, it writes to disk.
 	 */
 	public async applySnippets(
 		snippetList: string[],
@@ -623,7 +630,12 @@ export class SettingsService extends Events {
 		keyOrValue: SettingValue | string,
 		valueOrOptions?:
 			| SettingValue
-			| { persistNative?: boolean; silentUI?: boolean; skipSave?: boolean; target?: 'shared' | 'isolate' },
+			| {
+					persistNative?: boolean;
+					silentUI?: boolean;
+					skipSave?: boolean;
+					target?: 'shared' | 'isolate';
+			  },
 		options?: {
 			persistNative?: boolean;
 			silentUI?: boolean;
@@ -646,7 +658,12 @@ export class SettingsService extends Events {
 			key = sectionOrKey;
 			val = keyOrValue as SettingValue;
 			opts = valueOrOptions as
-				| { persistNative?: boolean; silentUI?: boolean; skipSave?: boolean; target?: 'shared' | 'isolate' }
+				| {
+						persistNative?: boolean;
+						silentUI?: boolean;
+						skipSave?: boolean;
+						target?: 'shared' | 'isolate';
+				  }
 				| undefined;
 		} else {
 			section = sectionOrKey;
@@ -864,10 +881,10 @@ export class SettingsService extends Events {
 			}
 
 			const coreMapping: Record<string, string> = {
-				'__theme': 'active theme',
-				'__appearance': 'appearance',
-				'__accentColor': 'color accent',
-				'__snippets': 'snippets',
+				__theme: 'active theme',
+				__appearance: 'appearance',
+				__accentColor: 'color accent',
+				__snippets: 'snippets',
 			};
 			const resetCoreItems = sectionIds
 				.filter((id) => id in coreMapping)

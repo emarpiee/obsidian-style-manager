@@ -328,7 +328,8 @@ export class CSSEditorModal extends Modal {
 		} else {
 			if (this.source.type === 'Snippet') {
 				const currentEnabled =
-					(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+					(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) ||
+					[];
 				const isEnabled = currentEnabled.includes(this.source.id);
 				mainBtnsSetting.addToggle((toggle) => {
 					toggle.setValue(isEnabled).onChange(async (value) => {
@@ -348,13 +349,12 @@ export class CSSEditorModal extends Modal {
 				});
 			}
 
-			mainBtnsSetting
-				.addButton((btn) =>
-					btn
-						.setButtonText('Save')
-						.setCta()
-						.onClick(() => this.handleSave())
-				);
+			mainBtnsSetting.addButton((btn) =>
+				btn
+					.setButtonText('Save')
+					.setCta()
+					.onClick(() => this.handleSave())
+			);
 		}
 	}
 

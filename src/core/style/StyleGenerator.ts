@@ -18,9 +18,9 @@
 */
 import chroma from 'chroma-js';
 
+import { STICKY_HEADING_KEY } from '../../constants';
 import { ObsidianBridge } from '../../infrastructure/bridge/ObsidianBridge';
 import type StyleManagerPlugin from '../../main';
-import { STICKY_HEADING_KEY } from '../../constants';
 import {
 	CSSSetting,
 	ColorGradient,

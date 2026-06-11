@@ -16,14 +16,14 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
+import {
+	ACCENT_COLOR_KEY,
+	APPEARANCE_KEY,
+	SNIPPETS_KEY,
+	THEME_KEY,
+} from '../constants';
 import type StyleManagerPlugin from '../main';
 
-import { 
-	SNIPPETS_KEY, 
-	THEME_KEY, 
-	APPEARANCE_KEY, 
-	ACCENT_COLOR_KEY 
-} from '../constants';
 import { generateUuid } from '../utils/CommonUtils';
 
 const DEVICE_ID_KEY = 'style-manager-device-id';

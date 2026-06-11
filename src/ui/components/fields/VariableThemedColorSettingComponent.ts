@@ -26,13 +26,13 @@ import {
 	getTitle,
 	isValidDefaultColor,
 } from '../../../utils/CommonUtils';
+import { Logger } from '../../../utils/Logger';
 import {
 	getPickrSettings,
 	onPickrCancel,
 	resolveDefaultColor,
 } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
-import { Logger } from '../../../utils/Logger';
 
 export class VariableThemedColorSettingComponent extends AbstractSettingComponent {
 	settingEl: Setting;
@@ -190,7 +190,9 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 		const updateVisuals = (color: string | null): void => {
 			const displayColor = color || resolvedDefault || 'transparent';
 			themeLightWrapper.style.setProperty('--pcr-color', displayColor);
-			const pickrRoot = (pickrLight.getRoot() as unknown as { root: HTMLElement }).root;
+			const pickrRoot = (
+				pickrLight.getRoot() as unknown as { root: HTMLElement }
+			).root;
 			if (pickrRoot) {
 				pickrRoot.style.setProperty('--pcr-color', displayColor);
 				const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
@@ -269,7 +271,9 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 		const updateVisuals = (color: string | null): void => {
 			const displayColor = color || resolvedDefault || 'transparent';
 			themeDarkWrapper.style.setProperty('--pcr-color', displayColor);
-			const pickrRoot = (pickrDark.getRoot() as unknown as { root: HTMLElement }).root;
+			const pickrRoot = (
+				pickrDark.getRoot() as unknown as { root: HTMLElement }
+			).root;
 			if (pickrRoot) {
 				pickrRoot.style.setProperty('--pcr-color', displayColor);
 				const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
@@ -329,18 +333,19 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 			const normalizedHex = hexValue.toLowerCase();
 
 			const isLight = id.endsWith('@@light');
-			const defaultColor = isLight ? this.setting['default-light'] : this.setting['default-dark'];
+			const defaultColor = isLight
+				? this.setting['default-light']
+				: this.setting['default-dark'];
 			const normalizedDefault = (defaultColor || '').toLowerCase();
 
 			if (normalizedHex === normalizedDefault) {
-				this.settingsService.clearSetting(this.sectionId, id, { silentUI: true });
+				this.settingsService.clearSetting(this.sectionId, id, {
+					silentUI: true,
+				});
 			} else {
-				this.settingsService.setSetting(
-					this.sectionId,
-					id,
-					hexValue,
-					{ silentUI: true }
-				);
+				this.settingsService.setSetting(this.sectionId, id, hexValue, {
+					silentUI: true,
+				});
 				instance.addSwatch(hexValue);
 			}
 		}
@@ -373,8 +378,12 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 			const idLight = `${this.setting.id}@@light`;
 			const idDark = `${this.setting.id}@@dark`;
 
-			if (this.settingsService.getSetting(this.sectionId, idLight) !== undefined) count++;
-			if (this.settingsService.getSetting(this.sectionId, idDark) !== undefined) count++;
+			if (
+				this.settingsService.getSetting(this.sectionId, idLight) !== undefined
+			)
+				count++;
+			if (this.settingsService.getSetting(this.sectionId, idDark) !== undefined)
+				count++;
 
 			return count > 0 ? count : 1; // Fallback to 1 if it matched via text search instead
 		}

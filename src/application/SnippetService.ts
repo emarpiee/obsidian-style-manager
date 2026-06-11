@@ -18,11 +18,11 @@
 */
 import StyleManagerPlugin from '../main';
 import { RefreshLevel } from '../types';
-import { Logger } from '../utils/Logger';
 
 import { CSSParser } from '../core/css/CSSParser';
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
 import { ViewManager } from '../ui/ViewManager';
+import { Logger } from '../utils/Logger';
 
 export interface SnippetServiceOptions {
 	plugin: StyleManagerPlugin;

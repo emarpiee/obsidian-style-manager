@@ -25,11 +25,7 @@ export abstract class PresetSuggestModal extends SuggestModal<Preset> {
 	presetService: PresetService;
 	placeholder: string;
 
-	constructor(
-		app: App,
-		presetService: PresetService,
-		placeholder: string
-	) {
+	constructor(app: App, presetService: PresetService, placeholder: string) {
 		super(app);
 		this.presetService = presetService;
 		this.placeholder = placeholder;

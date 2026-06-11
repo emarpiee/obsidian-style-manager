@@ -71,15 +71,14 @@ export class PresetItem {
 			.setName(preset.name)
 			.setDesc(
 				`Created: ${
-						preset.created
-							? formatPresetDate(
+					preset.created
+						? formatPresetDate(
 								preset.created,
 								plugin.settingsService.settings[
 									CREATED_DATE_FORMAT_KEY
 								] as string
 							)
-							: 'Unknown Date'
-
+						: 'Unknown Date'
 				}`
 			);
 
@@ -116,16 +115,15 @@ export class PresetItem {
 		);
 
 		// Schedule Badge
-		const schedule = plugin.presetScheduleService.getScheduleForPreset(preset.id);
+		const schedule = plugin.presetScheduleService.getScheduleForPreset(
+			preset.id
+		);
 		if (schedule) {
-			const description = plugin.presetScheduleService.getScheduleDescription(schedule);
-									renderScheduleBadge(
-										badgesContainer,
-										description,
-										() => {
-											new PresetScheduleModal(plugin.app, plugin, preset.id).open();
-										}
-									);
+			const description =
+				plugin.presetScheduleService.getScheduleDescription(schedule);
+			renderScheduleBadge(badgesContainer, description, () => {
+				new PresetScheduleModal(plugin.app, plugin, preset.id).open();
+			});
 		}
 
 		const starIcon = document.createElement('div');
@@ -225,9 +223,9 @@ export class PresetItem {
 										}
 									} catch (err) {
 										console.error('Style Manager | Export failed:', err);
-								plugin.settingsService.notifications.error(
-									`Export failed: ${err instanceof Error ? err.message : String(err)}`
-								);
+										plugin.settingsService.notifications.error(
+											`Export failed: ${err instanceof Error ? err.message : String(err)}`
+										);
 									}
 								};
 
@@ -267,9 +265,7 @@ export class PresetItem {
 									).open();
 								} else {
 									if (
-										plugin.settingsService.settings[
-											SKIP_EXPORT_CONFIRM_KEY
-										]
+										plugin.settingsService.settings[SKIP_EXPORT_CONFIRM_KEY]
 									) {
 										performExport(false);
 									} else {
@@ -308,11 +304,7 @@ export class PresetItem {
 									}
 								};
 
-								if (
-									plugin.settingsService.settings[
-										SKIP_DELETE_CONFIRM_KEY
-									]
-								) {
+								if (plugin.settingsService.settings[SKIP_DELETE_CONFIRM_KEY]) {
 									performDelete();
 								} else {
 									new ConfirmModal(

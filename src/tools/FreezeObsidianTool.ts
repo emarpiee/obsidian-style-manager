@@ -17,6 +17,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import { Notice } from 'obsidian';
+
 import { TOOL_FREEZE_DELAY } from '../constants';
 import type StyleManagerPlugin from '../main';
 
@@ -29,9 +30,9 @@ export class FreezeObsidianTool {
 	constructor(private plugin: StyleManagerPlugin) {}
 
 	freeze(delay?: number): void {
-		const finalDelay = (delay ?? 
-            this.plugin.settingsService.settings[TOOL_FREEZE_DELAY] ?? 
-            4) as number;
+		const finalDelay = (delay ??
+			this.plugin.settingsService.settings[TOOL_FREEZE_DELAY] ??
+			4) as number;
 
 		const freezeNotice = new Notice(
 			`⚠ Will freeze Obsidian in ${finalDelay}s`,

@@ -24,6 +24,7 @@ import {
 	TFolder,
 	normalizePath,
 } from 'obsidian';
+
 import { Logger } from '../../utils/Logger';
 
 /** Typed shell for undocumented Obsidian internal APIs. */
@@ -88,7 +89,9 @@ export class ObsidianBridge {
 	 * Gets the full path to a plugin's styles.css.
 	 */
 	public getPluginPath(id: string): string {
-		return normalizePath(`${this.app.vault.configDir}/plugins/${id}/styles.css`);
+		return normalizePath(
+			`${this.app.vault.configDir}/plugins/${id}/styles.css`
+		);
 	}
 
 	/**
@@ -326,7 +329,10 @@ export class ObsidianBridge {
 				return await adapter.read(path);
 			}
 		} catch (e) {
-			Logger.error(`Style Manager | Error reading theme CSS "${themeName}":`, e);
+			Logger.error(
+				`Style Manager | Error reading theme CSS "${themeName}":`,
+				e
+			);
 		}
 		return null;
 	}
@@ -338,12 +344,17 @@ export class ObsidianBridge {
 		try {
 			const adapter = this.app.vault.adapter;
 			const configDir = this.app.vault.configDir;
-			const path = normalizePath(`${configDir}/themes/${themeName}/manifest.json`);
+			const path = normalizePath(
+				`${configDir}/themes/${themeName}/manifest.json`
+			);
 			if (await adapter.exists(path)) {
 				return await adapter.read(path);
 			}
 		} catch (e) {
-			Logger.error(`Style Manager | Error reading theme manifest "${themeName}":`, e);
+			Logger.error(
+				`Style Manager | Error reading theme manifest "${themeName}":`,
+				e
+			);
 		}
 		return null;
 	}
@@ -351,7 +362,11 @@ export class ObsidianBridge {
 	/**
 	 * Writes a theme CSS or manifest file to the themes directory.
 	 */
-	public async writeThemeFile(themeName: string, filename: string, content: string): Promise<void> {
+	public async writeThemeFile(
+		themeName: string,
+		filename: string,
+		content: string
+	): Promise<void> {
 		try {
 			const adapter = this.app.vault.adapter;
 			const configDir = this.app.vault.configDir;
@@ -364,7 +379,10 @@ export class ObsidianBridge {
 			const path = normalizePath(`${themeFolder}/${filename}`);
 			await adapter.write(path, content);
 		} catch (e) {
-			Logger.error(`Style Manager | Error writing theme file "${filename}" for theme "${themeName}":`, e);
+			Logger.error(
+				`Style Manager | Error writing theme file "${filename}" for theme "${themeName}":`,
+				e
+			);
 			throw e;
 		}
 	}
@@ -378,7 +396,6 @@ export class ObsidianBridge {
 		const path = normalizePath(`${configDir}/themes/${themeName}/theme.css`);
 		return await adapter.exists(path);
 	}
-
 
 	/**
 	 * Gets leaves of a specific type from the workspace.

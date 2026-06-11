@@ -16,12 +16,13 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { IStore } from './IStore';
 import { normalizePath } from 'obsidian';
-import { Logger } from '../../utils/Logger';
+
+import { IStore } from './IStore';
 
 import type StyleManagerPlugin from '../../main';
 import { StyleManagerSettings } from '../../types';
+import { Logger } from '../../utils/Logger';
 
 /** Typed accessor for manifest.dir which is not in Obsidian's official types. */
 type PluginManifestWithDir = StyleManagerPlugin['manifest'] & { dir?: string };
@@ -41,11 +42,14 @@ export class SharedStore implements IStore<StyleManagerSettings> {
 		const raw = await this.readRaw();
 		if (raw === null)
 			return (await this.plugin.loadData()) as StyleManagerSettings | null;
-		
+
 		try {
 			return JSON.parse(raw) as StyleManagerSettings;
 		} catch (e) {
-			Logger.error('Style Manager | Failed to parse data.json, returning null', e);
+			Logger.error(
+				'Style Manager | Failed to parse data.json, returning null',
+				e
+			);
 			return null;
 		}
 	}

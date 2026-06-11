@@ -21,8 +21,12 @@ import { App, Setting, debounce, setIcon } from 'obsidian';
 import {
 	BACKUP_DATE_FORMAT_KEY,
 	BACKUP_PATH_KEY,
+	CREATED_DATE_FORMAT_KEY,
 	EDITOR_TAB_SIZE_KEY,
 	ENABLE_CONSOLE_LOGGING_KEY,
+	EXPORT_DATE_FORMAT_KEY,
+	EXPORT_EXTENSION_KEY,
+	EXPORT_PATH_KEY,
 	OPEN_MODAL_ON_CREATE_KEY,
 	SEPARATE_BULK_PRESETS_KEY,
 	SHOW_ISOLATE_NOTIFICATIONS_KEY,
@@ -32,15 +36,11 @@ import {
 	SHOW_SNIPPET_NOTIFICATIONS_KEY,
 	SHOW_STATUS_BAR_KEY,
 	SHOW_UTILITY_NOTIFICATIONS_KEY,
-	STICKY_HEADING_KEY,
-	EXPORT_PATH_KEY,
-	EXPORT_EXTENSION_KEY,
-	EXPORT_DATE_FORMAT_KEY,
-	CREATED_DATE_FORMAT_KEY,
 	SKIP_APPLY_CONFIRM_KEY,
 	SKIP_DELETE_CONFIRM_KEY,
 	SKIP_EXPORT_CONFIRM_KEY,
 	SKIP_IMPORT_CONFIRM_KEY,
+	STICKY_HEADING_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -285,9 +285,7 @@ export class PreferencesTab {
 			)
 			.addText((text) => {
 				const currentPath =
-					(plugin.settingsService.settings[
-						EXPORT_PATH_KEY
-					] as string) || '';
+					(plugin.settingsService.settings[EXPORT_PATH_KEY] as string) || '';
 				text
 					.setPlaceholder('Folder/Path')
 					.setValue(currentPath)
@@ -313,9 +311,8 @@ export class PreferencesTab {
 					.addOption('.md', '.md')
 					.addOption('.txt', '.txt')
 					.setValue(
-						(plugin.settingsService.settings[
-							EXPORT_EXTENSION_KEY
-						] as string) || '.json'
+						(plugin.settingsService.settings[EXPORT_EXTENSION_KEY] as string) ||
+							'.json'
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings({
@@ -445,13 +442,14 @@ export class PreferencesTab {
 
 		new Setting(uiContainer)
 			.setName('Sticky heading')
-			.setDesc('Enable sticky headings in the styles tab for better navigation.')
+			.setDesc(
+				'Enable sticky headings in the styles tab for better navigation.'
+			)
 			.addToggle((toggle) => {
 				toggle
 					.setValue(
-						(plugin.settingsService.settings[
-							STICKY_HEADING_KEY
-						] as boolean) !== false
+						(plugin.settingsService.settings[STICKY_HEADING_KEY] as boolean) !==
+							false
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
@@ -624,10 +622,10 @@ export class PreferencesTab {
 				.addToggle((toggle) => {
 					toggle
 						.setValue(
-								key === SHOW_SHARED_NOTIFICATIONS_KEY
-									? plugin.settingsService.settings[key] === true
-									: plugin.settingsService.settings[key] !== false
-							)
+							key === SHOW_SHARED_NOTIFICATIONS_KEY
+								? plugin.settingsService.settings[key] === true
+								: plugin.settingsService.settings[key] !== false
+						)
 						.onChange(async (val) => {
 							await plugin.settingsService.setSettings(
 								{ [key]: val },

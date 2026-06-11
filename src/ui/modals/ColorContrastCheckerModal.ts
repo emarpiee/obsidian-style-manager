@@ -6,7 +6,10 @@ import { ColorContrastChecker } from '../components/ColorContrastChecker';
 export class ColorContrastCheckerModal extends Modal {
 	private checker: ColorContrastChecker;
 
-	constructor(app: App, private plugin: StyleManagerPlugin) {
+	constructor(
+		app: App,
+		private plugin: StyleManagerPlugin
+	) {
 		super(app);
 		this.checker = new ColorContrastChecker();
 	}

@@ -53,6 +53,6 @@ export const SKIP_APPLY_CONFIRM_KEY = '__style_manager_skip_apply_confirm';
 export const SKIP_DELETE_CONFIRM_KEY = '__style_manager_skip_delete_confirm';
 export const SKIP_EXPORT_CONFIRM_KEY = '__style_manager_skip_export_confirm';
 export const SKIP_IMPORT_CONFIRM_KEY = '__style_manager_skip_import_confirm';
-export const ALWAYS_SHARED_PRESETS_KEY = '__style_manager_always_shared_presets';
+export const ALWAYS_SHARED_PRESETS_KEY =
+	'__style_manager_always_shared_presets';
 export const LOCAL_FIRST_KEY = '__style_manager_local_first';
-

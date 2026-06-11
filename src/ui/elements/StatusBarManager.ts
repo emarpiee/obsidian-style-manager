@@ -93,7 +93,7 @@ export class StatusBarManager {
 		this.statusBarItem.toggleClass('is-isolate', isIsolate);
 
 		// Precise Tooltip: Mode > Theme > Modified > Snippets
-		const modeText = isIsolate ? 'Isolate Mode' : 'Sync Mode';
+		const modeText = isIsolate ? 'Isolate mode' : 'Shared mode';
 		const snippetText =
 			enabledSnippets.length === 1
 				? '1 snippet'
@@ -179,7 +179,9 @@ export class StatusBarManager {
 				.setIcon(icon)
 				.onClick(async () => {
 					const next = appearance === 'light' ? 'dark' : 'light';
-					await this.plugin.settingsService.setSetting(APPEARANCE_KEY, next, { silentUI: true });
+					await this.plugin.settingsService.setSetting(APPEARANCE_KEY, next, {
+						silentUI: true,
+					});
 					this.refresh();
 				});
 		});
