@@ -660,9 +660,12 @@ export default class StyleManagerPlugin extends Plugin {
 						section.id,
 						setting.id
 					) as boolean);
-					this.settingsService.setSetting(section.id, setting.id, value, {
-						silentUI: true,
-					});
+						const defaultValue = setting.default ?? false;
+						if (value === defaultValue) {
+							this.settingsService.clearSetting(section.id, setting.id);
+						} else {
+							this.settingsService.setSetting(section.id, setting.id, value);
+						}
 				},
 			})
 		);
