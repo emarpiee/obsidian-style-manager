@@ -334,7 +334,12 @@ export default class StyleManagerPlugin extends Plugin {
 		this.addCommand({
 			id: 'style-manager-command-lorem-ipsum',
 			name: 'Lorem ipsum generator',
-			callback: () => new LoremIpsumModal(this.app, this).open(),
+			callback: () => {
+				if (this.isLoremIpsumViewActive()) {
+					return;
+				}
+				new LoremIpsumModal(this.app, this).open();
+			},
 		});
 
 		this.addSettingTab(
@@ -714,6 +719,10 @@ export default class StyleManagerPlugin extends Plugin {
 
 	isContrastViewActive(): boolean {
 		return this.app.workspace.getLeavesOfType(colorContrastViewType).length > 0;
+	}
+
+	isLoremIpsumViewActive(): boolean {
+		return this.app.workspace.getLeavesOfType(loremIpsumViewType).length > 0;
 	}
 
 	async activateView(tab?: ActiveTab): Promise<void> {
