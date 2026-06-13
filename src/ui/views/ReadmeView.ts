@@ -16,31 +16,28 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { ItemView, MarkdownRenderer, WorkspaceLeaf } from 'obsidian';
+import { ItemView, WorkspaceLeaf } from 'obsidian';
 
-import { README_CONTENT } from './ReadmeContent';
+import { ReadmeComponent } from '../components/ReadmeComponent';
 
 export const readmeViewType = 'style-manager-readme-view';
 
 export class ReadmeView extends ItemView {
+	private component: ReadmeComponent;
+
 	constructor(leaf: WorkspaceLeaf) {
 		super(leaf);
+		this.component = new ReadmeComponent();
 	}
 
 	async onload(): Promise<void> {
-		this.contentEl.addClass('markdown-preview-view');
-		this.contentEl.addClass('is-readable-line-width');
-		const sizer = this.contentEl.createDiv({ cls: 'markdown-preview-sizer' });
-		const renderEl = sizer.createDiv({ cls: 'markdown-rendered' });
-		await MarkdownRenderer.renderMarkdown(
-			README_CONTENT,
-			renderEl,
-			this.app.workspace.getActiveFile()?.path || '',
-			this
-		);
+		await this.component.render(this.contentEl, {
+			component: this,
+		});
 	}
 
 	onunload(): void {
+		this.component.destroy();
 		this.contentEl.empty();
 	}
 

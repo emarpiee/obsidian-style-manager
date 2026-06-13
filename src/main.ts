@@ -68,6 +68,7 @@ import { CommandSchedulePresetModal } from './ui/modals/CommandSchedulePresetMod
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
 import { LoremIpsumModal } from './ui/modals/LoremIpsumModal';
+import { ReadmeModal } from './ui/modals/ReadmeModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
 import {
 	ColorContrastCheckerView,
@@ -346,7 +347,10 @@ export default class StyleManagerPlugin extends Plugin {
 			id: 'style-manager-command-show-readme',
 			name: 'Show README',
 			callback: () => {
-				this.activateReadmeView();
+				if (this.isReadmeViewActive()) {
+					return;
+				}
+				new ReadmeModal(this.app, this).open();
 			},
 		});
 
