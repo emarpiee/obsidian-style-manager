@@ -19,6 +19,7 @@
 import { Setting, debounce } from 'obsidian';
 
 import StyleManagerPlugin from '../../main';
+import { ReadmeModal } from '../modals/ReadmeModal';
 import { CSSSetting, ParsedCSSSettings } from '../../types';
 import {
 	HeadingSettingComponent,
@@ -202,10 +203,14 @@ export class StylesTab {
 					frag.appendText(
 						'Styles configured by theme and plugin authors will show up here. You can also create your own configuration by creating a CSS snippet or theme in your vault. '
 					);
-					frag.createEl('a', {
+					const link = frag.createEl('a', {
 						text: 'Click here for details and examples.',
-						href: 'https://github.com/mgmeyers/obsidian-style-settings#obsidian-style-settings-plugin',
+						href: '#',
 					});
+					link.onclick = (e: MouseEvent): void => {
+						e.preventDefault();
+						new ReadmeModal(this.deps.plugin.app, this.deps.plugin).open();
+					};
 				})
 			);
 		});
