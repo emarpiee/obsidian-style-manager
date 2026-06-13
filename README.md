@@ -6,11 +6,11 @@
 > **Do not enable Style Manager and Style Settings at the same time.**
 > Because Style Manager is a fork of the Style Settings plugin, both plugins rely on the exact same `/* @settings` configuration system. If you run them at the same time, they will compete to manage your CSS variables, which can lead to frustrating conflicts. To ensure a smooth and stable experience when migrating, please remember to **disable Style Settings** before enabling Style Manager.
 
-This plugin allows snippet, theme, and plugin CSS files to define a set of configuration options. It then allows users to see all the tweakable settings in one settings pane. Style Settings allows both toggling classes on and off the `body` element, as well as setting numeric, string, and color CSS variables.
+This plugin allows snippet, theme, and plugin CSS files to define a set of configuration options. It then allows users to see all the tweakable settings in one settings pane. Style Manager allows both toggling classes on and off the `body` element, as well as setting numeric, string, and color CSS variables.
 
 **[This CSS Snippet](obsidian-default-theme.css) can be used to adjust every CSS variable of the default Obsidian theme.**
 
-Configurable settings are defined by comments within CSS files beginning with `/* @settings`. These comments must contain YAML with `name`, `id`, and `settings` properties. Style Settings will scan for these comments in all CSS loaded by Obsidian from the `snippets`, `themes`, and `plugins` directories under your vault's configuration directory (`%yourVault%/.obsidian/`). Please see the [Obsidian Docs](https://help.obsidian.md/Home) for more information.
+Configurable settings are defined by comments within CSS files beginning with `/* @settings`. These comments must contain YAML with `name`, `id`, and `settings` properties. Style Manager will scan for these comments in all CSS loaded by Obsidian from the `snippets`, `themes`, and `plugins` directories under your vault's configuration directory (`%yourVault%/.obsidian/`). Please see the [Obsidian Docs](https://help.obsidian.md/Home) for more information.
 
 For example, adding this to a CSS snippet in your vault's snippets directory (`%yourVault%/.obsidian/snippets`):
 
@@ -551,10 +551,6 @@ settings:
 
 */
 ```
-
-## Plugin Support
-
-Plugins can specify a style setting config in the plugin's CSS. Plugins must call `app.workspace.trigger("parse-style-settings")` when the plugin loads in order for Style Settings to be notified of CSS changes.
 
 ## Localization Support
 
