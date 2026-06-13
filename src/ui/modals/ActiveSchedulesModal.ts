@@ -49,6 +49,26 @@ export class ActiveSchedulesModal extends Modal {
 
 		const schedules = this.plugin.presetScheduleService.schedules;
 
+		const isolatedPresets = new Set(
+			schedules
+				.filter(
+					(s) =>
+						s.targetLocker === 'isolate' &&
+						s.deviceId &&
+						s.deviceId !== this.plugin.settingsService.deviceId
+				)
+				.map((s) => s.presetId)
+		);
+
+		if (isolatedPresets.size > 0) {
+			contentEl.createEl('p', {
+				text: `${isolatedPresets.size} preset${
+					isolatedPresets.size > 1 ? 's' : ''
+				} have isolated schedules on other devices`,
+				cls: 'setting-item-description',
+			});
+		}
+
 		if (schedules.length === 0) {
 			contentEl.createEl('p', {
 				text: 'No active schedules.',
