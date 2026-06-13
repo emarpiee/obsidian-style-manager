@@ -66,6 +66,7 @@ export class CSSEditorModal extends Modal {
 	private newName: string = '';
 	private wrapCompartment = new Compartment();
 	private isWrapping: boolean = true;
+	private addBlockMenuDom: HTMLElement | null = null;
 
 	constructor(
 		app: App,
@@ -144,6 +145,22 @@ export class CSSEditorModal extends Modal {
 		const editorContainer = contentEl.createDiv(
 			'style-manager-editor-container'
 		);
+
+		// Support right-click context menu for adding blocks
+		editorContainer.addEventListener('contextmenu', (e) => {
+			if (
+				(this.source.type === 'Snippet' || this.source.type === 'Theme') &&
+				!this.source.readOnly
+			) {
+				if (this.addBlockMenuDom) {
+					this.addBlockMenuDom.remove();
+					this.addBlockMenuDom = null;
+					return;
+				}
+				e.preventDefault();
+				this.showAddBlockMenu({ x: e.clientX, y: e.clientY });
+			}
+		});
 
 		// Define save command
 		const saveKeymap: KeyBinding[] = [
@@ -252,50 +269,8 @@ export class CSSEditorModal extends Modal {
 						.setIcon('plus-with-circle')
 						.setTooltip('Add Block')
 						.onClick((_e: MouseEvent) => {
-							const menu = new Menu();
-							(menu as unknown as { dom: HTMLElement }).dom.addClass(
-								'style-manager-add-block-menu'
-							);
-							const blocks = this.plugin.styleBlockService.getAvailableBlocks();
-
-							// Render Meta group
-							blocks
-								.filter((b) => b.group === 'meta')
-								.forEach((block) => {
-									menu.addItem((item) =>
-										item
-											.setTitle(block.label)
-											.setIcon(block.icon)
-											.onClick(() => {
-												this.plugin.styleBlockService.injectBlock(
-													this.view,
-													block.id
-												);
-											})
-									);
-								});
-
-							menu.addSeparator();
-
-							// Render Field group
-							blocks
-								.filter((b) => b.group === 'field')
-								.forEach((block) => {
-									menu.addItem((item) =>
-										item
-											.setTitle(block.label)
-											.setIcon(block.icon)
-											.onClick(() => {
-												this.plugin.styleBlockService.injectBlock(
-													this.view,
-													block.id
-												);
-											})
-									);
-								});
-
 							const rect = btn.buttonEl.getBoundingClientRect();
-							menu.showAtPosition({ x: rect.right, y: rect.top });
+							this.showAddBlockMenu({ x: rect.right, y: rect.top });
 						});
 				} else {
 					btn.buttonEl.addClass('style-manager-hidden');
@@ -419,5 +394,54 @@ export class CSSEditorModal extends Modal {
 		}
 		const { contentEl } = this;
 		contentEl.empty();
+	}
+
+	private showAddBlockMenu(position: { x: number; y: number }): void {
+		const menu = new Menu();
+		const dom = (menu as unknown as { dom: HTMLElement }).dom;
+		dom.addClass('style-manager-add-block-menu');
+		this.addBlockMenuDom = dom;
+
+		const blocks = this.plugin.styleBlockService.getAvailableBlocks();
+
+		// Render Meta group
+		blocks
+			.filter((b) => b.group === 'meta')
+			.forEach((block) => {
+				menu.addItem((item) =>
+					item
+						.setTitle(block.label)
+						.setIcon(block.icon)
+						.onClick(() => {
+							this.addBlockMenuDom = null;
+							this.plugin.styleBlockService.injectBlock(
+								this.view,
+								block.id
+							);
+						})
+				);
+			});
+
+		menu.addSeparator();
+
+		// Render Field group
+		blocks
+			.filter((b) => b.group === 'field')
+			.forEach((block) => {
+				menu.addItem((item) =>
+					item
+						.setTitle(block.label)
+						.setIcon(block.icon)
+						.onClick(() => {
+							this.addBlockMenuDom = null;
+							this.plugin.styleBlockService.injectBlock(
+								this.view,
+								block.id
+							);
+						})
+				);
+			});
+
+		menu.showAtPosition(position);
 	}
 }
