@@ -17,9 +17,11 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import { EditorView } from '@codemirror/view';
+import { settingRegExp } from '../utils/CommonUtils';
 
 /**
- * Definition for an injectable style block.
+	* Definition for an injectable style block.
+
  */
 export interface StyleBlockDefinition {
 	id: string;
@@ -288,11 +290,91 @@ settings:
 			insertPos = view.state.doc.length;
 			insertContent = '\n\n' + insertContent;
 		} else if (block.position === 'cursor') {
-			insertPos = view.state.selection.main.head;
-			// Add spacing if needed
-			const line = view.state.doc.lineAt(insertPos);
-			if (line.text.trim().length > 0) {
-				insertContent = '\n' + insertContent;
+			if (block.group === 'field') {
+				const cursorPos = view.state.selection.main.head;
+				const matches = Array.from(doc.matchAll(settingRegExp));
+				
+				let targetBlock = null;
+				for (const match of matches) {
+					if (cursorPos >= match.index && cursorPos <= match.index + match[0].length) {
+						targetBlock = match;
+						break;
+					}
+				}
+
+				if (!targetBlock && matches.length > 0) {
+					targetBlock = matches[matches.length - 1];
+				}
+
+				if (targetBlock) {
+					const blockStart = targetBlock.index;
+					const blockEnd = blockStart + targetBlock[0].length;
+					const blockContent = targetBlock[0];
+					
+					// Find all field starts (    - ) within this block
+					const fieldRegExp = /^ {4}- /gm;
+					let match;
+					const fieldStarts: number[] = [];
+					while ((match = fieldRegExp.exec(blockContent)) !== null) {
+						fieldStarts.push(blockStart + match.index);
+					}
+
+					// Find which field the cursor is in
+					let currentFieldIdx = -1;
+					for (let i = 0; i < fieldStarts.length; i++) {
+						const start = fieldStarts[i];
+						const end = i < fieldStarts.length - 1 ? fieldStarts[i + 1] : blockEnd;
+						if (cursorPos >= start && cursorPos <= end) {
+							currentFieldIdx = i;
+							break;
+						}
+					}
+
+					if (currentFieldIdx !== -1) {
+						const fieldStart = fieldStarts[currentFieldIdx];
+						const line = view.state.doc.lineAt(cursorPos);
+						
+						// If cursor is on the same line as the field start and to the left of the dash
+						if (line.from <= fieldStart && line.to >= fieldStart && cursorPos <= fieldStart + 4) {
+							insertPos = fieldStart;
+						} else {
+							// Insert after the current field
+							const nextFieldStart = currentFieldIdx < fieldStarts.length - 1 ? fieldStarts[currentFieldIdx + 1] : blockEnd;
+							insertPos = nextFieldStart === blockEnd ? blockEnd - 2 : nextFieldStart;
+						}
+					} else {
+						// Cursor not in any field
+						if (fieldStarts.length > 0 && cursorPos < fieldStarts[0]) {
+							// Insert before the first field
+							insertPos = fieldStarts[0];
+						} else {
+							// Insert at the end of the block (before */)
+							insertPos = blockEnd - 2;
+						}
+					}
+
+					// Ensure there's a newline before the new field, but only one.
+					const charBefore = doc[insertPos - 1];
+					const prefix = charBefore === '\n' ? '' : '\n';
+					
+					// Ensure there's a newline after the new field so it doesn't merge with the next one.
+					const suffix = '\n';
+					
+					insertContent = prefix + insertContent + suffix;
+				} else {
+					insertPos = cursorPos;
+					const line = view.state.doc.lineAt(insertPos);
+					if (line.text.trim().length > 0) {
+						insertContent = '\n' + insertContent;
+					}
+				}
+			} else {
+				insertPos = view.state.selection.main.head;
+				// Add spacing if needed
+				const line = view.state.doc.lineAt(insertPos);
+				if (line.text.trim().length > 0) {
+					insertContent = '\n' + insertContent;
+				}
 			}
 		}
 
