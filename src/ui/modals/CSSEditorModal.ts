@@ -67,6 +67,7 @@ export class CSSEditorModal extends Modal {
 	private wrapCompartment = new Compartment();
 	private isWrapping: boolean = true;
 	private addBlockMenuDom: HTMLElement | null = null;
+	private lastContextMenuTime: number = 0;
 
 	constructor(
 		app: App,
@@ -152,11 +153,20 @@ export class CSSEditorModal extends Modal {
 				(this.source.type === 'Snippet' || this.source.type === 'Theme') &&
 				!this.source.readOnly
 			) {
-				if (this.addBlockMenuDom) {
+				const now = Date.now();
+				const diff = now - this.lastContextMenuTime;
+				this.lastContextMenuTime = now;
+
+				if (this.addBlockMenuDom && document.body.contains(this.addBlockMenuDom)) {
 					this.addBlockMenuDom.remove();
 					this.addBlockMenuDom = null;
+				}
+
+				if (diff < 500) {
+					// Fast right-click: allow browser's default menu to open
 					return;
 				}
+
 				e.preventDefault();
 				this.showAddBlockMenu({ x: e.clientX, y: e.clientY });
 			}
