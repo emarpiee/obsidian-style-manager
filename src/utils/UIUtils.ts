@@ -160,7 +160,8 @@ export function setupListKeybindings<T>(
 		const activeEl = document.activeElement;
 		const isInput =
 			activeEl instanceof HTMLInputElement ||
-			activeEl instanceof HTMLTextAreaElement;
+			activeEl instanceof HTMLTextAreaElement ||
+			(activeEl as HTMLElement)?.isContentEditable;
 
 		if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
 			if (isInput) return; // Allow normal select-all in inputs
