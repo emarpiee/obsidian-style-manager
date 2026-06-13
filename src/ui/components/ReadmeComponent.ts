@@ -61,7 +61,7 @@ export class ReadmeComponent {
 			README_CONTENT,
 			renderEl,
 			plugin?.app.workspace.getActiveFile()?.path || '',
-			component || (plugin?.app.workspace.getActiveFile() as unknown as Component) || {} as Component
+			component || (plugin as unknown as Component) || {} as Component
 		);
 	}
 
