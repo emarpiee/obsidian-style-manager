@@ -115,8 +115,9 @@ export class PresetItem {
 		);
 
 		// Schedule Badge
-		const schedule = plugin.presetScheduleService.getScheduleForPreset(
-			preset.id
+		const schedule = plugin.presetScheduleService.getVisibleScheduleForPreset(
+			preset.id,
+			plugin.settingsService.deviceId
 		);
 		if (schedule) {
 			const description =

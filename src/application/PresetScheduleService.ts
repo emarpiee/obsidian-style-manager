@@ -68,6 +68,15 @@ export class PresetScheduleService {
 		return this.schedules.find((s) => s.presetId === presetId);
 	}
 
+	public getVisibleScheduleForPreset(presetId: string, deviceId: string): PresetSchedule | undefined {
+		return this.schedules.find(
+			(s) =>
+				s.presetId === presetId &&
+				(s.targetLocker === 'shared' ||
+					(s.targetLocker === 'isolate' && s.deviceId === deviceId))
+		);
+	}
+
 	public formatDate(date: Date): string {
 		const formatter = new Intl.DateTimeFormat('en-US', {
 			month: 'long',
