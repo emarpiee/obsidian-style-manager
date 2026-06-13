@@ -149,8 +149,7 @@ export class CSSParser {
 			}
 		) as ParsedCSSSettings;
 
-		if (!settings || !settings.settings) return undefined;
-
+		if (!settings || !Array.isArray(settings.settings)) return undefined;
 		settings.settings = settings.settings.filter((setting) => setting);
 		return settings;
 	}

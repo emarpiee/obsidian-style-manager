@@ -6,6 +6,7 @@ module.exports = {
 		jest: true,
 	},
 	extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+	ignorePatterns: ['src/test_archive/**'],
 	globals: {
 		Atomics: 'readonly',
 		SharedArrayBuffer: 'readonly',

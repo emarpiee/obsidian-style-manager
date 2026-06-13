@@ -53,7 +53,7 @@ export class ItemView extends View {
 export class AbstractInputSuggest<T> {
 	constructor(
 		public app: App,
-		public inputEl: HTMLInputElement
+		public inputEl: HTMLInputElement,
 	) {}
 	onSelect(_value: T, _evt: MouseEvent | KeyboardEvent): void {}
 }
@@ -105,11 +105,11 @@ export class Plugin {
 	app: App;
 	constructor(
 		app: App,
-		public manifest: any
+		public manifest: any,
 	) {
 		this.app = app;
 	}
-	settings = {};
+	settings: Record<string, unknown> = {};
 	loadData = vi.fn().mockResolvedValue({});
 	saveData = vi.fn().mockResolvedValue({});
 	addCommand = vi.fn().mockImplementation((cmd) => cmd);
@@ -123,8 +123,8 @@ export class Modal {
 		register: vi.fn(),
 	};
 	constructor(public app: App) {}
-	open() {}
-	close() {}
+	open = vi.fn();
+	close = vi.fn();
 	contentEl = document.createElement('div');
 	modalEl = document.createElement('div');
 }
@@ -144,7 +144,7 @@ export class Setting {
 }
 
 export const requestUrl = vi.fn();
-export const debounce = (fn: any) => fn;
+export const debounce = (fn: (...args: any[]) => any) => fn;
 export const setIcon = vi.fn();
 export const Platform = {
 	isMobile: false,
@@ -167,15 +167,15 @@ export class ButtonComponent {
 	setTooltip = vi.fn().mockReturnThis();
 }
 
-export function createFragment() {
+export function createFragment(): DocumentFragment {
 	return document.createDocumentFragment();
 }
 
-export function createEl(tag: string, options?: any) {
+export function createEl(tag: string, options?: { text?: string; cls?: string }): HTMLElement {
 	const el = document.createElement(tag);
 	if (options?.text) el.textContent = options.text;
 	if (options?.cls) el.className = options.cls;
 	return el;
 }
 
-export const normalizePath = (path: string) => path.replace(/\\/g, '/').replace(/^\/+/, '');
+export const normalizePath = (path: string): string => path.replace(/\\/g, '/').replace(/^\/+/, '');

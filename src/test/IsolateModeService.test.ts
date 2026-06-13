@@ -1,42 +1,29 @@
-/*
-    Style Manager - Obsidian Plugin
-    Copyright (c) 2023 mgmeyers
-    Copyright (c) 2026 emarpiee
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
-*/
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { THEME_KEY } from '../constants';
-
-import { IsolateModeService } from '../application/IsolateModeService';
+import {
+	ACCENT_COLOR_KEY,
+	APPEARANCE_KEY,
+	SNIPPETS_KEY,
+	THEME_KEY,
+} from '../constants';
+import { IsolateModeService, type IsolateModeDelegate } from '../application/IsolateModeService';
+import { RefreshLevel, type StyleManagerSettings } from '../types';
 
 describe('IsolateModeService', () => {
 	let service: IsolateModeService;
-	let mockDelegate: any;
+	let mockDelegate: IsolateModeDelegate;
 
 	beforeEach(() => {
 		const mockSettingsService = {
-			settings: {},
+			settings: {} as StyleManagerSettings,
 			notifications: { isolate: vi.fn() },
 			syncSnippetState: vi.fn().mockResolvedValue(undefined),
-			refreshService: { trigger: vi.fn() },
+			refreshService: { trigger: vi.fn().mockResolvedValue(undefined) },
 			save: vi.fn().mockResolvedValue(undefined),
 			updateMerged: vi.fn(),
 			applyTheme: vi.fn(),
 			applyAppearance: vi.fn(),
 			applyAccentColor: vi.fn(),
+			applySnippets: vi.fn().mockResolvedValue(undefined),
 		};
 
 		mockDelegate = {
@@ -48,113 +35,283 @@ describe('IsolateModeService', () => {
 			applyAppearance: vi.fn(),
 			applyAccentColor: vi.fn(),
 			triggerGlobal: vi.fn(),
-			themeService: { isApplyingPersistentTheme: false },
+			themeService: { isApplyingPersistentTheme: false } as any,
 			bridge: {
 				getNativeConfig: vi.fn(),
 				setNativeConfig: vi.fn(),
 				getEnabledSnippets: vi.fn().mockReturnValue([]),
-			},
-			styleGenerator: {
-				removeClasses: vi.fn(),
-				initClasses: vi.fn(),
-				setCSSVariables: vi.fn(),
-				rerenderAll: vi.fn(),
-			},
-			viewManager: { rerenderAll: vi.fn() },
+			} as any,
+			styleGenerator: {} as any,
+			viewManager: {} as any,
 			plugin: {
 				reloadAll: vi.fn().mockResolvedValue(undefined),
 				parseCSS: vi.fn(),
 				settingsService: mockSettingsService,
-			},
+			} as any,
 		};
 		service = new IsolateModeService(mockDelegate);
 	});
 
-	it('should activate Isolate Mode and take snapshot if empty', async () => {
-		mockDelegate.getSharedSettings.mockReturnValue({
-			[THEME_KEY]: 'shared-theme',
+	describe('Basic state management', () => {
+		it('should initialize with isolate mode disabled and empty settings', () => {
+			expect(service.isIsolateMode()).toBe(false);
+			expect(service.isolateSettings).toEqual({});
 		});
 
-		await service.setIsolateMode(true);
+		it('should update state via loadState', () => {
+			const settings = { 'test@@key': 'value' };
+			service.loadState(true, settings);
+			expect(service.isIsolateMode()).toBe(true);
+			expect(service.isolateSettings).toEqual(settings);
+		});
 
-		expect(service.isIsolateMode()).toBe(true);
-		expect(service.isolateSettings[THEME_KEY]).toBe('shared-theme');
-		expect(mockDelegate.updateMerged).toHaveBeenCalled();
-		expect(mockDelegate.triggerGlobal).toHaveBeenCalledWith(
-			'isolate-mode-changed'
-		);
+		it('should allow setting isolateSettings manually', () => {
+			const settings = { 'manual@@key': 'value' };
+			service.isolateSettings = settings;
+			expect(service.isolateSettings).toEqual(settings);
+		});
 	});
 
-	it('should deactivate Isolate Mode and reload all', async () => {
-		service.loadState(true, { 'a@@1': 'v' });
+	describe('setIsolateMode', () => {
+		it('should do nothing if enabled is same as current mode', async () => {
+			service.loadState(true, {});
+			await service.setIsolateMode(true);
+			expect(mockDelegate.save).not.toHaveBeenCalled();
+			expect(mockDelegate.updateMerged).not.toHaveBeenCalled();
+		});
 
-		await service.setIsolateMode(false);
+		it('should activate isolate mode and take snapshot if settings are empty', async () => {
+			vi.mocked(mockDelegate.getSharedSettings).mockReturnValue({
+				[THEME_KEY]: 'shared-theme',
+				'other-key': 'should-be-ignored',
+			});
 
-		expect(service.isIsolateMode()).toBe(false);
-		expect(
-			mockDelegate.plugin.settingsService.refreshService.trigger
-		).toHaveBeenCalled();
-		expect(mockDelegate.triggerGlobal).toHaveBeenCalledWith(
-			'isolate-mode-changed'
-		);
+			await service.setIsolateMode(true);
+
+			expect(service.isIsolateMode()).toBe(true);
+			expect(service.isolateSettings[THEME_KEY]).toBe('shared-theme');
+			expect(service.isolateSettings['other-key']).toBeUndefined();
+			expect(mockDelegate.save).toHaveBeenCalled();
+			expect(mockDelegate.updateMerged).toHaveBeenCalled();
+			expect(mockDelegate.triggerGlobal).toHaveBeenCalledWith('isolate-mode-changed');
+			expect(mockDelegate.triggerGlobal).toHaveBeenCalledWith('device-lockers-updated');
+		});
+
+		it('should activate isolate mode and preserve existing settings if not empty', async () => {
+			const existing = { 'existing@@key': 'value' };
+			service.loadState(false, existing);
+			
+			await service.setIsolateMode(true);
+
+			expect(service.isIsolateMode()).toBe(true);
+			expect(service.isolateSettings).toEqual(expect.objectContaining(existing));
+		});
+
+		it('should skip save if options.skipSave is true', async () => {
+			await service.setIsolateMode(true, { skipSave: true });
+			expect(mockDelegate.save).not.toHaveBeenCalled();
+			expect(mockDelegate.updateMerged).toHaveBeenCalled();
+		});
+
+		it('should apply current settings when changing mode', async () => {
+			(mockDelegate.plugin.settingsService as any).settings = {
+				[THEME_KEY]: 'theme-x',
+				[APPEARANCE_KEY]: 'dark',
+				[ACCENT_COLOR_KEY]: '#ff0000',
+				[SNIPPETS_KEY]: ['snippet1', 'snippet2'],
+			};
+
+			await service.setIsolateMode(true);
+
+			expect(mockDelegate.applyTheme).toHaveBeenCalledWith('theme-x', false);
+			expect(mockDelegate.applyAppearance).toHaveBeenCalledWith('dark', false);
+			expect(mockDelegate.applyAccentColor).toHaveBeenCalledWith('#ff0000', false);
+			expect(mockDelegate.plugin.settingsService.applySnippets).toHaveBeenCalledWith(
+				['snippet1', 'snippet2'],
+				true
+			);
+		});
+
+		it('should trigger sync and refresh when activating', async () => {
+			await service.setIsolateMode(true);
+
+			expect(mockDelegate.plugin.settingsService.syncSnippetState).toHaveBeenCalled();
+			expect(mockDelegate.plugin.settingsService.refreshService.trigger).toHaveBeenCalledWith(
+				RefreshLevel.STYLES_ONLY
+			);
+		});
+
+		it('should trigger only refresh when deactivating', async () => {
+			service.loadState(true, {});
+			await service.setIsolateMode(false);
+
+			expect(mockDelegate.plugin.settingsService.syncSnippetState).not.toHaveBeenCalled();
+			expect(mockDelegate.plugin.settingsService.refreshService.trigger).toHaveBeenCalledWith(
+				RefreshLevel.STYLES_ONLY
+			);
+		});
+
+		it('should show notification when changing mode', async () => {
+			await service.setIsolateMode(true);
+			expect(mockDelegate.plugin.settingsService.notifications.isolate).toHaveBeenCalledWith(
+				'Isolate mode enabled'
+			);
+
+			service.loadState(true, {});
+			await service.setIsolateMode(false);
+			expect(mockDelegate.plugin.settingsService.notifications.isolate).toHaveBeenCalledWith(
+				'Isolate mode disabled'
+			);
+		});
 	});
 
-	it('should push Isolated settings to shared', async () => {
-		service.loadState(true, { [THEME_KEY]: 'local-theme', 'a@@1': 'v' });
-		mockDelegate.getSharedSettings.mockReturnValue({ orig: 'val' });
+	describe('snapshotSharedToIsolate', () => {
+		it('should filter shared settings and include only relevant keys', () => {
+			vi.mocked(mockDelegate.getSharedSettings).mockReturnValue({
+				'key@@1': 'val1',
+				[THEME_KEY]: 'theme1',
+				[APPEARANCE_KEY]: 'dark',
+				[SNIPPETS_KEY]: ['s1'],
+				[ACCENT_COLOR_KEY]: '#000',
+				'ignored-key': 'val2',
+			});
 
-		await service.pushToShared();
+			const snapshot = service.snapshotSharedToIsolate();
 
-		expect(service.isIsolateMode()).toBe(false);
-		expect(service.isolateSettings).toEqual({});
-		expect(mockDelegate.setSharedSettings).toHaveBeenCalledWith(
-			expect.objectContaining({
+			expect(snapshot).toEqual({
+				'key@@1': 'val1',
+				[THEME_KEY]: 'theme1',
+				[APPEARANCE_KEY]: 'dark',
+				[SNIPPETS_KEY]: ['s1'],
+				[ACCENT_COLOR_KEY]: '#000',
+			});
+		});
+
+		it('should use native config fallbacks when keys are missing in shared settings', () => {
+			vi.mocked(mockDelegate.getSharedSettings).mockReturnValue({});
+			vi.mocked(mockDelegate.bridge.getNativeConfig).mockImplementation((key: string) => {
+				if (key === 'cssTheme') return 'native-theme';
+				if (key === 'theme') return 'moonstone'; // mapped to light
+				if (key === 'accentColor') return '#native-accent';
+				return null;
+			});
+			vi.mocked(mockDelegate.bridge.getEnabledSnippets).mockReturnValue(['native-snippet']);
+
+			const snapshot = service.snapshotSharedToIsolate();
+
+			expect(snapshot[THEME_KEY]).toBe('native-theme');
+			expect(snapshot[APPEARANCE_KEY]).toBe('light');
+			expect(snapshot[ACCENT_COLOR_KEY]).toBe('#native-accent');
+			expect(snapshot[SNIPPETS_KEY]).toEqual(['native-snippet']);
+		});
+
+		it('should use default theme if native theme is missing', () => {
+			vi.mocked(mockDelegate.getSharedSettings).mockReturnValue({});
+			vi.mocked(mockDelegate.bridge.getNativeConfig).mockReturnValue(null);
+
+			const snapshot = service.snapshotSharedToIsolate();
+
+			expect(snapshot[THEME_KEY]).toBe('default');
+		});
+
+		it('should use dark if native appearance is not moonstone', () => {
+			vi.mocked(mockDelegate.getSharedSettings).mockReturnValue({});
+			vi.mocked(mockDelegate.bridge.getNativeConfig).mockImplementation((key: string) => {
+				if (key === 'theme') return 'obsidian';
+				return null;
+			});
+
+			const snapshot = service.snapshotSharedToIsolate();
+
+			expect(snapshot[APPEARANCE_KEY]).toBe('dark');
+		});
+
+		it('should toggle isApplyingPersistentTheme', () => {
+			service.snapshotSharedToIsolate();
+			expect(mockDelegate.themeService.isApplyingPersistentTheme).toBe(false);
+		});
+	});
+
+	describe('resetIsolateSettings', () => {
+		it('should replace isolate settings with fresh snapshot and trigger updates', async () => {
+			service.loadState(true, { 'old@@key': 'old' });
+			vi.mocked(mockDelegate.getSharedSettings).mockReturnValue({ 'new@@key': 'new' });
+
+			await service.resetIsolateSettings();
+
+			expect(service.isolateSettings).toEqual(expect.objectContaining({ 'new@@key': 'new' }));
+			expect(mockDelegate.save).toHaveBeenCalled();
+			expect(mockDelegate.updateMerged).toHaveBeenCalled();
+			expect(mockDelegate.plugin.settingsService.refreshService.trigger).toHaveBeenCalledWith(
+				RefreshLevel.FULL_VISUAL
+			);
+			expect(mockDelegate.triggerGlobal).toHaveBeenCalledWith('isolate-mode-changed');
+			expect(mockDelegate.plugin.settingsService.notifications.isolate).toHaveBeenCalledWith(
+				'Isolate settings have been reset to a fresh shared snapshot.'
+			);
+		});
+	});
+
+	describe('pushToShared', () => {
+		it('should push isolate settings to native config and shared settings', async () => {
+			const isolateSettings = {
 				[THEME_KEY]: 'local-theme',
-				'a@@1': 'v',
-				orig: 'val',
-			})
-		);
-		expect(mockDelegate.bridge.setNativeConfig).toHaveBeenCalledWith(
-			'cssTheme',
-			'local-theme'
-		);
-		expect(
-			mockDelegate.plugin.settingsService.refreshService.trigger
-		).toHaveBeenCalled();
-	});
+				[APPEARANCE_KEY]: 'dark',
+				[ACCENT_COLOR_KEY]: '#123456',
+				[SNIPPETS_KEY]: ['local-snippet'],
+				'custom@@key': 'custom-val',
+			};
+			service.loadState(true, isolateSettings);
+			vi.mocked(mockDelegate.getSharedSettings).mockReturnValue({ 'shared@@key': 'shared-val' });
 
-	it('should create a fresh snapshot from the shared settings', () => {
-		mockDelegate.getSharedSettings.mockReturnValue({ 'snap@@1': 'val' });
-		mockDelegate.bridge.getNativeConfig.mockImplementation((k: string) =>
-			k === 'cssTheme' ? 'current-theme' : null
-		);
+			await service.pushToShared();
 
-		const snapshot = service.snapshotSharedToIsolate();
+			expect(mockDelegate.bridge.setNativeConfig).toHaveBeenCalledWith('cssTheme', 'local-theme');
+			expect(mockDelegate.bridge.setNativeConfig).toHaveBeenCalledWith('theme', 'obsidian');
+			expect(mockDelegate.bridge.setNativeConfig).toHaveBeenCalledWith('accentColor', '#123456');
+			expect(mockDelegate.bridge.setNativeConfig).toHaveBeenCalledWith('enabledCssSnippets', ['local-snippet']);
+			
+			expect(mockDelegate.setSharedSettings).toHaveBeenCalledWith({
+				'shared@@key': 'shared-val',
+				...isolateSettings,
+			});
 
-		expect(snapshot['snap@@1']).toBe('val');
-		expect(snapshot[THEME_KEY]).toBe('current-theme');
-	});
+			expect(service.isIsolateMode()).toBe(false);
+			expect(service.isolateSettings).toEqual({});
+			expect(mockDelegate.save).toHaveBeenCalled();
+			expect(mockDelegate.updateMerged).toHaveBeenCalled();
+			expect(mockDelegate.plugin.settingsService.refreshService.trigger).toHaveBeenCalledWith(
+				RefreshLevel.STYLES_ONLY
+			);
+			expect(mockDelegate.triggerGlobal).toHaveBeenCalledWith('isolate-mode-changed');
+			expect(mockDelegate.triggerGlobal).toHaveBeenCalledWith('device-lockers-updated');
+			expect(mockDelegate.plugin.settingsService.notifications.isolate).toHaveBeenCalledWith(
+				'Isolated styles pushed to shared locker.'
+			);
+		});
 
-	it('should initialize state correctly via loadState', () => {
-		const settings = { 'some@@key': 'value' };
-		service.loadState(true, settings);
+		it('should handle special theme and appearance values when pushing', async () => {
+			service.loadState(true, {
+				[THEME_KEY]: 'default',
+				[APPEARANCE_KEY]: 'light',
+			});
 
-		expect(service.isIsolateMode()).toBe(true);
-		expect(service.isolateSettings).toEqual(settings);
-	});
+			await service.pushToShared();
 
-	it('should reset isolate settings to a fresh shared snapshot', async () => {
-		service.loadState(true, { 'old@@key': 'old' });
-		mockDelegate.getSharedSettings.mockReturnValue({ 'new@@key': 'new' });
+			expect(mockDelegate.bridge.setNativeConfig).toHaveBeenCalledWith('cssTheme', '');
+			expect(mockDelegate.bridge.setNativeConfig).toHaveBeenCalledWith('theme', 'moonstone');
+		});
 
-		await service.resetIsolateSettings();
+		it('should not call setNativeConfig if values are missing', async () => {
+			service.loadState(true, { 'some@@key': 'val' });
+			await service.pushToShared();
 
-		expect(service.isolateSettings['new@@key']).toBe('new');
-		expect(service.isolateSettings['old@@key']).toBeUndefined();
-		expect(mockDelegate.save).toHaveBeenCalled();
-		expect(mockDelegate.updateMerged).toHaveBeenCalled();
-		expect(
-			mockDelegate.plugin.settingsService.notifications.isolate
-		).toHaveBeenCalled();
+			expect(mockDelegate.bridge.setNativeConfig).not.toHaveBeenCalled();
+		});
+
+		it('should toggle isApplyingPersistentTheme', async () => {
+			await service.pushToShared();
+			expect(mockDelegate.themeService.isApplyingPersistentTheme).toBe(false);
+		});
 	});
 });
