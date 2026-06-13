@@ -303,7 +303,7 @@ settings:
 				}
 
 				if (!targetBlock && matches.length > 0) {
-					targetBlock = matches[matches.length - 1];
+					targetBlock = matches.find((m) => m.index > cursorPos) || matches[matches.length - 1];
 				}
 
 				if (targetBlock) {
