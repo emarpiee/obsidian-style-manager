@@ -873,7 +873,7 @@ body.is-phone .style-manager-plugin {
 body.is-mobile
 	.modal-style-manager:not(
 		.style-manager-confirm-modal,
-		.style-manager-model-pre,
+		.style-manager-modal-pre,
 		.style-manager-export-modal,
 		.style-manager-preview-modal,
 		.style-manager-color-contrast-modal
@@ -885,6 +885,10 @@ body.is-mobile
 	justify-self: center;
 }
 /* ---- */
+
+.style-manager-readme-modal {
+	width: 90% !important;
+}
 
 .style-manager-modal-pre {
 	max-height: 50vh;
