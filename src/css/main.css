@@ -126,11 +126,11 @@ body {
 	--sm-badge-primary-radius: var(--radius-m);
 	--sm-badge-primary-theme-bg: color-mix(
 		in oklch,
-		var(--text-accent),
+		var(--interactive-accent),
 		transparent 90%
 	);
-	--sm-badge-primary-theme-color: var(--text-accent);
-	--sm-badge-primary-theme-border-color: var(--text-accent);
+	--sm-badge-primary-theme-color: var(--interactive-accent);
+	--sm-badge-primary-theme-border-color: var(--interactive-accent);
 	--sm-badge-primary-appearance-dark-bg: oklch(72% 0.16 295 / 0.1);
 	--sm-badge-primary-appearance-dark-color: #a883ff;
 	--sm-badge-primary-appearance-light-bg: oklch(60% 0.18 45 / 0.15);
@@ -142,10 +142,10 @@ body {
 	--sm-source-badge-plugin-color-light: #047857;
 	--sm-source-badge-theme-bg-light: color-mix(
 		in oklch,
-		var(--text-accent),
+		var(--interactive-accent),
 		transparent 88%
 	);
-	--sm-source-badge-theme-color-light: var(--text-accent);
+	--sm-source-badge-theme-color-light: var(--interactive-accent);
 	--sm-source-badge-snippet-bg-light: oklch(60% 0.18 45 / 0.12);
 	--sm-source-badge-snippet-color-light: #b45309;
 	/* Dark Mode */
@@ -153,18 +153,18 @@ body {
 	--sm-source-badge-plugin-color-dark: #10b981;
 	--sm-source-badge-theme-bg-dark: color-mix(
 		in oklch,
-		var(--text-accent),
+		var(--interactive-accent),
 		transparent 85%
 	);
-	--sm-source-badge-theme-color-dark: var(--text-accent);
+	--sm-source-badge-theme-color-dark: var(--interactive-accent);
 	--sm-source-badge-snippet-bg-dark: oklch(75% 0.18 45 / 0.15);
 	--sm-source-badge-snippet-color-dark: #f59e0b;
 
 	/* --- Tabs --- */
-	--sm-tab-color-active: var(--text-accent);
-	--sm-tab-border-color-active: var(--text-accent);
+	--sm-tab-color-active: var(--interactive-accent);
+	--sm-tab-border-color-active: var(--interactive-accent);
 	--sm-tab-border-size-active: 2px;
-	--sm-tab-color-hover: var(--text-accent);
+	--sm-tab-color-hover: var(--interactive-accent);
 	--sm-tab-actions-bg: var(--setting-items-background);
 	--sm-tab-actions-border-color: var(--background-modifier-border);
 	--sm-tab-actions-border-radius: var(--radius-l);
@@ -186,8 +186,8 @@ body {
 	--sm-item-selected-border-color: var(--interactive-accent);
 
 	/* --- Isolate Badge --- */
-	--sm-isolate-badge-active-bg: var(--text-accent);
-	--sm-isolate-badge-active-border-color: var(--text-accent);
+	--sm-isolate-badge-active-bg: var(--interactive-accent);
+	--sm-isolate-badge-active-border-color: var(--interactive-accent);
 	--sm-isolate-badge-active-color: var(--background-primary-alt);
 	--sm-isolate-badge-border-radius: calc(
 		var(--sm-tab-actions-border-radius) - var(--sm-tab-actions-padding)
@@ -300,7 +300,7 @@ body.is-mobile .style-manager-style-settings-item {
 }
 
 .style-manager-accent-icon {
-	color: var(--sm-icon-dynamic-color, var(--text-accent));
+	color: var(--sm-icon-dynamic-color, var(--interactive-accent));
 }
 
 body .vertical-tab-content:has(.style-manager-plugin),
@@ -808,7 +808,7 @@ body.is-phone .style-manager-plugin {
 
 .clickable-hex:hover {
 	text-decoration-style: solid;
-	color: var(--text-accent);
+	color: var(--interactive-accent);
 }
 
 .style-manager-tool-contrast-results .setting-item {
@@ -1093,7 +1093,7 @@ body.is-phone .style-manager-tab-actions {
 
 .style-manager-tab-actions .style-manager-icon-button:hover {
 	background-color: var(--background-modifier-hover);
-	color: var(--text-accent);
+	color: var(--interactive-accent);
 }
 
 .style-manager-toolbar-separator {
@@ -1275,7 +1275,7 @@ button.style-manager-icon-button {
 .is-appearance-item,
 .is-snippets-item,
 .is-accent-item {
-	border-left: 3px solid var(--text-accent);
+	border-left: 3px solid var(--interactive-accent);
 }
 
 .style-manager-theme-icon,
@@ -1285,7 +1285,7 @@ button.style-manager-icon-button {
 	display: inline-flex;
 	align-items: center;
 	margin-right: 8px;
-	color: var(--text-accent);
+	color: var(--interactive-accent);
 }
 
 .style-manager-theme-icon svg,
@@ -1475,8 +1475,8 @@ body.theme-dark .style-manager-badge-primary.dynamic {
 }
 
 .style-manager-isolate-badge.is-active:hover {
-	background: var(--text-accent-hover);
-	border-color: var(--text-accent-hover);
+	background: var(--interactive-accent-hover);
+	border-color: var(--interactive-accent-hover);
 }
 
 .style-manager-isolate-badge-icon {
@@ -1499,7 +1499,7 @@ body.theme-dark .style-manager-badge-primary.dynamic {
 .style-manager-isolate-badge-text {
 	font-size: var(--font-ui-smaller);
 	font-weight: var(--font-semibold);
-	color: var(--text-accent);
+	color: var(--interactive-accent);
 	white-space: nowrap;
 	display: none;
 }
@@ -1579,7 +1579,7 @@ body.is-phone .style-manager-isolate-badge {
 }
 
 .style-manager-preset-star-icon:hover {
-	color: var(--text-accent);
+	color: var(--interactive-accent);
 }
 
 .style-manager-preset-star-icon.is-favorite {
@@ -1628,7 +1628,7 @@ body.is-phone .style-manager-isolate-badge {
 
 .style-manager-theme-trigger:hover {
 	background-color: var(--background-modifier-hover);
-	color: var(--text-accent);
+	color: var(--interactive-accent);
 }
 
 /* --- Mobile Spacing & Theme Select Optimization --- */
@@ -1868,13 +1868,13 @@ body.is-phone
 }
 
 .style-manager-metadata-value[href] {
-	color: var(--text-accent);
+	color: var(--interactive-accent);
 	text-decoration: none;
 	transition: color 0.1s ease;
 }
 
 .style-manager-metadata-value[href]:hover {
-	color: var(--text-accent-hover);
+	color: var(--interactive-accent-hover);
 	text-decoration: underline;
 }
 
