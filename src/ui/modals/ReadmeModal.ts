@@ -22,6 +22,7 @@ export class ReadmeModal extends Modal {
 			plugin: this.plugin,
 			onOpenInTab: () => this.close(),
 			component: this as unknown as Component,
+			isModal: true,
 		});
 	}
 

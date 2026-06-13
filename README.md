@@ -1,4 +1,10 @@
-# Obsidian Style Settings Plugin
+# Obsidian Style Manager
+
+> **Style Manager** is a fork of the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin by [mgmeyers](https://github.com/mgmeyers).
+
+> [!CAUTION]
+> **Do not enable Style Manager and Style Settings at the same time.**
+> Because Style Manager is a fork of the Style Settings plugin, both plugins rely on the exact same `/* @settings` configuration system. If you run them at the same time, they will compete to manage your CSS variables, which can lead to frustrating conflicts. To ensure a smooth and stable experience when migrating, please remember to **disable Style Settings** before enabling Style Manager.
 
 This plugin allows snippet, theme, and plugin CSS files to define a set of configuration options. It then allows users to see all the tweakable settings in one settings pane. Style Settings allows both toggling classes on and off the `body` element, as well as setting numeric, string, and color CSS variables.
 
@@ -18,7 +24,7 @@ settings:
         id: my-title
         title: My Settings
         type: heading
-        level: 3
+        level: 1
     - 
         id: accent
         title: Accent Color
@@ -34,6 +40,10 @@ settings:
 
 */
 ```
+
+will result in:
+
+<img src="https://raw.githubusercontent.com/mgmeyers/obsidian-style-settings/main/screenshots/example01.png" alt="Example output of plugin" />
 
 Each setting definition must be separated by a dash (`-`). There are 7 setting types.
 
@@ -66,7 +76,7 @@ settings:
         id: this-is-a-heading
         title: My Heading
         type: heading
-        level: 2
+        level: 1
         collapsed: true
 
 */
@@ -397,7 +407,7 @@ body.theme-light.css-settings-manager { --accent: #007AFF; }
 body.theme-dark.css-settings-manager { --accent: #2DB253; }
 ```
 
-### `variable-color` formatting options
+### `variable-color` Formatting Options
 
 There are 8 formatting options:
 
@@ -520,7 +530,7 @@ Parameters:
 
 - `from`: The starting color, or color that will be at step 0
 - `to`: The ending color, or color that will be at step 100
-- `step`: The increment at which to output a CSS variable. For example, setting `step` to `10` will output `--var-0`, `--var-10`, `--var-20`, etc...
+- `step`: The increment at which to output a CSS variable. For example, setting `step` to `10` will output `--var-0`, `--var-10`, `--var-20`, etc…
 - `format`: Can be one of: `hsl`, `rgb`, or `hex`;
 - `pad`?: When set, the number section of the variable will be padded with `0`'s until it contains this number of digits. For example, setting `pad` to `3` and `step` to `10` will output `--var-000`, `--var-010`, `--var-020`
 
@@ -597,3 +607,7 @@ settings:
 
 */
 ```
+
+## Transparency
+
+I want to be open about my workflow for this project. I personally directed and designed every aspect of the UI and UX. To give myself more time to focus on that creative side, I used Gemma to help speed up the technical groundwork, specifically implementing complex logic, catching syntax errors, and generating my commit messages.

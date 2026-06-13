@@ -10,9 +10,20 @@ function escapeTemplateLiteral(str) {
 	return str.replace(/`/g, '\\`').replace(/\$/g, '\\$');
 }
 
+function convertImgToLink(content) {
+	return content.replace(/<img\s+([^>]+)>/gi, (match, attrs) => {
+		const srcMatch = attrs.match(/src="([^"]*)"/i);
+		const altMatch = attrs.match(/alt="([^"]*)"/i);
+		const src = srcMatch ? srcMatch[1] : '';
+		const alt = altMatch ? altMatch[1] : 'image';
+		return src ? `[${alt}](${src})` : match;
+	});
+}
+
 try {
 	const content = fs.readFileSync(README_PATH, 'utf8');
-	const escapedContent = escapeTemplateLiteral(content);
+	const processedContent = convertImgToLink(content);
+	const escapedContent = escapeTemplateLiteral(processedContent);
 
 	// Write to README.view.md
 	fs.writeFileSync(OUTPUT_PATH, escapedContent);
