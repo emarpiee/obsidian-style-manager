@@ -154,4 +154,11 @@ export abstract class AbstractSettingComponent extends Component {
 	getMatchCount(_showModifiedOnly: boolean): number {
 		return 1;
 	}
+
+	/**
+	 * Refreshes the visual state of the component.
+	 * This is a no-op in the base class but can be overridden by child components
+	 * to update their UI when settings are changed externally.
+	 */
+	refresh(): void {}
 }

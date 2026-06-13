@@ -39,6 +39,7 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 	settingEl: Setting;
 	setting: VariableColor;
 	pickr: Pickr | null;
+	singleColorWrapper: HTMLElement | null = null;
 
 	render(): void {
 		if (!this.containerEl) return;
@@ -93,38 +94,25 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 			cls: 'single-color-wrapper',
 		});
 
-		const singleColorWrapper = wrapper.createDiv({
+		this.singleColorWrapper = wrapper.createDiv({
 			cls: 'single-color',
 		});
 
 		// fix, so that the color is correctly shown before the color picker has been opened
 		const defaultColor =
 			value !== undefined ? (value as string) : resolvedDefault;
-		singleColorWrapper.style.setProperty('--pcr-color', defaultColor);
+		this.singleColorWrapper.style.setProperty('--pcr-color', defaultColor);
 
 		const pickr = (this.pickr = Pickr.create(
 			getPickrSettings({
 				isView: this.isView,
-				el: singleColorWrapper.createDiv({ cls: 'picker' }),
+				el: this.singleColorWrapper.createDiv({ cls: 'picker' }),
 				containerEl: this.containerEl,
 				swatches: swatches,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 			})
 		));
-
-		const updateVisuals = (color: string | null): void => {
-			const displayColor = color || resolvedDefault || 'transparent';
-			singleColorWrapper.style.setProperty('--pcr-color', displayColor);
-			const pickrRoot = (pickr.getRoot() as { root: HTMLElement }).root;
-			if (pickrRoot) {
-				pickrRoot.style.setProperty('--pcr-color', displayColor);
-				const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
-				if (button) {
-					button.style.setProperty('--pcr-color', displayColor);
-				}
-			}
-		};
 
 		const onColorChange = (
 			color: Pickr.HSVaColor | null,
@@ -155,7 +143,7 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 				}
 			}
 
-			updateVisuals(color ? color.toHEXA().toString() : null);
+			this.updateVisuals(color ? color.toHEXA().toString() : null);
 			this.updateModifiedClass();
 		};
 
@@ -171,7 +159,7 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 		pickr.on('cancel', onPickrCancel);
 
 		const resetButton = new ButtonComponent(
-			singleColorWrapper.createDiv({ cls: 'pickr-reset' })
+			this.singleColorWrapper.createDiv({ cls: 'pickr-reset' })
 		);
 		resetButton.setIcon('reset');
 		resetButton.onClick(() => {
@@ -186,10 +174,10 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 
 			if (isColorValid(resolvedDefaultValue)) {
 				pickr.setColor(resolvedDefaultValue, true);
-				updateVisuals(resolvedDefaultValue);
+				this.updateVisuals(resolvedDefaultValue);
 			} else {
 				pickr.setColor('#00000000', true);
-				updateVisuals(null);
+				this.updateVisuals(null);
 			}
 
 			this.updateModifiedClass();
@@ -204,5 +192,42 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 		this.pickr?.destroyAndRemove();
 		this.pickr = null;
 		this.settingEl?.settingEl.remove();
+	}
+
+	private updateVisuals(color: string | null): void {
+		if (!this.singleColorWrapper || !this.pickr) return;
+
+		const resolvedDefault = resolveDefaultColor(this.setting.default || '');
+		const displayColor = color || resolvedDefault || 'transparent';
+
+		this.singleColorWrapper.style.setProperty('--pcr-color', displayColor);
+
+		const pickrRoot = (this.pickr.getRoot() as { root: HTMLElement }).root;
+		if (pickrRoot) {
+			pickrRoot.style.setProperty('--pcr-color', displayColor);
+			const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
+			if (button) {
+				button.style.setProperty('--pcr-color', displayColor);
+			}
+		}
+	}
+
+	refresh(): void {
+		if (!this.pickr) return;
+
+		const defaultColorRaw = this.setting.default;
+		const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
+		const isColorValid = (color: string | undefined): color is string =>
+			!!color && color.trim() !== '' && color.trim() !== '#';
+
+		if (isColorValid(resolvedDefaultValue)) {
+			this.pickr.setColor(resolvedDefaultValue, true);
+			this.updateVisuals(resolvedDefaultValue);
+		} else {
+			this.pickr.setColor('#00000000', true);
+			this.updateVisuals(null);
+		}
+
+		this.updateModifiedClass();
 	}
 }

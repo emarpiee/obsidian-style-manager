@@ -518,11 +518,21 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 						silentUI: true,
 					});
 				}
+				this.refreshChildren();
 				this.updateChildrenModifiedClass();
 				this.updateModifiedClass();
 				this.updateCountBadge();
 			});
 		});
+	}
+
+	private refreshChildren(): void {
+		for (const child of this.children) {
+			child.refresh();
+			if (child.setting.type === SettingType.HEADING) {
+				(child as HeadingSettingComponent).refreshChildren();
+			}
+		}
 	}
 
 	private updateChildrenModifiedClass(): void {
