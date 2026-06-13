@@ -2,9 +2,9 @@
 
 This plugin allows snippet, theme, and plugin CSS files to define a set of configuration options. It then allows users to see all the tweakable settings in one settings pane. Style Settings allows both toggling classes on and off the `body` element, as well as setting numeric, string, and color CSS variables.
 
-**[This CSS Snippet](obsidian-default-theme.css) can be used to adjust every CSS variable of the default Obsidian theme.** 
+**[This CSS Snippet](obsidian-default-theme.css) can be used to adjust every CSS variable of the default Obsidian theme.**
 
-Configurable settings are defined by comments within CSS files beginning with `/* @settings`. These comments must contain YAML with `name`, `id`, and `settings` properties. Style Settings will scan for these comments in all CSS loaded by Obsidian from the `snippets`, `themes`, and `plugins` directories under your vault's configuration directory (`%yourVault%/.obsidian/`).  Please see the [Obsidian Docs](https://help.obsidian.md/Home) for more information.
+Configurable settings are defined by comments within CSS files beginning with `/* @settings`. These comments must contain YAML with `name`, `id`, and `settings` properties. Style Settings will scan for these comments in all CSS loaded by Obsidian from the `snippets`, `themes`, and `plugins` directories under your vault's configuration directory (`%yourVault%/.obsidian/`). Please see the [Obsidian Docs](https://help.obsidian.md/Home) for more information.
 
 For example, adding this to a CSS snippet in your vault's snippets directory (`%yourVault%/.obsidian/snippets`):
 
@@ -35,10 +35,6 @@ settings:
 */
 ```
 
-will result in:
-
-<img src="https://raw.githubusercontent.com/mgmeyers/obsidian-style-settings/main/screenshots/example01.png" alt="Example output of plugin" />
-
 Each setting definition must be separated by a dash (`-`). There are 7 setting types.
 
 All settings definitions must have these parameters:
@@ -55,7 +51,6 @@ All settings definitions must have these parameters:
   - `variable-number-slider`: a numeric CSS variable represented by a slider
   - `variable-select`: a text-based CSS variable displayed as a dropdown menu of predefined options
   - `variable-color`: a color CSS variable with corresponding color picker
-
 
 ## `heading`
 
@@ -338,11 +333,12 @@ This will output the variable:
 
 ## `variable-color`
 
-`variable-color` creates a color picker with a variety of output format options. A `default` attribute is required in `hex` or `rgb` format. **Note: hex color values must be wrapped in quotes.** A `format` attribute is also required. 
+`variable-color` creates a color picker with a variety of output format options. A `default` attribute is required in `hex` or `rgb` format. **Note: hex color values must be wrapped in quotes.** A `format` attribute is also required.
 
 Optional parameters:
--  Setting `opacity` to `true` will enable opacity support in all output formats.
--  A list of alternate output formats can be supplied via the `alt-format` setting
+
+- Setting `opacity` to `true` will enable opacity support in all output formats.
+- A list of alternate output formats can be supplied via the `alt-format` setting
 
 ```css
 /* @settings
@@ -397,7 +393,7 @@ settings:
 This will output the variables:
 
 ```
-body.theme-light.css-settings-manager { --accent: #007AFF; } 
+body.theme-light.css-settings-manager { --accent: #007AFF; }
 body.theme-dark.css-settings-manager { --accent: #2DB253; }
 ```
 
@@ -518,9 +514,10 @@ When `opacity` is set to `true`:
 
 ## `color-gradient`
 
-`color-gradient` outputs a fixed number of colors along a gradient between two existing color variables. A `format` attribute is also required. *Note: The `to` variable must be set in style settings for the gradient to be generated. Also, gradients will only be generated using colors defined under the current style settings `id`.*
+`color-gradient` outputs a fixed number of colors along a gradient between two existing color variables. A `format` attribute is also required. _Note: The `to` variable must be set in style settings for the gradient to be generated. Also, gradients will only be generated using colors defined under the current style settings `id`._
 
 Parameters:
+
 - `from`: The starting color, or color that will be at step 0
 - `to`: The ending color, or color that will be at step 100
 - `step`: The increment at which to output a CSS variable. For example, setting `step` to `10` will output `--var-0`, `--var-10`, `--var-20`, etc...
