@@ -50,8 +50,8 @@ describe('StyleGenerator', () => {
 					id: 'section1',
 					name: 'Section 1',
 					settings: [
-						{ id: 'var1', type: SettingType.VARIABLE_COLOR, default: '#ff0000', format: 'hex' },
-						{ id: 'grad1', type: SettingType.COLOR_GRADIENT, from: 'var1', to: '#0000ff', step: 100, pad: 2, format: 'hex' }
+						{ id: 'var1', type: SettingType.VARIABLE_COLOR, default: '#ff0000', format: 'hex', title: 'Var 1' },
+						{ id: 'grad1', type: SettingType.COLOR_GRADIENT, from: 'var1', to: '#0000ff', step: 100, pad: 2, format: 'hex', title: 'Grad 1' }
 					]
 				}
 			];
@@ -80,7 +80,7 @@ describe('StyleGenerator', () => {
 		it('should clean up stylesheets and classes on destroy', () => {
 			generator.config = {
 				sec: {
-					toggle: { id: 'destroy-test', type: SettingType.CLASS_TOGGLE, default: true }
+					toggle: { id: 'destroy-test', type: SettingType.CLASS_TOGGLE, default: true, title: 'Destroy Test' }
 				}
 			};
 			generator.initClasses();
@@ -411,13 +411,13 @@ describe('StyleGenerator', () => {
 			};
 			const gradients = {
 				sec: [
-					{ id: 'grad-var', type: SettingType.COLOR_GRADIENT, from: 'res-col', to: 'var(--existing-var)', format: 'hex', step: 100, pad: 2 },
-					{ id: 'grad-dash', type: SettingType.COLOR_GRADIENT, from: 'res-col', to: '--existing-var', format: 'hex', step: 100, pad: 2 },
-					{ id: 'grad-raw', type: SettingType.COLOR_GRADIENT, from: 'res-col', to: 'existing-var', format: 'hex', step: 100, pad: 2 },
+					{ id: 'grad-var', type: SettingType.COLOR_GRADIENT, from: 'res-col', to: 'var(--existing-var)', format: 'hex', step: 100, pad: 2, title: 'Grad Var' },
+					{ id: 'grad-dash', type: SettingType.COLOR_GRADIENT, from: 'res-col', to: '--existing-var', format: 'hex', step: 100, pad: 2, title: 'Grad Dash' },
+					{ id: 'grad-raw', type: SettingType.COLOR_GRADIENT, from: 'res-col', to: 'existing-var', format: 'hex', step: 100, pad: 2, title: 'Grad Raw' },
 				],
 			};
 
-			const [vars] = generator.generateVariableArrays({}, config as any, gradients, mockBridge);
+			const [vars] = generator.generateVariableArrays({}, config as any, gradients as any, mockBridge);
 
 			// Mock returns #888888 for current -> rgb(136 136 136)
 			// These are the 'to' colors (index 100)
@@ -452,7 +452,7 @@ describe('StyleGenerator', () => {
 		it('should minify generated CSS output', () => {
 			generator.config = {
 				sec: {
-					num: { id: 'n', type: SettingType.VARIABLE_NUMBER, default: 1 },
+					num: { id: 'n', type: SettingType.VARIABLE_NUMBER, default: 1, title: 'Num' },
 				},
 			};
 			generator.applyStyles();
