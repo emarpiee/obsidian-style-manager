@@ -64,7 +64,7 @@ export function renderAccentColorSelect(
 			swatches: accentColor ? [accentColor] : [],
 			opacity: false,
 			defaultColor: displayColor,
-			position: 'bottom-end',
+			position: 'bottom-start',
 		})
 	);
 

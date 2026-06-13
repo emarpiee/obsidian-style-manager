@@ -5,8 +5,8 @@
 	"main": "main.js",
 	"scripts": {
 		"typecheck": "tsc --noemit",
-		"dev": "node esbuild.config.mjs",
-		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
+		"dev": "node scripts/readme-view-content.mjs && node esbuild.config.mjs",
+		"build": "node scripts/readme-view-content.mjs && tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"lint": "eslint ./src",
 		"lint:fix": "eslint ./src/**/*.ts --fix",
 		"prettier": "prettier --write \"./src/**/*.{ts,tsx}\"",

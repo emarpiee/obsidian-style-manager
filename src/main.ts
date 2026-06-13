@@ -74,6 +74,7 @@ import {
 	colorContrastViewType,
 } from './ui/views/ColorContrastCheckerView';
 import { LoremIpsumView, loremIpsumViewType } from './ui/views/LoremIpsumView';
+import { ReadmeView, readmeViewType } from './ui/views/ReadmeView';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
 
@@ -341,6 +342,14 @@ export default class StyleManagerPlugin extends Plugin {
 			},
 		});
 
+		this.addCommand({
+			id: 'style-manager-command-show-readme',
+			name: 'Show README',
+			callback: () => {
+				this.activateReadmeView();
+			},
+		});
+
 		this.addSettingTab(
 			(
 				this.settingsService.viewManager as unknown as {
@@ -355,6 +364,7 @@ export default class StyleManagerPlugin extends Plugin {
 			(leaf) => new ColorContrastCheckerView(leaf)
 		);
 		this.registerView(loremIpsumViewType, (leaf) => new LoremIpsumView(leaf));
+		this.registerView(readmeViewType, (leaf) => new ReadmeView(leaf));
 
 		this.addCommand({
 			id: 'style-manager-show-leaf',
@@ -716,12 +726,20 @@ export default class StyleManagerPlugin extends Plugin {
 		this.app.workspace.detachLeavesOfType(loremIpsumViewType);
 	}
 
+	deactivateReadmeView(): void {
+		this.app.workspace.detachLeavesOfType(readmeViewType);
+	}
+
 	isContrastViewActive(): boolean {
 		return this.app.workspace.getLeavesOfType(colorContrastViewType).length > 0;
 	}
 
 	isLoremIpsumViewActive(): boolean {
 		return this.app.workspace.getLeavesOfType(loremIpsumViewType).length > 0;
+	}
+
+	isReadmeViewActive(): boolean {
+		return this.app.workspace.getLeavesOfType(readmeViewType).length > 0;
 	}
 
 	async activateView(tab?: ActiveTab): Promise<void> {
@@ -757,6 +775,16 @@ export default class StyleManagerPlugin extends Plugin {
 
 		await leaf.setViewState({
 			type: loremIpsumViewType,
+			active: true,
+		});
+	}
+
+	async activateReadmeView(): Promise<void> {
+		this.deactivateReadmeView();
+		const leaf = this.app.workspace.getLeaf('tab');
+
+		await leaf.setViewState({
+			type: readmeViewType,
 			active: true,
 		});
 	}
