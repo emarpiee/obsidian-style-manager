@@ -215,12 +215,8 @@ settings:
         description: 
         type: variable-color
         format: hex
-        opacity: true
-        alt-format:
-            -
-                id: 
-                format: rgb
-        default: '#007AFF'`,
+        opacity: false
+        default: '#'`,
 		},
 		{
 			id: 'variable-themed-color',
@@ -235,13 +231,9 @@ settings:
         description: 
         type: variable-themed-color
         format: hex
-        opacity: true
-        alt-format:
-            -
-                id: 
-                format: rgb
-        default-light: '#007AFF'
-        default-dark: '#007AFF'`,
+        opacity: false
+        default-light: '#'
+        default-dark: '#'`,
 		},
 		{
 			id: 'color-gradient',
