@@ -52,7 +52,7 @@ export function getPickrSettings(opts: {
 				hsla: true,
 				input: true,
 				cancel: true,
-				clear: true,
+				clear: false,
 				save: true,
 			},
 		},
