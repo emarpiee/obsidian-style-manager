@@ -135,6 +135,14 @@ export class PresetScheduleService {
 			if (excludeId && other.id === excludeId) continue;
 			if (other.isPaused) continue;
 
+			if (
+				other.targetLocker === 'isolate' &&
+				other.deviceId &&
+				other.deviceId !== this.plugin.settingsService.deviceId
+			) {
+				continue;
+			}
+
 			const otherRule = RRule.fromString(other.rruleString);
 
 			for (const tOcc of targetOccurrences) {
