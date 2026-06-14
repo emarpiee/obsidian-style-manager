@@ -318,13 +318,11 @@ export default class StyleManagerPlugin extends Plugin {
 			},
 		});
 
-		if (!(this.app as unknown as { isMobile: boolean }).isMobile) {
-			this.addCommand({
-				id: 'style-manager-command-toggle-mobile-emulation',
-				name: 'Toggle mobile emulation',
-				callback: () => this.mobileEmulationTool.toggle(),
-			});
-		}
+		this.addCommand({
+			id: 'style-manager-command-toggle-mobile-emulation',
+			name: 'Toggle mobile emulation',
+			callback: () => this.mobileEmulationTool.toggle(),
+		});
 
 		this.addCommand({
 			id: 'style-manager-command-show-test-notice',
