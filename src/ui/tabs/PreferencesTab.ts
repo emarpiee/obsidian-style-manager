@@ -459,86 +459,6 @@ export class PreferencesTab {
 						);
 					});
 			});
-
-		new Setting(uiContainer)
-			.setName('Open editor after creation')
-			.setDesc(
-				'Automatically open the CSS editor modal when a new snippet is created.'
-			)
-			.addToggle((toggle) => {
-				toggle
-					.setValue(
-						(plugin.settingsService.settings[
-							OPEN_MODAL_ON_CREATE_KEY
-						] as boolean) !== false
-					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [OPEN_MODAL_ON_CREATE_KEY]: val },
-							{ silentUI: true }
-						);
-					});
-			});
-
-		new Setting(uiContainer)
-			.setName('Open files in default app')
-			.setDesc(
-				'Open CSS files like snippets and themes using your system default text editor instead of the built-in modal.'
-			)
-			.addToggle((toggle) => {
-				toggle
-					.setValue(
-						localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true'
-					)
-					.onChange(async (val) => {
-						localStorage.setItem(OPEN_IN_DEFAULT_APP_KEY, String(val));
-					});
-			});
-
-		new Setting(uiContainer)
-			.setName('Editor tab size')
-			.setDesc('Set the indentation width (tab size) for the CSS editor modal.')
-			.addSlider((slider) => {
-				slider
-					.setLimits(2, 8, 1)
-					.setDynamicTooltip()
-					.setValue(
-						(plugin.settingsService.settings[EDITOR_TAB_SIZE_KEY] as number) ||
-							4
-					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [EDITOR_TAB_SIZE_KEY]: val },
-							{ silentUI: true }
-						);
-					});
-
-				// Expose slider for reset button
-				(
-					this as unknown as {
-						tabSizeSlider: import('obsidian').SliderComponent;
-					}
-				).tabSizeSlider = slider;
-			})
-			.addExtraButton((btn) => {
-				btn
-					.setIcon('rotate-ccw')
-					.setTooltip('Reset to default (4)')
-					.onClick(async () => {
-						await plugin.settingsService.setSettings(
-							{ [EDITOR_TAB_SIZE_KEY]: 4 },
-							{ silentUI: true }
-						);
-						const slider = (
-							this as unknown as {
-								tabSizeSlider?: import('obsidian').SliderComponent;
-							}
-						).tabSizeSlider;
-						if (slider) {
-							slider.setValue(4);
-						}
-					});
-			});
 	}
 
 	private renderConfirmations(): void {
@@ -602,6 +522,86 @@ export class PreferencesTab {
 		const developerContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
 		);
+
+		new Setting(developerContainer)
+			.setName('Open editor after creation')
+			.setDesc(
+				'Automatically open the CSS editor modal when a new snippet is created.'
+			)
+			.addToggle((toggle) => {
+				toggle
+					.setValue(
+						(plugin.settingsService.settings[
+							OPEN_MODAL_ON_CREATE_KEY
+						] as boolean) !== false
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings(
+							{ [OPEN_MODAL_ON_CREATE_KEY]: val },
+							{ silentUI: true }
+						);
+					});
+			});
+
+		new Setting(developerContainer)
+			.setName('Open files in default app')
+			.setDesc(
+				'Open CSS files like snippets and themes using your system default text editor instead of the built-in modal.'
+			)
+			.addToggle((toggle) => {
+				toggle
+					.setValue(
+						localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true'
+					)
+					.onChange(async (val) => {
+						localStorage.setItem(OPEN_IN_DEFAULT_APP_KEY, String(val));
+					});
+			});
+
+		new Setting(developerContainer)
+			.setName('Editor tab size')
+			.setDesc('Set the indentation width (tab size) for the CSS editor modal.')
+			.addSlider((slider) => {
+				slider
+					.setLimits(2, 8, 1)
+					.setDynamicTooltip()
+					.setValue(
+						(plugin.settingsService.settings[EDITOR_TAB_SIZE_KEY] as number) ||
+							4
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings(
+							{ [EDITOR_TAB_SIZE_KEY]: val },
+							{ silentUI: true }
+						);
+					});
+
+				// Expose slider for reset button
+				(
+					this as unknown as {
+						tabSizeSlider: import('obsidian').SliderComponent;
+					}
+				).tabSizeSlider = slider;
+			})
+			.addExtraButton((btn) => {
+				btn
+					.setIcon('rotate-ccw')
+					.setTooltip('Reset to default (4)')
+					.onClick(async () => {
+						await plugin.settingsService.setSettings(
+							{ [EDITOR_TAB_SIZE_KEY]: 4 },
+							{ silentUI: true }
+						);
+						const slider = (
+							this as unknown as {
+								tabSizeSlider?: import('obsidian').SliderComponent;
+							}
+						).tabSizeSlider;
+						if (slider) {
+							slider.setValue(4);
+						}
+					});
+			});
 
 		const notificationSettings = [
 			{
