@@ -41,6 +41,7 @@ import {
 	SKIP_EXPORT_CONFIRM_KEY,
 	SKIP_IMPORT_CONFIRM_KEY,
 	STICKY_HEADING_KEY,
+	OPEN_IN_DEFAULT_APP_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -474,6 +475,26 @@ export class PreferencesTab {
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
 							{ [OPEN_MODAL_ON_CREATE_KEY]: val },
+							{ silentUI: true }
+						);
+					});
+			});
+
+		new Setting(uiContainer)
+			.setName('Open files in default app')
+			.setDesc(
+				'Open CSS files like snippets and themes using your system default text editor instead of the built-in modal.'
+			)
+			.addToggle((toggle) => {
+				toggle
+					.setValue(
+						(plugin.settingsService.settings[
+							OPEN_IN_DEFAULT_APP_KEY
+						] as boolean) === true
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings(
+							{ [OPEN_IN_DEFAULT_APP_KEY]: val },
 							{ silentUI: true }
 						);
 					});

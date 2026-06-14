@@ -204,7 +204,7 @@ export class StatusBarManager {
 		// 5. Stats (Snippets)
 		menu.addItem((item) => {
 			item
-				.setTitle(`${enabledSnippets.length} enabled snippets`)
+				.setTitle(`${enabledSnippets.length} active snippets`)
 				.setIcon('file-code')
 				.onClick(() => {
 					this.plugin.activateView('snippets');

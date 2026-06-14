@@ -18,7 +18,7 @@
 */
 import { App, Component, Menu, Setting, setIcon } from 'obsidian';
 
-import { SHOW_SNIPPET_METADATA_KEY, SNIPPETS_KEY } from '../../../constants';
+import { OPEN_IN_DEFAULT_APP_KEY, SHOW_SNIPPET_METADATA_KEY, SNIPPETS_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { SnippetMetadata } from '../../../types';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
@@ -261,10 +261,16 @@ export class SnippetSettingComponent extends Component {
 	}
 
 	private onEdit(): void {
-		new CSSEditorModal(this.app, this.plugin, {
-			type: 'Snippet',
-			id: this.snippetId,
-		}).open();
+		const useDefaultApp = this.plugin.settingsService.settings[OPEN_IN_DEFAULT_APP_KEY];
+		if (useDefaultApp) {
+			const path = this.plugin.settingsService.bridge.getSnippetPath(this.snippetId);
+			(this.app as any).openWithDefaultApp(path);
+		} else {
+			new CSSEditorModal(this.app, this.plugin, {
+				type: 'Snippet',
+				id: this.snippetId,
+			}).open();
+		}
 	}
 
 	private async onRename(): Promise<void> {
