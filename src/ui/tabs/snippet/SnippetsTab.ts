@@ -20,7 +20,7 @@ import { App, ButtonComponent, Component, Setting, debounce } from 'obsidian';
 
 import { SnippetSettingComponent } from './SnippetSettingComponent';
 
-import { OPEN_MODAL_ON_CREATE_KEY, SNIPPETS_KEY } from '../../../constants';
+import { OPEN_IN_DEFAULT_APP_KEY, OPEN_MODAL_ON_CREATE_KEY, SNIPPETS_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import {
 	handleItemSelection,
@@ -75,10 +75,16 @@ export class SnippetsTab {
 							this.plugin.settingsService.settings[OPEN_MODAL_ON_CREATE_KEY] !==
 							false;
 						if (openModal) {
-							new CSSEditorModal(this.app, this.plugin, {
-								type: 'Snippet',
-								id,
-							}).open();
+							const useDefaultApp = this.plugin.settingsService.settings[OPEN_IN_DEFAULT_APP_KEY];
+							if (useDefaultApp) {
+								const path = this.plugin.settingsService.bridge.getSnippetPath(id);
+								(this.app as any).openWithDefaultApp(path);
+							} else {
+								new CSSEditorModal(this.app, this.plugin, {
+									type: 'Snippet',
+									id,
+								}).open();
+							}
 						}
 
 						this.onRerender();

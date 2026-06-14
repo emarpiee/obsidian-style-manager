@@ -24,6 +24,7 @@ import {
 	ThemeBuilderService,
 	ThemeManifest,
 } from '../../application/ThemeBuilderService';
+import { OPEN_IN_DEFAULT_APP_KEY, OPEN_MODAL_ON_CREATE_KEY } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import {
 	Validator,
@@ -243,11 +244,23 @@ export class ThemeManifestModal extends Modal {
 								);
 							} else {
 								const themeId = await this.service.createTheme(this.manifest);
-								// Automatically open the CSS editor for the new theme
-								new CSSEditorModal(this.app, this.plugin, {
-									type: 'Theme',
-									id: themeId,
-								}).open();
+								
+								const openModal =
+									this.plugin.settingsService.settings[OPEN_MODAL_ON_CREATE_KEY] !==
+									false;
+								if (openModal) {
+									const useDefaultApp = this.plugin.settingsService.settings[OPEN_IN_DEFAULT_APP_KEY];
+									if (useDefaultApp) {
+										const path = this.plugin.settingsService.bridge.getThemePath(themeId);
+										(this.app as any).openWithDefaultApp(path);
+									} else {
+										// Automatically open the CSS editor for the new theme
+										new CSSEditorModal(this.app, this.plugin, {
+											type: 'Theme',
+											id: themeId,
+										}).open();
+									}
+								}
 							}
 							await this.plugin.settingsService.save({ force: true });
 							this.onSave();

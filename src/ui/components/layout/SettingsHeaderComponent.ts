@@ -22,7 +22,7 @@ import { renderAccentColorSelect } from './AccentColorSelector';
 import { IsolateModeHeader } from './IsolateModeHeader';
 import { renderThemeSelect } from './ThemeSelector';
 
-import { APPEARANCE_KEY, OPEN_MODAL_ON_CREATE_KEY } from '../../../constants';
+import { APPEARANCE_KEY, OPEN_IN_DEFAULT_APP_KEY, OPEN_MODAL_ON_CREATE_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { RefreshLevel } from '../../../types';
 import { ActiveTab } from '../../StyleManagerLayoutRenderer';
@@ -285,10 +285,16 @@ export class SettingsHeaderComponent extends Component {
 							this.plugin.settingsService.settings[OPEN_MODAL_ON_CREATE_KEY] !==
 							false;
 						if (openModal) {
-							new CSSEditorModal(this.app, this.plugin, {
-								type: 'Snippet',
-								id,
-							}).open();
+							const useDefaultApp = this.plugin.settingsService.settings[OPEN_IN_DEFAULT_APP_KEY];
+							if (useDefaultApp) {
+								const path = this.plugin.settingsService.bridge.getSnippetPath(id);
+								(this.app as any).openWithDefaultApp(path);
+							} else {
+								new CSSEditorModal(this.app, this.plugin, {
+									type: 'Snippet',
+									id,
+								}).open();
+							}
 						}
 
 						this.options.onTabChange('snippets');
