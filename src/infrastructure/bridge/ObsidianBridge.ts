@@ -425,6 +425,7 @@ export class ObsidianBridge {
 	 * @param isApplyingVisualTheme Getter for ignore flag during programmatic VISUAL-ONLY updates.
 	 */
 	public installPatches(
+		getTheme: () => string,
 		onThemeIntercept: (theme: string) => void,
 		getAppearance: () => string,
 		onAppearanceIntercept: (appearance: string) => void,
@@ -504,6 +505,24 @@ export class ObsidianBridge {
 		if (customCss) {
 			this.originalSetTheme = customCss.setTheme;
 			const internalCss = customCss as unknown as ObsidianCustomCss;
+
+			// Override theme property getter to return the actual active theme.
+			// This allows the native Obsidian command palette "Change theme.." to show the
+			// correct active badge without breaking the vault.getConfig('cssTheme') trick.
+			let _realThemeValue = internalCss.theme;
+			Object.defineProperty(internalCss, 'theme', {
+				get: () => {
+					if (isApplyingPersistentTheme() || isApplyingVisualTheme()) {
+						return _realThemeValue;
+					}
+					return getTheme();
+				},
+				set: (val: string) => {
+					_realThemeValue = val;
+				},
+				configurable: true
+			});
+
 			internalCss.setTheme = function (
 				themeName: string,
 				...args: unknown[]

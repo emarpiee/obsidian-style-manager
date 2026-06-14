@@ -330,6 +330,7 @@ export class ThemeService {
 	/** Installs monkey-patches on vault.getConfig/setConfig and customCss.setTheme. */
 	installPatches(): void {
 		this.deps.bridge.installPatches(
+			() => (this.deps.getSetting(THEME_KEY) as string) || '',
 			(theme: string) =>
 				this.deps.setSetting(THEME_KEY, theme, { silentUI: true }),
 			() => {
