@@ -261,7 +261,7 @@ export class SnippetSettingComponent extends Component {
 	}
 
 	private onEdit(): void {
-		const useDefaultApp = this.plugin.settingsService.settings[OPEN_IN_DEFAULT_APP_KEY];
+		const useDefaultApp = localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
 		if (useDefaultApp) {
 			const path = this.plugin.settingsService.bridge.getSnippetPath(this.snippetId);
 			(this.app as any).openWithDefaultApp(path);

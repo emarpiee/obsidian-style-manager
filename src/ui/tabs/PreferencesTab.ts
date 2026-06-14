@@ -488,15 +488,10 @@ export class PreferencesTab {
 			.addToggle((toggle) => {
 				toggle
 					.setValue(
-						(plugin.settingsService.settings[
-							OPEN_IN_DEFAULT_APP_KEY
-						] as boolean) === true
+						localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true'
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [OPEN_IN_DEFAULT_APP_KEY]: val },
-							{ silentUI: true }
-						);
+						localStorage.setItem(OPEN_IN_DEFAULT_APP_KEY, String(val));
 					});
 			});
 

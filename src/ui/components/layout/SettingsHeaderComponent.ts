@@ -285,7 +285,7 @@ export class SettingsHeaderComponent extends Component {
 							this.plugin.settingsService.settings[OPEN_MODAL_ON_CREATE_KEY] !==
 							false;
 						if (openModal) {
-							const useDefaultApp = this.plugin.settingsService.settings[OPEN_IN_DEFAULT_APP_KEY];
+							const useDefaultApp = localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
 							if (useDefaultApp) {
 								const path = this.plugin.settingsService.bridge.getSnippetPath(id);
 								(this.app as any).openWithDefaultApp(path);
