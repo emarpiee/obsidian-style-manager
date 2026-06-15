@@ -367,12 +367,28 @@ export class SettingsService extends Events {
 					key.includes('@@') ||
 					key === THEME_KEY ||
 					key === APPEARANCE_KEY ||
-					key === ACCENT_COLOR_KEY
+					key === ACCENT_COLOR_KEY ||
+					key === SNIPPETS_KEY
 				) {
 					delete merged[key];
 				}
 			});
-			Object.assign(merged, this.isolateModeService.isolateSettings);
+			// Only merge valid style settings from isolateSettings to avoid stale preferences
+			const validIsolateSettings: Record<string, unknown> = {};
+			Object.keys(this.isolateModeService.isolateSettings).forEach((key) => {
+				if (
+					key.includes('@@') ||
+					key === THEME_KEY ||
+					key === APPEARANCE_KEY ||
+					key === ACCENT_COLOR_KEY ||
+					key === SNIPPETS_KEY ||
+					key === '_manager_presets' ||
+					key === '_manager_schedules'
+				) {
+					validIsolateSettings[key] = this.isolateModeService.isolateSettings[key];
+				}
+			});
+			Object.assign(merged, validIsolateSettings);
 		}
 
 		this._mergedSettings = merged;
