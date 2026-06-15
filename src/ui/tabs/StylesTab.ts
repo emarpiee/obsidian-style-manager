@@ -19,12 +19,12 @@
 import { Setting, debounce } from 'obsidian';
 
 import StyleManagerPlugin from '../../main';
-import { ReadmeModal } from '../modals/ReadmeModal';
 import { CSSSetting, ParsedCSSSettings } from '../../types';
 import {
 	HeadingSettingComponent,
 	buildSettingComponentTree,
 } from '../components/fields/HeadingSettingComponent';
+import { ReadmeModal } from '../modals/ReadmeModal';
 
 export interface StylesTabDeps {
 	plugin: StyleManagerPlugin;

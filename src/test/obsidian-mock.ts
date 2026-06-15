@@ -53,7 +53,7 @@ export class ItemView extends View {
 export class AbstractInputSuggest<T> {
 	constructor(
 		public app: App,
-		public inputEl: HTMLInputElement,
+		public inputEl: HTMLInputElement
 	) {}
 	onSelect(_value: T, _evt: MouseEvent | KeyboardEvent): void {}
 }
@@ -105,7 +105,7 @@ export class Plugin {
 	app: App;
 	constructor(
 		app: App,
-		public manifest: any,
+		public manifest: any
 	) {
 		this.app = app;
 	}
@@ -171,11 +171,15 @@ export function createFragment(): DocumentFragment {
 	return document.createDocumentFragment();
 }
 
-export function createEl(tag: string, options?: { text?: string; cls?: string }): HTMLElement {
+export function createEl(
+	tag: string,
+	options?: { text?: string; cls?: string }
+): HTMLElement {
 	const el = document.createElement(tag);
 	if (options?.text) el.textContent = options.text;
 	if (options?.cls) el.className = options.cls;
 	return el;
 }
 
-export const normalizePath = (path: string): string => path.replace(/\\/g, '/').replace(/^\/+/, '');
+export const normalizePath = (path: string): string =>
+	path.replace(/\\/g, '/').replace(/^\/+/, '');

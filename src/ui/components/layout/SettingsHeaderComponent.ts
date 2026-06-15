@@ -22,7 +22,11 @@ import { renderAccentColorSelect } from './AccentColorSelector';
 import { IsolateModeHeader } from './IsolateModeHeader';
 import { renderThemeSelect } from './ThemeSelector';
 
-import { APPEARANCE_KEY, OPEN_IN_DEFAULT_APP_KEY, OPEN_MODAL_ON_CREATE_KEY } from '../../../constants';
+import {
+	APPEARANCE_KEY,
+	OPEN_IN_DEFAULT_APP_KEY,
+	OPEN_MODAL_ON_CREATE_KEY,
+} from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { RefreshLevel } from '../../../types';
 import { ActiveTab } from '../../StyleManagerLayoutRenderer';
@@ -218,10 +222,10 @@ export class SettingsHeaderComponent extends Component {
 			try {
 				// Force Obsidian to re-scan the .obsidian/snippets folder for any external changes
 				await this.plugin.settingsService.bridge.forceLoadSnippets();
-				
+
 				// Obsidian processes this asynchronously; wait a moment before re-rendering the UI
 				await new Promise((resolve) => setTimeout(resolve, 200));
-				
+
 				await this.plugin.settingsService.refreshService.trigger(
 					RefreshLevel.SYSTEM_RELOAD
 				);
@@ -291,10 +295,16 @@ export class SettingsHeaderComponent extends Component {
 							this.plugin.settingsService.settings[OPEN_MODAL_ON_CREATE_KEY] !==
 							false;
 						if (openModal) {
-							const useDefaultApp = localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
+							const useDefaultApp =
+								localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
 							if (useDefaultApp) {
-								const path = this.plugin.settingsService.bridge.getSnippetPath(id);
-								(this.app as unknown as { openWithDefaultApp: (path: string) => void }).openWithDefaultApp(path);
+								const path =
+									this.plugin.settingsService.bridge.getSnippetPath(id);
+								(
+									this.app as unknown as {
+										openWithDefaultApp: (path: string) => void;
+									}
+								).openWithDefaultApp(path);
 							} else {
 								new CSSEditorModal(this.app, this.plugin, {
 									type: 'Snippet',

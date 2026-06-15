@@ -157,7 +157,10 @@ export class CSSEditorModal extends Modal {
 				const diff = now - this.lastContextMenuTime;
 				this.lastContextMenuTime = now;
 
-				if (this.addBlockMenuDom && document.body.contains(this.addBlockMenuDom)) {
+				if (
+					this.addBlockMenuDom &&
+					document.body.contains(this.addBlockMenuDom)
+				) {
 					this.addBlockMenuDom.remove();
 					this.addBlockMenuDom = null;
 				}
@@ -424,10 +427,7 @@ export class CSSEditorModal extends Modal {
 						.setIcon(block.icon)
 						.onClick(() => {
 							this.addBlockMenuDom = null;
-							this.plugin.styleBlockService.injectBlock(
-								this.view,
-								block.id
-							);
+							this.plugin.styleBlockService.injectBlock(this.view, block.id);
 						})
 				);
 			});
@@ -444,10 +444,7 @@ export class CSSEditorModal extends Modal {
 						.setIcon(block.icon)
 						.onClick(() => {
 							this.addBlockMenuDom = null;
-							this.plugin.styleBlockService.injectBlock(
-								this.view,
-								block.id
-							);
+							this.plugin.styleBlockService.injectBlock(this.view, block.id);
 						})
 				);
 			});

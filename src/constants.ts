@@ -58,5 +58,7 @@ export const ALWAYS_SHARED_PRESETS_KEY =
 export const LOCAL_FIRST_KEY = '__style_manager_local_first';
 export const OPEN_IN_DEFAULT_APP_KEY = '__style_manager_open_in_default_app';
 export const PRESET_APPLY_ACTION_KEY = '__style_manager_preset_apply_action';
-export const BULK_PRESET_APPLY_ACTION_KEY = '__style_manager_bulk_preset_apply_action';
-export const SCHEDULE_APPLY_ACTION_KEY = '__style_manager_schedule_apply_action';
+export const BULK_PRESET_APPLY_ACTION_KEY =
+	'__style_manager_bulk_preset_apply_action';
+export const SCHEDULE_APPLY_ACTION_KEY =
+	'__style_manager_schedule_apply_action';

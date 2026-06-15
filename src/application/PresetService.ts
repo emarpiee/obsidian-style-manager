@@ -294,12 +294,10 @@ export class PresetService {
 
 	private async mergePresets(
 		presetIds: string[]
-	): Promise<{ mergedData: Record<string, unknown>; isSingle: boolean }> {
+	): Promise<{ mergedData: Record<string, unknown> }> {
 		const selectedPresets = presetIds
 			.map((id) => this.presets.find((p) => p.id === id))
 			.filter((p): p is Preset => !!p);
-
-		const isSingle = selectedPresets.length === 1;
 
 		const mergedData: Record<string, unknown> = {};
 		const mergedSnippets = new Set<string>();
@@ -329,7 +327,7 @@ export class PresetService {
 			);
 		}
 
-		return { mergedData, isSingle };
+		return { mergedData };
 	}
 
 	async applyPreset(
@@ -345,7 +343,7 @@ export class PresetService {
 		isolateOnly: boolean = false,
 		action: 'overwrite' | 'merge' = 'overwrite'
 	): Promise<void> {
-		const { mergedData, isSingle } = await this.mergePresets(presetIds);
+		const { mergedData } = await this.mergePresets(presetIds);
 		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY])
 			return;
 
@@ -375,7 +373,7 @@ export class PresetService {
 		presetIds: string[],
 		action: 'overwrite' | 'merge' = 'overwrite'
 	): Promise<void> {
-		const { mergedData, isSingle } = await this.mergePresets(presetIds);
+		const { mergedData } = await this.mergePresets(presetIds);
 		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY])
 			return;
 
@@ -393,7 +391,8 @@ export class PresetService {
 		applyActionKey: string = PRESET_APPLY_ACTION_KEY,
 		remoteDeviceName?: string
 	): void {
-		const defaultAction = (this.plugin.settingsService.settings[applyActionKey] as string) || 'ask';
+		const defaultAction =
+			(this.plugin.settingsService.settings[applyActionKey] as string) || 'ask';
 
 		if (defaultAction === 'overwrite') {
 			onConfirm('overwrite');
@@ -401,15 +400,19 @@ export class PresetService {
 			onConfirm('merge');
 		} else {
 			const isBulk = applyActionKey !== PRESET_APPLY_ACTION_KEY;
-			const mergeOverwriteDesc = isBulk ? 'Do you want to merge these presets with your current settings, or overwrite them?' : 'Do you want to merge with your current settings, or overwrite them?';
-			
+			const mergeOverwriteDesc = isBulk
+				? 'Do you want to merge these presets with your current settings, or overwrite them?'
+				: 'Do you want to merge with your current settings, or overwrite them?';
+
 			let title = 'Apply to shared locker';
 			let destText = 'the shared locker';
 			if (target === 'isolate') {
 				title = 'Apply to this device (isolate)';
 				destText = 'this device';
 			} else if (target === 'remote') {
-				title = remoteDeviceName ? `Apply to ${remoteDeviceName}` : 'Apply to other device (isolate)';
+				title = remoteDeviceName
+					? `Apply to ${remoteDeviceName}`
+					: 'Apply to other device (isolate)';
 				destText = remoteDeviceName || 'the other device';
 			}
 

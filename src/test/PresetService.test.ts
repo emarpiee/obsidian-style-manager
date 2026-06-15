@@ -18,18 +18,37 @@
 */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { PresetService } from '../application/PresetService';
 import {
 	ACCENT_COLOR_KEY,
 	ALWAYS_SHARED_PRESETS_KEY,
 	APPEARANCE_KEY,
 	EXPORT_DATE_FORMAT_KEY,
+	EXPORT_EXTENSION_KEY,
 	EXPORT_PATH_KEY,
 	PRESET_APPLY_ACTION_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from '../constants';
 import { Preset } from '../types';
+
+import { PresetService } from '../application/PresetService';
+import { ConfirmModal } from '../ui/modals/ConfirmModal';
+
+vi.mock('../ui/modals/ConfirmModal', () => {
+	return {
+		ConfirmModal: vi.fn().mockImplementation(function (
+			this: any,
+			app,
+			title,
+			message
+		) {
+			this.app = app;
+			this.title = title;
+			this.message = message;
+			this.open = vi.fn();
+		}),
+	};
+});
 
 describe('PresetService', () => {
 	let presetService: PresetService;
@@ -106,7 +125,6 @@ describe('PresetService', () => {
 		presetService = new PresetService(mockPlugin as any);
 	});
 
-
 	describe('View Mode', () => {
 		it('should return shared when targetView is auto and isolate mode is off', () => {
 			presetService.targetView = 'auto';
@@ -148,24 +166,30 @@ describe('PresetService', () => {
 		});
 
 		it('should get presets from isolate settings when in isolate mode', () => {
-			mockPlugin.settingsService.isolateModeService.isolateSettings._manager_presets = mockPresets;
+			mockPlugin.settingsService.isolateModeService.isolateSettings._manager_presets =
+				mockPresets;
 			presetService.targetView = 'isolate';
 			expect(presetService.presets).toEqual(mockPresets);
 		});
 
 		it('should set presets in the correct mode', () => {
-			const newPresets = [{ id: '3', name: 'P3', created: 300, data: { c: 3 } }];
+			const newPresets = [
+				{ id: '3', name: 'P3', created: 300, data: { c: 3 } },
+			];
 			presetService.targetView = 'isolate';
 			presetService.presets = newPresets;
 			expect(mockPlugin.settingsService.setSettings).toHaveBeenCalledWith(
 				{ _manager_presets: newPresets },
-				{ silentUI: true, target: 'isolate' },
+				{ silentUI: true, target: 'isolate' }
 			);
 		});
 
 		it('should find preset by id across both shared and isolate', () => {
-			mockPlugin.settingsService.sharedSettings._manager_presets = [mockPresets[0]];
-			mockPlugin.settingsService.isolateModeService.isolateSettings._manager_presets = [mockPresets[1]];
+			mockPlugin.settingsService.sharedSettings._manager_presets = [
+				mockPresets[0],
+			];
+			mockPlugin.settingsService.isolateModeService.isolateSettings._manager_presets =
+				[mockPresets[1]];
 			expect(presetService.getPresetById('1')).toEqual(mockPresets[0]);
 			expect(presetService.getPresetById('2')).toEqual(mockPresets[1]);
 			expect(presetService.getPresetById('3')).toBeUndefined();
@@ -196,7 +220,9 @@ describe('PresetService', () => {
 		});
 
 		it('should save current settings as a preset with filtered prefixes', async () => {
-			await presetService.saveCurrentSettingsAsPreset('Filtered Preset', ['plugin']);
+			await presetService.saveCurrentSettingsAsPreset('Filtered Preset', [
+				'plugin',
+			]);
 			const call = mockPlugin.settingsService.setSettings.mock.calls[0][0];
 			const preset = call._manager_presets[0];
 			expect(preset.data['plugin@@setting1']).toBe('value1');
@@ -206,7 +232,10 @@ describe('PresetService', () => {
 		});
 
 		it('should handle special prefixes in filtered save', async () => {
-			await presetService.saveCurrentSettingsAsPreset('Special Preset', ['__theme', '__appearance']);
+			await presetService.saveCurrentSettingsAsPreset('Special Preset', [
+				'__theme',
+				'__appearance',
+			]);
 			const call = mockPlugin.settingsService.setSettings.mock.calls[0][0];
 			const preset = call._manager_presets[0];
 			expect(preset.data[THEME_KEY]).toBe('default-theme');
@@ -218,17 +247,20 @@ describe('PresetService', () => {
 	describe('Vault Operations', () => {
 		it('should save file to vault with correct extension and path', async () => {
 			await presetService.saveFileToVault('my-preset', 'content');
-			expect(mockPlugin.settingsService.bridge.mkdir).toHaveBeenCalledWith('Exports/');
+			expect(mockPlugin.settingsService.bridge.mkdir).toHaveBeenCalledWith(
+				'Exports/'
+			);
 			expect(mockPlugin.settingsService.bridge.createFile).toHaveBeenCalledWith(
 				'Exports/my-preset.json',
-				'content',
+				'content'
 			);
 		});
 
 		it('should handle file collisions by adding timestamp', async () => {
 			mockPlugin.settingsService.bridge.fileExists.mockResolvedValue(true);
 			await presetService.saveFileToVault('my-preset', 'content');
-			const callPath = mockPlugin.settingsService.bridge.createFile.mock.calls[0][0];
+			const callPath =
+				mockPlugin.settingsService.bridge.createFile.mock.calls[0][0];
 			expect(callPath).toMatch(/Exports\/my-preset_\d+\.json/);
 		});
 
@@ -237,55 +269,96 @@ describe('PresetService', () => {
 			await presetService.saveFileToVault('my-preset', 'content');
 			expect(mockPlugin.settingsService.bridge.createFile).toHaveBeenCalledWith(
 				'Exports/my-preset.txt',
-				'content',
+				'content'
 			);
 		});
 
 		it('should notify error if saving to vault fails', async () => {
-			mockPlugin.settingsService.bridge.createFile.mockRejectedValue(new Error('Vault error'));
+			mockPlugin.settingsService.bridge.createFile.mockRejectedValue(
+				new Error('Vault error')
+			);
 			await presetService.saveFileToVault('fail', 'content');
-			expect(mockPlugin.settingsService.notifications.error).toHaveBeenCalledWith(
-				'Failed to export to vault. Check console for details.',
+			expect(
+				mockPlugin.settingsService.notifications.error
+			).toHaveBeenCalledWith(
+				'Failed to export to vault. Check console for details.'
 			);
 		});
 	});
 
 	describe('Preset Application', () => {
-		const preset1: Preset = { id: '1', name: 'P1', created: 100, data: { a: 1, [SNIPPETS_KEY]: ['s1'] } };
-		const preset2: Preset = { id: '2', name: 'P2', created: 200, data: { b: 2, [SNIPPETS_KEY]: ['s2'] } };
+		const preset1: Preset = {
+			id: '1',
+			name: 'P1',
+			created: 100,
+			data: { a: 1, [SNIPPETS_KEY]: ['s1'] },
+		};
+		const preset2: Preset = {
+			id: '2',
+			name: 'P2',
+			created: 200,
+			data: { b: 2, [SNIPPETS_KEY]: ['s2'] },
+		};
 
 		beforeEach(() => {
-			mockPlugin.settingsService.sharedSettings._manager_presets = [preset1, preset2];
+			mockPlugin.settingsService.sharedSettings._manager_presets = [
+				preset1,
+				preset2,
+			];
 		});
 
 		it('should merge data from multiple presets', async () => {
 			await presetService.applyPresets(['1', '2'], false);
-			expect(mockPlugin.settingsService.applySettingsOverlay).toHaveBeenCalledWith(
+			expect(
+				mockPlugin.settingsService.applySettingsOverlay
+			).toHaveBeenCalledWith(
 				expect.objectContaining({ a: 1, b: 2, [SNIPPETS_KEY]: ['s1', 's2'] }),
-				false,
+				false
 			);
 		});
 
-		it('should reset all style settings when applying a single preset', async () => {
-			await presetService.applyPresets(['1'], false);
-			expect(mockPlugin.settingsService.resetAllStyleSettings).toHaveBeenCalledWith(false);
-			expect(mockPlugin.settingsService.applySettingsOverlay).toHaveBeenCalled();
+		it('should apply presets with action "merge" without resetting settings', async () => {
+			await presetService.applyPresets(['1'], false, 'merge');
+			expect(
+				mockPlugin.settingsService.resetAllStyleSettings
+			).not.toHaveBeenCalled();
+			expect(
+				mockPlugin.settingsService.applySettingsOverlay
+			).toHaveBeenCalled();
+		});
+
+		it('should reset all style settings when applying a single preset with action "overwrite"', async () => {
+			await presetService.applyPresets(['1'], false, 'overwrite');
+			expect(
+				mockPlugin.settingsService.resetAllStyleSettings
+			).toHaveBeenCalledWith(false);
+			expect(
+				mockPlugin.settingsService.applySettingsOverlay
+			).toHaveBeenCalled();
 		});
 
 		it('should filter out non-existent snippets during merge', async () => {
-			mockPlugin.settingsService.bridge.snippetExists.mockImplementation((s: string) => s === 's1');
+			mockPlugin.settingsService.bridge.snippetExists.mockImplementation(
+				(s: string) => s === 's1'
+			);
 			await presetService.applyPresets(['1', '2'], false);
-			const mergedData = mockPlugin.settingsService.applySettingsOverlay.mock.calls[0][0];
+			const mergedData =
+				mockPlugin.settingsService.applySettingsOverlay.mock.calls[0][0];
 			expect(mergedData[SNIPPETS_KEY]).toEqual(['s1']);
 		});
 
-		it('should apply to locker when requested', async () => {
-			await presetService.applyPresetsToLocker('dev1', ['1']);
-			expect(mockPlugin.settingsService.identity.updateLockerSettings).toHaveBeenCalledWith(
-				'dev1',
-				expect.objectContaining({ a: 1 }),
-				true,
-			);
+		it('should apply to locker when requested with action "overwrite"', async () => {
+			await presetService.applyPresetsToLocker('dev1', ['1'], 'overwrite');
+			expect(
+				mockPlugin.settingsService.identity.updateLockerSettings
+			).toHaveBeenCalledWith('dev1', expect.objectContaining({ a: 1 }), true);
+		});
+
+		it('should apply to locker when requested with action "merge"', async () => {
+			await presetService.applyPresetsToLocker('dev1', ['1'], 'merge');
+			expect(
+				mockPlugin.settingsService.identity.updateLockerSettings
+			).toHaveBeenCalledWith('dev1', expect.objectContaining({ a: 1 }), false);
 		});
 
 		it('should return early if merged data is empty', async () => {
@@ -293,7 +366,9 @@ describe('PresetService', () => {
 				{ id: 'empty', name: 'Empty', created: 100, data: {} },
 			];
 			await presetService.applyPresets(['empty'], false);
-			expect(mockPlugin.settingsService.applySettingsOverlay).not.toHaveBeenCalled();
+			expect(
+				mockPlugin.settingsService.applySettingsOverlay
+			).not.toHaveBeenCalled();
 		});
 
 		it('should return early for locker if merged data is empty', async () => {
@@ -301,15 +376,19 @@ describe('PresetService', () => {
 				{ id: 'empty', name: 'Empty', created: 100, data: {} },
 			];
 			await presetService.applyPresetsToLocker('dev1', ['empty']);
-			expect(mockPlugin.settingsService.identity.updateLockerSettings).not.toHaveBeenCalled();
+			expect(
+				mockPlugin.settingsService.identity.updateLockerSettings
+			).not.toHaveBeenCalled();
 		});
 
 		it('should notify error if applying presets fails', async () => {
-			mockPlugin.settingsService.applySettingsOverlay.mockRejectedValue(new Error('Apply error'));
-			await presetService.applyPresets(['1'], false);
-			expect(mockPlugin.settingsService.notifications.error).toHaveBeenCalledWith(
-				'Failed to apply presets.',
+			mockPlugin.settingsService.applySettingsOverlay.mockRejectedValue(
+				new Error('Apply error')
 			);
+			await presetService.applyPresets(['1'], false);
+			expect(
+				mockPlugin.settingsService.notifications.error
+			).toHaveBeenCalledWith('Failed to apply presets.');
 		});
 	});
 
@@ -332,13 +411,13 @@ describe('PresetService', () => {
 		it('should handle fallback for appearance and accent color', () => {
 			mockPlugin.settingsService.settings[APPEARANCE_KEY] = 'system';
 			mockPlugin.settingsService.settings[ACCENT_COLOR_KEY] = '';
-			
+
 			// Mock document.body for appearance fallback
 			document.body.classList.add('theme-dark');
 
 			const meta = presetService.getPrefixesMetadata();
 			expect(meta.find((m) => m.id === '__appearance')?.value).toBe('dark');
-			
+
 			// Accent color fallback check
 			expect(meta.find((m) => m.id === '__accentColor')?.value).toBe('#00ff00'); // from native config mock
 		});
@@ -360,7 +439,8 @@ describe('PresetService', () => {
 
 	describe('Confirmation', () => {
 		it('should call onConfirm immediately with overwrite if PRESET_APPLY_ACTION_KEY is overwrite', () => {
-			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'overwrite';
+			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] =
+				'overwrite';
 			const onConfirm = vi.fn();
 			presetService.confirmApply('Preset', onConfirm);
 			expect(onConfirm).toHaveBeenCalledWith('overwrite');
@@ -370,6 +450,115 @@ describe('PresetService', () => {
 			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'merge';
 			const onConfirm = vi.fn();
 			presetService.confirmApply('Preset', onConfirm);
+			expect(onConfirm).toHaveBeenCalledWith('merge');
+		});
+
+		it('should open ConfirmModal with correct text for target "shared"', () => {
+			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			const onConfirm = vi.fn();
+			presetService.confirmApply('My Preset', onConfirm, 'shared');
+			expect(ConfirmModal).toHaveBeenCalledWith(
+				mockPlugin.app,
+				'Apply to shared locker',
+				expect.stringContaining(
+					'apply the preset "My Preset" to the shared locker'
+				),
+				'Overwrite',
+				false,
+				expect.any(Function),
+				'Merge',
+				expect.any(Function)
+			);
+		});
+
+		it('should open ConfirmModal with correct text for target "isolate"', () => {
+			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			const onConfirm = vi.fn();
+			presetService.confirmApply('My Preset', onConfirm, 'isolate');
+			expect(ConfirmModal).toHaveBeenCalledWith(
+				mockPlugin.app,
+				'Apply to this device (isolate)',
+				expect.stringContaining('apply the preset "My Preset" to this device'),
+				'Overwrite',
+				false,
+				expect.any(Function),
+				'Merge',
+				expect.any(Function)
+			);
+		});
+
+		it('should open ConfirmModal with correct text for target "remote" with device name', () => {
+			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			const onConfirm = vi.fn();
+			presetService.confirmApply(
+				'My Preset',
+				onConfirm,
+				'remote',
+				PRESET_APPLY_ACTION_KEY,
+				'My MacBook'
+			);
+			expect(ConfirmModal).toHaveBeenCalledWith(
+				mockPlugin.app,
+				'Apply to My MacBook',
+				expect.stringContaining('apply the preset "My Preset" to My MacBook'),
+				'Overwrite',
+				false,
+				expect.any(Function),
+				'Merge',
+				expect.any(Function)
+			);
+		});
+
+		it('should open ConfirmModal with correct text for target "remote" without device name', () => {
+			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			const onConfirm = vi.fn();
+			presetService.confirmApply('My Preset', onConfirm, 'remote');
+			expect(ConfirmModal).toHaveBeenCalledWith(
+				mockPlugin.app,
+				'Apply to other device (isolate)',
+				expect.stringContaining(
+					'apply the preset "My Preset" to the other device'
+				),
+				'Overwrite',
+				false,
+				expect.any(Function),
+				'Merge',
+				expect.any(Function)
+			);
+		});
+
+		it('should use bulk description when applyActionKey is not PRESET_APPLY_ACTION_KEY', () => {
+			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			const onConfirm = vi.fn();
+			presetService.confirmApply(
+				'My Preset',
+				onConfirm,
+				'shared',
+				'bulk-apply-key'
+			);
+			expect(ConfirmModal).toHaveBeenCalledWith(
+				mockPlugin.app,
+				expect.any(String),
+				expect.stringContaining(
+					'apply the selected presets to the shared locker'
+				),
+				'Overwrite',
+				false,
+				expect.any(Function),
+				'Merge',
+				expect.any(Function)
+			);
+		});
+
+		it('should use provided applyActionKey for default action', () => {
+			mockPlugin.settingsService.settings['bulk-apply-key'] = 'merge';
+			const onConfirm = vi.fn();
+			presetService.confirmApply(
+				'My Preset',
+				onConfirm,
+				'shared',
+				'bulk-apply-key'
+			);
 			expect(onConfirm).toHaveBeenCalledWith('merge');
 		});
 
@@ -385,7 +574,7 @@ describe('PresetService', () => {
 		it('should reset targetView to auto when isolate-mode-changed is emitted', () => {
 			presetService.targetView = 'isolate';
 			const callback = mockPlugin.settingsService.on.mock.calls.find(
-				(call: any) => call[0] === 'isolate-mode-changed',
+				(call: any) => call[0] === 'isolate-mode-changed'
 			)[1];
 			callback();
 			expect(presetService.targetView).toBe('auto');
@@ -393,18 +582,20 @@ describe('PresetService', () => {
 
 		it('should call setSettings when savePresets is called', async () => {
 			presetService.targetView = 'shared';
-			mockPlugin.settingsService.sharedSettings._manager_presets = [{ id: '1', name: 'P1' }];
+			mockPlugin.settingsService.sharedSettings._manager_presets = [
+				{ id: '1', name: 'P1' },
+			];
 			await presetService.savePresets();
 			expect(mockPlugin.settingsService.setSettings).toHaveBeenCalledWith(
 				{ _manager_presets: [{ id: '1', name: 'P1' }] },
-				{ silentUI: true, target: 'shared' },
+				{ silentUI: true, target: 'shared' }
 			);
 		});
 
 		it('should wrap applyPresets in applyPreset', async () => {
 			const spy = vi.spyOn(presetService, 'applyPresets');
 			await presetService.applyPreset('1', false);
-			expect(spy).toHaveBeenCalledWith(['1'], false);
+			expect(spy).toHaveBeenCalledWith(['1'], false, 'overwrite');
 		});
 
 		it('should return a formatted timestamp', () => {
@@ -421,26 +612,37 @@ describe('PresetService', () => {
 		it('should do nothing if trashOption is "none"', async () => {
 			mockPlugin.settingsService.bridge.getNativeConfig.mockReturnValue('none');
 			await presetService.trashPresets(mockPresets);
-			expect(mockPlugin.settingsService.bridge.createFile).not.toHaveBeenCalled();
+			expect(
+				mockPlugin.settingsService.bridge.createFile
+			).not.toHaveBeenCalled();
 		});
 
 		it('should backup and trash presets when trashOption is enabled', async () => {
-			mockPlugin.settingsService.bridge.getNativeConfig.mockReturnValue('trash');
+			mockPlugin.settingsService.bridge.getNativeConfig.mockReturnValue(
+				'trash'
+			);
 			await presetService.trashPresets(mockPresets);
-			
+
 			expect(mockPlugin.settingsService.bridge.createFile).toHaveBeenCalled();
-			const filename = mockPlugin.settingsService.bridge.createFile.mock.calls[0][0];
+			const filename =
+				mockPlugin.settingsService.bridge.createFile.mock.calls[0][0];
 			expect(filename).toMatch(/my-preset.*-style-manager.*\.json/);
 			expect(mockPlugin.settingsService.bridge.trashFile).toHaveBeenCalled();
 		});
 
 		it('should notify error if backup fails', async () => {
-			mockPlugin.settingsService.bridge.getNativeConfig.mockReturnValue('trash');
-			mockPlugin.settingsService.bridge.createFile.mockRejectedValue(new Error('Disk Full'));
-			
+			mockPlugin.settingsService.bridge.getNativeConfig.mockReturnValue(
+				'trash'
+			);
+			mockPlugin.settingsService.bridge.createFile.mockRejectedValue(
+				new Error('Disk Full')
+			);
+
 			await presetService.trashPresets(mockPresets);
-			expect(mockPlugin.settingsService.notifications.error).toHaveBeenCalledWith(
-				expect.stringContaining('Error backing up preset "My Preset!"'),
+			expect(
+				mockPlugin.settingsService.notifications.error
+			).toHaveBeenCalledWith(
+				expect.stringContaining('Error backing up preset "My Preset!"')
 			);
 		});
 	});

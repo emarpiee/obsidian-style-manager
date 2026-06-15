@@ -31,7 +31,10 @@ interface RenderOptions {
 export class ReadmeComponent {
 	private container: HTMLElement;
 
-	async render(container: HTMLElement, options: RenderOptions = {}): Promise<void> {
+	async render(
+		container: HTMLElement,
+		options: RenderOptions = {}
+	): Promise<void> {
 		const { plugin, onOpenInTab, component, isModal } = options;
 		this.container = container;
 		this.container.empty();
@@ -61,7 +64,7 @@ export class ReadmeComponent {
 			README_CONTENT,
 			renderEl,
 			plugin?.app.workspace.getActiveFile()?.path || '',
-			component || (plugin as unknown as Component) || {} as Component
+			component || (plugin as unknown as Component) || ({} as Component)
 		);
 	}
 

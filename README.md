@@ -208,18 +208,18 @@ The persistent toolbar header provides system actions across all tabs:
 
 The Style Manager displays a system of badges to provide quick visual cues and access to configuration details. These are categorized into two types: **interactive badges**, which trigger actions or open menus when clicked, and **info badges**, which serve as read-only indicators for status and metadata.
 
-|     | Badge                  | Type        | Description                                                                      |
-| --- | ---------------------- | ----------- | -------------------------------------------------------------------------------- |
-| A   | `style settings count` | interactive | Number of settings configured in a style                                         |
-| B   | `style status`         | info        | Shows if the specific style settings is currently active                         |
-| C   | `style source`         | interactive | Indicates where the style originates (Plugin, Theme, or Snippet)                 |
-| D   | `active theme`         | interactive | Displays the name of the currently active Obsidian theme                         |
-| E   | `active snippets`      | info        | Current count of active CSS snippets                                             |
-| F   | `active appearance`    | info        | Indicates if a device locker or preset is in Light or Dark mode                  |
-| G   | `locker`               | info        | Distinguishes the local device locker from other device lockers (in Isolate tab) |
-| H   | `duplicate warning`    | info        | Alerts you when a Style ID is duplicated across different sources.               |
-| I   | `mode`                 | info        | Shows which mode that component is currently active                              |
-| J   | `schedule`             | interactive | Indicates if a preset is currently managed by a date & time-based schedule       |
+|     | Badge                  | Type        | Description                                                                                                                      |
+| --- | ---------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| A   | `style settings count` | interactive | Number of settings configured in a style, preset, or device locker. In **Styles tab**, click to show per section configurations. |
+| B   | `style status`         | info        | Shows if the specific style settings is currently active                                                                         |
+| C   | `style source`         | interactive | Indicates where the style originates (Plugin, Theme, or Snippet). Click to open CSS editor modal.                                |
+| D   | `active theme`         | interactive | Displays the name of the currently active Obsidian theme. Click to copy the preset or device locker current accent color.        |
+| E   | `active snippets`      | info        | Current count of active CSS snippets                                                                                             |
+| F   | `active appearance`    | info        | Indicates if a device locker or preset is in Light or Dark mode                                                                  |
+| G   | `locker`               | info        | Distinguishes the local device locker from other device lockers (in Isolate tab)                                                 |
+| H   | `duplicate warning`    | info        | Alerts you when a Style ID is duplicated across different sources.                                                               |
+| I   | `mode`                 | info        | Shows which mode that component is currently active                                                                              |
+| J   | `schedule`             | interactive | Indicates if a preset is currently managed by a date & time-based schedule. Click to edit the preset's active schedule.          |
 
 ---
 

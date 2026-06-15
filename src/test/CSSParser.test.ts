@@ -80,7 +80,9 @@ settings:
 
 	describe('parseCSSText', () => {
 		it('should return empty result if no settings blocks are found', () => {
-			const { settingsList, errorList } = CSSParser.parseCSSText('body { color: red; }');
+			const { settingsList, errorList } = CSSParser.parseCSSText(
+				'body { color: red; }'
+			);
 			expect(settingsList).toEqual([]);
 			expect(errorList).toEqual([]);
 		});
@@ -183,19 +185,28 @@ settings:
 		});
 
 		it('should handle empty, null, or incomplete input gracefully', () => {
-			expect(CSSParser.parseCSS(null as any)).toEqual({ settingsList: [], errorList: [] });
-			
+			expect(CSSParser.parseCSS(null as any)).toEqual({
+				settingsList: [],
+				errorList: [],
+			});
+
 			const mockNoOwner = {
 				ownerNode: null,
 			} as unknown as CSSStyleSheet;
-			expect(CSSParser.parseCSS(mockNoOwner)).toEqual({ settingsList: [], errorList: [] });
+			expect(CSSParser.parseCSS(mockNoOwner)).toEqual({
+				settingsList: [],
+				errorList: [],
+			});
 
 			const mockEmptySheet = {
 				ownerNode: {
 					textContent: '',
 				},
 			} as unknown as CSSStyleSheet;
-			expect(CSSParser.parseCSS(mockEmptySheet)).toEqual({ settingsList: [], errorList: [] });
+			expect(CSSParser.parseCSS(mockEmptySheet)).toEqual({
+				settingsList: [],
+				errorList: [],
+			});
 		});
 
 		it('should handle multiple settings blocks in one file', () => {
@@ -288,10 +299,10 @@ settings:
 	describe('Cache and LRU', () => {
 		it('should return identical results for identical CSS text (Cache Hit)', () => {
 			const cssContent = `/* @settings\nname: Cache\nid: cache\nsettings:\n  - id: v\n    type: text\n    default: a\n*/`;
-			
+
 			const res1 = CSSParser.parseCSSText(cssContent);
 			const res2 = CSSParser.parseCSSText(cssContent);
-			
+
 			expect(res1).toEqual(res2);
 			// Since isolation works, they are not the same object, but have same values
 			expect(res1).not.toBe(res2);
@@ -351,12 +362,12 @@ settings:
 			} as unknown as CSSStyleSheet;
 
 			const result1 = CSSParser.parseCSS(mockSheet);
-			
+
 			// Mutate nested object
 			(result1.settingsList[0].settings[0] as any).meta.value = 2;
-			
+
 			const result2 = CSSParser.parseCSS(mockSheet);
-			// Since it's a shallow copy of the settings array, 
+			// Since it's a shallow copy of the settings array,
 			// the objects INSIDE the array are shared by reference.
 			expect((result2.settingsList[0].settings[0] as any).meta.value).toBe(2);
 		});
@@ -374,7 +385,7 @@ settings:
 			// Add 201st
 			CSSParser.parseCSSText('text-201');
 			expect(cache.size).toBe(200);
-			
+
 			// text-0 should be evicted
 			expect(cache.has('text-0')).toBe(false);
 			expect(cache.has('text-201')).toBe(true);
@@ -387,19 +398,19 @@ settings:
 			// Fill cache with 2 entries
 			CSSParser.parseCSSText('text-0');
 			CSSParser.parseCSSText('text-1');
-			
+
 			// Access text-0 to move it to the end (most recent)
 			CSSParser.parseCSSText('text-0');
-			
-			// Now text-1 is the oldest. 
+
+			// Now text-1 is the oldest.
 			// We need to fill it to 200 to trigger eviction of text-1.
 			for (let i = 2; i < 201; i++) {
 				CSSParser.parseCSSText(`text-${i}`);
 			}
-			
+
 			expect(cache.size).toBe(200);
 			expect(cache.has('text-1')).toBe(false); // Should be evicted
-			expect(cache.has('text-0')).toBe(true);  // Should be kept
+			expect(cache.has('text-0')).toBe(true); // Should be kept
 		});
 	});
 
@@ -476,5 +487,4 @@ author: [unclosed bracket
 			expect(metadata).toBeUndefined();
 		});
 	});
-
 });

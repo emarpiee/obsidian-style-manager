@@ -39,7 +39,10 @@ export interface ApplyMenuOptions {
 	/** Optional override for the "Isolate" application action */
 	onApplyIsolate?: (action: 'overwrite' | 'merge') => Promise<void>;
 	/** Optional override for the "Remote" application action */
-	onApplyRemote?: (deviceId: string, action: 'overwrite' | 'merge') => Promise<void>;
+	onApplyRemote?: (
+		deviceId: string,
+		action: 'overwrite' | 'merge'
+	) => Promise<void>;
 	/** Skip default confirmation dialogs (useful for bulk actions that implement their own) */
 	skipConfirm?: boolean;
 	applyActionKey?: string;
@@ -67,7 +70,9 @@ export function addApplyOptionsToMenu(
 				.setTitle('Apply to shared locker')
 				.setIcon('globe')
 				.onClick(() => {
-					const perform = async (action: 'overwrite' | 'merge' = 'overwrite'): Promise<void> => {
+					const perform = async (
+						action: 'overwrite' | 'merge' = 'overwrite'
+					): Promise<void> => {
 						if (onApplyShared) {
 							await onApplyShared(action);
 						} else if (source.id) {
@@ -82,11 +87,21 @@ export function addApplyOptionsToMenu(
 					};
 
 					if (skipConfirm) {
-						const actionKeyToUse = options?.applyActionKey || PRESET_APPLY_ACTION_KEY;
-						const defaultAction = (plugin.settingsService.settings[actionKeyToUse] as string) === 'merge' ? 'merge' : 'overwrite';
+						const actionKeyToUse =
+							options?.applyActionKey || PRESET_APPLY_ACTION_KEY;
+						const defaultAction =
+							(plugin.settingsService.settings[actionKeyToUse] as string) ===
+							'merge'
+								? 'merge'
+								: 'overwrite';
 						perform(defaultAction);
 					} else {
-						plugin.presetService.confirmApply(source.name, perform, 'shared', options?.applyActionKey);
+						plugin.presetService.confirmApply(
+							source.name,
+							perform,
+							'shared',
+							options?.applyActionKey
+						);
 					}
 				})
 		);
@@ -98,7 +113,9 @@ export function addApplyOptionsToMenu(
 				.setTitle('Apply to this device (isolate)')
 				.setIcon('lock')
 				.onClick(() => {
-					const perform = async (action: 'overwrite' | 'merge' = 'overwrite'): Promise<void> => {
+					const perform = async (
+						action: 'overwrite' | 'merge' = 'overwrite'
+					): Promise<void> => {
 						if (onApplyIsolate) {
 							await onApplyIsolate(action);
 						} else if (source.id) {
@@ -113,11 +130,21 @@ export function addApplyOptionsToMenu(
 					};
 
 					if (skipConfirm) {
-						const actionKeyToUse = options?.applyActionKey || PRESET_APPLY_ACTION_KEY;
-						const defaultAction = (plugin.settingsService.settings[actionKeyToUse] as string) === 'merge' ? 'merge' : 'overwrite';
+						const actionKeyToUse =
+							options?.applyActionKey || PRESET_APPLY_ACTION_KEY;
+						const defaultAction =
+							(plugin.settingsService.settings[actionKeyToUse] as string) ===
+							'merge'
+								? 'merge'
+								: 'overwrite';
 						perform(defaultAction);
 					} else {
-						plugin.presetService.confirmApply(source.name, perform, 'isolate', options?.applyActionKey);
+						plugin.presetService.confirmApply(
+							source.name,
+							perform,
+							'isolate',
+							options?.applyActionKey
+						);
 					}
 				})
 		);
@@ -137,11 +164,17 @@ export function addApplyOptionsToMenu(
 						plugin.app,
 						plugin.settingsService,
 						async (deviceId) => {
-							const perform = async (action: 'overwrite' | 'merge' = 'overwrite'): Promise<void> => {
+							const perform = async (
+								action: 'overwrite' | 'merge' = 'overwrite'
+							): Promise<void> => {
 								if (onApplyRemote) {
 									await onApplyRemote(deviceId, action);
 								} else if (source.id) {
-									await plugin.presetService.applyPresetsToLocker(deviceId, [source.id], action);
+									await plugin.presetService.applyPresetsToLocker(
+										deviceId,
+										[source.id],
+										action
+									);
 									plugin.settingsService.notifications.isolate(
 										`Preset "${source.name}" applied to isolate locker.`
 									);
@@ -158,12 +191,25 @@ export function addApplyOptionsToMenu(
 							};
 
 							if (skipConfirm) {
-								const actionKeyToUse = options?.applyActionKey || PRESET_APPLY_ACTION_KEY;
-								const defaultAction = (plugin.settingsService.settings[actionKeyToUse] as string) === 'merge' ? 'merge' : 'overwrite';
+								const actionKeyToUse =
+									options?.applyActionKey || PRESET_APPLY_ACTION_KEY;
+								const defaultAction =
+									(plugin.settingsService.settings[
+										actionKeyToUse
+									] as string) === 'merge'
+										? 'merge'
+										: 'overwrite';
 								perform(defaultAction);
 							} else {
-								const deviceName = plugin.settingsService.identity.getLockerName(deviceId);
-								plugin.presetService.confirmApply(source.name, perform, 'remote', options?.applyActionKey, deviceName);
+								const deviceName =
+									plugin.settingsService.identity.getLockerName(deviceId);
+								plugin.presetService.confirmApply(
+									source.name,
+									perform,
+									'remote',
+									options?.applyActionKey,
+									deviceName
+								);
 							}
 						}
 					).open();

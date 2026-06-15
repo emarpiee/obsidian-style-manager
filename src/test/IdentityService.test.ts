@@ -1,14 +1,16 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
 import {
 	ACCENT_COLOR_KEY,
 	APPEARANCE_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from '../constants';
+
 import {
+	type DeviceLocker,
 	IdentityService,
 	IdentityStorageAdapter,
-	type DeviceLocker,
 } from '../application/IdentityService';
 import { generateUuid } from '../utils/CommonUtils';
 
@@ -65,7 +67,10 @@ describe('IdentityService', () => {
 
 			expect(service.deviceId).toBe('new-uuid');
 			expect(service.isNewIdentity).toBe(true);
-			expect(localStorage.setItem).toHaveBeenCalledWith('style-manager-device-id', 'new-uuid');
+			expect(localStorage.setItem).toHaveBeenCalledWith(
+				'style-manager-device-id',
+				'new-uuid'
+			);
 		});
 
 		it('should load existing identity from localStorage', () => {
@@ -107,26 +112,35 @@ describe('IdentityService', () => {
 		it('should completely reset the device identity', async () => {
 			localStorage.setItem('style-manager-device-id', 'old-id');
 			service = new IdentityService(mockAdapter);
-			
+
 			vi.mocked(generateUuid).mockReturnValue('fresh-id');
 			await service.regenerateDeviceId();
 
 			expect(service.deviceId).toBe('fresh-id');
-			expect(localStorage.setItem).toHaveBeenCalledWith('style-manager-device-id', 'fresh-id');
+			expect(localStorage.setItem).toHaveBeenCalledWith(
+				'style-manager-device-id',
+				'fresh-id'
+			);
 			expect(mockAdapter.reload).toHaveBeenCalled();
 			expect(mockAdapter.updateMerged).toHaveBeenCalled();
 			expect(mockAdapter.rerenderAll).toHaveBeenCalled();
-			expect(mockAdapter.trigger).toHaveBeenCalledWith('device-lockers-updated');
-			expect(mockAdapter.getPlugin().settingsService.notifications.isolate).toHaveBeenCalledWith(
-				'New Device ID established: fresh-id'
+			expect(mockAdapter.trigger).toHaveBeenCalledWith(
+				'device-lockers-updated'
 			);
+			expect(
+				mockAdapter.getPlugin().settingsService.notifications.isolate
+			).toHaveBeenCalledWith('New Device ID established: fresh-id');
 		});
 	});
 
 	describe('Locker Settings Management', () => {
 		it('should update locker settings and set isolate mode to true', async () => {
 			const devices: Record<string, DeviceLocker> = {
-				'dev-1': { name: 'Dev 1', isIsolateMode: false, isolateSettings: { a: 1 } },
+				'dev-1': {
+					name: 'Dev 1',
+					isIsolateMode: false,
+					isolateSettings: { a: 1 },
+				},
 			};
 			vi.mocked(mockAdapter.getDevices).mockReturnValue(devices);
 			service = new IdentityService(mockAdapter);
@@ -136,29 +150,35 @@ describe('IdentityService', () => {
 			expect(devices['dev-1'].isolateSettings).toEqual({ a: 1, b: 2 });
 			expect(devices['dev-1'].isIsolateMode).toBe(true);
 			expect(mockAdapter.save).toHaveBeenCalled();
-			expect(mockAdapter.trigger).toHaveBeenCalledWith('device-lockers-updated');
+			expect(mockAdapter.trigger).toHaveBeenCalledWith(
+				'device-lockers-updated'
+			);
 		});
 
 		it('should overwrite relevant keys when overwrite is true', async () => {
 			const devices: Record<string, DeviceLocker> = {
-				'dev-1': { 
-					name: 'Dev 1', 
-					isIsolateMode: true, 
-					isolateSettings: { 
-						[THEME_KEY]: 'old-theme', 
-						'custom@@key': 'keep-me', 
-						other: 'remove-me' 
-					} 
+				'dev-1': {
+					name: 'Dev 1',
+					isIsolateMode: true,
+					isolateSettings: {
+						[THEME_KEY]: 'old-theme',
+						'custom@@key': 'keep-me',
+						other: 'remove-me',
+					},
 				},
 			};
 			vi.mocked(mockAdapter.getDevices).mockReturnValue(devices);
 			service = new IdentityService(mockAdapter);
 
-			await service.updateLockerSettings('dev-1', { [THEME_KEY]: 'new-theme' }, true);
+			await service.updateLockerSettings(
+				'dev-1',
+				{ [THEME_KEY]: 'new-theme' },
+				true
+			);
 
-			expect(devices['dev-1'].isolateSettings).toEqual({ 
+			expect(devices['dev-1'].isolateSettings).toEqual({
 				other: 'remove-me', // Note: updateLockerSettings only deletes keys that match the filter
-				[THEME_KEY]: 'new-theme' 
+				[THEME_KEY]: 'new-theme',
 			});
 			// Wait, let's check the implementation of updateLockerSettings
 			// 117: Object.keys(locker.isolateSettings).forEach((key) => {
@@ -167,7 +187,7 @@ describe('IdentityService', () => {
 			// 'custom@@key' SHOULD be deleted.
 		});
 	});
-	
+
 	// I noticed a potential bug in updateLockerSettings overwrite logic while writing tests.
 	// Let me re-verify the implementation.
 	// 119: if (key.includes('@@') || key === THEME_KEY || key === APPEARANCE_KEY || key === ACCENT_COLOR_KEY || key === SNIPPETS_KEY)

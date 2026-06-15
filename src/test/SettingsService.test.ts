@@ -18,7 +18,6 @@
 */
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { SettingsService } from '../application/SettingsService';
 import {
 	ACCENT_COLOR_KEY,
 	APPEARANCE_KEY,
@@ -30,6 +29,8 @@ import {
 	THEME_KEY,
 } from '../constants';
 import { RefreshLevel } from '../types';
+
+import { SettingsService } from '../application/SettingsService';
 
 describe('SettingsService', () => {
 	let settingsService: SettingsService;
@@ -113,14 +114,13 @@ describe('SettingsService', () => {
 		settingsService = new SettingsService(mockPlugin as any);
 		// Replace dummy with actual instance
 		mockPlugin.settingsService = settingsService;
-		
+
 		// Add missing spies to notifications
 		settingsService.notifications.shared = vi.fn();
 		settingsService.notifications.notify = vi.fn();
-		
+
 		settingsService.setSafeToSave(true);
 	});
-
 
 	describe('Basic Routing', () => {
 		it('should route settings to sharedSettings when isolate mode is off', async () => {
@@ -131,7 +131,9 @@ describe('SettingsService', () => {
 			await settingsService.setSetting('section1', 'setting1', val);
 
 			expect(settingsService.sharedSettings[key]).toBe(val);
-			expect(settingsService.isolateModeService.isolateSettings[key]).toBeUndefined();
+			expect(
+				settingsService.isolateModeService.isolateSettings[key]
+			).toBeUndefined();
 			expect(settingsService.settings[key]).toBe(val);
 		});
 
@@ -178,7 +180,7 @@ describe('SettingsService', () => {
 		});
 
 		it('should handle multiple settings updates via setSettings', async () => {
-			const updates = { 'key1': 'val1', 'key2': 'val2' };
+			const updates = { key1: 'val1', key2: 'val2' };
 			await settingsService.setSettings(updates);
 			expect(settingsService.settings['key1']).toBe('val1');
 			expect(settingsService.settings['key2']).toBe('val2');
@@ -189,7 +191,7 @@ describe('SettingsService', () => {
 			settingsService.sharedSettings['sec@@k2'] = 'v2';
 			settingsService.sharedSettings['sec@@k3'] = 'v3';
 			(settingsService as any).updateMerged();
-		
+
 			const result = settingsService.getSettings('sec', ['k1', 'k3']);
 			expect(result).toEqual({ 'sec@@k1': 'v1', 'sec@@k3': 'v3' });
 			expect(result['sec@@k2']).toBeUndefined();
@@ -208,7 +210,9 @@ describe('SettingsService', () => {
 
 			it('should handle (key, value, options)', async () => {
 				const saveSpy = vi.spyOn(settingsService.persistenceService, 'save');
-				await settingsService.setSetting('myKey', 'myValue', { skipSave: true });
+				await settingsService.setSetting('myKey', 'myValue', {
+					skipSave: true,
+				});
 				expect(settingsService.getSetting('myKey')).toBe('myValue');
 				expect(saveSpy).not.toHaveBeenCalled();
 			});
@@ -221,9 +225,9 @@ describe('SettingsService', () => {
 				// if (typeof valueOrOptions === 'undefined' || (typeof valueOrOptions === 'object' ... && !options)) {
 				//    key = sectionOrKey; val = keyOrValue as SettingValue; opts = valueOrOptions ...
 				// }
-				// This means if I call setSetting('key', { skipSave: true }), 
+				// This means if I call setSetting('key', { skipSave: true }),
 				// it treats { skipSave: true } as the value.
-				
+
 				// Let's test that behavior.
 				const val = { skipSave: true };
 				await settingsService.setSetting('myKey', val);
@@ -242,55 +246,83 @@ describe('SettingsService', () => {
 		it('should restore defaults when clearing core settings', async () => {
 			// Ensure device is registered so getEffectiveLockerSettings doesn't return {}
 			settingsService.sharedSettings.__devices = {
-				[settingsService.deviceId]: { isIsolateMode: false, isolateSettings: {} },
+				[settingsService.deviceId]: {
+					isIsolateMode: false,
+					isolateSettings: {},
+				},
 			};
 
 			await settingsService.clearSetting(undefined, THEME_KEY);
 			(settingsService as any).updateMerged();
-			
+
 			// Mock the bridge to return 'default' for the theme
-			vi.mocked(mockPlugin.app.vault.getConfig).mockImplementation((key: string) => {
-				if (key === 'cssTheme') return 'default';
-				if (key === 'theme') return 'moonstone';
-				return undefined;
-			});
-			
-			expect(settingsService.getEffectiveLockerSettings(settingsService.deviceId)[THEME_KEY]).toBe('default');
+			vi.mocked(mockPlugin.app.vault.getConfig).mockImplementation(
+				(key: string) => {
+					if (key === 'cssTheme') return 'default';
+					if (key === 'theme') return 'moonstone';
+					return undefined;
+				}
+			);
+
+			expect(
+				settingsService.getEffectiveLockerSettings(settingsService.deviceId)[
+					THEME_KEY
+				]
+			).toBe('default');
 		});
 
 		it('should restore defaults when clearing other core settings', async () => {
 			// Ensure device is registered
 			settingsService.sharedSettings.__devices = {
-				[settingsService.deviceId]: { isIsolateMode: false, isolateSettings: {} },
+				[settingsService.deviceId]: {
+					isIsolateMode: false,
+					isolateSettings: {},
+				},
 			};
 
 			await settingsService.clearSetting(undefined, APPEARANCE_KEY);
 			(settingsService as any).updateMerged();
-			
-			vi.mocked(mockPlugin.app.vault.getConfig).mockImplementation((key: string) => {
-				if (key === 'theme') return 'moonstone';
-				return undefined;
-			});
-			
-			expect(settingsService.getEffectiveLockerSettings(settingsService.deviceId)[APPEARANCE_KEY]).toBe('light');
+
+			vi.mocked(mockPlugin.app.vault.getConfig).mockImplementation(
+				(key: string) => {
+					if (key === 'theme') return 'moonstone';
+					return undefined;
+				}
+			);
+
+			expect(
+				settingsService.getEffectiveLockerSettings(settingsService.deviceId)[
+					APPEARANCE_KEY
+				]
+			).toBe('light');
 
 			await settingsService.clearSetting(undefined, ACCENT_COLOR_KEY);
 			(settingsService as any).updateMerged();
-			
-			vi.mocked(mockPlugin.app.vault.getConfig).mockImplementation((key: string) => {
-				if (key === 'accentColor') return '';
-				return undefined;
-			});
-			
-			expect(settingsService.getEffectiveLockerSettings(settingsService.deviceId)[ACCENT_COLOR_KEY]).toBe('');
+
+			vi.mocked(mockPlugin.app.vault.getConfig).mockImplementation(
+				(key: string) => {
+					if (key === 'accentColor') return '';
+					return undefined;
+				}
+			);
+
+			expect(
+				settingsService.getEffectiveLockerSettings(settingsService.deviceId)[
+					ACCENT_COLOR_KEY
+				]
+			).toBe('');
 
 			await settingsService.clearSetting(undefined, SNIPPETS_KEY);
 			(settingsService as any).updateMerged();
-			
+
 			// Mock Obsidian internal customCss.enabledSnippets
 			mockPlugin.app.customCss.enabledSnippets = ['snippet1'];
-			
-			expect(settingsService.getEffectiveLockerSettings(settingsService.deviceId)[SNIPPETS_KEY]).toEqual(['snippet1']);
+
+			expect(
+				settingsService.getEffectiveLockerSettings(settingsService.deviceId)[
+					SNIPPETS_KEY
+				]
+			).toEqual(['snippet1']);
 		});
 
 		it('should clear all settings in a section', async () => {
@@ -302,7 +334,12 @@ describe('SettingsService', () => {
 		});
 
 		it('should handle core section clearing in clearSections', async () => {
-			await settingsService.clearSections(['__theme', '__appearance', '__accentColor', '__snippets']);
+			await settingsService.clearSections([
+				'__theme',
+				'__appearance',
+				'__accentColor',
+				'__snippets',
+			]);
 			expect(settingsService.sharedSettings[THEME_KEY]).toBe('default');
 			expect(settingsService.sharedSettings[APPEARANCE_KEY]).toBe('light');
 			expect(settingsService.sharedSettings[ACCENT_COLOR_KEY]).toBe('#8a5cf5');
@@ -320,15 +357,18 @@ describe('SettingsService', () => {
 
 		it('should restore defaults when resetting core keys', async () => {
 			settingsService.sharedSettings[THEME_KEY] = 'custom';
-			
+
 			const applyThemeSpy = vi.spyOn(settingsService, 'applyTheme');
-			
+
 			// We must create a setting that matches the pattern ${sectionId}@@${id}
 			// to make modified = true, so that the core key matched block is executed.
 			settingsService.sharedSettings[`${THEME_KEY}@@some`] = 'val';
 			await settingsService.resetSettings(THEME_KEY, ['some']);
-			
-			expect(applyThemeSpy).toHaveBeenCalledWith('default', expect.any(Boolean));
+
+			expect(applyThemeSpy).toHaveBeenCalledWith(
+				'default',
+				expect.any(Boolean)
+			);
 		});
 	});
 
@@ -341,21 +381,29 @@ describe('SettingsService', () => {
 
 		it('should handle null data by checking backup', async () => {
 			// Mock sharedStore.hasBackup to return false
-			(settingsService as any).sharedStore.hasBackup = vi.fn().mockResolvedValue(false);
+			(settingsService as any).sharedStore.hasBackup = vi
+				.fn()
+				.mockResolvedValue(false);
 			await settingsService.onDataLoaded(null, false, false);
 			expect(settingsService.identity.isNewIdentity).toBe(true);
 		});
 
 		it('should trigger sync notification when version increases', async () => {
 			settingsService.sharedSettings.__shared_version = 1;
-			const newData = { ...settingsService.sharedSettings, __shared_version: 2 };
-			
+			const newData = {
+				...settingsService.sharedSettings,
+				__shared_version: 2,
+			};
+
 			await settingsService.onDataLoaded(newData, true, false);
-			
+
 			expect(settingsService.notifications.shared).toHaveBeenCalledWith(
-				expect.stringContaining('Styles shared (2)'),
+				expect.stringContaining('Styles shared (2)')
 			);
-			expect(settingsService.trigger).toHaveBeenCalledWith('shared-update-detected', { skipAdopt: true });
+			expect(settingsService.trigger).toHaveBeenCalledWith(
+				'shared-update-detected',
+				{ skipAdopt: true }
+			);
 		});
 	});
 
@@ -384,12 +432,12 @@ describe('SettingsService', () => {
 			await settingsService.isolateModeService.setIsolateMode(true);
 			const key = 'isoSec@@key';
 			const val = 'isoVal';
-			
+
 			await settingsService.setSetting('isoSec', 'key', val);
-			
+
 			expect(settingsService.hasIsolateSetting(key)).toBe(true);
 			expect(settingsService.hasIsolateSetting('nonExistent')).toBe(false);
-			
+
 			// Check that shared settings are not reported as isolated
 			settingsService.sharedSettings['sharedSec@@key'] = 'sharedVal';
 			expect(settingsService.hasIsolateSetting('sharedSec@@key')).toBe(false);
@@ -411,7 +459,10 @@ describe('SettingsService', () => {
 
 		it('should trigger STYLES_ONLY refresh and clear cache for style changes', async () => {
 			const refreshSpy = vi.spyOn(settingsService.refreshService, 'trigger');
-			const cacheSpy = vi.spyOn(settingsService.styleSheetManager, 'clearCache');
+			const cacheSpy = vi.spyOn(
+				settingsService.styleSheetManager,
+				'clearCache'
+			);
 			await settingsService.setSetting('section', 'color', 'red');
 			expect(refreshSpy).toHaveBeenCalledWith(RefreshLevel.STYLES_ONLY);
 			expect(cacheSpy).toHaveBeenCalled();
@@ -422,7 +473,7 @@ describe('SettingsService', () => {
 			await settingsService.setSetting(SNIPPETS_KEY, ['snippet1']);
 			// Snippets are considered style settings (isStyleSetting returns true)
 			// but they are "snippet only", so they should skip UI_ONLY but potentially still trigger STYLES_ONLY?
-			// Let's check implementation: 
+			// Let's check implementation:
 			// la 740: if (hasStyleChange && !isSnippetOnly) { ... STYLES_ONLY ... }
 			// So snippet-only updates actually skip STYLES_ONLY too.
 			expect(refreshSpy).not.toHaveBeenCalledWith(RefreshLevel.STYLES_ONLY);
@@ -451,25 +502,31 @@ describe('SettingsService', () => {
 		});
 	});
 
-
 	describe('Device Isolation & Locker', () => {
 		it('should provide isolated settings for different device IDs', async () => {
 			// Simulate Device A
 			settingsService.sharedSettings.__devices = {
-				'device-a': { isIsolateMode: true, isolateSettings: { 'a@@key': 'val-a' } },
-				'device-b': { isIsolateMode: true, isolateSettings: { 'a@@key': 'val-b' } },
+				'device-a': {
+					isIsolateMode: true,
+					isolateSettings: { 'a@@key': 'val-a' },
+				},
+				'device-b': {
+					isIsolateMode: true,
+					isolateSettings: { 'a@@key': 'val-b' },
+				},
 			};
-		
+
 			const settingsA = settingsService.getEffectiveLockerSettings('device-a');
 			const settingsB = settingsService.getEffectiveLockerSettings('device-b');
-		
+
 			expect(settingsA['a@@key']).toBe('val-a');
 			expect(settingsB['a@@key']).toBe('val-b');
 		});
-		
+
 		it('should return empty object for missing device', () => {
 			settingsService.sharedSettings.__devices = {};
-			const settings = settingsService.getEffectiveLockerSettings('non-existent');
+			const settings =
+				settingsService.getEffectiveLockerSettings('non-existent');
 			expect(settings).toEqual({});
 		});
 
@@ -477,7 +534,8 @@ describe('SettingsService', () => {
 			settingsService.sharedSettings.__devices = {
 				'empty-device': { isIsolateMode: true, isolateSettings: {} },
 			};
-			const settings = settingsService.getEffectiveLockerSettings('empty-device');
+			const settings =
+				settingsService.getEffectiveLockerSettings('empty-device');
 			// Should still have core fallbacks
 			expect(settings[THEME_KEY]).toBeDefined();
 		});
@@ -487,8 +545,9 @@ describe('SettingsService', () => {
 				'empty-device': { isIsolateMode: true, isolateSettings: {} },
 			};
 			delete settingsService.sharedSettings[THEME_KEY];
-		
-			const settings = settingsService.getEffectiveLockerSettings('empty-device');
+
+			const settings =
+				settingsService.getEffectiveLockerSettings('empty-device');
 			expect(settings[THEME_KEY]).toBe('global-theme'); // from mock bridge
 		});
 	});
@@ -497,9 +556,9 @@ describe('SettingsService', () => {
 		it('should reset all style settings to defaults', async () => {
 			settingsService.sharedSettings['sec@@key'] = 'val';
 			settingsService.sharedSettings[THEME_KEY] = 'custom-theme';
-			
+
 			await settingsService.resetAllStyleSettings(false);
-			
+
 			expect(settingsService.sharedSettings['sec@@key']).toBeUndefined();
 			expect(settingsService.sharedSettings[THEME_KEY]).toBe('default');
 			expect(settingsService.sharedSettings[APPEARANCE_KEY]).toBe('light');
@@ -510,65 +569,91 @@ describe('SettingsService', () => {
 		it('should reset isolate settings when isIsolate is true', async () => {
 			await settingsService.isolateModeService.setIsolateMode(true);
 			settingsService.isolateModeService.isolateSettings['sec@@key'] = 'val';
-			
+
 			await settingsService.resetAllStyleSettings(true);
-			
-			expect(settingsService.isolateModeService.isolateSettings['sec@@key']).toBeUndefined();
-			expect(settingsService.isolateModeService.isolateSettings[THEME_KEY]).toBe('default');
+
+			expect(
+				settingsService.isolateModeService.isolateSettings['sec@@key']
+			).toBeUndefined();
+			expect(
+				settingsService.isolateModeService.isolateSettings[THEME_KEY]
+			).toBe('default');
 		});
 	});
 
 	describe('Advanced Data Loading', () => {
 		it('should adopt native settings and trigger silent save', async () => {
-			const adoptSpy = vi.spyOn((settingsService as any).themeService, 'adoptNativeSettings').mockReturnValue(true);
+			const adoptSpy = vi
+				.spyOn((settingsService as any).themeService, 'adoptNativeSettings')
+				.mockReturnValue(true);
 			const saveSpy = vi.spyOn(settingsService, 'save');
-			
+
 			await settingsService.onDataLoaded({}, false, false);
-			
+
 			expect(adoptSpy).toHaveBeenCalled();
 			expect(saveSpy).toHaveBeenCalledWith({ silent: true });
 		});
 
 		it('should skip adoption when forcePull is true', async () => {
-			const adoptSpy = vi.spyOn((settingsService as any).themeService, 'adoptNativeSettings');
-			
+			const adoptSpy = vi.spyOn(
+				(settingsService as any).themeService,
+				'adoptNativeSettings'
+			);
+
 			await settingsService.onDataLoaded({}, false, true);
-			
+
 			expect(adoptSpy).not.toHaveBeenCalled();
 		});
 
 		it('should skip adoption when isExternalShared is true', async () => {
-			const adoptSpy = vi.spyOn((settingsService as any).themeService, 'adoptNativeSettings');
-			
+			const adoptSpy = vi.spyOn(
+				(settingsService as any).themeService,
+				'adoptNativeSettings'
+			);
+
 			await settingsService.onDataLoaded({}, true, false);
-			
+
 			expect(adoptSpy).not.toHaveBeenCalled();
 		});
 
 		it('should not mark as new identity when backup exists', async () => {
 			settingsService.identity.isNewIdentity = false;
-			(settingsService as any).sharedStore.hasBackup = vi.fn().mockResolvedValue(true);
+			(settingsService as any).sharedStore.hasBackup = vi
+				.fn()
+				.mockResolvedValue(true);
 			await settingsService.onDataLoaded(null, false, false);
 			expect(settingsService.identity.isNewIdentity).toBe(false);
 		});
 
 		it('should trigger device-lockers-updated when devices change', async () => {
-			settingsService.sharedSettings.__devices = { 'a': { isIsolateMode: true, isolateSettings: {} } };
-			await settingsService.onDataLoaded({ __devices: { 'b': { isIsolateMode: true, isolateSettings: {} } } }, false, false);
-			expect(settingsService.trigger).toHaveBeenCalledWith('device-lockers-updated');
+			settingsService.sharedSettings.__devices = {
+				a: { isIsolateMode: true, isolateSettings: {} },
+			};
+			await settingsService.onDataLoaded(
+				{ __devices: { b: { isIsolateMode: true, isolateSettings: {} } } },
+				false,
+				false
+			);
+			expect(settingsService.trigger).toHaveBeenCalledWith(
+				'device-lockers-updated'
+			);
 		});
 
 		it('should apply current settings immediately after load', async () => {
 			const applyThemeSpy = vi.spyOn(settingsService, 'applyTheme');
 			const applyAppSpy = vi.spyOn(settingsService, 'applyAppearance');
 			const applyAccentSpy = vi.spyOn(settingsService, 'applyAccentColor');
-			
+
 			settingsService.sharedSettings[THEME_KEY] = 'theme-x';
 			settingsService.sharedSettings[APPEARANCE_KEY] = 'dark';
 			settingsService.sharedSettings[ACCENT_COLOR_KEY] = '#123456';
-			
-			await settingsService.onDataLoaded(settingsService.sharedSettings, true, false);
-			
+
+			await settingsService.onDataLoaded(
+				settingsService.sharedSettings,
+				true,
+				false
+			);
+
 			expect(applyThemeSpy).toHaveBeenCalledWith('theme-x', true);
 			expect(applyAppSpy).toHaveBeenCalledWith('dark');
 			expect(applyAccentSpy).toHaveBeenCalledWith('#123456', true);
@@ -577,16 +662,26 @@ describe('SettingsService', () => {
 
 	describe('Overlay Application', () => {
 		it('should coordinate isolate mode, settings update and refresh', async () => {
-			const isolateSpy = vi.spyOn(settingsService.isolateModeService, 'setIsolateMode');
+			const isolateSpy = vi.spyOn(
+				settingsService.isolateModeService,
+				'setIsolateMode'
+			);
 			const updateSpy = vi.spyOn(settingsService as any, 'applySettingsUpdate');
 			const refreshSpy = vi.spyOn(settingsService.refreshService, 'trigger');
-			
-			await settingsService.applySettingsOverlay({ 'key': 'val' }, true);
-			
+
+			await settingsService.applySettingsOverlay({ key: 'val' }, true);
+
 			expect(isolateSpy).toHaveBeenCalledWith(true);
-			expect(updateSpy).toHaveBeenCalledWith({ 'key': 'val' }, { persistNative: false });
-			expect(settingsService.trigger).toHaveBeenCalledWith('isolate-mode-changed');
-			expect(settingsService.trigger).toHaveBeenCalledWith('device-lockers-updated');
+			expect(updateSpy).toHaveBeenCalledWith(
+				{ key: 'val' },
+				{ persistNative: false }
+			);
+			expect(settingsService.trigger).toHaveBeenCalledWith(
+				'isolate-mode-changed'
+			);
+			expect(settingsService.trigger).toHaveBeenCalledWith(
+				'device-lockers-updated'
+			);
 		});
 	});
 
@@ -604,41 +699,68 @@ describe('SettingsService', () => {
 		});
 
 		it('should delegate theme/appearance/accent application', async () => {
-			const themeSpy = vi.spyOn((settingsService as any).themeService, 'applyTheme');
-			const appSpy = vi.spyOn((settingsService as any).themeService, 'applyAppearance');
-			const accentSpy = vi.spyOn((settingsService as any).themeService, 'applyAccentColor');
-			
+			const themeSpy = vi.spyOn(
+				(settingsService as any).themeService,
+				'applyTheme'
+			);
+			const appSpy = vi.spyOn(
+				(settingsService as any).themeService,
+				'applyAppearance'
+			);
+			const accentSpy = vi.spyOn(
+				(settingsService as any).themeService,
+				'applyAccentColor'
+			);
+
 			await settingsService.applyTheme('t', true);
 			settingsService.applyAppearance('a', true);
 			settingsService.applyAccentColor('c', true);
-			
+
 			expect(themeSpy).toHaveBeenCalledWith('t', true);
 			expect(appSpy).toHaveBeenCalledWith('a', true);
 			expect(accentSpy).toHaveBeenCalledWith('c', true);
 		});
 
 		it('should delegate snippet operations', async () => {
-			const applySpy = vi.spyOn(settingsService.snippetService, 'applySnippets');
-			const syncSpy = vi.spyOn(settingsService.snippetService, 'syncSnippetState');
-			
+			const applySpy = vi.spyOn(
+				settingsService.snippetService,
+				'applySnippets'
+			);
+			const syncSpy = vi.spyOn(
+				settingsService.snippetService,
+				'syncSnippetState'
+			);
+
 			await settingsService.applySnippets(['s1'], true);
 			await settingsService.syncSnippetState({ skipAdopt: true });
-			
+
 			expect(applySpy).toHaveBeenCalledWith(['s1'], true);
 			expect(syncSpy).toHaveBeenCalledWith({ skipAdopt: true });
 		});
 
 		it('should delegate persistence and isolate mode operations', async () => {
-			const checkSpy = vi.spyOn(settingsService.persistenceService, 'checkForExternalChanges');
-			const isolateSpy = vi.spyOn(settingsService.isolateModeService, 'setIsolateMode');
-			const resetSpy = vi.spyOn(settingsService.isolateModeService, 'resetIsolateSettings');
-			const pushSpy = vi.spyOn(settingsService.isolateModeService, 'pushToShared');
-			
+			const checkSpy = vi.spyOn(
+				settingsService.persistenceService,
+				'checkForExternalChanges'
+			);
+			const isolateSpy = vi.spyOn(
+				settingsService.isolateModeService,
+				'setIsolateMode'
+			);
+			const resetSpy = vi.spyOn(
+				settingsService.isolateModeService,
+				'resetIsolateSettings'
+			);
+			const pushSpy = vi.spyOn(
+				settingsService.isolateModeService,
+				'pushToShared'
+			);
+
 			await settingsService.checkForExternalChanges();
 			await settingsService.setIsolateMode(true);
 			await settingsService.resetIsolateSettings();
 			await settingsService.pushToShared();
-			
+
 			expect(checkSpy).toHaveBeenCalled();
 			expect(isolateSpy.mock.calls[0][0]).toBe(true);
 			expect(resetSpy).toHaveBeenCalled();
@@ -648,11 +770,14 @@ describe('SettingsService', () => {
 
 	describe('Lifecycle', () => {
 		it('should call cleanup on dependencies', () => {
-			const themeSpy = vi.spyOn((settingsService as any).themeService, 'cleanup');
+			const themeSpy = vi.spyOn(
+				(settingsService as any).themeService,
+				'cleanup'
+			);
 			const genSpy = vi.spyOn(settingsService.styleGenerator, 'destroy');
-			
+
 			settingsService.cleanup();
-			
+
 			expect(themeSpy).toHaveBeenCalled();
 			expect(genSpy).toHaveBeenCalled();
 		});
@@ -664,23 +789,23 @@ describe('SettingsService', () => {
 			await settingsService.isolateModeService.setIsolateMode(false);
 			await settingsService.setSetting('sharedSec', 'key', 'sharedVal');
 			expect(settingsService.settings['sharedSec@@key']).toBe('sharedVal');
-			
+
 			// 2. Switch to isolate mode
 			await settingsService.isolateModeService.setIsolateMode(true);
-			
+
 			// 3. Verify that shared settings were snapshotted into isolate settings
 			expect(settingsService.settings['sharedSec@@key']).toBe('sharedVal');
-			
+
 			// 4. Set a value in isolate mode
 			await settingsService.setSetting('isoSec', 'key', 'isoVal');
-			
+
 			// 5. Verify merged settings
 			expect(settingsService.settings['isoSec@@key']).toBe('isoVal');
-			
+
 			// 6. Verify that changes in isolate mode don't affect sharedSettings
 			await settingsService.setSetting('sharedSec', 'key', 'newIsoVal');
 			expect(settingsService.settings['sharedSec@@key']).toBe('newIsoVal');
-			
+
 			await settingsService.isolateModeService.setIsolateMode(false);
 			expect(settingsService.settings['sharedSec@@key']).toBe('sharedVal');
 		});
@@ -689,10 +814,10 @@ describe('SettingsService', () => {
 			// 1. Set a value in isolate mode
 			await settingsService.isolateModeService.setIsolateMode(true);
 			await settingsService.setSetting('isoSec', 'key', 'isoVal');
-			
+
 			// 2. Switch to shared mode
 			await settingsService.isolateModeService.setIsolateMode(false);
-			
+
 			// 3. Verify merged settings
 			// In shared mode, we just use sharedSettings. isoVal was in isolateSettings, so it should be gone.
 			expect(settingsService.settings['isoSec@@key']).toBeUndefined();

@@ -1,7 +1,9 @@
-import { describe, expect, it, vi, beforeEach, afterEach } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+
+import { App } from './obsidian-mock';
+
 import { StyleSheetManager } from '../core/css/StyleSheetManager';
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
-import { App } from './obsidian-mock';
 
 vi.mock('../infrastructure/bridge/ObsidianBridge');
 
@@ -31,9 +33,15 @@ describe('StyleSheetManager', () => {
 		vi.spyOn(bridge, 'getInstalledThemes').mockReturnValue([]);
 		vi.spyOn(bridge, 'getInstalledPlugins').mockReturnValue([]);
 		vi.spyOn(bridge, 'getAllSnippets').mockReturnValue([]);
-		vi.spyOn(bridge, 'getThemePath').mockImplementation((id) => `themes/${id}/theme.css`);
-		vi.spyOn(bridge, 'getPluginPath').mockImplementation((id) => `plugins/${id}/styles.css`);
-		vi.spyOn(bridge, 'getSnippetPath').mockImplementation((id) => `snippets/${id}.css`);
+		vi.spyOn(bridge, 'getThemePath').mockImplementation(
+			(id) => `themes/${id}/theme.css`
+		);
+		vi.spyOn(bridge, 'getPluginPath').mockImplementation(
+			(id) => `plugins/${id}/styles.css`
+		);
+		vi.spyOn(bridge, 'getSnippetPath').mockImplementation(
+			(id) => `snippets/${id}.css`
+		);
 
 		manager = new StyleSheetManager(bridge);
 	});
@@ -47,13 +55,17 @@ describe('StyleSheetManager', () => {
 	describe('Lifecycle & Caching', () => {
 		it('should initialize correctly', () => {
 			expect(document.body.classList.contains('style-manager-css')).toBe(true);
-			expect(document.body.querySelectorAll('.style-manager-ref').length).toBe(2);
+			expect(document.body.querySelectorAll('.style-manager-ref').length).toBe(
+				2
+			);
 		});
 
 		it('should cleanup resources', () => {
 			manager.cleanup();
 			expect(document.body.classList.contains('style-manager-css')).toBe(false);
-			expect(document.body.querySelectorAll('.style-manager-ref').length).toBe(0);
+			expect(document.body.querySelectorAll('.style-manager-ref').length).toBe(
+				0
+			);
 		});
 
 		it('should clear CSS variable cache', () => {
@@ -63,18 +75,18 @@ describe('StyleSheetManager', () => {
 			document.head.appendChild(style);
 
 			manager.getCSSVar('test-var');
-			
+
 			// Modify value in DOM
 			style.textContent = ':root { --test-var: blue; }';
-			
+
 			// Should return cached 'red'
 			expect(manager.getCSSVar('test-var')?.current).toBe('red');
-			
+
 			manager.clearCache();
-			
+
 			// Should now return 'blue'
 			expect(manager.getCSSVar('test-var')?.current).toBe('blue');
-			
+
 			document.head.removeChild(style);
 		});
 	});
@@ -113,15 +125,15 @@ describe('StyleSheetManager', () => {
 			for (let i = 0; i < 501; i++) {
 				manager.getCSSVar(`var-${i}`);
 			}
-			
-			// The 501st call should have triggered a clear. 
+
+			// The 501st call should have triggered a clear.
 			// However, getCSSVar(id) calls this.cssVarCache.set(id, result) AFTER the clear.
 			// So the cache should have exactly 1 item (the last one).
-			
-			// We can't access private cssVarCache easily, but we can test by checking if 
-			// an early variable is re-computed (by mocking getComputedStyle if needed, 
+
+			// We can't access private cssVarCache easily, but we can test by checking if
+			// an early variable is re-computed (by mocking getComputedStyle if needed,
 			// but let's just verify it doesn't crash and returns expected results).
-			
+
 			const result = manager.getCSSVar('var-0');
 			expect(result).toBeDefined();
 		});

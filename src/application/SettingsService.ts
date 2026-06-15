@@ -385,7 +385,8 @@ export class SettingsService extends Events {
 					key === '_manager_presets' ||
 					key === '_manager_schedules'
 				) {
-					validIsolateSettings[key] = this.isolateModeService.isolateSettings[key];
+					validIsolateSettings[key] =
+						this.isolateModeService.isolateSettings[key];
 				}
 			});
 			Object.assign(merged, validIsolateSettings);

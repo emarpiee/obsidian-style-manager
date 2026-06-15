@@ -21,13 +21,17 @@ import { App, Setting, debounce, setIcon } from 'obsidian';
 import {
 	BACKUP_DATE_FORMAT_KEY,
 	BACKUP_PATH_KEY,
+	BULK_PRESET_APPLY_ACTION_KEY,
 	CREATED_DATE_FORMAT_KEY,
 	EDITOR_TAB_SIZE_KEY,
 	ENABLE_CONSOLE_LOGGING_KEY,
 	EXPORT_DATE_FORMAT_KEY,
 	EXPORT_EXTENSION_KEY,
 	EXPORT_PATH_KEY,
+	OPEN_IN_DEFAULT_APP_KEY,
 	OPEN_MODAL_ON_CREATE_KEY,
+	PRESET_APPLY_ACTION_KEY,
+	SCHEDULE_APPLY_ACTION_KEY,
 	SEPARATE_BULK_PRESETS_KEY,
 	SHOW_ISOLATE_NOTIFICATIONS_KEY,
 	SHOW_PRESET_NOTIFICATIONS_KEY,
@@ -40,10 +44,6 @@ import {
 	SKIP_EXPORT_CONFIRM_KEY,
 	SKIP_IMPORT_CONFIRM_KEY,
 	STICKY_HEADING_KEY,
-	OPEN_IN_DEFAULT_APP_KEY,
-	PRESET_APPLY_ACTION_KEY,
-	BULK_PRESET_APPLY_ACTION_KEY,
-	SCHEDULE_APPLY_ACTION_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -96,13 +96,17 @@ export class PreferencesTab {
 			)
 			.addText((text) => {
 				const currentPath =
-					(plugin.settingsService.sharedSettings[BACKUP_PATH_KEY] as string) ?? '';
+					(plugin.settingsService.sharedSettings[BACKUP_PATH_KEY] as string) ??
+					'';
 				text
 					.setPlaceholder('Folder/Path (leave empty for vault root)')
 					.setValue(currentPath)
 					.onChange(
 						debounce(async (val) => {
-							await plugin.settingsService.setSettings({ [BACKUP_PATH_KEY]: val.trim() }, { silentUI: true , target: 'shared' });
+							await plugin.settingsService.setSettings(
+								{ [BACKUP_PATH_KEY]: val.trim() },
+								{ silentUI: true, target: 'shared' }
+							);
 						}, 500)
 					);
 				plugin.settingsService.bridge.createFolderSuggest(text.inputEl);
@@ -125,7 +129,10 @@ export class PreferencesTab {
 						debounce(async (val) => {
 							const sanitized =
 								val.replace(/[:/\\?%*|"<>]/g, '') || 'YYYYMMDDHHmmss';
-							await plugin.settingsService.setSettings({ [BACKUP_DATE_FORMAT_KEY]: sanitized }, { silentUI: true , target: 'shared' });
+							await plugin.settingsService.setSettings(
+								{ [BACKUP_DATE_FORMAT_KEY]: sanitized },
+								{ silentUI: true, target: 'shared' }
+							);
 						}, 500)
 					);
 			});
@@ -282,13 +289,17 @@ export class PreferencesTab {
 			)
 			.addText((text) => {
 				const currentPath =
-					(plugin.settingsService.sharedSettings[EXPORT_PATH_KEY] as string) || '';
+					(plugin.settingsService.sharedSettings[EXPORT_PATH_KEY] as string) ||
+					'';
 				text
 					.setPlaceholder('Folder/Path')
 					.setValue(currentPath)
 					.onChange(
 						debounce(async (val) => {
-							await plugin.settingsService.setSettings({ [EXPORT_PATH_KEY]: val.trim() }, { silentUI: true , target: 'shared' });
+							await plugin.settingsService.setSettings(
+								{ [EXPORT_PATH_KEY]: val.trim() },
+								{ silentUI: true, target: 'shared' }
+							);
 						}, 500)
 					);
 				plugin.settingsService.bridge.createFolderSuggest(text.inputEl);
@@ -305,11 +316,15 @@ export class PreferencesTab {
 					.addOption('.md', '.md')
 					.addOption('.txt', '.txt')
 					.setValue(
-						(plugin.settingsService.sharedSettings[EXPORT_EXTENSION_KEY] as string) ||
-							'.json'
+						(plugin.settingsService.sharedSettings[
+							EXPORT_EXTENSION_KEY
+						] as string) || '.json'
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [EXPORT_EXTENSION_KEY]: val }, { silentUI: true, target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [EXPORT_EXTENSION_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 			});
 
@@ -329,7 +344,10 @@ export class PreferencesTab {
 					.onChange(
 						debounce(async (val) => {
 							const sanitized = val.replace(/[:/\\?%*|"<>]/g, '');
-							await plugin.settingsService.setSettings({ [EXPORT_DATE_FORMAT_KEY]: sanitized }, { silentUI: true , target: 'shared' });
+							await plugin.settingsService.setSettings(
+								{ [EXPORT_DATE_FORMAT_KEY]: sanitized },
+								{ silentUI: true, target: 'shared' }
+							);
 						}, 500)
 					);
 			});
@@ -347,7 +365,10 @@ export class PreferencesTab {
 						] as boolean) || false
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [SEPARATE_BULK_PRESETS_KEY]: val }, { silentUI: true , target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [SEPARATE_BULK_PRESETS_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 			});
 	}
@@ -398,7 +419,10 @@ export class PreferencesTab {
 						] as boolean) === true
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [SHOW_STATUS_BAR_KEY]: val }, { silentUI: true , target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [SHOW_STATUS_BAR_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 			});
 
@@ -415,7 +439,10 @@ export class PreferencesTab {
 						] as boolean) !== false
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [SHOW_SNIPPET_METADATA_KEY]: val }, { silentUI: true , target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [SHOW_SNIPPET_METADATA_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 			});
 
@@ -427,11 +454,15 @@ export class PreferencesTab {
 			.addToggle((toggle) => {
 				toggle
 					.setValue(
-						(plugin.settingsService.sharedSettings[STICKY_HEADING_KEY] as boolean) !==
-							false
+						(plugin.settingsService.sharedSettings[
+							STICKY_HEADING_KEY
+						] as boolean) !== false
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [STICKY_HEADING_KEY]: val }, { silentUI: true , target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [STICKY_HEADING_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 			});
 	}
@@ -475,11 +506,15 @@ export class PreferencesTab {
 					.addOption('overwrite', 'Overwrite (Reset and Apply)')
 					.addOption('merge', 'Merge (Apply without Resetting)')
 					.setValue(
-						(plugin.settingsService.sharedSettings[PRESET_APPLY_ACTION_KEY] as string) ||
-							'ask'
+						(plugin.settingsService.sharedSettings[
+							PRESET_APPLY_ACTION_KEY
+						] as string) || 'ask'
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [PRESET_APPLY_ACTION_KEY]: val }, { silentUI: true, target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [PRESET_APPLY_ACTION_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 			});
 
@@ -492,11 +527,15 @@ export class PreferencesTab {
 					.addOption('overwrite', 'Overwrite (Reset and Apply)')
 					.addOption('merge', 'Merge (Apply without Resetting)')
 					.setValue(
-						(plugin.settingsService.sharedSettings[BULK_PRESET_APPLY_ACTION_KEY] as string) ||
-							'ask'
+						(plugin.settingsService.sharedSettings[
+							BULK_PRESET_APPLY_ACTION_KEY
+						] as string) || 'ask'
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [BULK_PRESET_APPLY_ACTION_KEY]: val }, { silentUI: true, target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [BULK_PRESET_APPLY_ACTION_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 			});
 
@@ -508,11 +547,15 @@ export class PreferencesTab {
 					.addOption('overwrite', 'Overwrite (Reset and Apply)')
 					.addOption('merge', 'Merge (Apply without Resetting)')
 					.setValue(
-						(plugin.settingsService.sharedSettings[SCHEDULE_APPLY_ACTION_KEY] as string) ||
-							'overwrite'
+						(plugin.settingsService.sharedSettings[
+							SCHEDULE_APPLY_ACTION_KEY
+						] as string) || 'overwrite'
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [SCHEDULE_APPLY_ACTION_KEY]: val }, { silentUI: true, target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [SCHEDULE_APPLY_ACTION_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 			});
 
@@ -526,7 +569,10 @@ export class PreferencesTab {
 							(plugin.settingsService.sharedSettings[key] as boolean) || false
 						)
 						.onChange(async (val) => {
-							await plugin.settingsService.setSettings({ [key]: val }, { silentUI: true , target: 'shared' });
+							await plugin.settingsService.setSettings(
+								{ [key]: val },
+								{ silentUI: true, target: 'shared' }
+							);
 						});
 				});
 		});
@@ -553,7 +599,10 @@ export class PreferencesTab {
 						] as boolean) !== false
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [OPEN_MODAL_ON_CREATE_KEY]: val }, { silentUI: true , target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [OPEN_MODAL_ON_CREATE_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 			});
 
@@ -564,9 +613,7 @@ export class PreferencesTab {
 			)
 			.addToggle((toggle) => {
 				toggle
-					.setValue(
-						localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true'
-					)
+					.setValue(localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true')
 					.onChange(async (val) => {
 						localStorage.setItem(OPEN_IN_DEFAULT_APP_KEY, String(val));
 					});
@@ -580,11 +627,15 @@ export class PreferencesTab {
 					.setLimits(2, 8, 1)
 					.setDynamicTooltip()
 					.setValue(
-						(plugin.settingsService.sharedSettings[EDITOR_TAB_SIZE_KEY] as number) ||
-							4
+						(plugin.settingsService.sharedSettings[
+							EDITOR_TAB_SIZE_KEY
+						] as number) || 4
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [EDITOR_TAB_SIZE_KEY]: val }, { silentUI: true , target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [EDITOR_TAB_SIZE_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 
 				// Expose slider for reset button
@@ -599,7 +650,10 @@ export class PreferencesTab {
 					.setIcon('rotate-ccw')
 					.setTooltip('Reset to default (4)')
 					.onClick(async () => {
-						await plugin.settingsService.setSettings({ [EDITOR_TAB_SIZE_KEY]: 4 }, { silentUI: true , target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [EDITOR_TAB_SIZE_KEY]: 4 },
+							{ silentUI: true, target: 'shared' }
+						);
 						const slider = (
 							this as unknown as {
 								tabSizeSlider?: import('obsidian').SliderComponent;
@@ -651,7 +705,10 @@ export class PreferencesTab {
 								: plugin.settingsService.sharedSettings[key] !== false
 						)
 						.onChange(async (val) => {
-							await plugin.settingsService.setSettings({ [key]: val }, { silentUI: true , target: 'shared' });
+							await plugin.settingsService.setSettings(
+								{ [key]: val },
+								{ silentUI: true, target: 'shared' }
+							);
 						});
 				});
 		});
@@ -669,7 +726,10 @@ export class PreferencesTab {
 						] as boolean) || false
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings({ [ENABLE_CONSOLE_LOGGING_KEY]: val }, { silentUI: true , target: 'shared' });
+						await plugin.settingsService.setSettings(
+							{ [ENABLE_CONSOLE_LOGGING_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
 					});
 			});
 

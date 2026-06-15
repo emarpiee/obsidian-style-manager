@@ -1,8 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
+import { STICKY_HEADING_KEY } from '../constants';
+
 import { StyleGenerator } from '../core/style/StyleGenerator';
 import { SettingType } from '../ui/components/base/types';
-import { STICKY_HEADING_KEY } from '../constants';
 
 describe('StyleGenerator', () => {
 	let mockPlugin: any;
@@ -50,14 +51,29 @@ describe('StyleGenerator', () => {
 					id: 'section1',
 					name: 'Section 1',
 					settings: [
-						{ id: 'var1', type: SettingType.VARIABLE_COLOR, default: '#ff0000', format: 'hex', title: 'Var 1' },
-						{ id: 'grad1', type: SettingType.COLOR_GRADIENT, from: 'var1', to: '#0000ff', step: 100, pad: 2, format: 'hex', title: 'Grad 1' }
-					]
-				}
+						{
+							id: 'var1',
+							type: SettingType.VARIABLE_COLOR,
+							default: '#ff0000',
+							format: 'hex',
+							title: 'Var 1',
+						},
+						{
+							id: 'grad1',
+							type: SettingType.COLOR_GRADIENT,
+							from: 'var1',
+							to: '#0000ff',
+							step: 100,
+							pad: 2,
+							format: 'hex',
+							title: 'Grad 1',
+						},
+					],
+				},
 			];
 
 			generator.setConfig(parsedSettings);
-			
+
 			expect(generator.config['section1']['var1'].id).toBe('var1');
 			expect(generator.gradients['section1']).toBeDefined();
 			expect(generator.gradients['section1'][0].id).toBe('grad1');
@@ -80,8 +96,13 @@ describe('StyleGenerator', () => {
 		it('should clean up stylesheets and classes on destroy', () => {
 			generator.config = {
 				sec: {
-					toggle: { id: 'destroy-test', type: SettingType.CLASS_TOGGLE, default: true, title: 'Destroy Test' }
-				}
+					toggle: {
+						id: 'destroy-test',
+						type: SettingType.CLASS_TOGGLE,
+						default: true,
+						title: 'Destroy Test',
+					},
+				},
 			};
 			generator.initClasses();
 			expect(document.body.classList.contains('destroy-test')).toBe(true);
@@ -145,21 +166,43 @@ describe('StyleGenerator', () => {
 			];
 
 			formats.forEach(({ format, expected }) => {
-				const result = (generator as any).generateColorVariables('test-color', format, '#ff0000', false);
+				const result = (generator as any).generateColorVariables(
+					'test-color',
+					format,
+					'#ff0000',
+					false
+				);
 				expect(result[0].value).toBe(expected);
 			});
 		});
 
 		it('should append alpha channel when opacity is true', () => {
-			const result = (generator as any).generateColorVariables('test-color', 'rgb-values', '#ff0000', true);
+			const result = (generator as any).generateColorVariables(
+				'test-color',
+				'rgb-values',
+				'#ff0000',
+				true
+			);
 			expect(result[0].value).toBe('255,0,0,1');
 		});
 
 		it('should generate additional variables for alt-formats', () => {
-			const altFormats = [{ id: 'alt-hex', format: 'hex' }, { id: 'alt-rgb', format: 'rgb' }];
-			const result = (generator as any).generateColorVariables('main', 'hsl', '#ff0000', false, altFormats);
-			
-			expect(result).toContainEqual({ key: 'main', value: 'hsl(0deg 100% 50%)' });
+			const altFormats = [
+				{ id: 'alt-hex', format: 'hex' },
+				{ id: 'alt-rgb', format: 'rgb' },
+			];
+			const result = (generator as any).generateColorVariables(
+				'main',
+				'hsl',
+				'#ff0000',
+				false,
+				altFormats
+			);
+
+			expect(result).toContainEqual({
+				key: 'main',
+				value: 'hsl(0deg 100% 50%)',
+			});
 			expect(result).toContainEqual({ key: 'alt-hex', value: '#ff0000' });
 			expect(result).toContainEqual({ key: 'alt-rgb', value: 'rgb(255 0 0)' });
 		});
@@ -169,28 +212,67 @@ describe('StyleGenerator', () => {
 		it('should handle empty or invalid values gracefully', () => {
 			const config = {
 				sec: {
-					col: { id: 'res-col', type: SettingType.VARIABLE_COLOR, default: '#ffffff', format: 'hex' },
-					grad: { id: 'grad', type: SettingType.COLOR_GRADIENT, from: 'res-col', to: 'native-col', format: 'hex', step: 100, pad: 2 }
-				}
+					col: {
+						id: 'res-col',
+						type: SettingType.VARIABLE_COLOR,
+						default: '#ffffff',
+						format: 'hex',
+					},
+					grad: {
+						id: 'grad',
+						type: SettingType.COLOR_GRADIENT,
+						from: 'res-col',
+						to: 'native-col',
+						format: 'hex',
+						step: 100,
+						pad: 2,
+					},
+				},
 			};
 			const gradients = { sec: [config.sec.grad as any] };
-			const [vars] = generator.generateVariableArrays({}, config as any, gradients, mockBridge);
-			
+			const [vars] = generator.generateVariableArrays(
+				{},
+				config as any,
+				gradients,
+				mockBridge
+			);
+
 			const settings = { 'sec@@col': '' };
-			const [varsEmpty] = generator.generateVariableArrays(settings, config as any, gradients, mockBridge);
-			expect(varsEmpty.some(v => v.key === 'res-col')).toBe(false);
+			const [varsEmpty] = generator.generateVariableArrays(
+				settings,
+				config as any,
+				gradients,
+				mockBridge
+			);
+			expect(varsEmpty.some((v) => v.key === 'res-col')).toBe(false);
 		});
 
 		it('should handle missing styleSheetManager gracefully', () => {
-			const generatorNoSMM = new StyleGenerator({} as any, mockBridge, getSettings);
+			const generatorNoSMM = new StyleGenerator(
+				{} as any,
+				mockBridge,
+				getSettings
+			);
 			const config = {
 				sec: {
-					col: { id: 'res-col', type: SettingType.VARIABLE_COLOR, default: '#ffffff', format: 'hex' },
-				}
+					col: {
+						id: 'res-col',
+						type: SettingType.VARIABLE_COLOR,
+						default: '#ffffff',
+						format: 'hex',
+					},
+				},
 			};
-			const [vars] = generatorNoSMM.generateVariableArrays({}, config as any, {}, mockBridge);
-			
-			expect(vars.some(v => v.key === 'res-col' && v.value === '#ffffff')).toBe(true);
+			const [vars] = generatorNoSMM.generateVariableArrays(
+				{},
+				config as any,
+				{},
+				mockBridge
+			);
+
+			expect(
+				vars.some((v) => v.key === 'res-col' && v.value === '#ffffff')
+			).toBe(true);
 		});
 	});
 
@@ -198,27 +280,83 @@ describe('StyleGenerator', () => {
 		it('should resolve colors based on priority via generateVariableArrays', () => {
 			const config = {
 				sec: {
-					col1: { id: 'res-col-1', type: SettingType.VARIABLE_THEMED_COLOR, 'default-light': '#ff0000', 'default-dark': '#0000ff', format: 'hex' },
-					col2: { id: 'res-col-2', type: SettingType.VARIABLE_COLOR, default: '#00ff00', format: 'hex' },
-					grad1: { id: 'grad-1', type: SettingType.COLOR_GRADIENT, from: 'res-col-1', to: 'existing-var', format: 'hex', step: 100, pad: 2 },
-					grad2: { id: 'grad-2', type: SettingType.COLOR_GRADIENT, from: 'res-col-2', to: 'existing-var', format: 'hex', step: 100, pad: 2 }
-				}
+					col1: {
+						id: 'res-col-1',
+						type: SettingType.VARIABLE_THEMED_COLOR,
+						'default-light': '#ff0000',
+						'default-dark': '#0000ff',
+						format: 'hex',
+					},
+					col2: {
+						id: 'res-col-2',
+						type: SettingType.VARIABLE_COLOR,
+						default: '#00ff00',
+						format: 'hex',
+					},
+					grad1: {
+						id: 'grad-1',
+						type: SettingType.COLOR_GRADIENT,
+						from: 'res-col-1',
+						to: 'existing-var',
+						format: 'hex',
+						step: 100,
+						pad: 2,
+					},
+					grad2: {
+						id: 'grad-2',
+						type: SettingType.COLOR_GRADIENT,
+						from: 'res-col-2',
+						to: 'existing-var',
+						format: 'hex',
+						step: 100,
+						pad: 2,
+					},
+				},
 			};
-			const gradients = { sec: [config.sec.grad1 as any, config.sec.grad2 as any] };
+			const gradients = {
+				sec: [config.sec.grad1 as any, config.sec.grad2 as any],
+			};
 
-			const [vars, themedLight, themedDark] = generator.generateVariableArrays({}, config as any, gradients, mockBridge);
-			
+			const [vars, themedLight, themedDark] = generator.generateVariableArrays(
+				{},
+				config as any,
+				gradients,
+				mockBridge
+			);
+
 			// grad-1-00 should resolve to the themed values of 'res-col-1'
-			expect(themedLight.some(v => v.key === 'grad-1-00' && v.value === 'rgb(255 0 0)')).toBe(true);
-			expect(themedDark.some(v => v.key === 'grad-1-00' && v.value === 'rgb(0 0 255)')).toBe(true);
-			
+			expect(
+				themedLight.some(
+					(v) => v.key === 'grad-1-00' && v.value === 'rgb(255 0 0)'
+				)
+			).toBe(true);
+			expect(
+				themedDark.some(
+					(v) => v.key === 'grad-1-00' && v.value === 'rgb(0 0 255)'
+				)
+			).toBe(true);
+
 			// grad-2-00 should resolve to the base value of 'res-col-2' (#00ff00)
-			expect(vars.some(v => v.key === 'grad-2-00' && v.value === 'rgb(0 255 0)')).toBe(true);
-			
+			expect(
+				vars.some((v) => v.key === 'grad-2-00' && v.value === 'rgb(0 255 0)')
+			).toBe(true);
+
 			// 100 should resolve to existing-var (mock returns #ffffff, #000000, #888888)
-			expect(themedLight.some(v => v.key === 'grad-1-100' && v.value === 'rgb(255 255 255)')).toBe(true);
-			expect(themedDark.some(v => v.key === 'grad-1-100' && v.value === 'rgb(0 0 0)')).toBe(true);
-			expect(vars.some(v => v.key === 'grad-2-100' && v.value === 'rgb(136 136 136)')).toBe(true);
+			expect(
+				themedLight.some(
+					(v) => v.key === 'grad-1-100' && v.value === 'rgb(255 255 255)'
+				)
+			).toBe(true);
+			expect(
+				themedDark.some(
+					(v) => v.key === 'grad-1-100' && v.value === 'rgb(0 0 0)'
+				)
+			).toBe(true);
+			expect(
+				vars.some(
+					(v) => v.key === 'grad-2-100' && v.value === 'rgb(136 136 136)'
+				)
+			).toBe(true);
 		});
 	});
 
@@ -226,53 +364,123 @@ describe('StyleGenerator', () => {
 		it('should resolve gradient colors from multiple sources', () => {
 			const config = {
 				sec: {
-					c1: { id: 'c1', type: SettingType.VARIABLE_COLOR, default: '#ff0000', format: 'hex' },
-					c2: { id: 'c2', type: SettingType.VARIABLE_COLOR, default: '#0000ff', format: 'hex' },
-					grad: { id: 'grad', type: SettingType.COLOR_GRADIENT, from: 'c1', to: 'c2', format: 'hex', step: 100, pad: 2 }
-				}
+					c1: {
+						id: 'c1',
+						type: SettingType.VARIABLE_COLOR,
+						default: '#ff0000',
+						format: 'hex',
+					},
+					c2: {
+						id: 'c2',
+						type: SettingType.VARIABLE_COLOR,
+						default: '#0000ff',
+						format: 'hex',
+					},
+					grad: {
+						id: 'grad',
+						type: SettingType.COLOR_GRADIENT,
+						from: 'c1',
+						to: 'c2',
+						format: 'hex',
+						step: 100,
+						pad: 2,
+					},
+				},
 			};
 			const gradients = { sec: [config.sec.grad as any] };
 			const settings = { 'sec@@c1': '#ff0000', 'sec@@c2': '#0000ff' };
-			
-			const [vars] = generator.generateVariableArrays(settings, config as any, gradients, mockBridge);
-			expect(vars.some(v => v.key === 'grad-00' && v.value === 'rgb(255 0 0)')).toBe(true);
-			expect(vars.some(v => v.key === 'grad-100' && v.value === 'rgb(0 0 255)')).toBe(true);
+
+			const [vars] = generator.generateVariableArrays(
+				settings,
+				config as any,
+				gradients,
+				mockBridge
+			);
+			expect(
+				vars.some((v) => v.key === 'grad-00' && v.value === 'rgb(255 0 0)')
+			).toBe(true);
+			expect(
+				vars.some((v) => v.key === 'grad-100' && v.value === 'rgb(0 0 255)')
+			).toBe(true);
 		});
 
 		it('should resolve gradient colors from native config', () => {
 			// Simulating the fallback logic cleanly by bypassing the string-return quirk of resolveColor
 			const config = {
 				sec: {
-					c1: { id: 'c1', type: SettingType.VARIABLE_COLOR, default: '#ff0000', format: 'hex' },
-					grad: { id: 'grad', type: SettingType.COLOR_GRADIENT, from: 'c1', to: '', format: 'hex', step: 100, pad: 2 }
-				}
+					c1: {
+						id: 'c1',
+						type: SettingType.VARIABLE_COLOR,
+						default: '#ff0000',
+						format: 'hex',
+					},
+					grad: {
+						id: 'grad',
+						type: SettingType.COLOR_GRADIENT,
+						from: 'c1',
+						to: '',
+						format: 'hex',
+						step: 100,
+						pad: 2,
+					},
+				},
 			};
 			const gradients = { sec: [config.sec.grad as any] };
 			mockBridge.getNativeConfig.mockReturnValue({
-				themes: { '': { css: '#00ff00' } }
+				themes: { '': { css: '#00ff00' } },
 			});
 
 			const settings = { 'sec@@c1': '#ff0000' };
-			const [vars] = generator.generateVariableArrays(settings, config as any, gradients, mockBridge);
-			expect(vars.some(v => v.key === 'grad-100' && v.value === 'rgb(0 255 0)')).toBe(true);
+			const [vars] = generator.generateVariableArrays(
+				settings,
+				config as any,
+				gradients,
+				mockBridge
+			);
+			expect(
+				vars.some((v) => v.key === 'grad-100' && v.value === 'rgb(0 255 0)')
+			).toBe(true);
 		});
 
 		it('should correctly apply step and pad parameters', () => {
 			const config = {
 				sec: {
-					c1: { id: 'c1', type: SettingType.VARIABLE_COLOR, default: '#ff0000', format: 'hex' },
-					c2: { id: 'c2', type: SettingType.VARIABLE_COLOR, default: '#0000ff', format: 'hex' },
-					grad: { id: 'grad', type: SettingType.COLOR_GRADIENT, from: 'c1', to: 'c2', format: 'hex', step: 50, pad: 3 }
-				}
+					c1: {
+						id: 'c1',
+						type: SettingType.VARIABLE_COLOR,
+						default: '#ff0000',
+						format: 'hex',
+					},
+					c2: {
+						id: 'c2',
+						type: SettingType.VARIABLE_COLOR,
+						default: '#0000ff',
+						format: 'hex',
+					},
+					grad: {
+						id: 'grad',
+						type: SettingType.COLOR_GRADIENT,
+						from: 'c1',
+						to: 'c2',
+						format: 'hex',
+						step: 50,
+						pad: 3,
+					},
+				},
 			};
 			const gradients = { sec: [config.sec.grad as any] };
-			
-			const [vars] = generator.generateVariableArrays({}, config as any, gradients, mockBridge);
-			
-			expect(vars.some(v => v.key === 'grad-000')).toBe(true);
-			expect(vars.some(v => v.key === 'grad-050')).toBe(true);
-			expect(vars.some(v => v.key === 'grad-100')).toBe(true);
-			expect(vars.filter(v => v.key.startsWith('grad-')).length).toBe(3);
+
+			const [vars] = generator.generateVariableArrays(
+				{},
+				config as any,
+				gradients,
+				mockBridge
+			);
+
+			expect(vars.some((v) => v.key === 'grad-000')).toBe(true);
+			expect(vars.some((v) => v.key === 'grad-050')).toBe(true);
+			expect(vars.some((v) => v.key === 'grad-100')).toBe(true);
+			expect(vars.filter((v) => v.key.startsWith('grad-')).length).toBe(3);
 		});
 	});
 
@@ -289,10 +497,21 @@ describe('StyleGenerator', () => {
 					},
 				},
 			};
-			
-			const [, themedLight, themedDark] = generator.generateVariableArrays({}, config as any, {}, mockBridge);
-			expect(themedLight).toContainEqual({ key: 'themed-color', value: '#ffffff' });
-			expect(themedDark).toContainEqual({ key: 'themed-color', value: '#000000' });
+
+			const [, themedLight, themedDark] = generator.generateVariableArrays(
+				{},
+				config as any,
+				{},
+				mockBridge
+			);
+			expect(themedLight).toContainEqual({
+				key: 'themed-color',
+				value: '#ffffff',
+			});
+			expect(themedDark).toContainEqual({
+				key: 'themed-color',
+				value: '#000000',
+			});
 		});
 
 		it('should use themed overrides when present', () => {
@@ -311,10 +530,21 @@ describe('StyleGenerator', () => {
 				'sec@@tc@@light': '#eeeeee',
 				'sec@@tc@@dark': '#111111',
 			};
-			
-			const [, themedLight, themedDark] = generator.generateVariableArrays(settings, config as any, {}, mockBridge);
-			expect(themedLight).toContainEqual({ key: 'themed-color', value: '#eeeeee' });
-			expect(themedDark).toContainEqual({ key: 'themed-color', value: '#111111' });
+
+			const [, themedLight, themedDark] = generator.generateVariableArrays(
+				settings,
+				config as any,
+				{},
+				mockBridge
+			);
+			expect(themedLight).toContainEqual({
+				key: 'themed-color',
+				value: '#eeeeee',
+			});
+			expect(themedDark).toContainEqual({
+				key: 'themed-color',
+				value: '#111111',
+			});
 		});
 
 		it('should handle mixed themed overrides (one mode overridden, other default)', () => {
@@ -332,19 +562,41 @@ describe('StyleGenerator', () => {
 			const settings = {
 				'sec@@tc@@light': '#eeeeee',
 			};
-			
-			const [, themedLight, themedDark] = generator.generateVariableArrays(settings, config as any, {}, mockBridge);
-			expect(themedLight).toContainEqual({ key: 'themed-color', value: '#eeeeee' });
-			expect(themedDark).toContainEqual({ key: 'themed-color', value: '#000000' });
+
+			const [, themedLight, themedDark] = generator.generateVariableArrays(
+				settings,
+				config as any,
+				{},
+				mockBridge
+			);
+			expect(themedLight).toContainEqual({
+				key: 'themed-color',
+				value: '#eeeeee',
+			});
+			expect(themedDark).toContainEqual({
+				key: 'themed-color',
+				value: '#000000',
+			});
 		});
 
 		it('should always generate the sticky heading position variable', () => {
 			const [vars] = generator.generateVariableArrays({}, {}, {}, mockBridge);
-			expect(vars).toContainEqual({ key: 'sm-style-heading-position', value: 'sticky' });
+			expect(vars).toContainEqual({
+				key: 'sm-style-heading-position',
+				value: 'sticky',
+			});
 
 			settingsStore[STICKY_HEADING_KEY] = false;
-			const [varsOff] = generator.generateVariableArrays(settingsStore, {}, {}, mockBridge);
-			expect(varsOff).toContainEqual({ key: 'sm-style-heading-position', value: 'static' });
+			const [varsOff] = generator.generateVariableArrays(
+				settingsStore,
+				{},
+				{},
+				mockBridge
+			);
+			expect(varsOff).toContainEqual({
+				key: 'sm-style-heading-position',
+				value: 'static',
+			});
 		});
 	});
 
@@ -352,40 +604,79 @@ describe('StyleGenerator', () => {
 		it('should generate values for VARIABLE_TEXT without quotes', () => {
 			const config = {
 				sec: {
-					txt: { id: 'text-var', type: SettingType.VARIABLE_TEXT, default: 'hello', quotes: false },
+					txt: {
+						id: 'text-var',
+						type: SettingType.VARIABLE_TEXT,
+						default: 'hello',
+						quotes: false,
+					},
 				},
 			};
-			const [vars] = generator.generateVariableArrays({}, config as any, {}, mockBridge);
+			const [vars] = generator.generateVariableArrays(
+				{},
+				config as any,
+				{},
+				mockBridge
+			);
 			expect(vars).toContainEqual({ key: 'text-var', value: 'hello' });
 		});
 
 		it('should generate values for VARIABLE_TEXT with quotes', () => {
 			const config = {
 				sec: {
-					txt: { id: 'text-var', type: SettingType.VARIABLE_TEXT, default: 'hello', quotes: true },
+					txt: {
+						id: 'text-var',
+						type: SettingType.VARIABLE_TEXT,
+						default: 'hello',
+						quotes: true,
+					},
 				},
 			};
-			const [vars] = generator.generateVariableArrays({}, config as any, {}, mockBridge);
+			const [vars] = generator.generateVariableArrays(
+				{},
+				config as any,
+				{},
+				mockBridge
+			);
 			expect(vars).toContainEqual({ key: 'text-var', value: "'hello'" });
 		});
 
 		it('should handle empty quotes for VARIABLE_TEXT', () => {
 			const config = {
 				sec: {
-					txt: { id: 'text-var', type: SettingType.VARIABLE_TEXT, default: '""', quotes: true },
+					txt: {
+						id: 'text-var',
+						type: SettingType.VARIABLE_TEXT,
+						default: '""',
+						quotes: true,
+					},
 				},
 			};
-			const [vars] = generator.generateVariableArrays({}, config as any, {}, mockBridge);
+			const [vars] = generator.generateVariableArrays(
+				{},
+				config as any,
+				{},
+				mockBridge
+			);
 			expect(vars).toContainEqual({ key: 'text-var', value: '' });
 		});
 
 		it('should generate values for VARIABLE_SELECT', () => {
 			const config = {
 				sec: {
-					sel: { id: 'select-var', type: SettingType.VARIABLE_SELECT, default: 'option1' },
+					sel: {
+						id: 'select-var',
+						type: SettingType.VARIABLE_SELECT,
+						default: 'option1',
+					},
 				},
 			};
-			const [vars] = generator.generateVariableArrays({}, config as any, {}, mockBridge);
+			const [vars] = generator.generateVariableArrays(
+				{},
+				config as any,
+				{},
+				mockBridge
+			);
 			expect(vars).toContainEqual({ key: 'select-var', value: 'option1' });
 		});
 	});
@@ -394,10 +685,20 @@ describe('StyleGenerator', () => {
 		it('should append format to VARIABLE_NUMBER', () => {
 			const config = {
 				sec: {
-					num: { id: 'num-var', type: SettingType.VARIABLE_NUMBER, default: 16, format: 'px' },
+					num: {
+						id: 'num-var',
+						type: SettingType.VARIABLE_NUMBER,
+						default: 16,
+						format: 'px',
+					},
 				},
 			};
-			const [vars] = generator.generateVariableArrays({}, config as any, {}, mockBridge);
+			const [vars] = generator.generateVariableArrays(
+				{},
+				config as any,
+				{},
+				mockBridge
+			);
 			expect(vars).toContainEqual({ key: 'num-var', value: '16px' });
 		});
 	});
@@ -406,24 +707,73 @@ describe('StyleGenerator', () => {
 		it('should resolve colors using various ID formats via styleSheetManager', () => {
 			const config = {
 				sec: {
-					col: { id: 'res-col', type: SettingType.VARIABLE_COLOR, default: '#ffffff', format: 'hex' },
+					col: {
+						id: 'res-col',
+						type: SettingType.VARIABLE_COLOR,
+						default: '#ffffff',
+						format: 'hex',
+					},
 				},
 			};
 			const gradients = {
 				sec: [
-					{ id: 'grad-var', type: SettingType.COLOR_GRADIENT, from: 'res-col', to: 'var(--existing-var)', format: 'hex', step: 100, pad: 2, title: 'Grad Var' },
-					{ id: 'grad-dash', type: SettingType.COLOR_GRADIENT, from: 'res-col', to: '--existing-var', format: 'hex', step: 100, pad: 2, title: 'Grad Dash' },
-					{ id: 'grad-raw', type: SettingType.COLOR_GRADIENT, from: 'res-col', to: 'existing-var', format: 'hex', step: 100, pad: 2, title: 'Grad Raw' },
+					{
+						id: 'grad-var',
+						type: SettingType.COLOR_GRADIENT,
+						from: 'res-col',
+						to: 'var(--existing-var)',
+						format: 'hex',
+						step: 100,
+						pad: 2,
+						title: 'Grad Var',
+					},
+					{
+						id: 'grad-dash',
+						type: SettingType.COLOR_GRADIENT,
+						from: 'res-col',
+						to: '--existing-var',
+						format: 'hex',
+						step: 100,
+						pad: 2,
+						title: 'Grad Dash',
+					},
+					{
+						id: 'grad-raw',
+						type: SettingType.COLOR_GRADIENT,
+						from: 'res-col',
+						to: 'existing-var',
+						format: 'hex',
+						step: 100,
+						pad: 2,
+						title: 'Grad Raw',
+					},
 				],
 			};
 
-			const [vars] = generator.generateVariableArrays({}, config as any, gradients as any, mockBridge);
+			const [vars] = generator.generateVariableArrays(
+				{},
+				config as any,
+				gradients as any,
+				mockBridge
+			);
 
 			// Mock returns #888888 for current -> rgb(136 136 136)
 			// These are the 'to' colors (index 100)
-			expect(vars.some(v => v.key === 'grad-var-100' && v.value === 'rgb(136 136 136)')).toBe(true);
-			expect(vars.some(v => v.key === 'grad-dash-100' && v.value === 'rgb(136 136 136)')).toBe(true);
-			expect(vars.some(v => v.key === 'grad-raw-100' && v.value === 'rgb(136 136 136)')).toBe(true);
+			expect(
+				vars.some(
+					(v) => v.key === 'grad-var-100' && v.value === 'rgb(136 136 136)'
+				)
+			).toBe(true);
+			expect(
+				vars.some(
+					(v) => v.key === 'grad-dash-100' && v.value === 'rgb(136 136 136)'
+				)
+			).toBe(true);
+			expect(
+				vars.some(
+					(v) => v.key === 'grad-raw-100' && v.value === 'rgb(136 136 136)'
+				)
+			).toBe(true);
 		});
 	});
 
@@ -443,7 +793,9 @@ describe('StyleGenerator', () => {
 			generator.applyStyles();
 
 			// Read directly from generator object to avoid strict DOM query parsing issues
-			expect(generator.styleTag.textContent).toContain('--num-var: 12 !important;');
+			expect(generator.styleTag.textContent).toContain(
+				'--num-var: 12 !important;'
+			);
 			expect(mockBridge.triggerEvent).toHaveBeenCalledWith('css-change', {
 				source: 'style-manager',
 			});
@@ -452,7 +804,12 @@ describe('StyleGenerator', () => {
 		it('should minify generated CSS output', () => {
 			generator.config = {
 				sec: {
-					num: { id: 'n', type: SettingType.VARIABLE_NUMBER, default: 1, title: 'Num' },
+					num: {
+						id: 'n',
+						type: SettingType.VARIABLE_NUMBER,
+						default: 1,
+						title: 'Num',
+					},
 				},
 			};
 			generator.applyStyles();
@@ -465,9 +822,9 @@ describe('StyleGenerator', () => {
 			const head = document.head;
 			const dummy = document.createElement('div');
 			head.appendChild(dummy);
-			
+
 			generator.setCSSVariables();
-			
+
 			expect(head.lastChild).toBe(generator.styleTag);
 		});
 	});

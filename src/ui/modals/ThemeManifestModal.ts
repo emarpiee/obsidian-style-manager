@@ -24,7 +24,10 @@ import {
 	ThemeBuilderService,
 	ThemeManifest,
 } from '../../application/ThemeBuilderService';
-import { OPEN_IN_DEFAULT_APP_KEY, OPEN_MODAL_ON_CREATE_KEY } from '../../constants';
+import {
+	OPEN_IN_DEFAULT_APP_KEY,
+	OPEN_MODAL_ON_CREATE_KEY,
+} from '../../constants';
 import StyleManagerPlugin from '../../main';
 import {
 	Validator,
@@ -244,15 +247,22 @@ export class ThemeManifestModal extends Modal {
 								);
 							} else {
 								const themeId = await this.service.createTheme(this.manifest);
-								
+
 								const openModal =
-									this.plugin.settingsService.settings[OPEN_MODAL_ON_CREATE_KEY] !==
-									false;
+									this.plugin.settingsService.settings[
+										OPEN_MODAL_ON_CREATE_KEY
+									] !== false;
 								if (openModal) {
-									const useDefaultApp = localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
+									const useDefaultApp =
+										localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
 									if (useDefaultApp) {
-										const path = this.plugin.settingsService.bridge.getThemePath(themeId);
-										(this.app as unknown as { openWithDefaultApp: (path: string) => void }).openWithDefaultApp(path);
+										const path =
+											this.plugin.settingsService.bridge.getThemePath(themeId);
+										(
+											this.app as unknown as {
+												openWithDefaultApp: (path: string) => void;
+											}
+										).openWithDefaultApp(path);
 									} else {
 										// Automatically open the CSS editor for the new theme
 										new CSSEditorModal(this.app, this.plugin, {

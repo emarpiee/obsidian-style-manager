@@ -520,7 +520,7 @@ export class ObsidianBridge {
 				set: (val: string) => {
 					_realThemeValue = val;
 				},
-				configurable: true
+				configurable: true,
 			});
 
 			internalCss.setTheme = function (
@@ -618,7 +618,7 @@ export class ObsidianBridge {
 		try {
 			const configDir = this.app.vault.configDir;
 			const snippetsFolder = normalizePath(`${configDir}/snippets`);
-			
+
 			if (await this.app.vault.adapter.exists(snippetsFolder)) {
 				const listed = await this.app.vault.adapter.list(snippetsFolder);
 				const cssFiles = listed.files
@@ -628,20 +628,22 @@ export class ObsidianBridge {
 						const nameWithExt = parts[parts.length - 1];
 						return nameWithExt.substring(0, nameWithExt.length - 4);
 					});
-					
+
 				if (customCss && Array.isArray(customCss.snippets)) {
 					// Remove deleted files from customCss.snippets
-					customCss.snippets = customCss.snippets.filter(s => cssFiles.includes(s));
-					
+					customCss.snippets = customCss.snippets.filter((s) =>
+						cssFiles.includes(s)
+					);
+
 					// Also add any that might have been missed
-					cssFiles.forEach(s => {
+					cssFiles.forEach((s) => {
 						if (!customCss.snippets.includes(s)) {
 							customCss.snippets.push(s);
 						}
 					});
 				}
 			}
-		} catch(e) {
+		} catch (e) {
 			Logger.error('Style Manager | Error fixing customCss snippets list:', e);
 		}
 	}

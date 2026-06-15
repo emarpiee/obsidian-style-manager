@@ -169,7 +169,9 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 
 		this.themeLightWrapper.style.setProperty('--pcr-color', displayColor);
 
-		const pickrRoot = (this.pickrLight.getRoot() as unknown as { root: HTMLElement }).root;
+		const pickrRoot = (
+			this.pickrLight.getRoot() as unknown as { root: HTMLElement }
+		).root;
 		if (pickrRoot) {
 			pickrRoot.style.setProperty('--pcr-color', displayColor);
 			const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
@@ -187,7 +189,9 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 
 		this.themeDarkWrapper.style.setProperty('--pcr-color', displayColor);
 
-		const pickrRoot = (this.pickrDark.getRoot() as unknown as { root: HTMLElement }).root;
+		const pickrRoot = (
+			this.pickrDark.getRoot() as unknown as { root: HTMLElement }
+		).root;
 		if (pickrRoot) {
 			pickrRoot.style.setProperty('--pcr-color', displayColor);
 			const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
@@ -229,7 +233,6 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 
 		this.updateModifiedClass();
 	}
-
 
 	private createColorPickerLight(
 		wrapper: HTMLDivElement,

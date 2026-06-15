@@ -69,7 +69,10 @@ export class PresetScheduleService {
 		return this.schedules.find((s) => s.presetId === presetId);
 	}
 
-	public getVisibleScheduleForPreset(presetId: string, deviceId: string): PresetSchedule | undefined {
+	public getVisibleScheduleForPreset(
+		presetId: string,
+		deviceId: string
+	): PresetSchedule | undefined {
 		return this.schedules.find(
 			(s) =>
 				s.presetId === presetId &&
@@ -288,12 +291,23 @@ export class PresetScheduleService {
 			`Executing scheduled preset: ${preset?.name || 'Unknown'}`
 		);
 
-		const action = (this.plugin.settingsService.settings[SCHEDULE_APPLY_ACTION_KEY] as 'overwrite' | 'merge') || 'overwrite';
+		const action =
+			(this.plugin.settingsService.settings[SCHEDULE_APPLY_ACTION_KEY] as
+				| 'overwrite'
+				| 'merge') || 'overwrite';
 
 		if (schedule.targetLocker === 'shared') {
-			await this.plugin.presetService.applyPresets([schedule.presetId], false, action);
+			await this.plugin.presetService.applyPresets(
+				[schedule.presetId],
+				false,
+				action
+			);
 		} else if (schedule.targetLocker === 'isolate') {
-			await this.plugin.presetService.applyPresets([schedule.presetId], true, action);
+			await this.plugin.presetService.applyPresets(
+				[schedule.presetId],
+				true,
+				action
+			);
 		} else {
 			// Remote device locker
 			await this.plugin.presetService.applyPresetsToLocker(

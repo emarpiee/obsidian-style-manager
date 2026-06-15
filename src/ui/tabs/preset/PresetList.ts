@@ -30,10 +30,9 @@ import { addApplyOptionsToMenu } from './PresetMenuHelper';
 
 import {
 	APPEARANCE_KEY,
+	BULK_PRESET_APPLY_ACTION_KEY,
 	EXPORT_DATE_FORMAT_KEY,
 	EXPORT_EXTENSION_KEY,
-	PRESET_APPLY_ACTION_KEY,
-	BULK_PRESET_APPLY_ACTION_KEY,
 	SEPARATE_BULK_PRESETS_KEY,
 	SKIP_DELETE_CONFIRM_KEY,
 	SKIP_EXPORT_CONFIRM_KEY,
@@ -376,7 +375,10 @@ export class PresetList {
 			.onClick((e: MouseEvent | KeyboardEvent) => {
 				const menu = new Menu();
 
-				const applyAll = async (isolate: boolean, action: 'overwrite' | 'merge' = 'overwrite'): Promise<void> => {
+				const applyAll = async (
+					isolate: boolean,
+					action: 'overwrite' | 'merge' = 'overwrite'
+				): Promise<void> => {
 					await service.applyPresets(
 						Array.from(service.selectedPresets),
 						isolate,

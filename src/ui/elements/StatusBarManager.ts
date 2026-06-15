@@ -108,7 +108,7 @@ export class StatusBarManager {
 			`Style Manager (${modeText})\n` +
 				`Theme: ${activeTheme}\n` +
 				`${modifiedText}\n` +
-				`${snippetText} enabled`
+				`${snippetText} active`
 		);
 	}
 

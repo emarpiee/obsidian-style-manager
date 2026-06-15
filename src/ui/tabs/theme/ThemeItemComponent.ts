@@ -18,8 +18,8 @@
 */
 import { App, Component, Menu, Setting, setIcon } from 'obsidian';
 
-import { OPEN_IN_DEFAULT_APP_KEY } from '../../../constants';
 import { ThemeManifest } from '../../../application/ThemeBuilderService';
+import { OPEN_IN_DEFAULT_APP_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
@@ -194,10 +194,15 @@ export class ThemeItemComponent extends Component {
 	}
 
 	private onEdit(): void {
-		const useDefaultApp = localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
+		const useDefaultApp =
+			localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
 		if (useDefaultApp) {
-			const path = this.plugin.settingsService.bridge.getThemePath(this.themeId);
-			(this.app as unknown as { openWithDefaultApp: (path: string) => void }).openWithDefaultApp(path);
+			const path = this.plugin.settingsService.bridge.getThemePath(
+				this.themeId
+			);
+			(
+				this.app as unknown as { openWithDefaultApp: (path: string) => void }
+			).openWithDefaultApp(path);
 		} else {
 			new CSSEditorModal(this.app, this.plugin, {
 				type: 'Theme',

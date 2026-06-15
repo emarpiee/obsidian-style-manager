@@ -65,7 +65,10 @@ export class CommandApplyPresetModal extends PresetSuggestModal {
 					this.app,
 					this.presetService.plugin.settingsService,
 					async (deviceId) => {
-						const deviceName = this.presetService.plugin.settingsService.identity.getLockerName(deviceId);
+						const deviceName =
+							this.presetService.plugin.settingsService.identity.getLockerName(
+								deviceId
+							);
 						this.presetService.confirmApply(
 							preset.name,
 							async (action) => {
