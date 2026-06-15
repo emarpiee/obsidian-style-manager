@@ -277,8 +277,8 @@ settings:
 
 		return this.blocks.map(block => {
 			if (block.group === 'field' || block.id === 'settings') {
-				let template = block.template.replace(/    - /g, dashStr);
-				template = template.replace(/        /g, compStr);
+				let template = block.template.replace(/ {4}- /g, dashStr);
+				template = template.replace(/ {8}/g, compStr);
 				return { ...block, template };
 			}
 			return block;

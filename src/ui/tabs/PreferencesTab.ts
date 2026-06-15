@@ -672,7 +672,7 @@ export class PreferencesTab {
 			.setDesc('Set the number of spaces before the dash (-) in generated @settings blocks. Maximum 10 spaces.')
 			.addSlider((slider) => {
 				slider
-					.setLimits(0, 10, 1)
+					.setLimits(0, 12, 1)
 					.setDynamicTooltip()
 					.setValue(
 						(plugin.settingsService.sharedSettings[
@@ -680,10 +680,32 @@ export class PreferencesTab {
 						] as number) ?? 4
 					)
 					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [SETTINGS_BLOCK_DASH_SPACES_KEY]: val },
-							{ silentUI: true, target: 'shared' }
-						);
+						let compVal = (plugin.settingsService.sharedSettings[
+							SETTINGS_BLOCK_COMPONENT_SPACES_KEY
+						] as number) ?? 8;
+
+						const updates: Record<string, number> = {
+							[SETTINGS_BLOCK_DASH_SPACES_KEY]: val,
+						};
+
+						if (val >= compVal) {
+							compVal = val + 1;
+							updates[SETTINGS_BLOCK_COMPONENT_SPACES_KEY] = compVal;
+						}
+
+						await plugin.settingsService.setSettings(updates, {
+							silentUI: true,
+							target: 'shared',
+						});
+
+						const compSlider = (
+							this as unknown as {
+								componentSpacesSlider?: import('obsidian').SliderComponent;
+							}
+						).componentSpacesSlider;
+						if (compSlider) {
+							compSlider.setValue(compVal);
+						}
 					});
 
 				// Expose slider for reset button
@@ -698,27 +720,51 @@ export class PreferencesTab {
 					.setIcon('rotate-ccw')
 					.setTooltip('Reset to default (4)')
 					.onClick(async () => {
-						await plugin.settingsService.setSettings(
-							{ [SETTINGS_BLOCK_DASH_SPACES_KEY]: 4 },
-							{ silentUI: true, target: 'shared' }
-						);
+						const dashDefault = 4;
+						let compVal = (plugin.settingsService.sharedSettings[
+							SETTINGS_BLOCK_COMPONENT_SPACES_KEY
+						] as number) ?? 8;
+
+						const updates: Record<string, number> = {
+							[SETTINGS_BLOCK_DASH_SPACES_KEY]: dashDefault,
+						};
+
+						if (dashDefault >= compVal) {
+							compVal = dashDefault + 1;
+							updates[SETTINGS_BLOCK_COMPONENT_SPACES_KEY] = compVal;
+						}
+
+						await plugin.settingsService.setSettings(updates, {
+							silentUI: true,
+							target: 'shared',
+						});
+
 						const slider = (
 							this as unknown as {
 								dashSpacesSlider?: import('obsidian').SliderComponent;
 							}
 						).dashSpacesSlider;
 						if (slider) {
-							slider.setValue(4);
+							slider.setValue(dashDefault);
+						}
+
+						const compSlider = (
+							this as unknown as {
+								componentSpacesSlider?: import('obsidian').SliderComponent;
+							}
+						).componentSpacesSlider;
+						if (compSlider) {
+							compSlider.setValue(compVal);
 						}
 					});
 			});
 
 		new Setting(developerContainer)
 			.setName('@settings spaces before components')
-			.setDesc('Set the number of spaces before the setting components (id, type, etc.) in generated @settings blocks. Maximum 10 spaces.')
+			.setDesc('Set the number of spaces before the setting components (id, type, etc.) in generated @settings blocks. Maximum 20 spaces.')
 			.addSlider((slider) => {
 				slider
-					.setLimits(0, 10, 1)
+					.setLimits(1, 10, 1)
 					.setDynamicTooltip()
 					.setValue(
 						(plugin.settingsService.sharedSettings[
@@ -726,10 +772,23 @@ export class PreferencesTab {
 						] as number) ?? 8
 					)
 					.onChange(async (val) => {
+						const dashVal = (plugin.settingsService.sharedSettings[
+							SETTINGS_BLOCK_DASH_SPACES_KEY
+						] as number) ?? 4;
+
+						let finalVal = val;
+						if (val <= dashVal) {
+							finalVal = dashVal + 1;
+						}
+
 						await plugin.settingsService.setSettings(
-							{ [SETTINGS_BLOCK_COMPONENT_SPACES_KEY]: val },
+							{ [SETTINGS_BLOCK_COMPONENT_SPACES_KEY]: finalVal },
 							{ silentUI: true, target: 'shared' }
 						);
+
+						if (val !== finalVal) {
+							slider.setValue(finalVal);
+						}
 					});
 
 				// Expose slider for reset button
@@ -744,17 +803,28 @@ export class PreferencesTab {
 					.setIcon('rotate-ccw')
 					.setTooltip('Reset to default (8)')
 					.onClick(async () => {
+						const compDefault = 8;
+						const dashVal = (plugin.settingsService.sharedSettings[
+							SETTINGS_BLOCK_DASH_SPACES_KEY
+						] as number) ?? 4;
+
+						let finalVal = compDefault;
+						if (compDefault <= dashVal) {
+							finalVal = dashVal + 1;
+						}
+
 						await plugin.settingsService.setSettings(
-							{ [SETTINGS_BLOCK_COMPONENT_SPACES_KEY]: 8 },
+							{ [SETTINGS_BLOCK_COMPONENT_SPACES_KEY]: finalVal },
 							{ silentUI: true, target: 'shared' }
 						);
+
 						const slider = (
 							this as unknown as {
 								componentSpacesSlider?: import('obsidian').SliderComponent;
 							}
 						).componentSpacesSlider;
 						if (slider) {
-							slider.setValue(8);
+							slider.setValue(finalVal);
 						}
 					});
 			});
@@ -843,3 +913,4 @@ export class PreferencesTab {
 			});
 	}
 }
+
