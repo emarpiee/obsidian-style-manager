@@ -606,11 +606,43 @@ export class ObsidianBridge {
 
 	/**
 	 * Forces Obsidian to re-scan the snippets folder.
+	 * Also manually syncs the `snippets` array to remove externally modified files.
 	 */
-	public forceLoadSnippets(): void {
+	public async forceLoadSnippets(): Promise<void> {
 		const customCss = (this.app as unknown as ObsidianInternalApp).customCss;
 		if (customCss && typeof customCss.requestLoadSnippets === 'function') {
 			customCss.requestLoadSnippets();
+		}
+
+		// Fix Obsidian's modified files issue by scanning the directory manually
+		try {
+			const configDir = this.app.vault.configDir;
+			const snippetsFolder = normalizePath(`${configDir}/snippets`);
+			
+			if (await this.app.vault.adapter.exists(snippetsFolder)) {
+				const listed = await this.app.vault.adapter.list(snippetsFolder);
+				const cssFiles = listed.files
+					.filter((f) => f.endsWith('.css'))
+					.map((f) => {
+						const parts = f.split('/');
+						const nameWithExt = parts[parts.length - 1];
+						return nameWithExt.substring(0, nameWithExt.length - 4);
+					});
+					
+				if (customCss && Array.isArray(customCss.snippets)) {
+					// Remove deleted files from customCss.snippets
+					customCss.snippets = customCss.snippets.filter(s => cssFiles.includes(s));
+					
+					// Also add any that might have been missed
+					cssFiles.forEach(s => {
+						if (!customCss.snippets.includes(s)) {
+							customCss.snippets.push(s);
+						}
+					});
+				}
+			}
+		} catch(e) {
+			Logger.error('Style Manager | Error fixing customCss snippets list:', e);
 		}
 	}
 

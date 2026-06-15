@@ -216,6 +216,12 @@ export class SettingsHeaderComponent extends Component {
 		reloadBtn.onclick = async (_e: MouseEvent): Promise<void> => {
 			reloadBtn.addClass('is-loading');
 			try {
+				// Force Obsidian to re-scan the .obsidian/snippets folder for any external changes
+				await this.plugin.settingsService.bridge.forceLoadSnippets();
+				
+				// Obsidian processes this asynchronously; wait a moment before re-rendering the UI
+				await new Promise((resolve) => setTimeout(resolve, 200));
+				
 				await this.plugin.settingsService.refreshService.trigger(
 					RefreshLevel.SYSTEM_RELOAD
 				);

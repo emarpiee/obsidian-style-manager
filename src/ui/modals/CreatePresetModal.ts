@@ -74,7 +74,7 @@ export class CreatePresetModal extends Modal {
 		this.setTitle('Create new preset');
 
 		contentEl.createEl('p', {
-			text: 'Select which themes or plugins to include in this snapshot.',
+			text: 'Select which theme, snippet or plugin styles to include in this snapshot.',
 			cls: 'style-manager-modal-description',
 		});
 
