@@ -69,7 +69,7 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 
 This is the recommended method to receive updates directly.
 
-1. Install the **BRAT** plugin from the Obsidian Community Plugins store.
+1. Install the **[BRAT](https://github.com/TfTHacker/obsidian42-brat)** plugin from the Obsidian Community Plugins store.
 2. Enable BRAT in your Obsidian settings.
 3. Click **"Add Beta plugin"** within the BRAT settings panel.
 4. Paste the GitHub URL of this repository.
@@ -746,6 +746,17 @@ The Style Manager includes a suite of built-in tools designed to streamline the 
 | **Mobile Emulation** (+)   | UI Testing         | Toggles Obsidian's built-in mobile emulation mode to test responsive designs.                               |
 | **Test Notice** (+)        | Testing            | Displays a persistent test notice to verify notification behavior and styling.                              |
 | **Toggle DevTools** (+)    | Debugger           | Quickly opens or closes the Electron developer tools.                                                       |
+
+---
+
+## Roadmap
+
+| Task                                   | **Status**    | **Remarks**                |
+| -------------------------------------- | ------------- | -------------------------- |
+| test cases                             | `ongoing`     |                            |
+| CSS variable cleanup                   | `ongoing`     | migrating old CSS variable |
+| add images to README                   | `ongoing`     | editing                    |
+| UI text components localization (i18n) | `planned`<br> |                            |
 
 ---
 
