@@ -11,55 +11,55 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 
 ---
 
-- [[#Installation|Installation]]
-	- [[#Installation#1. Via BRAT (Beta Reviewer's Auto-update Tool)|1. Via BRAT (Beta Reviewer's Auto-update Tool)]]
-	- [[#Installation#2. Manual Installation|2. Manual Installation]]
-	- [[#Installation#3. Community Plugin Store|3. Community Plugin Store]]
-- [[#Core Logic: Shared Mode vs. Isolate Mode|Core Logic: Shared Mode vs. Isolate Mode]]
-	- [[#Core Logic: Shared Mode vs. Isolate Mode#Shared Mode (Default)|Shared Mode (Default)]]
-	- [[#Core Logic: Shared Mode vs. Isolate Mode#Isolate Mode|Isolate Mode]]
-- [[#Style Manager Interface Overview|Style Manager Interface Overview]]
-	- [[#Style Manager Interface Overview#1. Styles Tab|1. Styles Tab]]
-	- [[#Style Manager Interface Overview#2. Snippets Tab|2. Snippets Tab]]
-	- [[#Style Manager Interface Overview#3. Themes (Theme Builder) Tab|3. Themes (Theme Builder) Tab]]
-	- [[#Style Manager Interface Overview#4. Presets Tab|4. Presets Tab]]
-	- [[#Style Manager Interface Overview#5. Isolate Tab|5. Isolate Tab]]
-	- [[#Style Manager Interface Overview#6. Preferences Tab|6. Preferences Tab]]
-- [[#Global Toolbar & Status Badges|Global Toolbar & Status Badges]]
-	- [[#Global Toolbar & Status Badges#Instant Access Header Controls|Instant Access Header Controls]]
-		- [[#Instant Access Header Controls#Vertical Ellipsis (\`…\`) Actions:|Vertical Ellipsis (\`…\`) Actions:]]
-	- [[#Global Toolbar & Status Badges#Status Badges Reference|Status Badges Reference]]
-- [[#Integrated CSS Code Editor Modal|Integrated CSS Code Editor Modal]]
-	- [[#Integrated CSS Code Editor Modal#Key Features|Key Features]]
-	- [[#Integrated CSS Code Editor Modal#The Evolution of Style Settings Management|The Evolution of Style Settings Management]]
-		- [[#The Evolution of Style Settings Management#Smart Insertion Logic Reference|Smart Insertion Logic Reference]]
-- [[#CSS Snippet Metadata Block (\`@metadata\`)|CSS Snippet Metadata Block (\`@metadata\`)]]
-	- [[#CSS Snippet Metadata Block (\`@metadata\`)#Adding a Metadata Block|Adding a Metadata Block]]
-		- [[#Adding a Metadata Block#Method A: Automatic Injection (Recommended)|Method A: Automatic Injection (Recommended)]]
-		- [[#Adding a Metadata Block#Method B: Manual Writing|Method B: Manual Writing]]
-	- [[#CSS Snippet Metadata Block (\`@metadata\`)#Supported Metadata Fields|Supported Metadata Fields]]
-- [[#Style Settings Block (\`@settings\`)|Style Settings Block (\`@settings\`)]]
-	- [[#Style Settings Block (\`@settings\`)#What is a Setting Component?|What is a Setting Component?]]
-	- [[#Style Settings Block (\`@settings\`)#Basic Structure Example|Basic Structure Example]]
-	- [[#Style Settings Block (\`@settings\`)#Setting Types Overview|Setting Types Overview]]
-	- [[#Style Settings Block (\`@settings\`)#Global Parameters|Global Parameters]]
-	- [[#Style Settings Block (\`@settings\`)#Detailed Setting Examples|Detailed Setting Examples]]
-		- [[#Detailed Setting Examples#1. \`heading\`|1. \`heading\`]]
-		- [[#Detailed Setting Examples#2. \`info-text\`|2. \`info-text\`]]
-		- [[#Detailed Setting Examples#3. \`class-toggle\`|3. \`class-toggle\`]]
-		- [[#Detailed Setting Examples#4. \`class-select\`|4. \`class-select\`]]
-		- [[#Detailed Setting Examples#5. \`variable-text\`|5. \`variable-text\`]]
-		- [[#Detailed Setting Examples#6. \`variable-number\`|6. \`variable-number\`]]
-		- [[#Detailed Setting Examples#7. \`variable-number-slider\`|7. \`variable-number-slider\`]]
-		- [[#Detailed Setting Examples#8. \`variable-select\`|8. \`variable-select\`]]
-		- [[#Detailed Setting Examples#9. \`variable-color\`|9. \`variable-color\`]]
-		- [[#Detailed Setting Examples#10. \`variable-themed-color\`|10. \`variable-themed-color\`]]
-		- [[#Detailed Setting Examples#11. \`color-gradient\`|11. \`color-gradient\`]]
-	- [[#Style Settings Block (\`@settings\`)#Color Variable Formatting Options|Color Variable Formatting Options]]
-	- [[#Style Settings Block (\`@settings\`)#Localization Support|Localization Support]]
-		- [[#Localization Support#Supported Language Postfix Codes:|Supported Language Postfix Codes:]]
-- [[#Developer and Testing Utilities|Developer and Testing Utilities]]
-- [[#Transparency|Transparency]]
+- [Installation](#installation)
+	- [1. Via BRAT (Beta Reviewer's Auto-update Tool)](#1-via-brat-beta-reviewers-auto-update-tool)
+	- [2. Manual Installation](#2-manual-installation)
+	- [3. Community Plugin Store](#3-community-plugin-store)
+- [Core Logic: Shared Mode vs. Isolate Mode](#core-logic-shared-mode-vs-isolate-mode)
+	- [Shared Mode (Default)](#shared-mode-default)
+	- [Isolate Mode](#isolate-mode)
+- [Style Manager Interface Overview](#style-manager-interface-overview)
+	- [1. Styles Tab](#1-styles-tab)
+	- [2. Snippets Tab](#2-snippets-tab)
+	- [3. Themes (Theme Builder) Tab](#3-themes-theme-builder-tab)
+	- [4. Presets Tab](#4-presets-tab)
+	- [5. Isolate Tab](#5-isolate-tab)
+	- [6. Preferences Tab](#6-preferences-tab)
+- [Global Toolbar & Status Badges](#global-toolbar--status-badges)
+	- [Instant Access Header Controls](#instant-access-header-controls)
+		- [Vertical Ellipsis (\`…\`) Actions:](#vertical-ellipsis--actions)
+	- [Status Badges Reference](#status-badges-reference)
+- [Integrated CSS Code Editor Modal](#integrated-css-code-editor-modal)
+	- [Key Features](#key-features)
+	- [The Evolution of Style Settings Management](#the-evolution-of-style-settings-management)
+		- [Smart Insertion Logic Reference](#smart-insertion-logic-reference)
+- [CSS Snippet Metadata Block (\`@metadata\`)](#css-snippet-metadata-block-metadata)
+	- [Adding a Metadata Block](#adding-a-metadata-block)
+		- [Method A: Automatic Injection (Recommended)](#method-a-automatic-injection-recommended)
+		- [Method B: Manual Writing](#method-b-manual-writing)
+	- [Supported Metadata Fields](#supported-metadata-fields)
+- [Style Settings Block (\`@settings\`)](#style-settings-block-settings)
+	- [What is a Setting Component?](#what-is-a-setting-component)
+	- [Basic Structure Example](#basic-structure-example)
+	- [Setting Types Overview](#setting-types-overview)
+	- [Global Parameters](#global-parameters)
+	- [Detailed Setting Examples](#detailed-setting-examples)
+		- [1. \`heading\`](#1-heading)
+		- [2. \`info-text\`](#2-info-text)
+		- [3. \`class-toggle\`](#3-class-toggle)
+		- [4. \`class-select\`](#4-class-select)
+		- [5. \`variable-text\`](#5-variable-text)
+		- [6. \`variable-number\`](#6-variable-number)
+		- [7. \`variable-number-slider\`](#7-variable-number-slider)
+		- [8. \`variable-select\`](#8-variable-select)
+		- [9. \`variable-color\`](#9-variable-color)
+		- [10. \`variable-themed-color\`](#10-variable-themed-color)
+		- [11. \`color-gradient\`](#11-color-gradient)
+	- [Color Variable Formatting Options](#color-variable-formatting-options)
+	- [Localization Support](#localization-support)
+		- [Supported Language Postfix Codes:](#supported-language-postfix-codes)
+- [Developer and Testing Utilities](#developer-and-testing-utilities)
+- [Transparency](#transparency)
 
 ---
 
@@ -69,7 +69,7 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 
 This is the recommended method to receive updates directly.
 
-1. Install the **BRAT** plugin from the Obsidian Community Plugins store.
+1. Install the **[BRAT](https://github.com/TfTHacker/obsidian42-brat)** plugin from the Obsidian Community Plugins store.
 2. Enable BRAT in your Obsidian settings.
 3. Click **"Add Beta plugin"** within the BRAT settings panel.
 4. Paste the GitHub URL of this repository.
@@ -83,7 +83,7 @@ Use this method if you prefer to install files directly without third-party tool
 2. Download the following three files:
    - \`main.js\`
    - \`manifest.json\`
-   - \`styles.css\` (if applicable)
+   - \`styles.css\`
 3. In your Obsidian vault, navigate to \`.obsidian/plugins/\` (note that this folder is hidden by default on some operating systems).
 4. Create a new folder named \`obsidian-style-manager\`.
 5. Move the downloaded files into that folder.
@@ -91,7 +91,7 @@ Use this method if you prefer to install files directly without third-party tool
 
 ### 3. Community Plugin Store
 
-*Coming Soon.* Submission to the official Obsidian community store for direct installation is in progress.
+*Coming Soon.*
 
 ---
 
@@ -231,7 +231,7 @@ Style Manager features an integrated editing panel built on CodeMirror 6, allowi
 - **Developer-Friendly Tools**: Includes line wrapping toggles, automatic bracket closing, and \`Mod-s\` (Ctrl/Cmd+S) support for quick saving.
 - **Flexible Management**: Rename snippets or toggle directly from the modal footer.
 
-### The Evolution of Style Settings Management
+### The Evolution of Style Management
 
 In the past, managing custom style settings manually in CSS files could cause errors:
 - **Manual Boilerplate**: Authors had to manually type out the \`/* @settings\` blocks, leading to repetitive work and frequent typos.
