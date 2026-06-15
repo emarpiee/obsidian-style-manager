@@ -42,6 +42,7 @@ import {
 	STICKY_HEADING_KEY,
 	OPEN_IN_DEFAULT_APP_KEY,
 	PRESET_APPLY_ACTION_KEY,
+	BULK_PRESET_APPLY_ACTION_KEY,
 	SCHEDULE_APPLY_ACTION_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
@@ -493,8 +494,8 @@ export class PreferencesTab {
 		];
 
 		new Setting(confirmContainer)
-			.setName('Default preset apply action')
-			.setDesc('Action to take when applying a preset manually.')
+			.setName('Default single preset apply action')
+			.setDesc('Action to take when applying a single preset manually.')
 			.addDropdown((dropdown) => {
 				dropdown
 					.addOption('ask', 'Ask (Show Modal)')
@@ -507,6 +508,26 @@ export class PreferencesTab {
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings({
 							[PRESET_APPLY_ACTION_KEY]: val,
+							silentUI: true,
+						});
+					});
+			});
+
+		new Setting(confirmContainer)
+			.setName('Default bulk preset apply action')
+			.setDesc('Action to take when applying multiple presets manually.')
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption('ask', 'Ask (Show Modal)')
+					.addOption('overwrite', 'Overwrite (Reset and Apply)')
+					.addOption('merge', 'Merge (Apply without Resetting)')
+					.setValue(
+						(plugin.settingsService.settings[BULK_PRESET_APPLY_ACTION_KEY] as string) ||
+							'ask'
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings({
+							[BULK_PRESET_APPLY_ACTION_KEY]: val,
 							silentUI: true,
 						});
 					});

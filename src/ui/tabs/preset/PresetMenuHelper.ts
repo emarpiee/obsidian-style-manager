@@ -42,6 +42,7 @@ export interface ApplyMenuOptions {
 	onApplyRemote?: (deviceId: string, action: 'overwrite' | 'merge') => Promise<void>;
 	/** Skip default confirmation dialogs (useful for bulk actions that implement their own) */
 	skipConfirm?: boolean;
+	applyActionKey?: string;
 	hideShared?: boolean;
 	hideIsolate?: boolean;
 	hideRemote?: boolean;
@@ -81,10 +82,11 @@ export function addApplyOptionsToMenu(
 					};
 
 					if (skipConfirm) {
-						const defaultAction = (plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) === 'merge' ? 'merge' : 'overwrite';
+						const actionKeyToUse = options?.applyActionKey || PRESET_APPLY_ACTION_KEY;
+						const defaultAction = (plugin.settingsService.settings[actionKeyToUse] as string) === 'merge' ? 'merge' : 'overwrite';
 						perform(defaultAction);
 					} else {
-						plugin.presetService.confirmApply(source.name, perform);
+						plugin.presetService.confirmApply(source.name, perform, false, options?.applyActionKey);
 					}
 				})
 		);
@@ -111,10 +113,11 @@ export function addApplyOptionsToMenu(
 					};
 
 					if (skipConfirm) {
-						const defaultAction = (plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) === 'merge' ? 'merge' : 'overwrite';
+						const actionKeyToUse = options?.applyActionKey || PRESET_APPLY_ACTION_KEY;
+						const defaultAction = (plugin.settingsService.settings[actionKeyToUse] as string) === 'merge' ? 'merge' : 'overwrite';
 						perform(defaultAction);
 					} else {
-						plugin.presetService.confirmApply(source.name, perform, true);
+						plugin.presetService.confirmApply(source.name, perform, true, options?.applyActionKey);
 					}
 				})
 		);
@@ -155,10 +158,11 @@ export function addApplyOptionsToMenu(
 							};
 
 							if (skipConfirm) {
-								const defaultAction = (plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) === 'merge' ? 'merge' : 'overwrite';
+								const actionKeyToUse = options?.applyActionKey || PRESET_APPLY_ACTION_KEY;
+								const defaultAction = (plugin.settingsService.settings[actionKeyToUse] as string) === 'merge' ? 'merge' : 'overwrite';
 								perform(defaultAction);
 							} else {
-								plugin.presetService.confirmApply(source.name, perform, true);
+								plugin.presetService.confirmApply(source.name, perform, true, options?.applyActionKey);
 							}
 						}
 					).open();

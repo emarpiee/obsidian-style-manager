@@ -33,6 +33,7 @@ import {
 	EXPORT_DATE_FORMAT_KEY,
 	EXPORT_EXTENSION_KEY,
 	PRESET_APPLY_ACTION_KEY,
+	BULK_PRESET_APPLY_ACTION_KEY,
 	SEPARATE_BULK_PRESETS_KEY,
 	SKIP_DELETE_CONFIRM_KEY,
 	SKIP_EXPORT_CONFIRM_KEY,
@@ -375,39 +376,14 @@ export class PresetList {
 			.onClick((e: MouseEvent | KeyboardEvent) => {
 				const menu = new Menu();
 
-				const applyAll = async (isolate: boolean): Promise<void> => {
-					const performApply = async (action: 'overwrite' | 'merge' = 'overwrite'): Promise<void> => {
-						await service.applyPresets(
-							Array.from(service.selectedPresets),
-							isolate,
-							action
-						);
-						service.selectedPresets.clear();
-						this.onRefresh();
-					};
-
-					const defaultAction = (plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) || 'ask';
-
-					if (defaultAction === 'overwrite') {
-						performApply('overwrite');
-					} else if (defaultAction === 'merge') {
-						performApply('merge');
-					} else {
-						new ConfirmModal(
-							plugin.app,
-							isolate
-								? 'Apply to this device (isolate)'
-								: 'Apply to shared locker',
-							isolate
-								? `Are you sure you want to apply ${service.selectedPresets.size} presets to this device? Do you want to merge with your current settings, or overwrite them?`
-								: `Are you sure you want to apply ${service.selectedPresets.size} presets to the shared locker? Do you want to merge with your current settings, or overwrite them?`,
-							'Overwrite',
-							false,
-							() => performApply('overwrite'),
-							'Merge',
-							() => performApply('merge')
-						).open();
-					}
+				const applyAll = async (isolate: boolean, action: 'overwrite' | 'merge' = 'overwrite'): Promise<void> => {
+					await service.applyPresets(
+						Array.from(service.selectedPresets),
+						isolate,
+						action
+					);
+					service.selectedPresets.clear();
+					this.onRefresh();
 				};
 
 				addApplyOptionsToMenu(
@@ -415,14 +391,16 @@ export class PresetList {
 					plugin,
 					{ name: 'Bulk presets', data: {} },
 					{
-						skipConfirm: true,
-						onApplyShared: async () => await applyAll(false),
-						onApplyIsolate: async () => await applyAll(true),
-						onApplyRemote: async (deviceId: string) => {
+						skipConfirm: false,
+						applyActionKey: BULK_PRESET_APPLY_ACTION_KEY,
+						onApplyShared: async (action) => await applyAll(false, action),
+						onApplyIsolate: async (action) => await applyAll(true, action),
+						onApplyRemote: async (deviceId: string, action) => {
 							const selectedIds = Array.from(service.selectedPresets);
 							await plugin.presetService.applyPresetsToLocker(
 								deviceId,
-								selectedIds
+								selectedIds,
+								action
 							);
 							service.selectedPresets.clear();
 							this.renderPresetListItems();
