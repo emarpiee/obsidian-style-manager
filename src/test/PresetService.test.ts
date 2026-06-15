@@ -24,9 +24,8 @@ import {
 	ALWAYS_SHARED_PRESETS_KEY,
 	APPEARANCE_KEY,
 	EXPORT_DATE_FORMAT_KEY,
-	EXPORT_EXTENSION_KEY,
 	EXPORT_PATH_KEY,
-	SKIP_APPLY_CONFIRM_KEY,
+	PRESET_APPLY_ACTION_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from '../constants';
@@ -42,9 +41,8 @@ describe('PresetService', () => {
 				settings: {
 					[ALWAYS_SHARED_PRESETS_KEY]: false,
 					[EXPORT_DATE_FORMAT_KEY]: 'YYYYMMDD',
-					[EXPORT_EXTENSION_KEY]: '.json',
 					[EXPORT_PATH_KEY]: 'Exports',
-					[SKIP_APPLY_CONFIRM_KEY]: false,
+					[PRESET_APPLY_ACTION_KEY]: 'ask',
 					[THEME_KEY]: 'default-theme',
 					[APPEARANCE_KEY]: 'dark',
 					[SNIPPETS_KEY]: ['snippet1'],
@@ -361,19 +359,23 @@ describe('PresetService', () => {
 	});
 
 	describe('Confirmation', () => {
-		it('should call onConfirm immediately if SKIP_APPLY_CONFIRM_KEY is true', () => {
-			mockPlugin.settingsService.settings[SKIP_APPLY_CONFIRM_KEY] = true;
+		it('should call onConfirm immediately with overwrite if PRESET_APPLY_ACTION_KEY is overwrite', () => {
+			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'overwrite';
 			const onConfirm = vi.fn();
 			presetService.confirmApply('Preset', onConfirm);
-			expect(onConfirm).toHaveBeenCalled();
+			expect(onConfirm).toHaveBeenCalledWith('overwrite');
 		});
 
-		it('should open ConfirmModal if SKIP_APPLY_CONFIRM_KEY is false', () => {
-			mockPlugin.settingsService.settings[SKIP_APPLY_CONFIRM_KEY] = false;
+		it('should call onConfirm immediately with merge if PRESET_APPLY_ACTION_KEY is merge', () => {
+			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'merge';
 			const onConfirm = vi.fn();
-			// This will try to instantiate ConfirmModal. Since it's a UI component,
-			// we just want to make sure it doesn't crash and the modal logic is reached.
-			// In a real scenario, we might mock ConfirmModal.
+			presetService.confirmApply('Preset', onConfirm);
+			expect(onConfirm).toHaveBeenCalledWith('merge');
+		});
+
+		it('should open ConfirmModal if PRESET_APPLY_ACTION_KEY is ask', () => {
+			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			const onConfirm = vi.fn();
 			presetService.confirmApply('Preset', onConfirm);
 			expect(onConfirm).not.toHaveBeenCalled();
 		});

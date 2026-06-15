@@ -36,7 +36,6 @@ import {
 	SHOW_SNIPPET_NOTIFICATIONS_KEY,
 	SHOW_STATUS_BAR_KEY,
 	SHOW_UTILITY_NOTIFICATIONS_KEY,
-	SKIP_APPLY_CONFIRM_KEY,
 	SKIP_DELETE_CONFIRM_KEY,
 	SKIP_EXPORT_CONFIRM_KEY,
 	SKIP_IMPORT_CONFIRM_KEY,
@@ -476,11 +475,6 @@ export class PreferencesTab {
 			name: string;
 			desc: string;
 		}> = [
-			{
-				key: SKIP_APPLY_CONFIRM_KEY,
-				name: 'Skip apply confirmation',
-				desc: 'Instantly apply presets without showing the confirmation dialog (Legacy. Replaced by default action above).',
-			},
 			{
 				key: SKIP_DELETE_CONFIRM_KEY,
 				name: 'Skip delete confirmation',

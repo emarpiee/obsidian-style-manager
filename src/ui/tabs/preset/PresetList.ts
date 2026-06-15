@@ -32,8 +32,8 @@ import {
 	APPEARANCE_KEY,
 	EXPORT_DATE_FORMAT_KEY,
 	EXPORT_EXTENSION_KEY,
+	PRESET_APPLY_ACTION_KEY,
 	SEPARATE_BULK_PRESETS_KEY,
-	SKIP_APPLY_CONFIRM_KEY,
 	SKIP_DELETE_CONFIRM_KEY,
 	SKIP_EXPORT_CONFIRM_KEY,
 	SNIPPETS_KEY,
@@ -376,17 +376,22 @@ export class PresetList {
 				const menu = new Menu();
 
 				const applyAll = async (isolate: boolean): Promise<void> => {
-					const performApply = async (): Promise<void> => {
+					const performApply = async (action: 'overwrite' | 'merge' = 'overwrite'): Promise<void> => {
 						await service.applyPresets(
 							Array.from(service.selectedPresets),
-							isolate
+							isolate,
+							action
 						);
 						service.selectedPresets.clear();
 						this.onRefresh();
 					};
 
-					if (plugin.settingsService.settings[SKIP_APPLY_CONFIRM_KEY]) {
-						performApply();
+					const defaultAction = (plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) || 'ask';
+
+					if (defaultAction === 'overwrite') {
+						performApply('overwrite');
+					} else if (defaultAction === 'merge') {
+						performApply('merge');
 					} else {
 						new ConfirmModal(
 							plugin.app,
@@ -394,11 +399,13 @@ export class PresetList {
 								? 'Apply to this device (isolate)'
 								: 'Apply to shared locker',
 							isolate
-								? `Are you sure you want to apply ${service.selectedPresets.size} presets to this device?`
-								: `Are you sure you want to apply ${service.selectedPresets.size} presets to the shared locker?`,
-							isolate ? 'Confirm' : 'Confirm',
+								? `Are you sure you want to apply ${service.selectedPresets.size} presets to this device? Do you want to merge with your current settings, or overwrite them?`
+								: `Are you sure you want to apply ${service.selectedPresets.size} presets to the shared locker? Do you want to merge with your current settings, or overwrite them?`,
+							'Overwrite',
 							false,
-							performApply
+							() => performApply('overwrite'),
+							'Merge',
+							() => performApply('merge')
 						).open();
 					}
 				};

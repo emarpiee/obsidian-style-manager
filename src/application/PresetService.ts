@@ -25,7 +25,6 @@ import {
 	EXPORT_DATE_FORMAT_KEY,
 	EXPORT_EXTENSION_KEY,
 	EXPORT_PATH_KEY,
-	SKIP_APPLY_CONFIRM_KEY,
 	PRESET_APPLY_ACTION_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
@@ -394,7 +393,7 @@ export class PresetService {
 	): void {
 		const defaultAction = (this.plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) || 'ask';
 
-		if (defaultAction === 'overwrite' || this.plugin.settingsService.settings[SKIP_APPLY_CONFIRM_KEY]) {
+		if (defaultAction === 'overwrite') {
 			onConfirm('overwrite');
 		} else if (defaultAction === 'merge') {
 			onConfirm('merge');
