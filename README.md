@@ -87,11 +87,11 @@ Use this method if you prefer to install files directly without third-party tool
 3. In your Obsidian vault, navigate to `.obsidian/plugins/` (note that this folder is hidden by default on some operating systems).
 4. Create a new folder named `obsidian-style-manager`.
 5. Move the downloaded files into that folder.
-6. Restart Obsidian or navigate to **Settings** $\rightarrow$ **Community Plugins** and toggle the plugin **On**.
+6. Restart Obsidian or navigate to **Settings** > **Community Plugins** and toggle the plugin **On**.
 
 ### 3. Community Plugin Store
 
-*Coming Soon.*
+> *Coming Soon.*
 
 ---
 
@@ -101,7 +101,7 @@ Managing your vault's look across multiple devices (such as a large monitor and 
 
 ### Shared Mode (Default)
 
-*Best for: Maintaining a consistent global design across all devices.*
+> *Best for: Maintaining a consistent global styles across all devices in shared vault.*
 
 When you modify styles in Shared Mode, the configurations are synced across your vault.
 - **The Memory (`data.json`):** First, it records your configurations in `data.json`. Think of this as the plugin's **Master Ledger**. It’s a private notebook where Style Manager keeps a detailed record of every preference you've set.
@@ -109,7 +109,7 @@ When you modify styles in Shared Mode, the configurations are synced across your
 
 ### Isolate Mode
 
-*Best for: Customizing layouts for specific screens (e.g., larger fonts on mobile) or local style testing.*
+> *Best for: Customizing layouts for specific screens (e.g., larger fonts on mobile) or local style testing.*
 
 Isolate Mode is your "Creative Sandbox." Isolate Mode creates a private local environment that **never** writes to the shared `appearance.json` file, protecting other devices from unexpected style changes.
 - **The Visual Overlay:** The plugin applies style changes as a live visual layer directly inside your current Obsidian client.

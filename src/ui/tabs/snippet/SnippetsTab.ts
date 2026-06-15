@@ -78,7 +78,7 @@ export class SnippetsTab {
 							const useDefaultApp = this.plugin.settingsService.settings[OPEN_IN_DEFAULT_APP_KEY];
 							if (useDefaultApp) {
 								const path = this.plugin.settingsService.bridge.getSnippetPath(id);
-								(this.app as any).openWithDefaultApp(path);
+								(this.app as unknown as { openWithDefaultApp: (path: string) => void }).openWithDefaultApp(path);
 							} else {
 								new CSSEditorModal(this.app, this.plugin, {
 									type: 'Snippet',

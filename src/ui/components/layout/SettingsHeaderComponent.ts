@@ -288,7 +288,7 @@ export class SettingsHeaderComponent extends Component {
 							const useDefaultApp = localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
 							if (useDefaultApp) {
 								const path = this.plugin.settingsService.bridge.getSnippetPath(id);
-								(this.app as any).openWithDefaultApp(path);
+								(this.app as unknown as { openWithDefaultApp: (path: string) => void }).openWithDefaultApp(path);
 							} else {
 								new CSSEditorModal(this.app, this.plugin, {
 									type: 'Snippet',
