@@ -33,6 +33,8 @@ import {
 	PRESET_APPLY_ACTION_KEY,
 	SCHEDULE_APPLY_ACTION_KEY,
 	SEPARATE_BULK_PRESETS_KEY,
+	SETTINGS_BLOCK_COMPONENT_SPACES_KEY,
+	SETTINGS_BLOCK_DASH_SPACES_KEY,
 	SHOW_ISOLATE_NOTIFICATIONS_KEY,
 	SHOW_PRESET_NOTIFICATIONS_KEY,
 	SHOW_SHARED_NOTIFICATIONS_KEY,
@@ -44,8 +46,6 @@ import {
 	SKIP_EXPORT_CONFIRM_KEY,
 	SKIP_IMPORT_CONFIRM_KEY,
 	STICKY_HEADING_KEY,
-	SETTINGS_BLOCK_DASH_SPACES_KEY,
-	SETTINGS_BLOCK_COMPONENT_SPACES_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -64,6 +64,7 @@ export class PreferencesTab {
 		this.renderConfirmations();
 		this.renderBackupSettings();
 		this.renderExportSettings();
+		this.renderCSSEditorSettings();
 		this.renderDeveloperSettings();
 	}
 
@@ -580,15 +581,15 @@ export class PreferencesTab {
 		});
 	}
 
-	private renderDeveloperSettings(): void {
+	private renderCSSEditorSettings(): void {
 		const { containerEl, plugin } = this;
 
-		this.renderHeader(containerEl, 'Developer options', 'code');
-		const developerContainer = containerEl.createDiv(
+		this.renderHeader(containerEl, 'CSS Editor', 'edit');
+		const editorContainer = containerEl.createDiv(
 			'style-manager-settings-tab-content'
 		);
 
-		new Setting(developerContainer)
+		new Setting(editorContainer)
 			.setName('Open editor after creation')
 			.setDesc(
 				'Automatically open the CSS editor modal when a new snippet is created.'
@@ -608,7 +609,7 @@ export class PreferencesTab {
 					});
 			});
 
-		new Setting(developerContainer)
+		new Setting(editorContainer)
 			.setName('Open files in default app')
 			.setDesc(
 				'Open CSS files like snippets and themes using your system default text editor instead of the built-in modal.'
@@ -621,7 +622,7 @@ export class PreferencesTab {
 					});
 			});
 
-		new Setting(developerContainer)
+		new Setting(editorContainer)
 			.setName('Editor tab size')
 			.setDesc('Set the indentation width (tab size) for the CSS editor modal.')
 			.addSlider((slider) => {
@@ -667,9 +668,11 @@ export class PreferencesTab {
 					});
 			});
 
-		new Setting(developerContainer)
+		new Setting(editorContainer)
 			.setName('@settings spaces before dash')
-			.setDesc('Set the number of spaces before the dash (-) in generated @settings blocks. Maximum 10 spaces.')
+			.setDesc(
+				'Set the number of spaces before the dash (-) in generated @settings blocks. Maximum 10 spaces.'
+			)
 			.addSlider((slider) => {
 				slider
 					.setLimits(0, 12, 1)
@@ -680,9 +683,10 @@ export class PreferencesTab {
 						] as number) ?? 4
 					)
 					.onChange(async (val) => {
-						let compVal = (plugin.settingsService.sharedSettings[
-							SETTINGS_BLOCK_COMPONENT_SPACES_KEY
-						] as number) ?? 8;
+						let compVal =
+							(plugin.settingsService.sharedSettings[
+								SETTINGS_BLOCK_COMPONENT_SPACES_KEY
+							] as number) ?? 8;
 
 						const updates: Record<string, number> = {
 							[SETTINGS_BLOCK_DASH_SPACES_KEY]: val,
@@ -721,9 +725,10 @@ export class PreferencesTab {
 					.setTooltip('Reset to default (4)')
 					.onClick(async () => {
 						const dashDefault = 4;
-						let compVal = (plugin.settingsService.sharedSettings[
-							SETTINGS_BLOCK_COMPONENT_SPACES_KEY
-						] as number) ?? 8;
+						let compVal =
+							(plugin.settingsService.sharedSettings[
+								SETTINGS_BLOCK_COMPONENT_SPACES_KEY
+							] as number) ?? 8;
 
 						const updates: Record<string, number> = {
 							[SETTINGS_BLOCK_DASH_SPACES_KEY]: dashDefault,
@@ -759,9 +764,11 @@ export class PreferencesTab {
 					});
 			});
 
-		new Setting(developerContainer)
+		new Setting(editorContainer)
 			.setName('@settings spaces before components')
-			.setDesc('Set the number of spaces before the setting components (id, type, etc.) in generated @settings blocks. Maximum 20 spaces.')
+			.setDesc(
+				'Set the number of spaces before the setting components (id, type, etc.) in generated @settings blocks. Maximum 12 spaces.'
+			)
 			.addSlider((slider) => {
 				slider
 					.setLimits(1, 10, 1)
@@ -772,9 +779,10 @@ export class PreferencesTab {
 						] as number) ?? 8
 					)
 					.onChange(async (val) => {
-						const dashVal = (plugin.settingsService.sharedSettings[
-							SETTINGS_BLOCK_DASH_SPACES_KEY
-						] as number) ?? 4;
+						const dashVal =
+							(plugin.settingsService.sharedSettings[
+								SETTINGS_BLOCK_DASH_SPACES_KEY
+							] as number) ?? 4;
 
 						let finalVal = val;
 						if (val <= dashVal) {
@@ -804,9 +812,10 @@ export class PreferencesTab {
 					.setTooltip('Reset to default (8)')
 					.onClick(async () => {
 						const compDefault = 8;
-						const dashVal = (plugin.settingsService.sharedSettings[
-							SETTINGS_BLOCK_DASH_SPACES_KEY
-						] as number) ?? 4;
+						const dashVal =
+							(plugin.settingsService.sharedSettings[
+								SETTINGS_BLOCK_DASH_SPACES_KEY
+							] as number) ?? 4;
 
 						let finalVal = compDefault;
 						if (compDefault <= dashVal) {
@@ -828,6 +837,15 @@ export class PreferencesTab {
 						}
 					});
 			});
+	}
+
+	private renderDeveloperSettings(): void {
+		const { containerEl, plugin } = this;
+
+		this.renderHeader(containerEl, 'Developer options', 'code');
+		const developerContainer = containerEl.createDiv(
+			'style-manager-settings-tab-content'
+		);
 
 		const notificationSettings = [
 			{
@@ -913,4 +931,3 @@ export class PreferencesTab {
 			});
 	}
 }
-
