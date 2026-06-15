@@ -83,7 +83,7 @@ Use this method if you prefer to install files directly without third-party tool
 2. Download the following three files:
    - `main.js`
    - `manifest.json`
-   - `styles.css` (if applicable)
+   - `styles.css`
 3. In your Obsidian vault, navigate to `.obsidian/plugins/` (note that this folder is hidden by default on some operating systems).
 4. Create a new folder named `obsidian-style-manager`.
 5. Move the downloaded files into that folder.
@@ -91,7 +91,7 @@ Use this method if you prefer to install files directly without third-party tool
 
 ### 3. Community Plugin Store
 
-*Coming Soon.* Submission to the official Obsidian community store for direct installation is in progress.
+*Coming Soon.*
 
 ---
 
@@ -231,7 +231,7 @@ Style Manager features an integrated editing panel built on CodeMirror 6, allowi
 - **Developer-Friendly Tools**: Includes line wrapping toggles, automatic bracket closing, and `Mod-s` (Ctrl/Cmd+S) support for quick saving.
 - **Flexible Management**: Rename snippets or toggle directly from the modal footer.
 
-### The Evolution of Style Settings Management
+### The Evolution of Style Management
 
 In the past, managing custom style settings manually in CSS files could cause errors:
 - **Manual Boilerplate**: Authors had to manually type out the `/* @settings` blocks, leading to repetitive work and frequent typos.
