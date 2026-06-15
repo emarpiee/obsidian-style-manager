@@ -18,6 +18,7 @@
 */
 import { Menu } from 'obsidian';
 
+import { PRESET_APPLY_ACTION_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { DeviceSelectionModal } from '../../modals/DeviceSelectionModal';
 import { PresetScheduleModal } from '../../modals/PresetScheduleModal';
@@ -34,11 +35,11 @@ export interface ApplySource {
 export interface ApplyMenuOptions {
 	onApplied?: () => void;
 	/** Optional override for the "Shared" application action (useful for Isolate Mode teardown) */
-	onApplyShared?: () => Promise<void>;
+	onApplyShared?: (action: 'overwrite' | 'merge') => Promise<void>;
 	/** Optional override for the "Isolate" application action */
-	onApplyIsolate?: () => Promise<void>;
+	onApplyIsolate?: (action: 'overwrite' | 'merge') => Promise<void>;
 	/** Optional override for the "Remote" application action */
-	onApplyRemote?: (deviceId: string) => Promise<void>;
+	onApplyRemote?: (deviceId: string, action: 'overwrite' | 'merge') => Promise<void>;
 	/** Skip default confirmation dialogs (useful for bulk actions that implement their own) */
 	skipConfirm?: boolean;
 	hideShared?: boolean;
@@ -65,11 +66,11 @@ export function addApplyOptionsToMenu(
 				.setTitle('Apply to shared locker')
 				.setIcon('globe')
 				.onClick(() => {
-					const perform = async (): Promise<void> => {
+					const perform = async (action: 'overwrite' | 'merge' = 'overwrite'): Promise<void> => {
 						if (onApplyShared) {
-							await onApplyShared();
+							await onApplyShared(action);
 						} else if (source.id) {
-							await plugin.presetService.applyPreset(source.id);
+							await plugin.presetService.applyPreset(source.id, false, action);
 						} else {
 							await plugin.settingsService.applySettingsOverlay(
 								source.data,
@@ -80,7 +81,8 @@ export function addApplyOptionsToMenu(
 					};
 
 					if (skipConfirm) {
-						perform();
+						const defaultAction = (plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) === 'merge' ? 'merge' : 'overwrite';
+						perform(defaultAction);
 					} else {
 						plugin.presetService.confirmApply(source.name, perform);
 					}
@@ -94,11 +96,11 @@ export function addApplyOptionsToMenu(
 				.setTitle('Apply to this device (isolate)')
 				.setIcon('lock')
 				.onClick(() => {
-					const perform = async (): Promise<void> => {
+					const perform = async (action: 'overwrite' | 'merge' = 'overwrite'): Promise<void> => {
 						if (onApplyIsolate) {
-							await onApplyIsolate();
+							await onApplyIsolate(action);
 						} else if (source.id) {
-							await plugin.presetService.applyPreset(source.id, true);
+							await plugin.presetService.applyPreset(source.id, true, action);
 						} else {
 							await plugin.settingsService.applySettingsOverlay(
 								source.data,
@@ -109,7 +111,8 @@ export function addApplyOptionsToMenu(
 					};
 
 					if (skipConfirm) {
-						perform();
+						const defaultAction = (plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) === 'merge' ? 'merge' : 'overwrite';
+						perform(defaultAction);
 					} else {
 						plugin.presetService.confirmApply(source.name, perform, true);
 					}
@@ -131,18 +134,32 @@ export function addApplyOptionsToMenu(
 						plugin.app,
 						plugin.settingsService,
 						async (deviceId) => {
-							if (onApplyRemote) {
-								await onApplyRemote(deviceId);
+							const perform = async (action: 'overwrite' | 'merge' = 'overwrite'): Promise<void> => {
+								if (onApplyRemote) {
+									await onApplyRemote(deviceId, action);
+								} else if (source.id) {
+									await plugin.presetService.applyPresetsToLocker(deviceId, [source.id], action);
+									plugin.settingsService.notifications.isolate(
+										`Preset "${source.name}" applied to isolate locker.`
+									);
+								} else {
+									await plugin.settingsService.identity.applyPresetToLocker(
+										deviceId,
+										source.data
+									);
+									plugin.settingsService.notifications.isolate(
+										`Settings for "${source.name}" applied to isolate locker.`
+									);
+								}
+								if (onApplied) onApplied();
+							};
+
+							if (skipConfirm) {
+								const defaultAction = (plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) === 'merge' ? 'merge' : 'overwrite';
+								perform(defaultAction);
 							} else {
-								await plugin.settingsService.identity.applyPresetToLocker(
-									deviceId,
-									source.data
-								);
-								plugin.settingsService.notifications.isolate(
-									`Settings for "${source.name}" applied to isolate locker.`
-								);
+								plugin.presetService.confirmApply(source.name, perform, true);
 							}
-							if (onApplied) onApplied();
 						}
 					).open();
 				})

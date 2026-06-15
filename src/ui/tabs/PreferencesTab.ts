@@ -42,6 +42,8 @@ import {
 	SKIP_IMPORT_CONFIRM_KEY,
 	STICKY_HEADING_KEY,
 	OPEN_IN_DEFAULT_APP_KEY,
+	PRESET_APPLY_ACTION_KEY,
+	SCHEDULE_APPLY_ACTION_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -477,7 +479,7 @@ export class PreferencesTab {
 			{
 				key: SKIP_APPLY_CONFIRM_KEY,
 				name: 'Skip apply confirmation',
-				desc: 'Instantly apply presets without showing the confirmation dialog.',
+				desc: 'Instantly apply presets without showing the confirmation dialog (Legacy. Replaced by default action above).',
 			},
 			{
 				key: SKIP_DELETE_CONFIRM_KEY,
@@ -495,6 +497,45 @@ export class PreferencesTab {
 				desc: 'Instantly import presets or styles without showing the confirmation dialog.',
 			},
 		];
+
+		new Setting(confirmContainer)
+			.setName('Default preset apply action')
+			.setDesc('Action to take when applying a preset manually.')
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption('ask', 'Ask (Show Modal)')
+					.addOption('overwrite', 'Overwrite (Reset and Apply)')
+					.addOption('merge', 'Merge (Apply without Resetting)')
+					.setValue(
+						(plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) ||
+							'ask'
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings({
+							[PRESET_APPLY_ACTION_KEY]: val,
+							silentUI: true,
+						});
+					});
+			});
+
+		new Setting(confirmContainer)
+			.setName('Preset schedule apply action')
+			.setDesc('Action to take when a scheduled preset triggers.')
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption('overwrite', 'Overwrite (Reset and Apply)')
+					.addOption('merge', 'Merge (Apply without Resetting)')
+					.setValue(
+						(plugin.settingsService.settings[SCHEDULE_APPLY_ACTION_KEY] as string) ||
+							'overwrite'
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings({
+							[SCHEDULE_APPLY_ACTION_KEY]: val,
+							silentUI: true,
+						});
+					});
+			});
 
 		confirmationSettings.forEach(({ key, name, desc }) => {
 			new Setting(confirmContainer)

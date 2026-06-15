@@ -26,6 +26,7 @@ import {
 	EXPORT_EXTENSION_KEY,
 	EXPORT_PATH_KEY,
 	SKIP_APPLY_CONFIRM_KEY,
+	PRESET_APPLY_ACTION_KEY,
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from '../constants';
@@ -334,20 +335,22 @@ export class PresetService {
 
 	async applyPreset(
 		presetId: string,
-		isolateOnly: boolean = false
+		isolateOnly: boolean = false,
+		action: 'overwrite' | 'merge' = 'overwrite'
 	): Promise<void> {
-		await this.applyPresets([presetId], isolateOnly);
+		await this.applyPresets([presetId], isolateOnly, action);
 	}
 
 	async applyPresets(
 		presetIds: string[],
-		isolateOnly: boolean = false
+		isolateOnly: boolean = false,
+		action: 'overwrite' | 'merge' = 'overwrite'
 	): Promise<void> {
 		const { mergedData, isSingle } = await this.mergePresets(presetIds);
 		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY])
 			return;
 
-		if (isSingle) {
+		if (action === 'overwrite') {
 			await this.plugin.settingsService.resetAllStyleSettings(isolateOnly);
 		}
 
@@ -370,7 +373,8 @@ export class PresetService {
 
 	async applyPresetsToLocker(
 		deviceId: string,
-		presetIds: string[]
+		presetIds: string[],
+		action: 'overwrite' | 'merge' = 'overwrite'
 	): Promise<void> {
 		const { mergedData, isSingle } = await this.mergePresets(presetIds);
 		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY])
@@ -379,17 +383,21 @@ export class PresetService {
 		await this.plugin.settingsService.identity.updateLockerSettings(
 			deviceId,
 			mergedData,
-			isSingle
+			action === 'overwrite'
 		);
 	}
 
 	public confirmApply(
 		presetName: string,
-		onConfirm: () => void,
+		onConfirm: (action: 'overwrite' | 'merge') => void,
 		isolateOnly: boolean = false
 	): void {
-		if (this.plugin.settingsService.settings[SKIP_APPLY_CONFIRM_KEY]) {
-			onConfirm();
+		const defaultAction = (this.plugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] as string) || 'ask';
+
+		if (defaultAction === 'overwrite' || this.plugin.settingsService.settings[SKIP_APPLY_CONFIRM_KEY]) {
+			onConfirm('overwrite');
+		} else if (defaultAction === 'merge') {
+			onConfirm('merge');
 		} else {
 			new ConfirmModal(
 				this.plugin.app,
@@ -397,11 +405,13 @@ export class PresetService {
 					? 'Apply to this devce (isolate)'
 					: 'Apply to shared locker',
 				isolateOnly
-					? `Are you sure you want to apply the preset "${presetName}" to this device?`
-					: `Are you sure you want to apply the preset "${presetName}" to the shared locker?`,
-				isolateOnly ? 'Confirm' : 'Confirm',
+					? `Are you sure you want to apply the preset "${presetName}" to this device? Do you want to merge with your current settings, or overwrite them?`
+					: `Are you sure you want to apply the preset "${presetName}" to the shared locker? Do you want to merge with your current settings, or overwrite them?`,
+				'Overwrite',
 				false,
-				onConfirm
+				() => onConfirm('overwrite'),
+				'Merge',
+				() => onConfirm('merge')
 			).open();
 		}
 	}

@@ -18,6 +18,7 @@
 */
 import { RRule } from 'rrule';
 
+import { SCHEDULE_APPLY_ACTION_KEY } from '../constants';
 import StyleManagerPlugin from '../main';
 import { PresetSchedule } from '../types';
 
@@ -287,15 +288,18 @@ export class PresetScheduleService {
 			`Executing scheduled preset: ${preset?.name || 'Unknown'}`
 		);
 
+		const action = (this.plugin.settingsService.settings[SCHEDULE_APPLY_ACTION_KEY] as 'overwrite' | 'merge') || 'overwrite';
+
 		if (schedule.targetLocker === 'shared') {
-			await this.plugin.presetService.applyPresets([schedule.presetId], false);
+			await this.plugin.presetService.applyPresets([schedule.presetId], false, action);
 		} else if (schedule.targetLocker === 'isolate') {
-			await this.plugin.presetService.applyPresets([schedule.presetId], true);
+			await this.plugin.presetService.applyPresets([schedule.presetId], true, action);
 		} else {
 			// Remote device locker
 			await this.plugin.presetService.applyPresetsToLocker(
 				schedule.targetLocker,
-				[schedule.presetId]
+				[schedule.presetId],
+				action
 			);
 		}
 	}
