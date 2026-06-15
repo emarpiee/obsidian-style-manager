@@ -53,6 +53,8 @@ import { ConfirmModal } from '../modals/ConfirmModal';
 import { ExportDataConfigModal } from '../modals/ExportDataConfigModal';
 
 export class PreferencesTab {
+	private filterString: string = '';
+
 	constructor(
 		private app: App,
 		private containerEl: HTMLElement,
@@ -60,6 +62,23 @@ export class PreferencesTab {
 	) {}
 
 	render(): void {
+		const searchRow = this.containerEl.createDiv('style-manager-search-row');
+		searchRow.addClass('style-manager-preferences-search-row');
+
+		new Setting(searchRow)
+			.setClass('style-manager-search-container')
+			.setClass('style-manager-preferences-filter')
+			.addSearch((search) => {
+				search
+					.setPlaceholder('Search preferences...')
+					.onChange(
+						debounce((value) => {
+							this.filterString = value.toLowerCase();
+							this.applyFilter();
+						}, 250)
+					);
+			});
+
 		this.renderUISettings();
 		this.renderConfirmations();
 		this.renderBackupSettings();
@@ -929,5 +948,30 @@ export class PreferencesTab {
 					.setDisabled(true);
 				text.inputEl.addClass('style-manager-debug-input');
 			});
+	}
+
+	private applyFilter(): void {
+		const containers = this.containerEl.querySelectorAll<HTMLElement>(
+			'.style-manager-settings-tab-content'
+		);
+
+		containers.forEach((container) => {
+			const settings = container.querySelectorAll<HTMLElement>('.setting-item');
+			let anyVisible = false;
+
+			settings.forEach((setting) => {
+				const text = setting.textContent?.toLowerCase() || '';
+				const matches = text.includes(this.filterString);
+				setting.style.display = matches ? '' : 'none';
+				if (matches) anyVisible = true;
+			});
+
+			container.style.display = anyVisible ? '' : 'none';
+
+			const header = container.previousElementSibling as HTMLElement | null;
+			if (header && header.classList.contains('style-manager-settings-tab-title')) {
+				header.style.display = anyVisible ? '' : 'none';
+			}
+		});
 	}
 }
