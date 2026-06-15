@@ -5,11 +5,61 @@
 
 This plugin allows Obsidian snippet, theme, and plugin CSS files to define configurable options, offering users a central settings pane to tweak these variables. It supports toggling HTML body classes, numeric sliders, text inputs, color pickers, and more.
 
----
-
 > [!CAUTION]
 > **Do not enable Style Manager and Style Settings at the same time.**
 > Because Style Manager is a fork of the Style Settings plugin, both plugins rely on the exact same `/* @settings` configuration system. If run simultaneously, they will compete to manage your CSS variables, which can lead to layout conflicts. To ensure a stable experience, please **disable the original Style Settings plugin** before enabling Style Manager.
+
+---
+
+- [[#Installation|Installation]]
+	- [[#Installation#1. Via BRAT (Beta Reviewer's Auto-update Tool)|1. Via BRAT (Beta Reviewer's Auto-update Tool)]]
+	- [[#Installation#2. Manual Installation|2. Manual Installation]]
+	- [[#Installation#3. Community Plugin Store|3. Community Plugin Store]]
+- [[#Core Logic: Shared Mode vs. Isolate Mode|Core Logic: Shared Mode vs. Isolate Mode]]
+	- [[#Core Logic: Shared Mode vs. Isolate Mode#Shared Mode (Default)|Shared Mode (Default)]]
+	- [[#Core Logic: Shared Mode vs. Isolate Mode#Isolate Mode|Isolate Mode]]
+- [[#Style Manager Interface Overview|Style Manager Interface Overview]]
+	- [[#Style Manager Interface Overview#1. Styles Tab|1. Styles Tab]]
+	- [[#Style Manager Interface Overview#2. Snippets Tab|2. Snippets Tab]]
+	- [[#Style Manager Interface Overview#3. Themes (Theme Builder) Tab|3. Themes (Theme Builder) Tab]]
+	- [[#Style Manager Interface Overview#4. Presets Tab|4. Presets Tab]]
+	- [[#Style Manager Interface Overview#5. Isolate Tab|5. Isolate Tab]]
+	- [[#Style Manager Interface Overview#6. Preferences Tab|6. Preferences Tab]]
+- [[#Global Toolbar & Status Badges|Global Toolbar & Status Badges]]
+	- [[#Global Toolbar & Status Badges#Instant Access Header Controls|Instant Access Header Controls]]
+		- [[#Instant Access Header Controls#Vertical Ellipsis (`…`) Actions:|Vertical Ellipsis (`…`) Actions:]]
+	- [[#Global Toolbar & Status Badges#Status Badges Reference|Status Badges Reference]]
+- [[#Integrated CSS Code Editor Modal|Integrated CSS Code Editor Modal]]
+	- [[#Integrated CSS Code Editor Modal#Key Features|Key Features]]
+	- [[#Integrated CSS Code Editor Modal#The Evolution of Style Settings Management|The Evolution of Style Settings Management]]
+		- [[#The Evolution of Style Settings Management#Smart Insertion Logic Reference|Smart Insertion Logic Reference]]
+- [[#CSS Snippet Metadata Block (`@metadata`)|CSS Snippet Metadata Block (`@metadata`)]]
+	- [[#CSS Snippet Metadata Block (`@metadata`)#Adding a Metadata Block|Adding a Metadata Block]]
+		- [[#Adding a Metadata Block#Method A: Automatic Injection (Recommended)|Method A: Automatic Injection (Recommended)]]
+		- [[#Adding a Metadata Block#Method B: Manual Writing|Method B: Manual Writing]]
+	- [[#CSS Snippet Metadata Block (`@metadata`)#Supported Metadata Fields|Supported Metadata Fields]]
+- [[#Style Settings Block (`@settings`)|Style Settings Block (`@settings`)]]
+	- [[#Style Settings Block (`@settings`)#What is a Setting Component?|What is a Setting Component?]]
+	- [[#Style Settings Block (`@settings`)#Basic Structure Example|Basic Structure Example]]
+	- [[#Style Settings Block (`@settings`)#Setting Types Overview|Setting Types Overview]]
+	- [[#Style Settings Block (`@settings`)#Global Parameters|Global Parameters]]
+	- [[#Style Settings Block (`@settings`)#Detailed Setting Examples|Detailed Setting Examples]]
+		- [[#Detailed Setting Examples#1. `heading`|1. `heading`]]
+		- [[#Detailed Setting Examples#2. `info-text`|2. `info-text`]]
+		- [[#Detailed Setting Examples#3. `class-toggle`|3. `class-toggle`]]
+		- [[#Detailed Setting Examples#4. `class-select`|4. `class-select`]]
+		- [[#Detailed Setting Examples#5. `variable-text`|5. `variable-text`]]
+		- [[#Detailed Setting Examples#6. `variable-number`|6. `variable-number`]]
+		- [[#Detailed Setting Examples#7. `variable-number-slider`|7. `variable-number-slider`]]
+		- [[#Detailed Setting Examples#8. `variable-select`|8. `variable-select`]]
+		- [[#Detailed Setting Examples#9. `variable-color`|9. `variable-color`]]
+		- [[#Detailed Setting Examples#10. `variable-themed-color`|10. `variable-themed-color`]]
+		- [[#Detailed Setting Examples#11. `color-gradient`|11. `color-gradient`]]
+	- [[#Style Settings Block (`@settings`)#Color Variable Formatting Options|Color Variable Formatting Options]]
+	- [[#Style Settings Block (`@settings`)#Localization Support|Localization Support]]
+		- [[#Localization Support#Supported Language Postfix Codes:|Supported Language Postfix Codes:]]
+- [[#Developer and Testing Utilities|Developer and Testing Utilities]]
+- [[#Transparency|Transparency]]
 
 ---
 
@@ -150,8 +200,6 @@ The persistent toolbar header provides system actions across all tabs:
 - **Preset Management:** Create or import presets (automatically navigates to the Presets tab).
 - **Snippet Management:** Create a new snippet to automatically generate a blank CSS file, open it in your chosen editor, and route you to the Snippets tab.
 - **State Reset:** Open the Reset Settings Modal to clear chosen style sections and restore default theme configurations.
-
----
 
 ### Status Badges Reference
 
@@ -353,8 +401,6 @@ All settings definitions (regardless of type) must include the following core pa
 - `title`: The label displayed in the user interface.
 - `type`: The layout component style.
 - `description` *(optional)*: Informational text displayed next to the setting.
-
----
 
 ### Detailed Setting Examples
 
@@ -563,8 +609,6 @@ Calculates intermediate color steps along a gradient between two defined CSS col
 
 > Outputs: `--color-base-00`, `--color-base-05`, `--color-base-10`, etc.
 
----
-
 ### Color Variable Formatting Options
 
 The following color format options are available:
@@ -638,8 +682,6 @@ The following color format options are available:
 /* With opacity: true */
 --accent-a: 1;
 ```
-
----
 
 ### Localization Support
 
