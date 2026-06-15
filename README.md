@@ -749,17 +749,6 @@ The Style Manager includes a suite of built-in tools designed to streamline the 
 
 ---
 
-## Roadmap
-
-| Task                                   | **Status**    | **Remarks**                |
-| -------------------------------------- | ------------- | -------------------------- |
-| test cases                             | `ongoing`     |                            |
-| CSS variable cleanup                   | `ongoing`     | migrating old CSS variable |
-| add images to README                   | `ongoing`     | editing                    |
-| UI text components localization (i18n) | `planned`<br> |                            |
-
----
-
 ## Transparency
 
 I want to be open about my workflow for this project. I personally directed and designed every aspect of the UI and UX. To give myself more time to focus on that creative side, I used Gemma to help speed up the technical groundwork, specifically implementing complex logic, catching syntax errors, and generating my commit messages.
