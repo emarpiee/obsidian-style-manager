@@ -389,7 +389,7 @@ export class PresetService {
 	public confirmApply(
 		presetName: string,
 		onConfirm: (action: 'overwrite' | 'merge') => void,
-		isolateOnly: boolean = false,
+		target: 'shared' | 'isolate' | 'remote' = 'shared',
 		applyActionKey: string = PRESET_APPLY_ACTION_KEY
 	): void {
 		const defaultAction = (this.plugin.settingsService.settings[applyActionKey] as string) || 'ask';
@@ -402,14 +402,20 @@ export class PresetService {
 			const isBulk = applyActionKey !== PRESET_APPLY_ACTION_KEY;
 			const mergeOverwriteDesc = isBulk ? 'Do you want to merge these presets with your current settings, or overwrite them?' : 'Do you want to merge with your current settings, or overwrite them?';
 			
+			let title = 'Apply to shared locker';
+			let destText = 'the shared locker';
+			if (target === 'isolate') {
+				title = 'Apply to this device (isolate)';
+				destText = 'this device';
+			} else if (target === 'remote') {
+				title = 'Apply to other device (isolate)';
+				destText = 'the other device';
+			}
+
 			new ConfirmModal(
 				this.plugin.app,
-				isolateOnly
-					? 'Apply to this devce (isolate)'
-					: 'Apply to shared locker',
-				isolateOnly
-					? `Are you sure you want to apply ${isBulk ? 'the selected presets' : `the preset "${presetName}"`} to this device? ${mergeOverwriteDesc}`
-					: `Are you sure you want to apply ${isBulk ? 'the selected presets' : `the preset "${presetName}"`} to the shared locker? ${mergeOverwriteDesc}`,
+				title,
+				`Are you sure you want to apply ${isBulk ? 'the selected presets' : `the preset "${presetName}"`} to ${destText}? ${mergeOverwriteDesc}`,
 				'Overwrite',
 				false,
 				() => onConfirm('overwrite'),

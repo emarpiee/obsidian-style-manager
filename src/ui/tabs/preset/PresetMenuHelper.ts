@@ -86,7 +86,7 @@ export function addApplyOptionsToMenu(
 						const defaultAction = (plugin.settingsService.settings[actionKeyToUse] as string) === 'merge' ? 'merge' : 'overwrite';
 						perform(defaultAction);
 					} else {
-						plugin.presetService.confirmApply(source.name, perform, false, options?.applyActionKey);
+						plugin.presetService.confirmApply(source.name, perform, 'shared', options?.applyActionKey);
 					}
 				})
 		);
@@ -117,7 +117,7 @@ export function addApplyOptionsToMenu(
 						const defaultAction = (plugin.settingsService.settings[actionKeyToUse] as string) === 'merge' ? 'merge' : 'overwrite';
 						perform(defaultAction);
 					} else {
-						plugin.presetService.confirmApply(source.name, perform, true, options?.applyActionKey);
+						plugin.presetService.confirmApply(source.name, perform, 'isolate', options?.applyActionKey);
 					}
 				})
 		);
@@ -162,7 +162,7 @@ export function addApplyOptionsToMenu(
 								const defaultAction = (plugin.settingsService.settings[actionKeyToUse] as string) === 'merge' ? 'merge' : 'overwrite';
 								perform(defaultAction);
 							} else {
-								plugin.presetService.confirmApply(source.name, perform, true, options?.applyActionKey);
+								plugin.presetService.confirmApply(source.name, perform, 'remote', options?.applyActionKey);
 							}
 						}
 					).open();

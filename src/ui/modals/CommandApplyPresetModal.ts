@@ -43,21 +43,21 @@ export class CommandApplyPresetModal extends PresetSuggestModal {
 			case 'shared':
 				this.presetService.confirmApply(
 					preset.name,
-					async () => {
-						await this.presetService.applyPreset(preset.id, false);
+					async (action) => {
+						await this.presetService.applyPreset(preset.id, false, action);
 						this.close();
 					},
-					false
+					'shared'
 				);
 				break;
 			case 'this-device':
 				this.presetService.confirmApply(
 					preset.name,
-					async () => {
-						await this.presetService.applyPreset(preset.id, true);
+					async (action) => {
+						await this.presetService.applyPreset(preset.id, true, action);
 						this.close();
 					},
-					true
+					'isolate'
 				);
 				break;
 			case 'other-device':
@@ -65,14 +65,21 @@ export class CommandApplyPresetModal extends PresetSuggestModal {
 					this.app,
 					this.presetService.plugin.settingsService,
 					async (deviceId) => {
-						await this.presetService.plugin.settingsService.identity.applyPresetToLocker(
-							deviceId,
-							preset.data
+						this.presetService.confirmApply(
+							preset.name,
+							async (action) => {
+								await this.presetService.applyPresetsToLocker(
+									deviceId,
+									[preset.id],
+									action
+								);
+								this.presetService.plugin.settingsService.notifications.isolate(
+									`Settings for "${preset.name}" applied to isolate locker.`
+								);
+								this.close();
+							},
+							'remote'
 						);
-						this.presetService.plugin.settingsService.notifications.isolate(
-							`Settings for "${preset.name}" applied to isolate locker.`
-						);
-						this.close();
 					}
 				).open();
 				break;
