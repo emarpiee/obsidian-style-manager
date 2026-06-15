@@ -44,6 +44,8 @@ import {
 	SKIP_EXPORT_CONFIRM_KEY,
 	SKIP_IMPORT_CONFIRM_KEY,
 	STICKY_HEADING_KEY,
+	SETTINGS_BLOCK_DASH_SPACES_KEY,
+	SETTINGS_BLOCK_COMPONENT_SPACES_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
@@ -661,6 +663,98 @@ export class PreferencesTab {
 						).tabSizeSlider;
 						if (slider) {
 							slider.setValue(4);
+						}
+					});
+			});
+
+		new Setting(developerContainer)
+			.setName('@settings spaces before dash')
+			.setDesc('Set the number of spaces before the dash (-) in generated @settings blocks. Maximum 10 spaces.')
+			.addSlider((slider) => {
+				slider
+					.setLimits(0, 10, 1)
+					.setDynamicTooltip()
+					.setValue(
+						(plugin.settingsService.sharedSettings[
+							SETTINGS_BLOCK_DASH_SPACES_KEY
+						] as number) ?? 4
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings(
+							{ [SETTINGS_BLOCK_DASH_SPACES_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
+					});
+
+				// Expose slider for reset button
+				(
+					this as unknown as {
+						dashSpacesSlider: import('obsidian').SliderComponent;
+					}
+				).dashSpacesSlider = slider;
+			})
+			.addExtraButton((btn) => {
+				btn
+					.setIcon('rotate-ccw')
+					.setTooltip('Reset to default (4)')
+					.onClick(async () => {
+						await plugin.settingsService.setSettings(
+							{ [SETTINGS_BLOCK_DASH_SPACES_KEY]: 4 },
+							{ silentUI: true, target: 'shared' }
+						);
+						const slider = (
+							this as unknown as {
+								dashSpacesSlider?: import('obsidian').SliderComponent;
+							}
+						).dashSpacesSlider;
+						if (slider) {
+							slider.setValue(4);
+						}
+					});
+			});
+
+		new Setting(developerContainer)
+			.setName('@settings spaces before components')
+			.setDesc('Set the number of spaces before the setting components (id, type, etc.) in generated @settings blocks. Maximum 10 spaces.')
+			.addSlider((slider) => {
+				slider
+					.setLimits(0, 10, 1)
+					.setDynamicTooltip()
+					.setValue(
+						(plugin.settingsService.sharedSettings[
+							SETTINGS_BLOCK_COMPONENT_SPACES_KEY
+						] as number) ?? 8
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings(
+							{ [SETTINGS_BLOCK_COMPONENT_SPACES_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
+					});
+
+				// Expose slider for reset button
+				(
+					this as unknown as {
+						componentSpacesSlider: import('obsidian').SliderComponent;
+					}
+				).componentSpacesSlider = slider;
+			})
+			.addExtraButton((btn) => {
+				btn
+					.setIcon('rotate-ccw')
+					.setTooltip('Reset to default (8)')
+					.onClick(async () => {
+						await plugin.settingsService.setSettings(
+							{ [SETTINGS_BLOCK_COMPONENT_SPACES_KEY]: 8 },
+							{ silentUI: true, target: 'shared' }
+						);
+						const slider = (
+							this as unknown as {
+								componentSpacesSlider?: import('obsidian').SliderComponent;
+							}
+						).componentSpacesSlider;
+						if (slider) {
+							slider.setValue(8);
 						}
 					});
 			});

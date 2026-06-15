@@ -118,7 +118,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.bundleService = new BundleService(this.settingsService.bridge);
 		this.presetImportService = new PresetImportService(this);
 		this.backupService = new BackupService(this);
-		this.styleBlockService = new StyleBlockService();
+		this.styleBlockService = new StyleBlockService(this);
 		this.styleSheetManager = this.settingsService.styleSheetManager;
 		this.statusBarManager = new StatusBarManager(this);
 		this.garbledTextTool = new GarbledTextTool(this);

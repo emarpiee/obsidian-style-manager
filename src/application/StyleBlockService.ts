@@ -17,6 +17,11 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import { EditorView } from '@codemirror/view';
+import type StyleManagerPlugin from '../main';
+import {
+	SETTINGS_BLOCK_DASH_SPACES_KEY,
+	SETTINGS_BLOCK_COMPONENT_SPACES_KEY,
+} from '../constants';
 
 import { settingRegExp } from '../utils/CommonUtils';
 
@@ -38,6 +43,8 @@ export interface StyleBlockDefinition {
  * Service for injecting pre-defined code blocks (@metadata, @settings) into CSS.
  */
 export class StyleBlockService {
+	constructor(private plugin: StyleManagerPlugin) {}
+
 	private readonly blocks: StyleBlockDefinition[] = [
 		{
 			id: 'metadata',
@@ -262,7 +269,20 @@ settings:
 	 * Returns the list of available blocks.
 	 */
 	public getAvailableBlocks(): StyleBlockDefinition[] {
-		return this.blocks;
+		const dashCount = (this.plugin.settingsService.getSetting(SETTINGS_BLOCK_DASH_SPACES_KEY) as number) ?? 4;
+		const compCount = (this.plugin.settingsService.getSetting(SETTINGS_BLOCK_COMPONENT_SPACES_KEY) as number) ?? 8;
+		
+		const dashStr = ' '.repeat(dashCount) + '- ';
+		const compStr = ' '.repeat(compCount);
+
+		return this.blocks.map(block => {
+			if (block.group === 'field' || block.id === 'settings') {
+				let template = block.template.replace(/    - /g, dashStr);
+				template = template.replace(/        /g, compStr);
+				return { ...block, template };
+			}
+			return block;
+		});
 	}
 
 	/**
@@ -271,7 +291,8 @@ settings:
 	 * @param blockId The ID of the block to inject.
 	 */
 	public injectBlock(view: EditorView, blockId: string): void {
-		const block = this.blocks.find((b) => b.id === blockId);
+		const blocks = this.getAvailableBlocks();
+		const block = blocks.find((b) => b.id === blockId);
 		if (!block) return;
 
 		const doc = view.state.doc.toString();
@@ -317,8 +338,9 @@ settings:
 					const blockEnd = blockStart + targetBlock[0].length;
 					const blockContent = targetBlock[0];
 
-					// Find all field starts (    - ) within this block
-					const fieldRegExp = /^ {4}- /gm;
+					// Find all field starts within this block
+					const dashCount = (this.plugin.settingsService.getSetting(SETTINGS_BLOCK_DASH_SPACES_KEY) as number) ?? 4;
+					const fieldRegExp = new RegExp(`^ {${dashCount}}- `, 'gm');
 					let match;
 					const fieldStarts: number[] = [];
 					while ((match = fieldRegExp.exec(blockContent)) !== null) {
@@ -345,7 +367,7 @@ settings:
 						if (
 							line.from <= fieldStart &&
 							line.to >= fieldStart &&
-							cursorPos <= fieldStart + 4
+							cursorPos <= fieldStart + dashCount
 						) {
 							insertPos = fieldStart;
 						} else {
