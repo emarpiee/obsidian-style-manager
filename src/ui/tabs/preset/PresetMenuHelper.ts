@@ -162,7 +162,8 @@ export function addApplyOptionsToMenu(
 								const defaultAction = (plugin.settingsService.settings[actionKeyToUse] as string) === 'merge' ? 'merge' : 'overwrite';
 								perform(defaultAction);
 							} else {
-								plugin.presetService.confirmApply(source.name, perform, 'remote', options?.applyActionKey);
+								const deviceName = plugin.settingsService.identity.getLockerName(deviceId);
+								plugin.presetService.confirmApply(source.name, perform, 'remote', options?.applyActionKey, deviceName);
 							}
 						}
 					).open();

@@ -390,7 +390,8 @@ export class PresetService {
 		presetName: string,
 		onConfirm: (action: 'overwrite' | 'merge') => void,
 		target: 'shared' | 'isolate' | 'remote' = 'shared',
-		applyActionKey: string = PRESET_APPLY_ACTION_KEY
+		applyActionKey: string = PRESET_APPLY_ACTION_KEY,
+		remoteDeviceName?: string
 	): void {
 		const defaultAction = (this.plugin.settingsService.settings[applyActionKey] as string) || 'ask';
 
@@ -408,8 +409,8 @@ export class PresetService {
 				title = 'Apply to this device (isolate)';
 				destText = 'this device';
 			} else if (target === 'remote') {
-				title = 'Apply to other device (isolate)';
-				destText = 'the other device';
+				title = remoteDeviceName ? `Apply to ${remoteDeviceName}` : 'Apply to other device (isolate)';
+				destText = remoteDeviceName || 'the other device';
 			}
 
 			new ConfirmModal(
