@@ -498,13 +498,13 @@ export class PreferencesTab {
 		];
 
 		new Setting(confirmContainer)
-			.setName('Default single preset apply action')
+			.setName('Single preset apply action')
 			.setDesc('Action to take when applying a single preset manually.')
 			.addDropdown((dropdown) => {
 				dropdown
 					.addOption('ask', 'Ask (Show Modal)')
-					.addOption('overwrite', 'Overwrite (Reset and Apply)')
-					.addOption('merge', 'Merge (Apply without Resetting)')
+					.addOption('overwrite', 'Overwrite (reset and apply)')
+					.addOption('merge', 'Merge (Apply without resetting)')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
 							PRESET_APPLY_ACTION_KEY
@@ -519,13 +519,13 @@ export class PreferencesTab {
 			});
 
 		new Setting(confirmContainer)
-			.setName('Default bulk preset apply action')
+			.setName('Bulk preset apply action')
 			.setDesc('Action to take when applying multiple presets manually.')
 			.addDropdown((dropdown) => {
 				dropdown
 					.addOption('ask', 'Ask (Show Modal)')
-					.addOption('overwrite', 'Overwrite (Reset and Apply)')
-					.addOption('merge', 'Merge (Apply without Resetting)')
+					.addOption('overwrite', 'Overwrite (reset and apply)')
+					.addOption('merge', 'Merge (Apply without resetting)')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
 							BULK_PRESET_APPLY_ACTION_KEY
@@ -540,12 +540,12 @@ export class PreferencesTab {
 			});
 
 		new Setting(confirmContainer)
-			.setName('Preset schedule apply action')
+			.setName('Scheduled preset apply action')
 			.setDesc('Action to take when a scheduled preset triggers.')
 			.addDropdown((dropdown) => {
 				dropdown
-					.addOption('overwrite', 'Overwrite (Reset and Apply)')
-					.addOption('merge', 'Merge (Apply without Resetting)')
+					.addOption('overwrite', 'Overwrite (reset and apply)')
+					.addOption('merge', 'Merge (Apply without resetting)')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
 							SCHEDULE_APPLY_ACTION_KEY

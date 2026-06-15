@@ -178,6 +178,9 @@ Style Manager interface is structured into six functional tabs.
     - **Full Backup**: Create a full ZIP backup containing plugin preferences, presets, snippets, and themes.
     - **Basic Backup**: Generates a quick JSON file containing your style settings, presets, and plugin configurations.
     - **Safety Rollback**: Instantly restore the plugin state from the automatically generated `data.json.bak` snapshot.
+- **Confirmations:**
+    - **Skip Toggles**: Quickly delete, export, or import presets and styles by bypassing confirmation dialogs.
+    - **Apply Actions**: Define how the plugin handles preset application (Ask, Overwrite, or Merge) for single, bulk, or scheduled actions.
 - **Export Customization:** Change default export folders, file extension naming preferences (e.g., `.json`, `.md`, `.txt`), and timestamp layouts.
 - **UI Customization:** Toggle sticky headings in the Styles tab, customize date formats for presets, and control status bar visibility.
 - **Developer Options:**
@@ -225,12 +228,12 @@ The Style Manager displays a system of badges to provide quick visual cues and a
 
 ## Integrated CSS Code Editor Modal
 
-Style Manager features an integrated editing panel built on CodeMirror 6, allowing you to edit styles, snippets, and theme files without leaving Obsidian.
+Style Manager features an integrated editing modal built on CodeMirror 6, allowing you to edit styles, snippets, and theme files without leaving Obsidian.
 
 ### Key Features
 
 - **Direct Editing**: Modify CSS files without leaving Obsidian.
-- **Smart Block Injection**: Quickly add blocks and setting fields using the **Add Block** button.
+- **Smart Block Injection**: Quickly add blocks and setting components using the **Add Block** button.
 - **Developer-Friendly Tools**: Includes line wrapping toggles, automatic bracket closing, and `Mod-s` (Ctrl/Cmd+S) support for quick saving.
 - **Flexible Management**: Rename snippets or toggle directly from the modal footer.
 
