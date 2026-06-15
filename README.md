@@ -104,17 +104,17 @@ Managing your vault's look across multiple devices (such as a large monitor and 
 *Best for: Maintaining a consistent global design across all devices.*
 
 When you modify styles in Shared Mode, the configurations are synced across your vault.
-- **The Memory (`data.json`):** The plugin records your choices in its private ledger, `data.json`.
+- **The Memory (`data.json`):** First, it records your configurations in `data.json`. Think of this as the plugin's **Master Ledger**. It’s a private notebook where Style Manager keeps a detailed record of every preference you've set.
 - **The Effect (`appearance.json`):** The plugin writes the values directly to Obsidian's default config file, `appearance.json`. Your sync service (Obsidian Sync, iCloud, Git, etc.) recognizes this change and distributes it to your other devices.
 
 ### Isolate Mode
 
-*Best for: Customizing layouts for specific screens (e.g., larger fonts on mobile) or local testing.*
+*Best for: Customizing layouts for specific screens (e.g., larger fonts on mobile) or local style testing.*
 
-Isolate Mode creates a private local environment that **never** writes to the shared `appearance.json` file, protecting other devices from unexpected layout shifts.
-- **The Visual Overlay:** The plugin applies changes as a live visual layer directly inside your current Obsidian client.
-- **Device Buckets:** Your device is assigned a unique Device ID. The plugin saves your adjustments inside a dedicated device-specific "bucket" within `data.json`.
-- **Sync Behavior:** Because the changes exist only within your local device's bucket inside `data.json`, other devices running in Isolate Mode will ignore them and run their own isolated designs.
+Isolate Mode is your "Creative Sandbox." Isolate Mode creates a private local environment that **never** writes to the shared `appearance.json` file, protecting other devices from unexpected style changes.
+- **The Visual Overlay:** The plugin applies style changes as a live visual layer directly inside your current Obsidian client.
+- **Device Locker:** The plugin creates a device locker for your device. Each device you use (your Mac, your Android phone, your iPad) is given a unique ID. The plugin creates a dedicated "locker" for that ID within `data.json`.
+- **Sync Behavior:** Because the changes exist only within your local device's locker inside `data.json`, other devices running in Isolate Mode will ignore them and run their own isolated configurations. When you're on your phone, the plugin looks into `data.json`, finds the bucket labeled **"Phone,"** and loads your **Isolate Locker** from there. When you move to your desktop, it finds the locker labeled **"Desktop"** and loads a completely different set of styles.
 
 ---
 
@@ -124,22 +124,22 @@ Style Manager interface is structured into six functional tabs.
 
 ### 1. Styles Tab
 
-*The primary workspace for customizing CSS variables without writing code.*
-- **Unified Style Control:** Renders settings (parsed from theme and snippet CSS files) into interactive toggles, sliders, and color inputs.
-- **Modified-Only Filter:** A quick switch to hide unchanged settings and view only the variables you have customized.
-- **Navigation:** Search bar for instant filtering and a "Collapse/Expand All" control for managing large configuration sheets.
+*The primary workspace for Styles customization.*
+- **Unified Style Control:** Renders settings (parsed from theme and snippet CSS files) into interactive toggles, sliders, and color pickers.
+- **Modified-Only Filter:** A quick switch to hide unchanged settings and view only the settings you have specifically changed.
+- **Navigation:** Search bar for instant filtering and a "Collapse/Expand All" toggle to manage large sets of style settings.
 
 ### 2. Snippets Tab
 
 *Manage Obsidian's native CSS snippets from a centralized list.*
-- **Snippet Control:** Search, select, and turn native CSS snippets on or off.
+- **Snippet Control:** Search, select, and toggle native CSS snippets through a unified list.
 - **Vault Integration:** Quick-access buttons to open your system's file explorer directly to your vault's snippets folder.
 - **Bulk Selection:** Choose multiple snippets simultaneously for coordinated actions.
 
 ### 3. Themes (Theme Builder) Tab
 
-*Tools for discovering, switching, and generating custom themes.*
-- **Theme Manifest Creation:** Create custom theme files by entering details (Name, Author, etc.) into an interactive metadata form.
+*Tools for switching, and building custom themes.*
+- **Theme Manifest Creation:** Create new custom themes by defining their metadata (Name, Author, etc.) via a dedicated manifest modal.
 - **Advanced Filter Search:** Filter themes using specialized search attributes:
     - `@author [name]` – Find themes made by a specific creator.
     - `@name [name]` – Find themes matching a specific title.
@@ -148,39 +148,42 @@ Style Manager interface is structured into six functional tabs.
 ### 4. Presets Tab
 
 *Capture, restore, and schedule snapshots of your entire workspace design.*
-- **Visual State Snapshots:** Save your active Theme, CSS Snippets, Style Settings, and Accent Colors into a unified "Preset".
+- **Visual State Snapshots:** Save your active Theme, active CSS Snippets, Style Settings, and Accent Colors into a unified "Preset".
 - **Intelligent Search:** Filter your preset library using tags:
     - `@theme`, `@snippet`, and `@name` to match preset contents.
     - `@light` and `@dark` to filter by appearance mode.
-- **Export Bundles:** Export presets as standard JSON data or as a **ZIP bundle** that packages the actual CSS files (themes/snippets) required to render the look on another device.
-- **Multi-Target Routing:** Choose where a preset is applied:
-    - *Shared:* Updates the global vault design.
-    - *Isolate:* Applies only to your current device's local visual overlay.
-    - *Remote:* Pushes the preset to a designated remote device's locker.
+- **Export Bundles:** Export presets as JSON or as a **ZIP bundle** that includes the actual CSS files (themes/snippets) required for the preset to work.
+- **Multi-Target Application:** Apply presets to three different targets:
+    - **Shared:** Updates the shared configuration for all synced devices.
+    - **Isolate:** Applies changes only to the current device's local locker.
+    - **Remote:** Pushes a preset to a specific remote device's locker.
 - **Scheduling Automation:** Access the Active Schedules modal to set presets to trigger automatically at specific times (e.g., switching to a dark, high-contrast style at 6:00 PM).
 
 ### 5. Isolate Tab
 
 *Manage device-specific profiles.*
-- **Isolate Mode Switch:** Toggle a private workspace for the active device.
-- **Locker Identity Controls:**
-    - *Friendly Name:* Assign a recognizable name to your device (e.g., "Office iPad").
-    - *Device ID:* View, copy, or regenerate your client's unique device identifier.
+- **Isolate Mode Toggle:** Enable a private "Locker" for the current device. When active, local adjustments to styles, themes, and snippets are isolated and will not overwrite the shared configuration.
+- **Locker Identity Management:**
+    - **Custom Naming:** Give your device a friendly name (e.g., "Office Mac").
+    - **Identity Control:** View, copy, or regenerate the unique Device ID.
 - **Remote Directory Management:**
-    - *Device List:* View other active devices sharing the vault.
-    - *Locker Preview:* Read the current theme and configuration choices of any remote device.
-    - *Remote Maintenance:* Rename or delete unused device profiles.
+    - **Device List**: View a list of all other devices sharing the vault.
+    - **Locker Preview:** Open a detailed preview of the isolated settings (Theme, Appearance, Snippets) active on any remote device.
+    - **Remote Maintenance:** Rename or delete lockers for other devices.
 
 ### 6. Preferences Tab
 
-*Configure system settings, backup files, and developer features.*
+*Plugin configuration, safety tools, and developer options.*
 - **Backup & Recovery:**
-    - *Universal Backup:* Exports a ZIP archive containing all your preferences, presets, snippets, and theme styles.
-    - *Basic Backup:* Generates a quick JSON file containing your style settings variables.
-    - *Safety Rollback:* Restores previous configurations using automatic `data.json.bak` backups.
+    - **Full Backup**: Create a full ZIP backup containing plugin preferences, presets, snippets, and themes.
+    - **Basic Backup**: Generates a quick JSON file containing your style settings, presets, and plugin configurations.
+    - **Safety Rollback**: Instantly restore the plugin state from the automatically generated `data.json.bak` snapshot.
 - **Export Customization:** Change default export folders, file extension naming preferences (e.g., `.json`, `.md`, `.txt`), and timestamp layouts.
-- **UI Tweaks:** Enable or disable sticky headings, toggle date formats, and control status bar elements.
-- **Developer Settings:** Toggle external editor defaults, adjust tab indentation size for the code editor, and enable deep debug console logging.
+- **UI Customization:** Toggle sticky headings in the Styles tab, customize date formats for presets, and control status bar visibility.
+- **Developer Options:**
+	- **External Editor:** Option to open CSS files in your system's default text editor instead of the plugin's integrated CSS editor..
+    - **Debug Logging:** Toggle comprehensive console logging for troubleshooting.
+    - **Editor Tuning:** Adjust the tab size for the CSS editor.
 
 ---
 
@@ -189,34 +192,34 @@ Style Manager interface is structured into six functional tabs.
 ### Instant Access Header Controls
 
 The persistent toolbar header provides system actions across all tabs:
-- **Isolate Mode Badge:** Displays whether your environment is set to **Shared mode** or **Isolate mode**.
+- **Isolate Mode Badge:** A interactive clickable-icon showing if you are in **Shared mode** or **Isolate mode**.
 - **Accent Color Selector:** Opens a color picker to update your theme's primary accent color.
-- **Theme Selector:** Dropdown menu to swap active Obsidian themes.
+- **Theme Selector:** Quick-switch menu to change the active Obsidian theme.
 - **Appearance Toggle:** Swap between light and dark modes.
-- **Refresh Button:** Forces the plugin to reload configurations from the shared storage locker.
+- **Refresh Button:** Forces the plugin to reload configurations from the `data.json.
 
-#### Vertical Ellipsis (`…`) Actions:
+#### More Actions Menu (Vertical Ellipsis)
 
-- **Preset Management:** Create or import presets (automatically navigates to the Presets tab).
-- **Snippet Management:** Create a new snippet to automatically generate a blank CSS file, open it in your chosen editor, and route you to the Snippets tab.
-- **State Reset:** Open the Reset Settings Modal to clear chosen style sections and restore default theme configurations.
+- **Preset Management:** Quickly `Create new preset…` or `Import preset…`. Completing these actions automatically switches the view to the **Presets** tab.
+- **Snippet Management:** `Create new snippet…` generates a new CSS file. Based on your preferences, it opens in the internal editor or your system's default text editor, then switches the view to the **Snippets** tab.
+- **State Reset:** `Reset styles` opens the **Reset Settings Modal**, allowing you to select specific style sections to clear and return to their default theme values.
 
 ### Status Badges Reference
 
-The plugin displays several interactive and informational badges to clarify the state of your configurations:
+The Style Manager displays a system of badges to provide quick visual cues and access to configuration details. These are categorized into two types: **interactive badges**, which trigger actions or open menus when clicked, and **info badges**, which serve as read-only indicators for status and metadata.
 
-|     | Badge                    | Type        | Description                                                              |
-| :-- | :----------------------- | :---------- | :----------------------------------------------------------------------- |
-| A   | **style settings count** | Interactive | Shows the number of variables configured in a style sheet.               |
-| B   | **style status**         | Info        | Shows whether a specific configuration sheet is active.                  |
-| C   | **style source**         | Interactive | Indicates where the configuration came from (Plugin, Theme, or Snippet). |
-| D   | **active theme**         | Interactive | Shows the name of the currently active theme.                            |
-| E   | **active snippets**      | Info        | Displays the number of active CSS snippets.                              |
-| F   | **active appearance**    | Info        | Shows whether a device locker/preset is in Light or Dark mode.           |
-| G   | **locker**               | Info        | Identifies whether a locker belongs to the current local device.         |
-| H   | **duplicate warning**    | Info        | Alerts you when a Style ID is duplicated across different CSS sources.   |
-| I   | **mode**                 | Info        | Displays the active storage mode.                                        |
-| J   | **schedule**             | Interactive | Indicates if a preset is currently automated by a active schedule.       |
+|     | Badge                  | Type        | Description                                                                      |
+| --- | ---------------------- | ----------- | -------------------------------------------------------------------------------- |
+| A   | `style settings count` | interactive | Number of settings configured in a style                                         |
+| B   | `style status`         | info        | Shows if the specific style settings is currently active                         |
+| C   | `style source`         | interactive | Indicates where the style originates (Plugin, Theme, or Snippet)                 |
+| D   | `active theme`         | interactive | Displays the name of the currently active Obsidian theme                         |
+| E   | `active snippets`      | info        | Current count of active CSS snippets                                             |
+| F   | `active appearance`    | info        | Indicates if a device locker or preset is in Light or Dark mode                  |
+| G   | `locker`               | info        | Distinguishes the local device locker from other device lockers (in Isolate tab) |
+| H   | `duplicate warning`    | info        | Alerts you when a Style ID is duplicated across different sources.               |
+| I   | `mode`                 | info        | Shows which mode that component is currently active                              |
+| J   | `schedule`             | interactive | Indicates if a preset is currently managed by a date & time-based schedule       |
 
 ---
 
@@ -233,7 +236,7 @@ Style Manager features an integrated editing panel built on CodeMirror 6, allowi
 
 ### The Evolution of Style Management
 
-In the past, managing custom style settings manually in CSS files could cause errors:
+For a long time, managing style settings manually in CSS files could cause errors:
 - **Manual Boilerplate**: Authors had to manually type out the `/* @settings` blocks, leading to repetitive work and frequent typos.
 - **Fragile Indentation**: Since the configuration uses YAML, a single misplaced space or a wrong indentation level could break the entire settings block, making the settings disappear from the UI without clear errors.
 - **Structural Risks**: Adding a new setting field often meant carefully inserting a dash (`-`) and several lines of properties exactly in the right place, risking the accidental deletion of existing settings.
@@ -258,27 +261,27 @@ Style Manager eliminates these pain points by automating the structure and place
 +---------------------------------------------------------+
 ```
 
-| Block/Field Type  | Cursor Location                                         | Resulting Position                                                                                                          |
-| :---------------- | :------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------- |
-| **`@metadata`**   | Anywhere in file                                        | Inserted at the top of the file                                                                                             |
-| **`@settings`**   | Anywhere in file                                        | Appended to the bottom of the file                                                                                          |
-| **Setting Field** | On or left of a field's starting dash (`-`)             | Inserted directly **above** that setting field                                                                              |
-| **Setting Field** | Inside properties of an existing setting                | Inserted directly **below** that setting field                                                                              |
-| **Setting Field** | Cursor is outside any block (but settings block exists) | Appended to the first setting block found below the cursor. If none exist below, it is added to the last block in the file. |
-| **Setting Field** | No settings blocks exist in the file                    | Placed directly at the cursor's current location                                                                            |
+| Block                 | Cursor Location                    | Resulting Position                                             |
+| :-------------------- | :--------------------------------- | :------------------------------------------------------------- |
+| **`@metadata`**       | Anywhere                           | Top of file                                                    |
+| **`@settings`**       | Anywhere                           | Bottom of file                                                 |
+| **Setting Component** | Left of/on the dash (`-`)          | Above the current field                                        |
+| **Setting Component** | Inside setting properties          | Below the current field                                        |
+| **Setting Component** | Outside any block (but one exists) | Above the first field of the next block (or end of last block) |
+| **Setting Component** | No `@settings` block exists        | Exactly at the cursor                                          |
 
 ---
 
 ## CSS Snippet Metadata Block (`@metadata`)
 
-The `@metadata` block allows creators to embed authorship, license, and versioning data directly inside CSS files as a standard comment block. The Style Manager parser reads this block to populate information cards in your library view.
+The `@metadata` block allows developers to embed authorship, license, and versioning data directly inside CSS files as a standard comment block. The Style Manager parser reads this block and displays in the **Snippets tab**.
 
 ### Adding a Metadata Block
 
 #### Method A: Automatic Injection (Recommended)
 
 1. In the **Snippets** tab, click on any CSS snippet to open the built-in editor.
-2. In the footer toolbar, click the **plus (`+`) icon**.
+2. In the CSS editor footer, click the **plus (`+`) icon** (**Add block** button).
 3. Select **"Add @metadata block"**.
 4. Fill in the values of the pre-formatted template inserted at the top of your file.
 
@@ -303,13 +306,13 @@ license: MIT
 
 ### Supported Metadata Fields
 
-| Field | Description | Example |
-| :--- | :--- | :--- |
-| `description` | A short summary of what the style adjustments do. | `description: Adjusts side margins` |
-| `author` | The name or alias of the creator. | `author: Jane Doe` |
-| `version` | Semantic versioning number. | `version: 1.0.0` |
-| `authorUrl` | Webpage or portfolio link for the author. | `authorUrl: https://example.com` |
-| `license` | License type under which the snippet is distributed. | `license: MIT` |
+| Field         | Description                                    | Example                                     |
+| :------------ | :--------------------------------------------- | :------------------------------------------ |
+| `description` | A brief explanation of what the snippet does.  | `description: Customizes the sidebar width` |
+| `author`      | The name of the creator.                       | `author: emarpiee`                          |
+| `version`     | The current version of the snippet.            | `version: 1.0.0`                            |
+| `authorUrl`   | A link to the author's profile or website.     | `authorUrl: https://example.com`            |
+| `license`     | The license under which the snippet is shared. | `license: MIT`                              |
 
 To show these in your list views, enable **"Display metadata (Author, Version, etc.) for CSS snippets…"** in the **Preferences Tab**.
 
@@ -317,7 +320,7 @@ To show these in your list views, enable **"Display metadata (Author, Version, e
 
 ## Style Settings Block (`@settings`)
 
-Style Manager uses a specific system to turn CSS variables into user-configurable settings in the Obsidian UI. This is done using special comment blocks. To expose configurable settings to the Style Manager UI (Styles tab), wrap YAML configuration blocks inside CSS comments starting with `/* @settings`.
+Style Manager uses a specific system to turn CSS class and variables into user-configurable settings in the **Styles tab**. This is done using special comment blocks. To expose configurable settings, wrap YAML configuration blocks inside CSS comments starting with `/* @settings`.
 
 Style Manager scans for these comments in all CSS loaded by Obsidian from the `snippets`, `themes`, and `plugins` directories under your vault's configuration directory (`%yourVault%/.obsidian/`).
 
@@ -391,7 +394,7 @@ Remember that every setting component is separated by a dash (`-`) and must incl
 | **`variable-number-slider`** | A numeric CSS variable represented and adjusted via a visual slider.              |
 | **`variable-select`**        | A dropdown menu of predefined options for a text-based CSS variable.              |
 | **`variable-color`**         | A color CSS variable with a corresponding interactive color picker.               |
-| **`variable-themed-color`**  | Generates two color pickers for separate light and dark variants.                 |
+| **`variable-themed-color`**  | Generates two color pickers for light and dark mode.                              |
 | **`color-gradient`**         | Outputs a fixed number of colors along a gradient between two existing variables. |
 
 ### Global Parameters
@@ -406,7 +409,7 @@ All settings definitions (regardless of type) must include the following core pa
 
 #### 1. `heading`
 
-Creates collapsible sections to organize variables. Ensure that you follow the proper level of headings (hierarchical order) for sticky headings to work properly.
+Creates collapsible sections to organize variables. Ensure that you follow the proper level of headings (hierarchical order) for sticky headings to work properly in **Styles tab**.
 - **Required:** `level` (number from `1` to `6`).
 - **Optional:** `collapsed` (boolean: `true`/`false`).
 

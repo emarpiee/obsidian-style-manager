@@ -258,7 +258,7 @@ export class CSSEditorModal extends Modal {
 			.addButton((btn) => {
 				btn
 					.setButtonText('Wrap')
-					.setTooltip('Toggle Line Wrapping')
+					.setTooltip('Toggle line wrapping')
 					.onClick(() => {
 						this.isWrapping = !this.isWrapping;
 						btn.buttonEl.toggleClass('is-active', this.isWrapping);
@@ -277,7 +277,7 @@ export class CSSEditorModal extends Modal {
 				) {
 					btn
 						.setIcon('plus-with-circle')
-						.setTooltip('Add Block')
+						.setTooltip('Add block')
 						.onClick((_e: MouseEvent) => {
 							const rect = btn.buttonEl.getBoundingClientRect();
 							this.showAddBlockMenu({ x: rect.right, y: rect.top });
