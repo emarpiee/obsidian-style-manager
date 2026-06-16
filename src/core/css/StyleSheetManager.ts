@@ -236,7 +236,7 @@ export class StyleSheetManager {
 		errorList: ErrorList;
 	} {
 		try {
-			const settingsList: ParsedCSSSettings[] = [];
+			const settingsMap = new Map<string, ParsedCSSSettings>();
 			const errorList: ErrorList = [];
 			const styleSheets = document.styleSheets;
 			const processedContent = new Set<string>();
@@ -391,10 +391,15 @@ export class StyleSheetManager {
 						sourceType: section.sourceType,
 						sourceId: section.sourceId,
 					};
-					settingsList.push(sectionClone);
+
+					// Deduplicate sections from the same source to prevent duplicates when theme/plugin is updated
+					const dedupKey = `${sectionClone.id}|${sectionClone.sourceType}|${sectionClone.sourceId}`;
+					settingsMap.set(dedupKey, sectionClone);
 				}
 				errorList.push(...errors);
 			}
+
+			const settingsList = Array.from(settingsMap.values());
 
 			// STABLE SORT: Themes > Plugins > Snippets > Others, then Alphabetical
 			const SOURCE_PRIORITY = {
