@@ -89,18 +89,18 @@ export class SettingsHeaderComponent extends Component {
 		tabContainer.createDiv('style-manager-tab-spacer');
 
 		const actionGroup = tabContainer.createDiv('style-manager-tab-actions');
-		this.options.isolateModeHeader.renderBadge(actionGroup);
-		actionGroup.createDiv('style-manager-toolbar-separator');
 		renderAccentColorSelect(this.plugin, actionGroup, () =>
-			this.options.onRerender()
-		);
-		actionGroup.createDiv('style-manager-toolbar-separator');
-		renderThemeSelect(this.plugin, actionGroup, () =>
 			this.options.onRerender()
 		);
 
 		actionGroup.createDiv('style-manager-toolbar-separator');
 		this.renderAppearanceToggle(actionGroup);
+		actionGroup.createDiv('style-manager-toolbar-separator');
+		renderThemeSelect(this.plugin, actionGroup, () =>
+			this.options.onRerender()
+		);
+		actionGroup.createDiv('style-manager-toolbar-separator');
+		this.options.isolateModeHeader.renderBadge(actionGroup);
 		actionGroup.createDiv('style-manager-toolbar-separator');
 		this.renderReloadButton(actionGroup);
 		actionGroup.createDiv('style-manager-toolbar-separator');
@@ -194,8 +194,10 @@ export class SettingsHeaderComponent extends Component {
 		}
 
 		const toggleBtn = containerEl.createDiv({
-			cls: 'style-manager-icon-button style-manager-appearance-toggle',
+			cls: 'style-manager-icon-button',
 		});
+		if (appearance === 'light') toggleBtn.addClass('sun-toggle');
+		else if (appearance === 'dark') toggleBtn.addClass('moon-toggle');
 		setIcon(toggleBtn, icon);
 		setTooltip(toggleBtn, label);
 		toggleBtn.onclick = async (): Promise<void> => {

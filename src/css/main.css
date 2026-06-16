@@ -62,7 +62,8 @@
 
 @container (max-width: 350px) {
 	.style-manager-tab-text,
-	.style-manager-theme-current-name {
+	.style-manager-theme-current-name,
+	.style-manager-isolate-badge-text {
 		display: none !important;
 	}
 
@@ -87,6 +88,10 @@
 }
 
 body {
+	/* Sun and Moon color */
+	--sm-icon-sun-color: #ccaa00;
+	--sm-icon-moon-color: #a883ff;
+
 	/* Style Manager Main Wrapper */
 	--sm-wrapper-bg: var(--background-primary);
 
@@ -132,9 +137,9 @@ body {
 	--sm-badge-primary-theme-color: var(--interactive-accent);
 	--sm-badge-primary-theme-border-color: var(--interactive-accent);
 	--sm-badge-primary-appearance-dark-bg: oklch(72% 0.16 295 / 0.1);
-	--sm-badge-primary-appearance-dark-color: #a883ff;
+	--sm-badge-primary-appearance-dark-color: var(--sm-icon-moon-color);
 	--sm-badge-primary-appearance-light-bg: oklch(60% 0.18 45 / 0.15);
-	--sm-badge-primary-appearance-light-color: #ccaa00;
+	--sm-badge-primary-appearance-light-color: var(--sm-icon-sun-color);
 
 	/* --- Source Type Badge (Plugin / Theme / Snippet) --- */
 	/* Light Mode */
@@ -1108,6 +1113,16 @@ body.is-phone .style-manager-tab-actions {
 	height: 16px;
 }
 
+.style-manager-icon-button.sun-toggle svg {
+	color: var(--sm-icon-sun-color);
+	fill: var(--sm-icon-sun-color);
+}
+
+.style-manager-icon-button.moon-toggle svg {
+	color: var(--sm-icon-moon-color);
+	fill: var(--sm-icon-moon-color);
+}
+
 .style-manager-tab-more-actions {
 	margin-right: var(--size-4-2);
 }
@@ -1485,15 +1500,14 @@ body.theme-dark .style-manager-badge-primary.dynamic {
 	color: var(--icon-color);
 }
 
-.style-manager-isolate-badge.is-active .style-manager-isolate-badge-icon {
-	color: var(--sm-isolate-badge-active-color);
+.style-manager-isolate-badge.is-active .style-manager-isolate-badge-icon svg {
+	stroke: var(--sm-isolate-badge-active-color);
+	stroke-width: 2px;
 }
 
-.style-manager-isolate-badge-icon svg {
-	width: 18px;
-	height: 18px;
-	fill: none;
-	stroke: currentColor;
+.style-manager-isolate-badge.is-active .style-manager-isolate-badge-text {
+	display: inline;
+	color: var(--sm-isolate-badge-active-color);
 }
 
 .style-manager-isolate-badge-text {
@@ -1502,15 +1516,6 @@ body.theme-dark .style-manager-badge-primary.dynamic {
 	color: var(--interactive-accent);
 	white-space: nowrap;
 	display: none;
-}
-
-.style-manager-isolate-badge.is-active .style-manager-isolate-badge-text {
-	display: inline;
-	color: var(--sm-isolate-badge-active-color);
-}
-
-body.is-phone .style-manager-isolate-badge {
-	padding: 0 var(--size-4-2);
 }
 
 .style-manager-settings-tab-title {
@@ -1624,11 +1629,6 @@ body.is-phone .style-manager-isolate-badge {
 	font-weight: var(--font-semibold);
 	color: var(--text-normal);
 	line-height: 1;
-}
-
-.style-manager-theme-trigger:hover {
-	background-color: var(--background-modifier-hover);
-	color: var(--interactive-accent);
 }
 
 /* --- Mobile Spacing & Theme Select Optimization --- */

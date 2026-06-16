@@ -200,10 +200,10 @@ Style Manager interface is structured into six functional tabs.
 ### Instant Access Header Controls
 
 The persistent toolbar header provides system actions across all tabs:
-- **Isolate Mode Badge:** A interactive clickable-icon showing if you are in **Shared mode** or **Isolate mode**.
 - **Accent Color Selector:** Opens a color picker to update your theme's primary accent color.
-- **Theme Selector:** Quick-switch menu to change the active Obsidian theme.
 - **Appearance Toggle:** Swap between light and dark modes.
+- **Theme Selector:** Quick-switch menu to change the active Obsidian theme.
+- **Isolate Mode Badge:** A interactive clickable-icon showing if you are in **Shared mode** or **Isolate mode**.
 - **Refresh Button:** Forces the plugin to reload configurations from the `data.json.
 
 #### More Actions Menu (Vertical Ellipsis)
