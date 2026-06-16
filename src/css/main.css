@@ -85,6 +85,11 @@
 	.style-manager-style-settings-item .setting-item-control {
 		align-self: flex-end;
 	}
+
+	.style-manager-bulk-buttons {
+		flex-wrap: wrap !important;
+		justify-content: center !important;
+	}
 }
 
 body {
@@ -1608,6 +1613,7 @@ body.theme-dark .style-manager-badge-primary.dynamic {
 	flex-shrink: 0;
 	min-width: 32px;
 	color: var(--icon-color);
+	padding: var(--size-4-2);
 }
 
 .style-manager-theme-trigger:hover {
