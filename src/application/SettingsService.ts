@@ -416,9 +416,10 @@ export class SettingsService extends Events {
 	 */
 	public async applySnippets(
 		snippetList: string[],
-		isIsolate: boolean
+		isIsolate: boolean,
+		skipRefresh: boolean = false
 	): Promise<void> {
-		return this.snippetService.applySnippets(snippetList, isIsolate);
+		return this.snippetService.applySnippets(snippetList, isIsolate, skipRefresh);
 	}
 
 	private installPatches(): void {
@@ -453,13 +454,13 @@ export class SettingsService extends Events {
 		isIsolate: boolean
 	): Promise<void> {
 		this.isolateModeService.setIsolateMode(isIsolate);
-		await this.applySettingsUpdate(settings, { persistNative: !isIsolate });
+		await this.applySettingsUpdate(settings, {
+			persistNative: !isIsolate,
+			skipRefreshes: true,
+			silentUI: true,
+		});
 
-		if (!isIsolate) {
-			await this.refreshService.trigger(RefreshLevel.STYLES_ONLY, {
-				skipAdopt: true,
-			});
-		}
+		await this.refreshService.trigger(RefreshLevel.PARSE_CSS);
 
 		this.trigger('isolate-mode-changed');
 		this.trigger('device-lockers-updated');
@@ -713,6 +714,7 @@ export class SettingsService extends Events {
 			silentUI?: boolean;
 			skipSave?: boolean;
 			target?: 'shared' | 'isolate';
+			skipRefreshes?: boolean;
 		}
 	): Promise<void> {
 		const isIsolate = this.isolateModeService.isIsolateMode();
@@ -741,7 +743,7 @@ export class SettingsService extends Events {
 			this.applyAccentColor(updates[ACCENT_COLOR_KEY] as string, persist);
 		}
 		if (updates[SNIPPETS_KEY]) {
-			await this.applySnippets(updates[SNIPPETS_KEY] as string[], isIsolate);
+			await this.applySnippets(updates[SNIPPETS_KEY] as string[], isIsolate, !!options?.skipRefreshes);
 		}
 
 		this.updateMerged();
@@ -754,16 +756,16 @@ export class SettingsService extends Events {
 				(key) => key !== SNIPPETS_KEY && this.isStyleSetting(key)
 			);
 
-		if (hasStyleChange && !isSnippetOnly) {
+		if (!options?.skipRefreshes && hasStyleChange && !isSnippetOnly) {
 			this.styleSheetManager.clearCache();
 			this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
 		}
 
-		if (!options?.silentUI && !isSnippetOnly) {
+		if (!options?.skipRefreshes && !options?.silentUI && !isSnippetOnly) {
 			this.refreshService.trigger(RefreshLevel.UI_ONLY);
 		}
 
-		if (hasStyleChange && !isSnippetOnly) {
+		if (!options?.skipRefreshes && hasStyleChange && !isSnippetOnly) {
 			this.trigger('refresh-status-bar');
 		}
 

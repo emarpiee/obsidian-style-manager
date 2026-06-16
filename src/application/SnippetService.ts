@@ -45,7 +45,8 @@ export class SnippetService {
 	 */
 	public async applySnippets(
 		snippetList: string[],
-		isIsolate: boolean
+		isIsolate: boolean,
+		skipRefresh: boolean = false
 	): Promise<void> {
 		const currentEnabled = this.options.bridge.getEnabledSnippets();
 		const targetSet = new Set(snippetList);
@@ -89,7 +90,7 @@ export class SnippetService {
 			}
 		}
 
-		if (modified) {
+		if (modified && !skipRefresh) {
 			this.options.bridge.forceLoadSnippets();
 			this.options.plugin.settingsService.refreshService.trigger(
 				RefreshLevel.PARSE_CSS
