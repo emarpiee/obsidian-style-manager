@@ -173,20 +173,25 @@ Style Manager interface is structured into six functional tabs.
 
 ### 6. Preferences Tab
 
-*Plugin configuration, safety tools, and developer options.*
+*Plugin configuration, safety tools, and developer options. Includes a search filter to quickly find specific settings.*
+
+- **UI Customization:** Toggle sticky headings in the Styles tab, customize date formats for presets, and control status bar visibility.
+- **Confirmations:**
+    - **Skip Toggles**: Quickly delete, export, or import presets and styles by bypassing confirmation dialogs.
+    - **Apply Actions**: Define how the plugin handles preset application (Ask, Overwrite, or Merge) for single, bulk, or scheduled actions.
 - **Backup & Recovery:**
     - **Full Backup**: Create a full ZIP backup containing plugin preferences, presets, snippets, and themes.
     - **Basic Backup**: Generates a quick JSON file containing your style settings, presets, and plugin configurations.
     - **Safety Rollback**: Instantly restore the plugin state from the automatically generated \`data.json.bak\` snapshot.
-- **Confirmations:**
-    - **Skip Toggles**: Quickly delete, export, or import presets and styles by bypassing confirmation dialogs.
-    - **Apply Actions**: Define how the plugin handles preset application (Ask, Overwrite, or Merge) for single, bulk, or scheduled actions.
 - **Export Customization:** Change default export folders, file extension naming preferences (e.g., \`.json\`, \`.md\`, \`.txt\`), and timestamp layouts.
-- **UI Customization:** Toggle sticky headings in the Styles tab, customize date formats for presets, and control status bar visibility.
-- **Developer Options:**
-	- **External Editor:** Option to open CSS files in your system's default text editor instead of the plugin's integrated CSS editor..
-    - **Debug Logging:** Toggle comprehensive console logging for troubleshooting.
+- **CSS Editor:**
+    - **Indentation Control:** Customize the indentation of \`@settings\` blocks to match your preferred coding style.
+    - **External Editor:** Option to open CSS files in your system's default text editor instead of the plugin's integrated CSS editor.
     - **Editor Tuning:** Adjust the tab size for the CSS editor.
+- **Developer Options:**
+	- **Notification Toggles**: Control alerts for shared changes, preset actions, isolated configurations, snippet management, and general UI feedback.
+	- **Debug Logging**: Toggle comprehensive console logging for troubleshooting.
+	- **Shared Version**: View the internal version timestamp used to synchronize state across devices.
 
 ---
 
@@ -241,7 +246,7 @@ Style Manager features an integrated editing modal built on CodeMirror 6, allowi
 
 For a long time, managing style settings manually in CSS files could cause errors:
 - **Manual Boilerplate**: Authors had to manually type out the \`/* @settings\` blocks, leading to repetitive work and frequent typos.
-- **Fragile Indentation**: Since the configuration uses YAML, a single misplaced space or a wrong indentation level could break the entire settings block, making the settings disappear from the UI without clear errors.
+- **Fragile Indentation**: Since the configuration uses YAML, a single misplaced space or a wrong indentation level could break the entire settings block. Style Manager now supports customizable indentation and enforces constraints to prevent these errors.
 - **Structural Risks**: Adding a new setting field often meant carefully inserting a dash (\`-\`) and several lines of properties exactly in the right place, risking the accidental deletion of existing settings.
 
 Style Manager eliminates these pain points by automating the structure and placement of these blocks, allowing authors to focus on the design rather than the syntax.
