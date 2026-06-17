@@ -205,10 +205,10 @@ export class StyleSheetManager {
 			this.fileCache.set(path, { mtime: stat.mtime, sections: newSections });
 		};
 
-		// 1. Themes
-		const themes = await this.bridge.getInstalledThemes();
-		for (const t of themes) {
-			promises.push(processFile(this.bridge.getThemePath(t), 'Theme', t));
+		// 1. Theme
+		const activeTheme = this.getStableActiveTheme();
+		if (activeTheme !== 'default') {
+			promises.push(processFile(this.bridge.getThemePath(activeTheme), 'Theme', activeTheme));
 		}
 
 		// 2. Plugins

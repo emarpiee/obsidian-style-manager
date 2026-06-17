@@ -30,7 +30,7 @@ describe('StyleSheetManager', () => {
 		bridge = new ObsidianBridge(mockApp as any);
 		// Mock bridge methods used by StyleSheetManager
 		vi.spyOn(bridge, 'getActiveTheme').mockReturnValue('test-theme');
-		vi.spyOn(bridge, 'getInstalledThemes').mockReturnValue([]);
+		vi.spyOn(bridge, 'getInstalledThemes').mockReturnValue(Promise.resolve([]));
 		vi.spyOn(bridge, 'getInstalledPlugins').mockReturnValue([]);
 		vi.spyOn(bridge, 'getAllSnippets').mockReturnValue([]);
 		vi.spyOn(bridge, 'getThemePath').mockImplementation(

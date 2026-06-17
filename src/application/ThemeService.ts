@@ -53,9 +53,6 @@ export class ThemeService {
 	public isApplyingPersistentTheme: boolean = false;
 	public isApplyingVisualTheme: boolean = false;
 
-	private themeObserver: MutationObserver | null = null;
-	private bodyObserver: MutationObserver | null = null;
-
 	constructor(private deps: ThemeServiceDeps) {}
 
 	/**
@@ -84,40 +81,17 @@ export class ThemeService {
 	}
 
 	private async applySessionTheme(themeName: string): Promise<void> {
-		this.hideNativeTheme();
-		this.startBodyGuard();
-
 		this.isApplyingVisualTheme = true;
 		try {
-			this.deps.bridge.setNativeTheme('');
+			this.deps.bridge.setNativeTheme(
+				themeName === 'default' || !themeName ? '' : themeName
+			);
 		} finally {
 			this.isApplyingVisualTheme = false;
 		}
 
-		if (themeName === 'default' || !themeName) {
-			const localTag = document.getElementById('style-manager-session-theme');
-			if (localTag) localTag.remove();
-			return;
-		}
-
-		try {
-			const themePath = this.deps.bridge.getThemePath(themeName);
-			const cssContent = await this.deps.bridge.readNativeFile(themePath);
-
-			let styleTag = document.getElementById(
-				'style-manager-session-theme'
-			) as HTMLStyleElement;
-			if (!styleTag) {
-				styleTag = document.createElement('style');
-				styleTag.id = 'style-manager-session-theme';
-				document.head.appendChild(styleTag);
-			}
-
-			styleTag.textContent = cssContent;
-			this.deps.bridge.triggerEvent('parse-style-manager');
-		} catch {
-			this.deps.notifications.error(`Could not load theme: ${themeName}`);
-		}
+		const localTag = document.getElementById('style-manager-session-theme');
+		if (localTag) localTag.remove();
 	}
 
 	applyAppearance(mode: AppearanceMode, persist: boolean = false): void {
@@ -359,89 +333,9 @@ export class ThemeService {
 		this.deps.bridge.uninstallPatches();
 	}
 
-	/** Suppresses the native theme-css tag and watches for re-insertion. */
-	hideNativeTheme(): void {
-		const nativeThemeTag = document.getElementById('theme-css');
-		if (nativeThemeTag) {
-			(nativeThemeTag as HTMLStyleElement).disabled = true;
-		}
-
-		if (!this.themeObserver) {
-			this.themeObserver = new MutationObserver((mutations) => {
-				mutations.forEach((mutation) => {
-					mutation.addedNodes.forEach((node) => {
-						if (node instanceof HTMLElement && node.id === 'theme-css') {
-							(node as HTMLStyleElement).disabled = true;
-						}
-					});
-					if (
-						mutation.target instanceof HTMLElement &&
-						mutation.target.id === 'theme-css'
-					) {
-						(mutation.target as HTMLStyleElement).disabled = true;
-					}
-				});
-			});
-
-			this.themeObserver.observe(document.head, {
-				childList: true,
-				attributes: true,
-				subtree: true,
-				attributeFilter: ['disabled', 'id'],
-			});
-		}
-	}
-
-	/** Re-enables the native theme-css tag and stops observing. */
-	restoreNativeTheme(): void {
-		if (this.themeObserver) {
-			this.themeObserver.disconnect();
-			this.themeObserver = null;
-		}
-		const nativeThemeTag = document.getElementById('theme-css');
-		if (nativeThemeTag) {
-			(nativeThemeTag as HTMLStyleElement).disabled = false;
-		}
-	}
-
-	/** Watches document.body for rogue theme-* classes and removes them (Isolate Mode). */
-	startBodyGuard(): void {
-		if (this.bodyObserver) return;
-
-		this.bodyObserver = new MutationObserver(() => {
-			if (!this.deps.isIsolateMode()) return;
-
-			const themeClasses = Array.from(document.body.classList).filter(
-				(cls) =>
-					cls.startsWith('theme-') &&
-					cls !== 'theme-light' &&
-					cls !== 'theme-dark'
-			);
-
-			if (themeClasses.length > 0) {
-				document.body.classList.remove(...themeClasses);
-			}
-		});
-
-		this.bodyObserver.observe(document.body, {
-			attributes: true,
-			attributeFilter: ['class'],
-		});
-	}
-
-	/** Stops the body class guard observer. */
-	stopBodyGuard(): void {
-		if (this.bodyObserver) {
-			this.bodyObserver.disconnect();
-			this.bodyObserver = null;
-		}
-	}
-
-	/** Full cleanup: uninstall patches, restore theme tag, remove session overrides. */
+	/** Full cleanup: uninstall patches, remove session overrides. */
 	cleanup(): void {
 		this.uninstallPatches();
-		this.stopBodyGuard();
-		this.restoreNativeTheme();
 		document.getElementById('style-manager-session-theme')?.remove();
 		this.applyAppearance('system');
 	}

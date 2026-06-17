@@ -332,9 +332,7 @@ export class SettingsService extends Events {
 			this.trigger('device-lockers-updated');
 		}
 
-		this.installPatches();
-		this.themeService.hideNativeTheme();
-		this.themeService.startBodyGuard();
+	this.installPatches();
 
 		const theme = this.settings[THEME_KEY];
 		if (theme) {
