@@ -337,6 +337,12 @@ export class ThemeService {
 	cleanup(): void {
 		this.uninstallPatches();
 		document.getElementById('style-manager-session-theme')?.remove();
+		
+		// After uninstalling patches, getNativeConfig returns the TRUE shared theme from disk.
+		// We re-apply it so that Obsidian's visuals are restored from Isolate Mode.
+		const sharedTheme = this.deps.bridge.getNativeConfig('cssTheme') as string;
+		this.deps.bridge.setNativeTheme(sharedTheme);
+
 		this.applyAppearance('system');
 	}
 }

@@ -58,6 +58,9 @@ export class ObsidianBridge {
 		null;
 	public originalSetTheme: ((name: string, ...args: unknown[]) => void) | null =
 		null;
+	public originalThemeDescriptor: PropertyDescriptor | undefined;
+	private _realThemeValue: string | undefined;
+
 	constructor(private app: App) {}
 
 	/**
@@ -524,19 +527,24 @@ export class ObsidianBridge {
 			this.originalSetTheme = customCss.setTheme;
 			const internalCss = customCss as unknown as ObsidianCustomCss;
 
+			this.originalThemeDescriptor = Object.getOwnPropertyDescriptor(
+				internalCss,
+				'theme'
+			);
+
 			// Override theme property getter to return the actual active theme.
 			// This allows the native Obsidian command palette "Change theme.." to show the
 			// correct active badge without breaking the vault.getConfig('cssTheme') trick.
-			let _realThemeValue = internalCss.theme;
+			this._realThemeValue = internalCss.theme;
 			Object.defineProperty(internalCss, 'theme', {
 				get: () => {
 					if (isApplyingPersistentTheme() || isApplyingVisualTheme()) {
-						return _realThemeValue;
+						return this._realThemeValue;
 					}
 					return getTheme();
 				},
 				set: (val: string) => {
-					_realThemeValue = val;
+					this._realThemeValue = val;
 				},
 				configurable: true,
 			});
@@ -747,6 +755,29 @@ export class ObsidianBridge {
 		if (this.originalSetTheme && customCss) {
 			customCss.setTheme = this.originalSetTheme;
 			this.originalSetTheme = null;
+
+			const internalCss = customCss as unknown as ObsidianCustomCss;
+			if (this.originalThemeDescriptor) {
+				// Restore value since it might have changed while patched
+				if (
+					this.originalThemeDescriptor.writable ||
+					this.originalThemeDescriptor.set
+				) {
+					if ('value' in this.originalThemeDescriptor) {
+						this.originalThemeDescriptor.value = this._realThemeValue;
+					}
+				}
+				Object.defineProperty(
+					internalCss,
+					'theme',
+					this.originalThemeDescriptor
+				);
+			} else {
+				// If there was no original descriptor on the instance, it means 'theme' was a prototype getter/setter.
+				// We must delete the 'own' property we created to un-shadow the prototype.
+				delete (internalCss as any).theme;
+			}
+			this.originalThemeDescriptor = undefined;
 		}
 	}
 }
