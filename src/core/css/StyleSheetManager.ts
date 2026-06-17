@@ -206,7 +206,7 @@ export class StyleSheetManager {
 		};
 
 		// 1. Themes
-		const themes = this.bridge.getInstalledThemes();
+		const themes = await this.bridge.getInstalledThemes();
 		for (const t of themes) {
 			promises.push(processFile(this.bridge.getThemePath(t), 'Theme', t));
 		}

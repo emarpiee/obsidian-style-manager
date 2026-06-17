@@ -107,7 +107,7 @@ export class BackupService {
 
 		// 3. Add themes folder (all installed themes)
 		const installedThemes =
-			this.plugin.settingsService.bridge.getInstalledThemes();
+			await this.plugin.settingsService.bridge.getInstalledThemes();
 		if (installedThemes.length > 0) {
 			const themesFolder = zip.folder('themes');
 			if (themesFolder) {

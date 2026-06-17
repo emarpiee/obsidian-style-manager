@@ -21,18 +21,21 @@ import { Menu, setIcon, setTooltip } from 'obsidian';
 import { THEME_KEY } from '../../../application/SettingsService';
 import StyleManagerPlugin from '../../../main';
 
-export function addThemeOptionsToMenu(
+export async function addThemeOptionsToMenu(
 	plugin: StyleManagerPlugin,
 	menu: Menu,
 	currentValue: string,
 	onDone: () => void
-): void {
-	const customCss = (
-		plugin.app as unknown as {
-			customCss: { themes: Record<string, { name: string }> };
+): Promise<void> {
+	let themes: Record<string, { name: string }> = {};
+	try {
+		const themeObjects = await plugin.settingsService.themeBuilderService.getThemes();
+		for (const id in themeObjects) {
+			themes[id] = { name: themeObjects[id].name };
 		}
-	).customCss;
-	const themes = customCss.themes;
+	} catch (e) {
+		console.error('Style Manager | Error loading themes for menu:', e);
+	}
 
 	menu.addItem((item) => {
 		item
@@ -69,17 +72,8 @@ export function renderThemeSelect(
 ): void {
 	const currentValue =
 		(plugin.settingsService.getSetting(THEME_KEY) as string) || 'default';
-
-	const customCss = (
-		plugin.app as unknown as {
-			customCss: { themes: Record<string, { name: string }> };
-		}
-	).customCss;
-	const themes = customCss.themes;
 	const currentThemeName =
-		currentValue === 'default'
-			? 'Default'
-			: themes[currentValue]?.name || currentValue;
+		currentValue === 'default' ? 'Default' : currentValue;
 
 	const triggerContainer = containerEl.createDiv('style-manager-theme-trigger');
 	setTooltip(triggerContainer, 'Change theme');
@@ -87,15 +81,21 @@ export function renderThemeSelect(
 		'style-manager-theme-trigger-icon'
 	);
 	setIcon(iconEl, 'palette');
-	triggerContainer.createSpan({
+	const nameEl = triggerContainer.createSpan({
 		text: currentThemeName,
 		cls: 'style-manager-theme-current-name',
 	});
 
-	triggerContainer.onclick = (e: MouseEvent): void => {
+	plugin.settingsService.themeBuilderService.getThemes().then((themes) => {
+		if (currentValue !== 'default' && themes[currentValue]) {
+			nameEl.setText(themes[currentValue].name);
+		}
+	});
+
+	triggerContainer.onclick = async (e: MouseEvent): Promise<void> => {
 		const menu = new Menu();
 
-		addThemeOptionsToMenu(plugin, menu, currentValue, onDone);
+		await addThemeOptionsToMenu(plugin, menu, currentValue, onDone);
 
 		menu.showAtMouseEvent(e);
 	};

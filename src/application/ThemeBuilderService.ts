@@ -141,22 +141,12 @@ export class ThemeBuilderService {
 	 */
 	async getThemes(): Promise<Record<string, ThemeManifest>> {
 		const themes: Record<string, ThemeManifest> = {};
-		const adapter = this.app.vault.adapter;
-		const themesPath = '.obsidian/themes';
+		const themeIds = await this.bridge.getInstalledThemes();
 
-		if (!(await adapter.exists(themesPath))) {
-			return themes;
-		}
-
-		const result = await adapter.list(themesPath);
-		for (const folderPath of result.folders) {
-			const themeId = folderPath.split('/').pop();
-			if (!themeId) continue;
-
+		for (const themeId of themeIds) {
 			try {
-				const manifestPath = normalizePath(`${folderPath}/manifest.json`);
-				if (await adapter.exists(manifestPath)) {
-					const manifestContent = await adapter.read(manifestPath);
+				const manifestContent = await this.bridge.readThemeManifest(themeId);
+				if (manifestContent) {
 					themes[themeId] = JSON.parse(manifestContent);
 				}
 			} catch (e) {

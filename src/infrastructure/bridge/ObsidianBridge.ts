@@ -159,18 +159,36 @@ export class ObsidianBridge {
 	}
 
 	/**
-	 * Retrieves the names of all installed themes.
+	 * Retrieves the names of all installed themes by scanning the themes directory.
 	 */
-	public getInstalledThemes(): string[] {
+	public async getInstalledThemes(): Promise<string[]> {
 		try {
-			const customCss = (this.app as unknown as ObsidianInternalApp).customCss;
-			if (customCss && customCss.themes) {
-				return Object.keys(customCss.themes);
+			const adapter = this.app.vault.adapter;
+			const configDir = this.app.vault.configDir;
+			const themesPath = normalizePath(`${configDir}/themes`);
+
+			if (!(await adapter.exists(themesPath))) {
+				return [];
 			}
+
+			const result = await adapter.list(themesPath);
+			const installedThemes: string[] = [];
+
+			for (const folderPath of result.folders) {
+				const themeId = folderPath.split('/').pop();
+				if (!themeId) continue;
+
+				const manifestPath = normalizePath(`${folderPath}/manifest.json`);
+				if (await adapter.exists(manifestPath)) {
+					installedThemes.push(themeId);
+				}
+			}
+
+			return installedThemes;
 		} catch (e) {
 			Logger.error('Style Manager | Error getting installed themes:', e);
+			return [];
 		}
-		return [];
 	}
 
 	/**
