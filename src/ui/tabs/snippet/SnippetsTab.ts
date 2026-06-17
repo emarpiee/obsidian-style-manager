@@ -32,6 +32,7 @@ import {
 } from '../../../utils/UIUtils';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
+import { Logger } from '../../../utils/Logger';
 
 /**
  * Renders the Snippets tab: search, folder actions, and the list of snippets.
@@ -370,9 +371,10 @@ export class SnippetsTab {
 						await this.plugin.settingsService.snippetService.deleteSnippet(
 							snippetId
 						);
-					} catch (err) {
-						console.error(`Failed to delete snippet ${snippetId}:`, err);
-					}
+						} catch (err) {
+							Logger.error(`Failed to delete snippet ${snippetId}:`, err);
+						}
+
 				}
 
 				this.plugin.selectedSnippets.clear();
@@ -391,9 +393,10 @@ export class SnippetsTab {
 		for (const id of selectedIds) {
 			try {
 				await this.plugin.settingsService.snippetService.duplicateSnippet(id);
-			} catch (err) {
-				console.error(`Failed to duplicate snippet ${id}:`, err);
-			}
+						} catch (err) {
+							Logger.error(`Failed to duplicate snippet ${id}:`, err);
+						}
+
 		}
 
 		this.plugin.settingsService.notifications.snippet(

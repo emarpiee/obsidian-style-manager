@@ -17,6 +17,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import { Plugin } from 'obsidian';
+import { Logger } from '../utils/Logger';
 
 interface UndocumentedApp {
 	isMobile: boolean;
@@ -31,7 +32,7 @@ export class MobileEmulationTool {
 		if (typeof app.emulateMobile === 'function') {
 			app.emulateMobile(!app.isMobile);
 		} else {
-			console.error(
+			Logger.error(
 				'Mobile emulation is not supported in this version of Obsidian.'
 			);
 		}

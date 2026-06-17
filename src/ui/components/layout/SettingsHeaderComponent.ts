@@ -17,6 +17,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import { App, Component, Menu, Platform, setIcon, setTooltip } from 'obsidian';
+import { Logger } from '../../../utils/Logger';
 
 import { renderAccentColorSelect } from './AccentColorSelector';
 import { IsolateModeHeader } from './IsolateModeHeader';
@@ -232,7 +233,7 @@ export class SettingsHeaderComponent extends Component {
 					RefreshLevel.SYSTEM_RELOAD
 				);
 			} catch (e) {
-				console.error('Style Manager | Shared update error:', e);
+				Logger.error('Style Manager | Shared update error:', e);
 				this.plugin.settingsService.notifications.error(
 					'Error: Could not update from Shared Locker.'
 				);

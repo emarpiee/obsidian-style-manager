@@ -18,6 +18,7 @@
 */
 import { LoremUnit, loremIpsum } from 'lorem-ipsum';
 import { Notice, setIcon, setTooltip } from 'obsidian';
+import { Logger } from '../../utils/Logger';
 
 import StyleManagerPlugin from '../../main';
 
@@ -143,7 +144,7 @@ export class LoremIpsumGenerator {
 			new Notice('Lorem ipsum copied to clipboard');
 		} catch (err) {
 			new Notice('Failed to copy text to clipboard');
-			console.error('Clipboard error:', err);
+			Logger.error('Clipboard error:', err);
 		}
 	}
 

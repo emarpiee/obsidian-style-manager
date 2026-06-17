@@ -18,6 +18,7 @@
 */
 import { App, Modal, Setting } from 'obsidian';
 import { RRule } from 'rrule';
+import { Logger } from '../../utils/Logger';
 
 import { PresetScheduleModal } from './PresetScheduleModal';
 
@@ -105,7 +106,7 @@ export class ActiveSchedulesModal extends Modal {
 					scheduleText = rule.toText();
 				}
 			} catch (e) {
-				console.error('Failed to parse RRule for schedule text', e);
+				Logger.error('Failed to parse RRule for schedule text', e);
 			}
 
 			const setting = new Setting(contentEl).setName(presetName);
@@ -125,8 +126,7 @@ export class ActiveSchedulesModal extends Modal {
 			container.createSpan({ text: `  ${scheduleText}` });
 
 			if (schedule.isPaused) {
-				setting.nameEl.style.textDecoration = 'line-through';
-				setting.nameEl.style.opacity = '0.6';
+				setting.nameEl.addClass('style-manager-schedule-paused');
 			}
 
 			setting.addButton((btn) => {

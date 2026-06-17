@@ -92,6 +92,12 @@
 	}
 }
 
+/* --- Schedule Status --- */
+.style-manager-schedule-paused {
+	text-decoration: line-through;
+	opacity: 0.6;
+}
+
 body {
 	/* Sun and Moon color */
 	--sm-icon-sun-color: #ccaa00;
