@@ -320,6 +320,10 @@ export class StyleSheetManager {
 						sourceType === 'Theme' || sourceType === 'Plugin';
 					const isSnippet = sourceType === 'Snippet';
 
+					if ((isThemeOrPlugin || isSnippet) && candidates.length === 0) {
+						continue;
+					}
+
 					if (isThemeOrPlugin) {
 						// If it's already identified as Theme/Plugin, prioritize by name match first
 						const match =
