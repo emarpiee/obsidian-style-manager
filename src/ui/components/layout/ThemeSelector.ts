@@ -27,7 +27,7 @@ export async function addThemeOptionsToMenu(
 	currentValue: string,
 	onDone: () => void
 ): Promise<void> {
-	let themes: Record<string, { name: string }> = {};
+	const themes: Record<string, { name: string }> = {};
 	try {
 		const themeObjects = await plugin.settingsService.themeBuilderService.getThemes();
 		for (const id in themeObjects) {
