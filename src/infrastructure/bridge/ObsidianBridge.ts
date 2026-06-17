@@ -775,7 +775,7 @@ export class ObsidianBridge {
 			} else {
 				// If there was no original descriptor on the instance, it means 'theme' was a prototype getter/setter.
 				// We must delete the 'own' property we created to un-shadow the prototype.
-				delete (internalCss as any).theme;
+				delete internalCss.theme;
 			}
 			this.originalThemeDescriptor = undefined;
 		}

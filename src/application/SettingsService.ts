@@ -414,10 +414,9 @@ export class SettingsService extends Events {
 	 */
 	public async applySnippets(
 		snippetList: string[],
-		isIsolate: boolean,
-		skipRefresh: boolean = false
+		isIsolate: boolean
 	): Promise<void> {
-		return this.snippetService.applySnippets(snippetList, isIsolate, skipRefresh);
+		return this.snippetService.applySnippets(snippetList, isIsolate);
 	}
 
 	private installPatches(): void {
@@ -454,7 +453,6 @@ export class SettingsService extends Events {
 		this.isolateModeService.setIsolateMode(isIsolate);
 		await this.applySettingsUpdate(settings, {
 			persistNative: !isIsolate,
-			skipRefreshes: true,
 			silentUI: true,
 		});
 
@@ -712,7 +710,6 @@ export class SettingsService extends Events {
 			silentUI?: boolean;
 			skipSave?: boolean;
 			target?: 'shared' | 'isolate';
-			skipRefreshes?: boolean;
 		}
 	): Promise<void> {
 		const isIsolate = this.isolateModeService.isIsolateMode();
@@ -741,7 +738,7 @@ export class SettingsService extends Events {
 			this.applyAccentColor(updates[ACCENT_COLOR_KEY] as string, persist);
 		}
 		if (updates[SNIPPETS_KEY]) {
-			await this.applySnippets(updates[SNIPPETS_KEY] as string[], isIsolate, !!options?.skipRefreshes);
+			await this.applySnippets(updates[SNIPPETS_KEY] as string[], isIsolate);
 		}
 
 		this.updateMerged();
@@ -754,16 +751,16 @@ export class SettingsService extends Events {
 				(key) => key !== SNIPPETS_KEY && this.isStyleSetting(key)
 			);
 
-		if (!options?.skipRefreshes && hasStyleChange && !isSnippetOnly) {
+		if (hasStyleChange && !isSnippetOnly) {
 			this.styleSheetManager.clearCache();
 			this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
 		}
 
-		if (!options?.skipRefreshes && !options?.silentUI && !isSnippetOnly) {
+		if (!options?.silentUI && !isSnippetOnly) {
 			this.refreshService.trigger(RefreshLevel.UI_ONLY);
 		}
 
-		if (!options?.skipRefreshes && hasStyleChange && !isSnippetOnly) {
+		if (hasStyleChange && !isSnippetOnly) {
 			this.trigger('refresh-status-bar');
 		}
 

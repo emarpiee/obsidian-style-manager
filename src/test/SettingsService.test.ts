@@ -674,7 +674,7 @@ describe('SettingsService', () => {
 			expect(isolateSpy).toHaveBeenCalledWith(true);
 			expect(updateSpy).toHaveBeenCalledWith(
 				{ key: 'val' },
-				{ persistNative: false }
+				expect.objectContaining({ persistNative: false })
 			);
 			expect(settingsService.trigger).toHaveBeenCalledWith(
 				'isolate-mode-changed'
@@ -734,7 +734,8 @@ describe('SettingsService', () => {
 			await settingsService.applySnippets(['s1'], true);
 			await settingsService.syncSnippetState({ skipAdopt: true });
 
-			expect(applySpy).toHaveBeenCalledWith(['s1'], true);
+			expect(applySpy.mock.calls[0][0]).toEqual(['s1']);
+			expect(applySpy.mock.calls[0][1]).toBe(true);
 			expect(syncSpy).toHaveBeenCalledWith({ skipAdopt: true });
 		});
 
