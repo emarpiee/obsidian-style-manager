@@ -185,8 +185,7 @@ Style Manager interface is structured into six functional tabs.
     - **Safety Rollback**: Instantly restore the plugin state from the automatically generated \`data.json.bak\` snapshot.
 - **Export Customization:** Change default export folders, file extension naming preferences (e.g., \`.json\`, \`.md\`, \`.txt\`), and timestamp layouts.
 - **CSS Editor:**
-    - **Modal and Tab Views:** Edit CSS files in the built-in modal, or open the current editor in a dedicated workspace tab from the modal.
-    - **Indentation Control:** Customize the indentation of \`@settings\` blocks to match your preferred coding style.
+    - **Indentation Control**: Adjust the indentation of @settings blocks.
     - **External Editor:** Option to open CSS files in your system's default text editor instead of the plugin's integrated CSS editor.
     - **Editor Tuning:** Adjust the tab size for the CSS editor.
 - **Developer Options:**
@@ -244,6 +243,7 @@ Style Manager features an integrated CodeMirror 6 editor that works in both a mo
 - **Smart block injection:** Quickly add blocks and setting components using the **Add Block** button.
 - **Developer-friendly tools:** Includes line wrapping toggles, automatic bracket closing, and \`Mod-s\` (Ctrl/Cmd+S) support for quick saving.
 - **Flexible management:** Rename snippets, toggle snippet activation, save changes, or copy read-only content directly from the footer.
+- **Indentation Control:** Customize the indentation of \`@settings\` blocks to match your preferred coding style.
 
 ### The Evolution of Style Management
 
