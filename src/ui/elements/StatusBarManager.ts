@@ -25,7 +25,7 @@ import {
 	THEME_KEY,
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
-import { addThemeOptionsToMenu } from '../components/layout/ThemeSelector';
+import { ThemeOption, ThemeSuggestModal } from '../modals/ThemeSuggestModal';
 
 /**
  * Manages the Obsidian status bar integration for Style Manager.
@@ -146,21 +146,25 @@ export class StatusBarManager {
 				.setTitle(
 					`Theme: ${activeTheme === 'default' ? 'Default' : activeTheme}`
 				)
-				.setIcon('palette');
+				.setIcon('palette')
+				.onClick(async () => {
+					const themes: ThemeOption[] = [
+						{ id: 'default', name: 'Default' },
+					];
 
-			const themeMenu = (
-				item as unknown as { setSubmenu?: () => Menu }
-			).setSubmenu?.();
-			if (themeMenu) {
-				addThemeOptionsToMenu(this.plugin, themeMenu, activeTheme, () =>
-					this.refresh()
-				);
-			} else {
-				// Fallback for older Obsidian versions: toggle directly or show notice
-				item.onClick(() => {
-					this.plugin.activateView();
+					try {
+						const themeObjects = await this.plugin.settingsService.themeBuilderService.getThemes();
+						for (const id in themeObjects) {
+							themes.push({ id, name: themeObjects[id].name });
+						}
+					} catch (e) {
+						console.error('Style Manager | Error loading themes for status bar suggest modal:', e);
+					}
+
+					new ThemeSuggestModal(this.plugin.app, this.plugin, themes, () =>
+						this.refresh()
+					).open();
 				});
-			}
 		});
 
 		// 3. Appearance Toggle

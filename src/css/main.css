@@ -92,12 +92,6 @@
 	}
 }
 
-/* --- Schedule Status --- */
-.style-manager-schedule-paused {
-	text-decoration: line-through;
-	opacity: 0.6;
-}
-
 body {
 	/* Sun and Moon color */
 	--sm-icon-sun-color: #ccaa00;
@@ -1587,7 +1581,24 @@ body.theme-dark .style-manager-badge-primary.dynamic {
 	font-size: var(--font-ui-smaller);
 }
 
-/* Phase 1: Preset UX Enhancements */
+.style-manager-theme-suggestion-row {
+	display: flex;
+	align-items: center;
+	width: 100%;
+	gap: var(--size-4-4);
+}
+
+.style-manager-theme-active-badge {
+	background-color: var(--interactive-accent);
+	color: var(--text-on-accent);
+	font-size: 10px;
+	font-weight: var(--font-bold);
+	text-transform: uppercase;
+	padding: 2px 6px;
+	border-radius: var(--radius-s);
+	white-space: nowrap;
+	letter-spacing: 0.5px;
+}
 .style-manager-preset-star-icon {
 	margin-right: var(--size-4-2);
 	color: var(--text-faint);
@@ -2218,4 +2229,10 @@ body.is-mobile .style-manager-editor-title-container {
 .style-manager-accent-trigger-container {
 	padding: var(--size-4-1);
 	cursor: pointer;
+}
+
+/* --- Schedule Status --- */
+.style-manager-schedule-paused {
+	text-decoration: line-through;
+	opacity: 0.6;
 }

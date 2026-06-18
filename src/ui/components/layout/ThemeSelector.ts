@@ -16,54 +16,11 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Menu, setIcon, setTooltip } from 'obsidian';
+import { setIcon, setTooltip } from 'obsidian';
 
 import { THEME_KEY } from '../../../application/SettingsService';
 import StyleManagerPlugin from '../../../main';
-
-export async function addThemeOptionsToMenu(
-	plugin: StyleManagerPlugin,
-	menu: Menu,
-	currentValue: string,
-	onDone: () => void
-): Promise<void> {
-	const themes: Record<string, { name: string }> = {};
-	try {
-		const themeObjects = await plugin.settingsService.themeBuilderService.getThemes();
-		for (const id in themeObjects) {
-			themes[id] = { name: themeObjects[id].name };
-		}
-	} catch (e) {
-		console.error('Style Manager | Error loading themes for menu:', e);
-	}
-
-	menu.addItem((item) => {
-		item
-			.setTitle('Default')
-			.setChecked(currentValue === 'default')
-			.onClick(async () => {
-				await plugin.settingsService.setSetting(THEME_KEY, 'default', {
-					silentUI: true,
-				});
-				onDone();
-			});
-	});
-
-	for (const themeId in themes) {
-		const themeName = themes[themeId].name;
-		menu.addItem((item) => {
-			item
-				.setTitle(themeName)
-				.setChecked(currentValue === themeId)
-				.onClick(async () => {
-					await plugin.settingsService.setSetting(THEME_KEY, themeId, {
-						silentUI: true,
-					});
-					onDone();
-				});
-		});
-	}
-}
+import { ThemeOption, ThemeSuggestModal } from '../../modals/ThemeSuggestModal';
 
 export function renderThemeSelect(
 	plugin: StyleManagerPlugin,
@@ -92,11 +49,20 @@ export function renderThemeSelect(
 		}
 	});
 
-	triggerContainer.onclick = async (e: MouseEvent): Promise<void> => {
-		const menu = new Menu();
+	triggerContainer.onclick = async (_e: MouseEvent): Promise<void> => {
+		const themes: ThemeOption[] = [
+			{ id: 'default', name: 'Default' },
+		];
 
-		await addThemeOptionsToMenu(plugin, menu, currentValue, onDone);
+		try {
+			const themeObjects = await plugin.settingsService.themeBuilderService.getThemes();
+			for (const id in themeObjects) {
+				themes.push({ id, name: themeObjects[id].name });
+			}
+		} catch (e) {
+			console.error('Style Manager | Error loading themes for suggest modal:', e);
+		}
 
-		menu.showAtMouseEvent(e);
+		new ThemeSuggestModal(plugin.app, plugin, themes, onDone).open();
 	};
 }
