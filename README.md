@@ -308,10 +308,6 @@ version: 1.2.0
 authorUrl: https://github.com/emarpiee
 license: MIT
 */
-
-.cm-activeLine {
-    background-color: rgba(255, 255, 0, 0.1);
-    box-shadow: 0 0 5px yellow;
 }
 ```
 
