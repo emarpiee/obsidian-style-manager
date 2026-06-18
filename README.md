@@ -300,9 +300,9 @@ Type the following comment structure at the top of your `.css` file:
 ```css
 /* @metadata
 description: This snippet adds a glowing effect to the active line in the editor.
-author: Jane Doe
+author: emarpiee
 version: 1.2.0
-authorUrl: https://github.com/janedoe
+authorUrl: https://github.com/emarpiee
 license: MIT
 */
 
