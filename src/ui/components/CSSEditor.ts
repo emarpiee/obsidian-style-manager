@@ -284,34 +284,35 @@ export class CSSEditor {
 			};
 		}
 
-		if (!this.isViewMode) {
+		{
 			const mainBtns = footer.createDiv('style-manager-editor-buttons-main');
 			const mainBtnsSetting = new Setting(mainBtns).setClass(
 				'style-manager-editor-buttons'
 			);
 
 			if (this.source.readOnly) {
-				mainBtnsSetting
-					.addButton((btn) =>
+				if (!this.isViewMode) {
+					mainBtnsSetting.addButton((btn) =>
 						btn.setButtonText('Close').onClick(() => {
 							if (options.onClose) options.onClose();
 						})
-					)
-					.addButton((btn) =>
-						btn
-							.setButtonText('Copy to clipboard')
-							.setCta()
-							.onClick(() => {
-								if (this.view) {
-									const currentContent = this.view.state.doc.toString();
-									navigator.clipboard.writeText(currentContent);
-									this.plugin.settingsService.notifications.util(
-										'Copied to clipboard'
-									);
-								}
-								if (options.onClose) options.onClose();
-							})
 					);
+				}
+				mainBtnsSetting.addButton((btn) =>
+					btn
+						.setButtonText('Copy to clipboard')
+						.setCta()
+						.onClick(() => {
+							if (this.view) {
+								const currentContent = this.view.state.doc.toString();
+								navigator.clipboard.writeText(currentContent);
+								this.plugin.settingsService.notifications.util(
+									'Copied to clipboard'
+								);
+							}
+							if (!this.isViewMode && options.onClose) options.onClose();
+						})
+				);
 			} else {
 				if (this.source.type === 'Snippet') {
 					const currentEnabled =
