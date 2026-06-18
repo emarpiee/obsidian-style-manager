@@ -609,7 +609,7 @@ export class PreferencesTab {
 		);
 
 		new Setting(editorContainer)
-			.setName('Open editor after creation')
+			.setName('Open editor after CSS file creation')
 			.setDesc(
 				'Automatically open the CSS editor modal when a new snippet is created.'
 			)
@@ -629,7 +629,7 @@ export class PreferencesTab {
 			});
 
 		new Setting(editorContainer)
-			.setName('Open files in default app')
+			.setName('Open CSS files in default app')
 			.setDesc(
 				'Open CSS files like snippets and themes using your system default text editor instead of the built-in modal.'
 			)

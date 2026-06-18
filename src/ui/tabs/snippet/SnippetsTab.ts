@@ -81,7 +81,7 @@ export class SnippetsTab {
 							false;
 						if (openModal) {
 							const useDefaultApp =
-								this.plugin.settingsService.settings[OPEN_IN_DEFAULT_APP_KEY];
+							localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
 							if (useDefaultApp) {
 								const path =
 									this.plugin.settingsService.bridge.getSnippetPath(id);
