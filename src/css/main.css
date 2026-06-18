@@ -217,6 +217,10 @@ body {
 	/* --- Bulk Actions Bar --- */
 	--sm-bulk-actions-bg: var(--background-primary-alt);
 	--sm-bulk-actions-border-color: var(--background-modifier-border);
+
+	/* --- CSS Editor --- */
+	--sm-cm-gutters-color: unset;
+	--sm-cm-active-line-gutter-color: unset;
 }
 
 .style-manager-plugin {
@@ -1795,26 +1799,6 @@ body.is-phone .style-manager-editor-modal {
 	width: 100%;
 }
 
-/* Editor View */
-.style-manager-editor-view {
-	--editor-view-width: 100%;
-	--editor-view-height: 100%;
-
-	width: var(--editor-view-width);
-	height: var(--editor-view-height);
-	padding: 0;
-	display: flex;
-	flex-direction: column;
-}
-
-/* Editor Component */
-.style-manager-editor-component {
-	display: flex;
-	flex-direction: column;
-	height: 100%;
-	width: 100%;
-}
-
 .style-manager-editor-modal .modal-content {
 	display: flex;
 	flex-direction: column;
@@ -1844,6 +1828,14 @@ body.is-phone .style-manager-editor-modal {
 	height: 100%;
 }
 
+.style-manager-editor-container .cm-gutters {
+	background: var(--sm-cm-gutters-color);
+}
+
+.style-manager-editor-container .cm-activeLineGutter {
+	background: var(--sm-cm-active-line-gutter-color);
+}
+
 .style-manager-editor-footer {
 	padding: var(--size-4-3) var(--size-4-3) 0;
 	display: flex;
@@ -1858,6 +1850,7 @@ body.is-phone .style-manager-editor-modal {
 
 .style-manager-editor-buttons {
 	display: block;
+	background: transparent !important;
 }
 
 .style-manager-editor-buttons .setting-item-control {
@@ -1913,6 +1906,24 @@ body.is-mobile .style-manager-editor-title-container {
 	padding: 0 var(--size-4-1) !important;
 }
 
+/* Editor View */
+.style-manager-editor-view {
+	--editor-view-width: 100%;
+	--editor-view-height: 100%;
+
+	width: var(--editor-view-width);
+	height: var(--editor-view-height);
+	padding: 0 !important;
+	display: flex;
+	flex-direction: column-reverse;
+}
+
+.style-manager-editor-view .style-manager-editor-footer {
+	padding: 0 !important;
+}
+.style-manager-editor-view .style-manager-editor-buttons {
+	padding-block: 0 !important;
+}
 /* Status Bar Integration */
 .style-manager-status-bar-item {
 	cursor: var(--cursor);

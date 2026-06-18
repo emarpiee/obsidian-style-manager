@@ -29,7 +29,7 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 	- [Instant Access Header Controls](#instant-access-header-controls)
 		- [Vertical Ellipsis (`…`) Actions:](#vertical-ellipsis--actions)
 	- [Status Badges Reference](#status-badges-reference)
-- [Integrated CSS Code Editor Modal](#integrated-css-code-editor-modal)
+- [Integrated CSS Code Editor](#integrated-css-code-editor)
 	- [Key Features](#key-features)
 	- [The Evolution of Style Settings Management](#the-evolution-of-style-settings-management)
 		- [Smart Insertion Logic Reference](#smart-insertion-logic-reference)
@@ -185,6 +185,7 @@ Style Manager interface is structured into six functional tabs.
     - **Safety Rollback**: Instantly restore the plugin state from the automatically generated `data.json.bak` snapshot.
 - **Export Customization:** Change default export folders, file extension naming preferences (e.g., `.json`, `.md`, `.txt`), and timestamp layouts.
 - **CSS Editor:**
+    - **Modal and Tab Views:** Edit CSS files in the built-in modal, or open the current editor in a dedicated workspace tab from the modal.
     - **Indentation Control:** Customize the indentation of `@settings` blocks to match your preferred coding style.
     - **External Editor:** Option to open CSS files in your system's default text editor instead of the plugin's integrated CSS editor.
     - **Editor Tuning:** Adjust the tab size for the CSS editor.
@@ -220,7 +221,7 @@ The Style Manager displays a system of badges to provide quick visual cues and a
 | --- | ---------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | A   | `style settings count` | interactive | Number of settings configured in a style, preset, or device locker. In **Styles tab**, click to show per section configurations. |
 | B   | `style status`         | info        | Shows if the specific style settings is currently active                                                                         |
-| C   | `style source`         | interactive | Indicates where the style originates (Plugin, Theme, or Snippet). Click to open CSS editor modal.                                |
+| C   | `style source`         | interactive | Indicates where the style originates (Plugin, Theme, or Snippet). Click to open the CSS editor as a modal, or open it in a tab from the modal.                                |
 | D   | `active theme`         | interactive | Displays the name of the currently active Obsidian theme. Click to copy the preset or device locker current accent color.        |
 | E   | `active snippets`      | info        | Current count of active CSS snippets                                                                                             |
 | F   | `active appearance`    | info        | Indicates if a device locker or preset is in Light or Dark mode                                                                  |
@@ -231,16 +232,18 @@ The Style Manager displays a system of badges to provide quick visual cues and a
 
 ---
 
-## Integrated CSS Code Editor Modal
+## Integrated CSS Code Editor
 
-Style Manager features an integrated editing modal built on CodeMirror 6, allowing you to edit styles, snippets, and theme files without leaving Obsidian.
+Style Manager features an integrated CodeMirror 6 editor that works in both a modal and a dedicated workspace tab. Use it to edit styles, snippets, and theme files without leaving Obsidian.
 
 ### Key Features
 
-- **Direct Editing**: Modify CSS files without leaving Obsidian.
-- **Smart Block Injection**: Quickly add blocks and setting components using the **Add Block** button.
-- **Developer-Friendly Tools**: Includes line wrapping toggles, automatic bracket closing, and `Mod-s` (Ctrl/Cmd+S) support for quick saving.
-- **Flexible Management**: Rename snippets or toggle directly from the modal footer.
+- **Reusable editor component:** The same CodeMirror 6 editor powers both the modal and tab view.
+- **Direct editing:** Modify CSS files without leaving Obsidian.
+- **Open in tab:** From the modal, use the external-link icon to open the current CSS source in a dedicated workspace tab and close the modal.
+- **Smart block injection:** Quickly add blocks and setting components using the **Add Block** button.
+- **Developer-friendly tools:** Includes line wrapping toggles, automatic bracket closing, and `Mod-s` (Ctrl/Cmd+S) support for quick saving.
+- **Flexible management:** Rename snippets, toggle snippet activation, save changes, or copy read-only content directly from the footer.
 
 ### The Evolution of Style Management
 
