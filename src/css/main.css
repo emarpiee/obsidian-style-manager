@@ -335,10 +335,6 @@ body:not(.is-phone) .modal:has(.style-manager-plugin) .modal-close-button {
 	display: none;
 }
 
-body.is-phone .style-manager-plugin {
-	--sm-sticky-tabs-height: 104px;
-}
-
 .style-manager-plugin .search-input-container {
 	flex-grow: 1 !important;
 	width: 100%;
@@ -988,13 +984,6 @@ body.is-mobile
 	transition: mask-image 0.2s ease;
 }
 
-body.is-phone .style-manager-tabs-scroll-wrap {
-	width: 100%;
-	height: 40px;
-	flex-grow: 0;
-	align-items: center;
-}
-
 .style-manager-tabs-scroll-wrap.has-start-fade {
 	--sm-fade-start: transparent;
 }
@@ -1053,20 +1042,8 @@ body.is-phone .style-manager-tabs-scroll-wrap {
 	height: 16px;
 }
 
-body.is-phone .style-manager-tab-text {
-	display: inline;
-}
-
-body.is-phone .style-manager-tab {
-	justify-content: center;
-}
-
 .style-manager-tab-spacer {
 	flex-grow: 1;
-}
-
-body.is-phone .style-manager-tab-spacer {
-	display: none;
 }
 
 .style-manager-tab-actions {
@@ -1083,10 +1060,6 @@ body.is-phone .style-manager-tab-spacer {
 	border: 1px solid var(--sm-tab-actions-border-color);
 	margin-bottom: 4px;
 	/* Offset from bottom slightly for visual balance */
-}
-
-body.is-phone .style-manager-tab-actions {
-	margin-bottom: 0;
 }
 
 .style-manager-tab-actions .style-manager-icon-button {
@@ -1196,6 +1169,8 @@ button.style-manager-icon-button {
 
 .style-manager-item-row {
 	flex-direction: row !important;
+	align-items: center !important;
+	gap: 0 !important;
 }
 
 .style-manager-item-row.is-selected {
@@ -1213,12 +1188,6 @@ button.style-manager-icon-button {
 
 .style-manager-item-row button:hover {
 	box-shadow: none;
-}
-
-.is-mobile .style-manager-tab {
-	flex: 1;
-	text-align: center;
-	padding: var(--size-4-2) var(--size-4-1);
 }
 
 .style-manager-no-results {
@@ -1407,6 +1376,7 @@ button.style-manager-icon-button {
 	gap: var(--size-4-1);
 	align-items: center;
 	width: auto !important;
+	justify-content: flex-end !important;
 }
 
 .style-manager-item-select-icon {
@@ -1654,99 +1624,6 @@ body.theme-dark .style-manager-badge-primary.dynamic {
 	line-height: 1;
 }
 
-/* --- Mobile Spacing & Theme Select Optimization --- */
-body.is-phone .style-manager-settings-tab-content,
-body.is-phone .style-manager-presets-tab-content {
-	padding-left: var(--size-4-3) !important;
-	padding-right: var(--size-4-3) !important;
-}
-
-body.is-phone .style-manager-search-row {
-	padding: 0 var(--size-4-3);
-	gap: var(--size-4-2);
-}
-
-body.is-phone .style-manager-theme-trigger {
-	gap: var(--size-4-2);
-}
-
-body.is-phone .style-manager-theme-trigger-icon svg {
-	width: 18px;
-	height: 18px;
-}
-
-/* Force horizontal row on phone for preset items */
-body.is-phone .style-manager-item-row {
-	flex-direction: row !important;
-	align-items: flex-start !important;
-	padding: var(--size-4-2) var(--size-4-4) !important;
-	gap: var(--size-4-1);
-}
-
-body.is-phone .style-manager-item-row .setting-item-info {
-	margin-bottom: 0 !important;
-	flex: 1;
-}
-
-body.is-phone .style-manager-badge-container {
-	margin-left: 0;
-	margin-top: 6px;
-	width: 100%;
-}
-
-/* Ensure badges in Reset/Save modals stay on the right on mobile */
-body.is-phone .style-manager-reset-item .style-manager-badge-container {
-	width: auto !important;
-	margin-top: 0 !important;
-	margin-left: 8px !important;
-}
-
-body.is-phone .style-manager-item-row .setting-item-control {
-	width: auto !important;
-	padding: 0 !important;
-	margin: 0 !important;
-	display: flex !important;
-	flex: 0 !important;
-	flex-direction: row !important;
-	flex-wrap: nowrap !important;
-	gap: var(--size-4-1);
-	align-items: center;
-	align-self: center !important;
-}
-
-body.is-phone .style-manager-item-row .setting-item-control button {
-	width: 32px !important;
-	height: 32px !important;
-	padding: 0 !important;
-	border-radius: 50% !important;
-	display: flex;
-	align-items: center;
-	justify-content: center;
-}
-
-body.is-phone .style-manager-preset-star-icon {
-	margin-right: 0;
-}
-
-body.is-phone .style-manager-item-select-icon {
-	margin-left: 0 !important;
-	align-self: center;
-}
-
-body.is-phone
-	.style-manager-style-heading
-	.style-manager-badge-container.mod-left,
-body.is-phone
-	.style-manager-style-heading
-	.style-manager-badge-container.mod-right {
-	width: auto !important;
-	margin-top: 0 !important;
-	margin-left: 8px !important;
-	margin-right: 0 !important;
-	justify-content: flex-start !important;
-	align-self: center !important;
-}
-
 .style-manager-search-row .setting-item {
 	border-bottom: none !important;
 	padding: 0 !important;
@@ -1784,7 +1661,6 @@ body.is-phone
 .style-manager-snippets-search-row,
 .style-manager-theme-builder-search-row {
 	flex-direction: row !important;
-	padding: 0 var(--size-4-4);
 }
 
 .style-manager-snippets-search-row .setting-item,
@@ -1899,11 +1775,6 @@ body.is-phone
 .style-manager-metadata-value[href]:hover {
 	color: var(--interactive-accent-hover);
 	text-decoration: underline;
-}
-
-/* Mobile Optimizations */
-body.is-phone .style-manager-metadata-label {
-	display: none !important;
 }
 
 /* Editor Modal */
