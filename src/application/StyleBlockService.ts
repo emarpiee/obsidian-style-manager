@@ -206,7 +206,6 @@ settings:
         description: 
         type: variable-select
         default: 
-        quotes: true
         options:
             - 
                 label: 
