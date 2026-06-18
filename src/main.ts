@@ -74,6 +74,10 @@ import {
 	ColorContrastCheckerView,
 	colorContrastViewType,
 } from './ui/views/ColorContrastCheckerView';
+import {
+	CSSEditorView,
+	cssEditorViewType,
+} from './ui/views/CSSEditorView';
 import { LoremIpsumView, loremIpsumViewType } from './ui/views/LoremIpsumView';
 import { ReadmeView, readmeViewType } from './ui/views/ReadmeView';
 import { getDescription, getTitle } from './utils/CommonUtils';
@@ -364,6 +368,10 @@ export default class StyleManagerPlugin extends Plugin {
 		this.registerView(
 			colorContrastViewType,
 			(leaf) => new ColorContrastCheckerView(leaf)
+		);
+		this.registerView(
+			cssEditorViewType,
+			(leaf) => new CSSEditorView(leaf, this)
 		);
 		this.registerView(loremIpsumViewType, (leaf) => new LoremIpsumView(leaf));
 		this.registerView(readmeViewType, (leaf) => new ReadmeView(leaf));
@@ -724,6 +732,10 @@ export default class StyleManagerPlugin extends Plugin {
 		this.app.workspace.detachLeavesOfType(colorContrastViewType);
 	}
 
+	deactivateCSSEditorView(): void {
+		this.app.workspace.detachLeavesOfType(cssEditorViewType);
+	}
+
 	deactivateLoremIpsumView(): void {
 		this.app.workspace.detachLeavesOfType(loremIpsumViewType);
 	}
@@ -768,6 +780,17 @@ export default class StyleManagerPlugin extends Plugin {
 		await leaf.setViewState({
 			type: colorContrastViewType,
 			active: true,
+		});
+	}
+
+	async activateCSSEditorView(source: { type: string; id: string; readOnly?: boolean }): Promise<void> {
+		this.deactivateCSSEditorView();
+		const leaf = this.app.workspace.getLeaf('tab');
+
+		await leaf.setViewState({
+			type: cssEditorViewType,
+			active: true,
+			state: { source },
 		});
 	}
 

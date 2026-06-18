@@ -1795,11 +1795,35 @@ body.is-phone .style-manager-editor-modal {
 	width: 100%;
 }
 
+/* Editor View */
+.style-manager-editor-view {
+	--editor-view-width: 100%;
+	--editor-view-height: 100%;
+
+	width: var(--editor-view-width);
+	height: var(--editor-view-height);
+	padding: 0;
+	display: flex;
+	flex-direction: column;
+}
+
+/* Editor Component */
+.style-manager-editor-component {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	width: 100%;
+}
+
 .style-manager-editor-modal .modal-content {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
 	padding-inline: 0;
+}
+
+.style-manager-editor-open-in-tab-btn {
+	margin-left: 8px;
 }
 
 .style-manager-editor-container {
