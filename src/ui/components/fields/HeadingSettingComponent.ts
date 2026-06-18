@@ -171,6 +171,10 @@ export function buildSettingComponentTree(opts: {
 		if (setting.type === 'heading') {
 			const newHeading: Heading = setting as Heading;
 
+			if (newHeading.level <= 0) {
+				newHeading.level = 1;
+			}
+
 			if (newHeading.level < currentHeading.setting.level) {
 				while (newHeading.level < currentHeading.setting.level) {
 					currentHeading = currentHeading.parent;
