@@ -1,32 +1,3 @@
-/*
-    Style Manager - Obsidian Plugin
-    Copyright (c) 2023 mgmeyers
-    Copyright (c) 2026 emarpiee
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
-*/
-
-/**
- * Tests for commit 59c01d4: "fix: improve input validation and stability"
- *
- * Covers three changes:
- *  1. StyleGenerator.setConfig  — skips sections where `settings` is not an array
- *  2. VariableNumberField — reverts input to stored/default on NaN
- *  3. VariableTextField  — initialises field with `value != null` instead
- *     of `value ?` so that "" and "0" are preserved
- */
-
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { StyleGenerator } from '../core/style/StyleGenerator';

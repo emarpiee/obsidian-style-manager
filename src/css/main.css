@@ -1,24 +1,5 @@
 @import '@simonwep/pickr/dist/themes/monolith.min.css';
 
-/*
-    Style Manager - Obsidian Plugin
-    Copyright (c) 2023 mgmeyers
-    Copyright (c) 2026 emarpiee
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program. If not, see <https://www.gnu.org/licenses/>.
-*/
-
 @container (max-width: 720px) {
 	.style-manager-plugin > * {
 		--sm-sticky-tabs-height: 104px !important;
@@ -2167,7 +2148,9 @@ body.is-mobile .style-manager-editor-title-container {
 	text-decoration: underline;
 	text-decoration-style: dotted;
 	border-radius: var(--radius-s);
-	transition: color 100ms ease, background 100ms ease;
+	transition:
+		color 100ms ease,
+		background 100ms ease;
 }
 
 .style-manager-log-setting-id-link:hover {
