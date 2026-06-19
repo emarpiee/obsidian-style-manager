@@ -224,14 +224,15 @@ export class CSSParser {
 						parseLogs?.push({ name, message: `${issue}: Color '${setting.id}' format invalid, falling back to 'hex'`, type: 'warning', timestamp: Date.now() });
 					}
 					if (typeof setting.default !== 'string') {
-						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable color '${setting.id}' missing default value`, type: 'warning', timestamp: Date.now() });
+						setting.default = '#';
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable color '${setting.id}' missing default value, falling back to '#'`, type: 'warning', timestamp: Date.now() });
 					}
 					break;
 				case 'variable-themed-color':
 					if (!setting['default-light'] || !setting['default-dark']) {
-						setting['default-light'] = setting['default-light'] || '#000000';
-						setting['default-dark'] = setting['default-dark'] || '#000000';
-						parseLogs?.push({ name, message: `MISSING_THEMED_COLOR_FIELDS: Themed color '${setting.id}' missing defaults, falling back to '#000000'`, type: 'warning', timestamp: Date.now() });
+						setting['default-light'] = setting['default-light'] || '#';
+						setting['default-dark'] = setting['default-dark'] || '#';
+						parseLogs?.push({ name, message: `MISSING_THEMED_COLOR_FIELDS: Themed color '${setting.id}' missing defaults, falling back to '#'`, type: 'warning', timestamp: Date.now() });
 					}
 					break;
 				case 'variable-select':
