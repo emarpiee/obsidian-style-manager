@@ -1,6 +1,6 @@
 /* TODO: vars for colors*/
 
-@import '../lib/colorpicker/colorpicker.css';
+@import '../lib/colorpicker/colorpicker.min.css';
 
 @container (max-width: 720px) {
 	.style-manager-plugin > * {

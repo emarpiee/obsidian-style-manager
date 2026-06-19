@@ -1,4 +1,4 @@
-import ColorPicker from '../lib/colorpicker/colorpicker.js';
+import ColorPicker from '../lib/colorpicker/colorpicker.min.js';
 import { t } from '../infrastructure/lang/helpers';
 
 /**
@@ -23,8 +23,9 @@ export function getColorPickerConfig(opts: {
 	swatches: string[];
 	opacity: boolean | undefined;
 	defaultColor: string;
+	toggleStyle?: 'button' | 'input';
 }): ConstructorParameters<typeof ColorPicker>[1] {
-	const { isView, container, swatches, opacity, defaultColor } = opts;
+	const { isView, container, swatches, opacity, defaultColor, toggleStyle } = opts;
 
 	const safeColor = isColorValid(defaultColor) ? defaultColor : null;
 	const safeSwatches = swatches.filter(isColorValid);
@@ -34,11 +35,12 @@ export function getColorPickerConfig(opts: {
 		color: safeColor,
 		swatches: safeSwatches.length ? safeSwatches : null,
 		enableAlpha: !!opacity,
-		enableEyedropper: false,
+		enableEyedropper: true,
 		submitMode: 'confirm',
 		defaultFormat: 'hex',
-		formats: ['hex', 'rgb', 'hsl'],
-		showClearButton: false,
+		formats: ['hex', 'rgb', 'hsl', 'oklch'],
+		showClearButton: true,
+		toggleStyle: toggleStyle ?? 'button',
 	};
 }
 

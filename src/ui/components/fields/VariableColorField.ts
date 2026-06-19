@@ -18,7 +18,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import ColorPicker from '../../../lib/colorpicker/colorpicker.js';
+import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
 import { VariableColor, resetTooltip } from '../../../types';
@@ -91,7 +91,7 @@ export class VariableColorField extends AbstractSettingComponent {
 			value !== undefined ? (value as string) : resolvedDefault;
 		this.singleColorWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		const toggleEl = this.singleColorWrapper.createEl('button');
+		const toggleEl = this.singleColorWrapper.createEl('input', { type: 'text' });
 		const picker = (this.picker = new ColorPicker(
 			toggleEl,
 			getColorPickerConfig({
@@ -100,6 +100,7 @@ export class VariableColorField extends AbstractSettingComponent {
 				swatches: swatches,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
+				toggleStyle: 'input',
 			})
 		));
 

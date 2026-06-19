@@ -1,4 +1,4 @@
-import ColorPicker from '../../../lib/colorpicker/colorpicker.js';
+import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
 import { Menu, setTooltip } from 'obsidian';
 
 import { ACCENT_COLOR_KEY } from '../../../constants';

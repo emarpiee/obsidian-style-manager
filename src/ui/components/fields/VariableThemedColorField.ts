@@ -18,7 +18,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import ColorPicker from '../../../lib/colorpicker/colorpicker.js';
+import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
 import { VariableThemedColor, resetTooltip } from '../../../types';
@@ -198,7 +198,9 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				: resolvedDefault;
 		this.themeLightWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		const toggleElLight = this.themeLightWrapper.createEl('button');
+		const toggleElLight = this.themeLightWrapper.createEl('input', {
+			type: 'text',
+		});
 		const pickerLight = (this.pickerLight = new ColorPicker(
 			toggleElLight,
 			getColorPickerConfig({
@@ -207,6 +209,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				swatches: swatchesLight,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
+				toggleStyle: 'input',
 			})
 		));
 
@@ -261,7 +264,9 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				: resolvedDefault;
 		this.themeDarkWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		const toggleElDark = this.themeDarkWrapper.createEl('button');
+		const toggleElDark = this.themeDarkWrapper.createEl('input', {
+			type: 'text',
+		});
 		const pickerDark = (this.pickerDark = new ColorPicker(
 			toggleElDark,
 			getColorPickerConfig({
@@ -270,6 +275,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				swatches: swatchesDark,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
+				toggleStyle: 'input',
 			})
 		));
 

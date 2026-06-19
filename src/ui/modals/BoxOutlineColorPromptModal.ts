@@ -1,4 +1,4 @@
-import ColorPicker from '../../lib/colorpicker/colorpicker.js';
+import ColorPicker from '../../lib/colorpicker/colorpicker.min.js';
 import { App, Modal } from 'obsidian';
 
 import { getColorPickerConfig } from '../../utils/UIUtils';

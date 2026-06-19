@@ -1,4 +1,4 @@
-import ColorPicker from '../../lib/colorpicker/colorpicker.js';
+import ColorPicker from '../../lib/colorpicker/colorpicker.min.js';
 import chroma from 'chroma-js';
 import { Notice, Setting, setIcon, setTooltip } from 'obsidian';
 
