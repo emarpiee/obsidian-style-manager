@@ -82,6 +82,20 @@ export abstract class AbstractSettingComponent extends Component {
 			const searchId = str.substring(4).trim().toLowerCase();
 			return this.setting.id.toLowerCase().includes(searchId);
 		}
+		if (str.startsWith('@heading ')) {
+			const searchHeading = str.substring(9).trim().toLowerCase();
+			if (this.setting.type !== 'heading') {
+				return false;
+			}
+			if (!searchHeading) {
+				return true;
+			}
+			return getTitle(this.setting).toLowerCase().includes(searchHeading);
+		}
+		if (str.startsWith('@type ')) {
+			const searchType = str.substring(6).trim().toLowerCase();
+			return this.setting.type.toLowerCase().includes(searchType);
+		}
 		return this.match(str) > -100000;
 	}
 

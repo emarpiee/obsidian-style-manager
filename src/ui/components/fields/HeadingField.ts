@@ -353,9 +353,12 @@ export class HeadingField extends AbstractSettingComponent {
 		this.childEl = null as unknown as HTMLElement;
 	}
 
-	filter(filterString: string, showModifiedOnly: boolean = false): number {
+	filter(filterString: string, showModifiedOnly: boolean = false, originalFilterString?: string): number {
 		this.filteredChildren = [];
 		this.filterResultCount = 0;
+
+		const actualOriginalFilter = originalFilterString ?? filterString;
+		const isHeadingSearch = actualOriginalFilter.startsWith('@heading ') || actualOriginalFilter === '@heading' || actualOriginalFilter.startsWith('@type heading');
 
 		const headingMatchesString = filterString
 			? this.decisiveMatch(filterString)
@@ -369,7 +372,8 @@ export class HeadingField extends AbstractSettingComponent {
 				// so children don't get filtered out by text.
 				const childResultCount = headingChild.filter(
 					headingMatchesString ? '' : filterString,
-					showModifiedOnly
+					showModifiedOnly,
+					actualOriginalFilter
 				);
 
 				// Include this child heading if:
@@ -397,9 +401,15 @@ export class HeadingField extends AbstractSettingComponent {
 
 				if (matchesText && matchesModified) {
 					this.filteredChildren.push(child);
-					this.filterResultCount += child.getMatchCount(showModifiedOnly);
+					if (!isHeadingSearch) {
+						this.filterResultCount += child.getMatchCount(showModifiedOnly);
+					}
 				}
 			}
+		}
+
+		if (isHeadingSearch && headingMatchesString) {
+			this.filterResultCount += 1;
 		}
 
 		this.filterMode =
