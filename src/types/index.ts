@@ -153,7 +153,8 @@ export type ColorFormat =
 	| 'rgb'
 	| 'rgb-values'
 	| 'rgb-split'
-	| 'hex';
+	| 'hex'
+	| 'oklch';
 
 export interface VariableColor extends Meta {
 	default?: string;
@@ -165,7 +166,7 @@ export interface VariableColor extends Meta {
 export interface ColorGradient extends Meta {
 	from: string;
 	to: string;
-	format: 'hsl' | 'rgb' | 'hex';
+	format: 'hsl' | 'rgb' | 'hex' | 'oklch';
 	pad?: number;
 	step: number;
 }

@@ -108,6 +108,13 @@ ${JSON.stringify({
 		expect(parseLogs[0].message).toContain('UNSUPPORTED_COLOR_FORMAT');
 	});
 
+	it('validates variable-color oklch format', () => {
+		const parseLogs: ParseLogList = [];
+		const result = parse({ id: 'vc2', type: 'variable-color', format: 'oklch', default: '#' }, parseLogs);
+		expect((result?.settings[0] as any).format).toBe('oklch');
+		expect(parseLogs.length).toBe(0);
+	});
+
 	it('validates variable-themed-color missing defaults', () => {
 		const parseLogs: ParseLogList = [];
 		const result = parse({ id: 'vtc1', type: 'variable-themed-color', format: 'hex' }, parseLogs);

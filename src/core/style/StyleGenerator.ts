@@ -45,7 +45,8 @@ type ColorFormat =
 	| 'hsl-split-decimal'
 	| 'rgb'
 	| 'rgb-values'
-	| 'rgb-split';
+	| 'rgb-split'
+	| 'oklch';
 type AltFormatList = Array<{ id: string; format: ColorFormat }>;
 
 /**
@@ -540,7 +541,7 @@ export class StyleGenerator {
 							id,
 							fromColor,
 							toColor,
-							format as 'hsl' | 'rgb' | 'hex',
+							format as 'hsl' | 'rgb' | 'hex' | 'oklch',
 							step,
 							pad
 						);
@@ -563,7 +564,7 @@ export class StyleGenerator {
 							id,
 							fromColor,
 							toColor,
-							format as 'hsl' | 'rgb' | 'hex',
+							format as 'hsl' | 'rgb' | 'hex' | 'oklch',
 							step,
 							pad
 						);
@@ -586,7 +587,7 @@ export class StyleGenerator {
 							id,
 							fromColor,
 							toColor,
-							format as 'hsl' | 'rgb' | 'hex',
+							format as 'hsl' | 'rgb' | 'hex' | 'oklch',
 							step,
 							pad
 						);
@@ -614,6 +615,16 @@ export class StyleGenerator {
 		}, []);
 
 		switch (format) {
+			case 'oklch': {
+				const oklch = parsedColor.oklch();
+				const round = (n: number) => isNaN(n) ? 0 : parseFloat(n.toFixed(5));
+				const l = round(oklch[0]);
+				const c = round(oklch[1]);
+				const h = round(oklch[2]);
+				const alpha = parsedColor.alpha();
+				const alphaStr = opacity && alpha !== 1 ? ` / ${round(alpha)}` : '';
+				return [{ key, value: `oklch(${l} ${c} ${h}${alphaStr})` }, ...alts];
+			}
 			case 'hex':
 				return [{ key, value: colorStr }, ...alts];
 			case 'hsl':
@@ -683,7 +694,7 @@ export class StyleGenerator {
 		id: string,
 		from: string,
 		to: string,
-		format: 'hsl' | 'rgb' | 'hex',
+		format: 'hsl' | 'rgb' | 'hex' | 'oklch',
 		step: number,
 		pad: number
 	): void {

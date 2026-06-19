@@ -219,7 +219,7 @@ export class CSSParser {
 					break;
 				}
 								case 'variable-color':
-					if (!setting.format || !['hsl', 'hsl-values', 'hsl-split', 'hsl-split-decimal', 'rgb', 'rgb-values', 'rgb-split', 'hex'].includes(setting.format)) {
+					if (!setting.format || !['hsl', 'hsl-values', 'hsl-split', 'hsl-split-decimal', 'rgb', 'rgb-values', 'rgb-split', 'hex', 'oklch'].includes(setting.format)) {
 						const issue = !setting.format ? 'MISSING_COLOR_FORMAT' : 'UNSUPPORTED_COLOR_FORMAT';
 						setting.format = 'hex';
 						parseLogs?.push({ name, message: `${issue}: Color '${setting.id}' format invalid, falling back to 'hex'`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
