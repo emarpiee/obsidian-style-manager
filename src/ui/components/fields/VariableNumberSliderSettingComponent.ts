@@ -18,10 +18,8 @@
 */
 import { Setting, SliderComponent, debounce } from 'obsidian';
 
-import { t } from '../../../infrastructure/lang/helpers';
 import { VariableNumberSlider, resetTooltip } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
-import { Logger } from '../../../utils/Logger';
 import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 

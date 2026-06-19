@@ -18,14 +18,12 @@
 */
 import { Setting, TextComponent } from 'obsidian';
 
-import { t } from '../../../infrastructure/lang/helpers';
 import { VariableText, resetTooltip } from '../../../types';
 import {
 	getDescription,
 	getTitle,
 	sanitizeText,
 } from '../../../utils/CommonUtils';
-import { Logger } from '../../../utils/Logger';
 import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 

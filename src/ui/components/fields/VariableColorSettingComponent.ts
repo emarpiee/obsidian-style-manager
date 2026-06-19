@@ -19,14 +19,12 @@
 import Pickr from '@simonwep/pickr';
 import { ButtonComponent, Setting } from 'obsidian';
 
-import { t } from '../../../infrastructure/lang/helpers';
 import { VariableColor, resetTooltip } from '../../../types';
 import {
 	getDescription,
 	getTitle,
 	isValidDefaultColor,
 } from '../../../utils/CommonUtils';
-import { Logger } from '../../../utils/Logger';
 import {
 	createDescription,
 	getPickrSettings,

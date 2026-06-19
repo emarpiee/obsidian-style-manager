@@ -18,10 +18,8 @@
 */
 import { DropdownComponent, Setting } from 'obsidian';
 
-import { t } from '../../../infrastructure/lang/helpers';
 import { ClassMultiToggle, SelectOption, resetTooltip } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
-import { Logger } from '../../../utils/Logger';
 import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
