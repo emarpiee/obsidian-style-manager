@@ -78,7 +78,7 @@ export class VariableTextSettingComponent extends AbstractSettingComponent {
 				value = ``;
 			}
 
-			text.setValue(value ? value.toString() : this.setting.default);
+			text.setValue(value != null ? value.toString() : this.setting.default);
 
 			text.inputEl.addEventListener('blur', () => {
 				onCommit(text.getValue());

@@ -56,6 +56,18 @@ export class VariableNumberSettingComponent extends AbstractSettingComponent {
 				const isFloat = /\./.test(value);
 				const numValue = isFloat ? parseFloat(value) : parseInt(value, 10);
 
+				if (isNaN(numValue)) {
+					// Revert the input to the last valid stored value (or default)
+					const stored = this.settingsService.getSetting(
+						this.sectionId,
+						this.setting.id
+					);
+					this.textComponent.setValue(
+						stored != null ? stored.toString() : this.setting.default.toString()
+					);
+					return;
+				}
+
 				if (numValue === this.setting.default) {
 					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
 						silentUI: true,

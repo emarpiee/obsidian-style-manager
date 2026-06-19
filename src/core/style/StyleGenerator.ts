@@ -221,6 +221,7 @@ export class StyleGenerator {
 
 		parsedSettings.forEach((s) => {
 			this.config[s.id] = {};
+			if (!Array.isArray(s.settings)) return;
 			s.settings.forEach((setting: CSSSetting) => {
 				this.config[s.id][setting.id] = setting;
 
