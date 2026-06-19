@@ -1,13 +1,13 @@
 
 # Obsidian Style Manager
 
-> **Style Manager** is an extension and fork of the [Style Settings](https://github.com/mgmeyers/obsidian-style-settings) plugin originally created by [mgmeyers](https://github.com/mgmeyers).
+> This plugin wouldn't have been possible without the inspiration and foundational logic provided by [Style Settings](https://github.com/mgmeyers/obsidian-style-settings), an Obsidian plugin originally created by [mgmeyers](https://github.com/mgmeyers). I've adapted several key parts of their codebase to jumpstart the development of this plugin.
 
 This plugin allows Obsidian snippet, theme, and plugin CSS files to define configurable options, offering users a central settings pane to tweak these variables. It supports toggling HTML body classes, numeric sliders, text inputs, color pickers, and more.
 
 > [!CAUTION]
 > **Do not enable Style Manager and Style Settings at the same time.**
-> Because Style Manager is a fork of the Style Settings plugin, both plugins rely on the exact same `/* @settings` configuration system. If run simultaneously, they will compete to manage your CSS variables, which can lead to layout conflicts. To ensure a stable experience, please **disable the original Style Settings plugin** before enabling Style Manager.
+> Both plugins rely on the exact same `/* @settings` configuration system. If run simultaneously, they will compete to manage your CSS variables, which can lead to layout conflicts. To ensure a stable experience, please **disable the Style Settings plugin** before using Style Manager.
 
 ---
 
@@ -27,18 +27,18 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 	- [6. Preferences Tab](#6-preferences-tab)
 - [Global Toolbar & Status Badges](#global-toolbar--status-badges)
 	- [Instant Access Header Controls](#instant-access-header-controls)
-		- [Vertical Ellipsis (`…`) Actions:](#vertical-ellipsis--actions)
+		- [More Actions Menu (Vertical Ellipsis)](#more-actions-menu-vertical-ellipsis)
 	- [Status Badges Reference](#status-badges-reference)
 - [Integrated CSS Code Editor](#integrated-css-code-editor)
 	- [Key Features](#key-features)
-	- [The Evolution of Style Settings Management](#the-evolution-of-style-settings-management)
+	- [The Evolution of Style Management](#the-evolution-of-style-management)
 		- [Smart Insertion Logic Reference](#smart-insertion-logic-reference)
 - [CSS Snippet Metadata Block (`@metadata`)](#css-snippet-metadata-block-metadata)
 	- [Adding a Metadata Block](#adding-a-metadata-block)
 		- [Method A: Automatic Injection (Recommended)](#method-a-automatic-injection-recommended)
 		- [Method B: Manual Writing](#method-b-manual-writing)
 	- [Supported Metadata Fields](#supported-metadata-fields)
-- [Style Settings Block (`@settings`)](#style-settings-block-settings)
+- [Settings Block (`@settings`)](#settings-block-settings)
 	- [What is a Setting Component?](#what-is-a-setting-component)
 	- [Basic Structure Example](#basic-structure-example)
 	- [Setting Types Overview](#setting-types-overview)
@@ -127,7 +127,7 @@ Style Manager interface is structured into six functional tabs.
 *The primary workspace for Styles customization.*
 - **Unified Style Control:** Renders settings (parsed from theme and snippet CSS files) into interactive toggles, sliders, and color pickers.
 - **Modified-Only Filter:** A quick switch to hide unchanged settings and view only the settings you have specifically changed.
-- **Navigation:** Search bar for instant filtering (supports `@id [id]` prefix to match setting IDs), and a "Collapse/Expand All" toggle to manage large sets of style settings.
+- **Navigation:** Search bar for instant filtering (supports `@id [id]`, `@type [known-type]`, and `@heading [text]` prefixes), and a "Collapse/Expand All" toggle to manage large sets of style settings.
 - **Parse Logs:** An info button that opens a modal listing all warnings and errors found during the parsing of `@settings` blocks, allowing for quick debugging of CSS configurations.
 
 ### 2. Snippets Tab
@@ -149,7 +149,7 @@ Style Manager interface is structured into six functional tabs.
 ### 4. Presets Tab
 
 *Capture, restore, and schedule snapshots of your entire workspace design.*
-- **Visual State Snapshots:** Save your active Theme, active CSS Snippets, Style Settings, and Accent Colors into a unified "Preset".
+- **Visual State Snapshots:** Save your active Theme, active CSS Snippets, style settings, and Accent Colors into a unified "Preset".
 - **Intelligent Search:** Filter your preset library using tags:
     - `@theme`, `@snippet`, and `@name` to match preset contents.
     - `@light` and `@dark` to filter by appearance mode.
@@ -326,7 +326,7 @@ To show these in your list views, enable **"Display metadata (Author, Version, e
 
 ---
 
-## Style Settings Block (`@settings`)
+## Settings Block (`@settings`)
 
 Style Manager uses a specific system to turn CSS class and variables into user-configurable settings in the **Styles tab**. This is done using special comment blocks. To expose configurable settings, wrap YAML configuration blocks inside CSS comments starting with `/* @settings`.
 
@@ -579,6 +579,7 @@ Creates an interactive color picker interface. The `id` of the setting will be u
 ```
 
 *Alternatively, use a CSS variable for the default value:*
+
 ```css
         default: 'var(--accent-color)'
 ```
@@ -600,6 +601,7 @@ Generates dual color pickers for light and dark appearance profiles. The `id` of
 ```
 
 *Alternatively, use CSS variables for themed defaults:*
+
 ```css
         default-light: 'var(--text-light)'
         default-dark: 'var(--text-dark)'
