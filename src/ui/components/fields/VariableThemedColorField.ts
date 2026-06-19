@@ -47,9 +47,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		const idDark = `${this.setting.id}@@dark`;
 		const valueLight = this.settingsService.getSetting(this.sectionId, idLight);
 		const valueDark = this.settingsService.getSetting(this.sectionId, idDark);
-		const swatchesLight: string[] = [];
-		const swatchesDark: string[] = [];
-
 		// Resolve schema defaults for the color picker (CSS vars like var(--x) are not parseable)
 		const resolvedDefaultLight = resolveDefaultColor(
 			this.setting['default-light']
@@ -57,22 +54,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		const resolvedDefaultDark = resolveDefaultColor(
 			this.setting['default-dark']
 		);
-
-		if (resolvedDefaultLight) {
-			swatchesLight.push(resolvedDefaultLight);
-		}
-
-		if (valueLight !== undefined) {
-			swatchesLight.push(valueLight as string);
-		}
-
-		if (resolvedDefaultDark) {
-			swatchesDark.push(resolvedDefaultDark);
-		}
-
-		if (valueDark !== undefined) {
-			swatchesDark.push(valueDark as string);
-		}
 
 		this.settingEl = new Setting(this.containerEl);
 		this.settingEl.setClass('style-manager-style-settings-item');
@@ -105,7 +86,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		this.createColorPickerLight(
 			wrapper,
 			this.containerEl,
-			swatchesLight,
 			(valueLight as string) || '',
 			idLight,
 			resolvedDefaultLight
@@ -115,7 +95,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		this.createColorPickerDark(
 			wrapper,
 			this.containerEl,
-			swatchesDark,
 			(valueDark as string) || '',
 			idDark,
 			resolvedDefaultDark
@@ -182,7 +161,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 	private createColorPickerLight(
 		wrapper: HTMLDivElement,
 		containerEl: HTMLElement,
-		swatchesLight: string[],
 		valueLight: number | string | boolean,
 		idLight: string,
 		resolvedDefault: string
@@ -201,7 +179,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			getColorPickerConfig({
 				isView: this.isView,
 				container: containerEl,
-				swatches: swatchesLight,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 				toggleStyle: 'button',
@@ -213,7 +190,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		});
 
 		pickerLight.on('pick', (color) => {
-			this.onSave(idLight, color, pickerLight, swatchesLight);
+			this.onSave(idLight, color, pickerLight);
 			this.updateVisualsLight(color ? color.string('hex').toUpperCase() : null);
 		});
 
@@ -245,7 +222,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 	private createColorPickerDark(
 		wrapper: HTMLDivElement,
 		containerEl: HTMLElement,
-		swatchesDark: string[],
 		valueDark: number | string | boolean,
 		idDark: string,
 		resolvedDefault: string
@@ -264,7 +240,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			getColorPickerConfig({
 				isView: this.isView,
 				container: containerEl,
-				swatches: swatchesDark,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 				toggleStyle: 'button',
@@ -276,7 +251,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		});
 
 		pickerDark.on('pick', (color) => {
-			this.onSave(idDark, color, pickerDark, swatchesDark);
+			this.onSave(idDark, color, pickerDark);
 			this.updateVisualsDark(color ? color.string('hex').toUpperCase() : null);
 		});
 
@@ -308,8 +283,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 	private onColorChange(
 		id: string,
 		color: InstanceType<typeof ColorPicker.Color> | null,
-		instance: ColorPicker,
-		swatches: string[]
+		instance: ColorPicker
 	): void {
 		if (!color) {
 			this.settingsService.clearSetting(this.sectionId, id, { silentUI: true });
@@ -331,8 +305,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				this.settingsService.setSetting(this.sectionId, id, hexValue, {
 					silentUI: true,
 				});
-				// Update swatches to include the newly saved color
-				instance.setSwatches([...swatches.filter(Boolean), hexValue]);
 			}
 		}
 
@@ -342,10 +314,9 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 	private onSave(
 		id: string,
 		color: InstanceType<typeof ColorPicker.Color> | null,
-		instance: ColorPicker,
-		swatches: string[]
+		instance: ColorPicker
 	): void {
-		this.onColorChange(id, color, instance, swatches);
+		this.onColorChange(id, color, instance);
 	}
 
 	isModified(): boolean {

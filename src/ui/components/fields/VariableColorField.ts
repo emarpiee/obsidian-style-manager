@@ -59,17 +59,8 @@ export class VariableColorField extends AbstractSettingComponent {
 			this.sectionId,
 			this.setting.id
 		);
-		const swatches: string[] = [];
-
 		// Resolve the schema default for the color picker (CSS vars are not parseable)
 		const resolvedDefault = resolveDefaultColor(this.setting.default || '');
-		if (resolvedDefault) {
-			swatches.push(resolvedDefault);
-		}
-
-		if (value !== undefined) {
-			swatches.push(value as string);
-		}
 
 		this.settingEl = new Setting(this.containerEl);
 		this.settingEl.setClass('style-manager-style-settings-item');
@@ -96,7 +87,6 @@ export class VariableColorField extends AbstractSettingComponent {
 			getColorPickerConfig({
 				isView: this.isView,
 				container: this.containerEl,
-				swatches: swatches,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 				toggleStyle: 'button',
@@ -126,8 +116,6 @@ export class VariableColorField extends AbstractSettingComponent {
 						hexValue,
 						{ silentUI: true }
 					);
-					// Update swatches to include the newly saved color
-					picker.setSwatches([...swatches.filter(Boolean), hexValue]);
 				}
 			}
 

@@ -114,7 +114,6 @@ export class ColorContrastChecker {
 			getColorPickerConfig({
 				isView: false,
 				container: contentEl,
-				swatches: [this.fgColor],
 				opacity: false,
 				defaultColor: this.fgColor,
 			})
@@ -150,7 +149,6 @@ export class ColorContrastChecker {
 			getColorPickerConfig({
 				isView: false,
 				container: contentEl,
-				swatches: [this.bgColor],
 				opacity: false,
 				defaultColor: this.bgColor,
 			})

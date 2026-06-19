@@ -40,7 +40,6 @@ export class BoxOutlineColorPromptModal extends Modal {
 			getColorPickerConfig({
 				isView: false,
 				container: contentEl,
-				swatches: [],
 				opacity: true,
 				defaultColor: this.value ?? 'red',
 			})

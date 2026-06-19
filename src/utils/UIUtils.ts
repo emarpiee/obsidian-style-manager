@@ -28,8 +28,21 @@ export function getColorPickerConfig(opts: {
 
 	const safeColor = isColorValid(defaultColor) ? defaultColor : null;
 
+	let targetContainer = container;
+	if (isView) {
+		let sharedContainer = document.querySelector(
+			'.sm-color-picker-wrapper'
+		) as HTMLElement;
+		if (!sharedContainer) {
+			sharedContainer = document.createElement('div');
+			sharedContainer.className = 'sm-color-picker-wrapper style-manager-plugin';
+			document.body.appendChild(sharedContainer);
+		}
+		targetContainer = sharedContainer;
+	}
+
 	return {
-		container: isView ? document.body : container,
+		container: targetContainer,
 		color: safeColor,
 		enableAlpha: !!opacity,
 		enableEyedropper: true,

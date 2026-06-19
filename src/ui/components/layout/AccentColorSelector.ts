@@ -44,7 +44,6 @@ export function renderAccentColorSelect(
 		getColorPickerConfig({
 			isView: false,
 			container: containerEl,
-			swatches: accentColor ? [accentColor] : [],
 			opacity: false,
 			defaultColor: displayColor,
 		})
