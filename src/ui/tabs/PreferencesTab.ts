@@ -867,6 +867,22 @@ export class PreferencesTab {
 			'style-manager-settings-tab-content'
 		);
 
+		new Setting(developerContainer)
+			.setName('Show CSS parser logs icon')
+			.setDesc('Show the "CSS parser logs" icon in the Styles tab.')
+			.addToggle((toggle) => {
+				toggle
+					.setValue(
+						(plugin.settingsService.sharedSettings[SHOW_PARSE_LOGS_ICON_KEY] as boolean) !== false
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings(
+							{ [SHOW_PARSE_LOGS_ICON_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
+					});
+			});
+
 		const notificationSettings = [
 			{
 				key: SHOW_SHARED_NOTIFICATIONS_KEY,
@@ -914,22 +930,6 @@ export class PreferencesTab {
 						});
 				});
 		});
-
-		new Setting(developerContainer)
-			.setName('Show parse logs icon')
-			.setDesc('Show the "View Parse Logs" icon in the Styles tab.')
-			.addToggle((toggle) => {
-				toggle
-					.setValue(
-						(plugin.settingsService.sharedSettings[SHOW_PARSE_LOGS_ICON_KEY] as boolean) !== false
-					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [SHOW_PARSE_LOGS_ICON_KEY]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
-			});
 
 		new Setting(developerContainer)
 			.setName('Enable console logging')

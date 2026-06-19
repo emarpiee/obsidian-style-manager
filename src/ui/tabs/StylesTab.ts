@@ -16,7 +16,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Setting, debounce } from 'obsidian';
+import { Setting } from 'obsidian';
 
 import StyleManagerPlugin from '../../main';
 import { CSSSetting, ParsedCSSSettings } from '../../types';
@@ -80,19 +80,21 @@ export class StylesTab {
 			.setClass('style-manager-styles-filter')
 			.addSearch((searchComponent) => {
 				searchComponent.setValue(this.deps.filterString);
-				searchComponent.onChange(
-					debounce(
-						(value) => {
-							if (value) {
-								this.deps.onFilterChange(value);
-							} else {
-								this.deps.onFilterClear();
-							}
-						},
-						250,
-						true
-					)
-				);
+				searchComponent.onChange((value) => {
+					if (!value) {
+						this.deps.onFilterClear();
+					}
+				});
+				searchComponent.inputEl.addEventListener('keydown', (e) => {
+					if (e.key === 'Enter') {
+						const value = searchComponent.inputEl.value;
+						if (value) {
+							this.deps.onFilterChange(value);
+						} else {
+							this.deps.onFilterClear();
+						}
+					}
+				});
 				searchComponent.setPlaceholder('Search styles...');
 			})
 			.addExtraButton((btn) => {
@@ -130,7 +132,7 @@ export class StylesTab {
 			searchSetting.addExtraButton((btn) => {
 				btn
 					.setIcon('info')
-					.setTooltip('View Parse Logs')
+					.setTooltip('View CSS parser logs')
 					.onClick(() => {
 						new CSSParserLogsModal(
 							this.deps.plugin.app,
