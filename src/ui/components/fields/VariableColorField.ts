@@ -18,7 +18,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import Pickr from '@simonwep/pickr';
+import ColorPicker from '../../../lib/colorpicker/colorpicker.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
 import { VariableColor, resetTooltip } from '../../../types';
@@ -29,16 +29,16 @@ import {
 } from '../../../utils/CommonUtils';
 import {
 	createDescription,
-	getPickrSettings,
-	onPickrCancel,
+	getColorPickerConfig,
 	resolveDefaultColor,
+	isColorValid,
 } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
 export class VariableColorField extends AbstractSettingComponent {
 	settingEl: Setting;
 	setting: VariableColor;
-	pickr: Pickr | null;
+	picker: ColorPicker | null;
 	singleColorWrapper: HTMLElement | null = null;
 
 	render(): void {
@@ -61,7 +61,7 @@ export class VariableColorField extends AbstractSettingComponent {
 		);
 		const swatches: string[] = [];
 
-		// Resolve the schema default for Pickr (CSS vars are not parseable by Pickr)
+		// Resolve the schema default for the color picker (CSS vars are not parseable)
 		const resolvedDefault = resolveDefaultColor(this.setting.default || '');
 		if (resolvedDefault) {
 			swatches.push(resolvedDefault);
@@ -91,11 +91,12 @@ export class VariableColorField extends AbstractSettingComponent {
 			value !== undefined ? (value as string) : resolvedDefault;
 		this.singleColorWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		const pickr = (this.pickr = Pickr.create(
-			getPickrSettings({
+		const toggleEl = this.singleColorWrapper.createEl('button');
+		const picker = (this.picker = new ColorPicker(
+			toggleEl,
+			getColorPickerConfig({
 				isView: this.isView,
-				el: this.singleColorWrapper.createDiv({ cls: 'picker' }),
-				containerEl: this.containerEl,
+				container: this.containerEl,
 				swatches: swatches,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
@@ -103,15 +104,14 @@ export class VariableColorField extends AbstractSettingComponent {
 		));
 
 		const onColorChange = (
-			color: Pickr.HSVaColor | null,
-			instance: Pickr
+			color: InstanceType<typeof ColorPicker.Color> | null
 		): void => {
 			if (!color) {
 				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
 					silentUI: true,
 				});
 			} else {
-				const hexValue = color.toHEXA().toString();
+				const hexValue = color.string('hex').toUpperCase();
 				const normalizedHex = hexValue.toLowerCase();
 				const normalizedDefault = (this.setting.default || '').toLowerCase();
 
@@ -126,45 +126,40 @@ export class VariableColorField extends AbstractSettingComponent {
 						hexValue,
 						{ silentUI: true }
 					);
-					// only add swatch if not already present
-					instance.addSwatch(hexValue);
+					// Update swatches to include the newly saved color
+					picker.setSwatches([...swatches.filter(Boolean), hexValue]);
 				}
 			}
 
-			this.updateVisuals(color ? color.toHEXA().toString() : null);
+			this.updateVisuals(color ? color.string('hex').toUpperCase() : null);
 			this.updateModifiedClass();
 		};
 
-		pickr.on('save', (color: Pickr.HSVaColor | null, instance: Pickr) => {
-			onColorChange(color, instance);
-			instance.hide();
+		picker.on('pick', (color) => {
+			onColorChange(color);
 		});
 
-		pickr.on('show', () => {
+		picker.on('open', () => {
 			// Do not auto-focus result input as it opens the keyboard on mobile
 		});
 
-		pickr.on('cancel', onPickrCancel);
-
 		const resetButton = new ButtonComponent(
-			this.singleColorWrapper.createDiv({ cls: 'pickr-reset' })
+			this.singleColorWrapper.createDiv({ cls: 'color-picker-reset' })
 		);
 		resetButton.setIcon('reset');
 		resetButton.onClick(() => {
 			const defaultColorRaw = this.setting.default;
 			const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
-			const isColorValid = (color: string | undefined): color is string =>
-				!!color && color.trim() !== '' && color.trim() !== '#';
 
 			this.settingsService.clearSetting(this.sectionId, this.setting.id, {
 				silentUI: true,
 			});
 
 			if (isColorValid(resolvedDefaultValue)) {
-				pickr.setColor(resolvedDefaultValue, true);
+				picker.setColor(resolvedDefaultValue, false);
 				this.updateVisuals(resolvedDefaultValue);
 			} else {
-				pickr.setColor('#00000000', true);
+				picker.setColor(null, false);
 				this.updateVisuals(null);
 			}
 
@@ -177,42 +172,31 @@ export class VariableColorField extends AbstractSettingComponent {
 	}
 
 	destroy(): void {
-		this.pickr?.destroyAndRemove();
-		this.pickr = null;
+		this.picker?.destroy();
+		this.picker = null;
 		this.settingEl?.settingEl.remove();
 	}
 
 	private updateVisuals(color: string | null): void {
-		if (!this.singleColorWrapper || !this.pickr) return;
+		if (!this.singleColorWrapper) return;
 
 		const resolvedDefault = resolveDefaultColor(this.setting.default || '');
 		const displayColor = color || resolvedDefault || 'transparent';
 
 		this.singleColorWrapper.style.setProperty('--pcr-color', displayColor);
-
-		const pickrRoot = (this.pickr.getRoot() as { root: HTMLElement }).root;
-		if (pickrRoot) {
-			pickrRoot.style.setProperty('--pcr-color', displayColor);
-			const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
-			if (button) {
-				button.style.setProperty('--pcr-color', displayColor);
-			}
-		}
 	}
 
 	refresh(): void {
-		if (!this.pickr) return;
+		if (!this.picker) return;
 
 		const defaultColorRaw = this.setting.default;
 		const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
-		const isColorValid = (color: string | undefined): color is string =>
-			!!color && color.trim() !== '' && color.trim() !== '#';
 
 		if (isColorValid(resolvedDefaultValue)) {
-			this.pickr.setColor(resolvedDefaultValue, true);
+			this.picker.setColor(resolvedDefaultValue, false);
 			this.updateVisuals(resolvedDefaultValue);
 		} else {
-			this.pickr.setColor('#00000000', true);
+			this.picker.setColor(null, false);
 			this.updateVisuals(null);
 		}
 

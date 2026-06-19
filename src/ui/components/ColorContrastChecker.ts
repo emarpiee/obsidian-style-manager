@@ -1,9 +1,9 @@
-import Pickr from '@simonwep/pickr';
+import ColorPicker from '../../lib/colorpicker/colorpicker.js';
 import chroma from 'chroma-js';
 import { Notice, Setting, setIcon, setTooltip } from 'obsidian';
 
 import StyleManagerPlugin from '../../main';
-import { getPickrSettings } from '../../utils/UIUtils';
+import { getColorPickerConfig } from '../../utils/UIUtils';
 
 interface RenderOptions {
 	plugin?: StyleManagerPlugin;
@@ -13,8 +13,8 @@ interface RenderOptions {
 export class ColorContrastChecker {
 	private fgColor = '#FFFFFF';
 	private bgColor = '#7A3198';
-	private fgPickr: Pickr | null = null;
-	private bgPickr: Pickr | null = null;
+	private fgPicker: ColorPicker | null = null;
+	private bgPicker: ColorPicker | null = null;
 	private fgSetting: Setting;
 	private bgSetting: Setting;
 	private fgSingle: HTMLElement;
@@ -109,25 +109,25 @@ export class ColorContrastChecker {
 		setTooltip(fgSuggestBtn, 'Suggest passing foreground color');
 		fgSuggestBtn.onclick = (): void => this.suggestForegroundColor();
 
-		this.fgPickr = Pickr.create(
-			getPickrSettings({
+		const fgToggleEl = this.fgSingle.createEl('button');
+		this.fgPicker = new ColorPicker(
+			fgToggleEl,
+			getColorPickerConfig({
 				isView: false,
-				el: this.fgSingle.createDiv({ cls: 'picker' }),
-				containerEl: contentEl,
+				container: contentEl,
 				swatches: [this.fgColor],
 				opacity: false,
 				defaultColor: this.fgColor,
 			})
 		);
-		this.fgPickr.on(
-			'save',
-			(color: Pickr.HSVaColor | null, instance: Pickr) => {
+		this.fgPicker.on(
+			'pick',
+			(color) => {
 				if (color) {
-					this.fgColor = color.toHEXA().toString();
+					this.fgColor = color.string('hex').toUpperCase();
 					this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 					this.updateResults();
 				}
-				instance.hide();
 			}
 		);
 
@@ -147,25 +147,25 @@ export class ColorContrastChecker {
 		setTooltip(bgSuggestBtn, 'Suggest passing background color');
 		bgSuggestBtn.onclick = (): void => this.suggestBackgroundColor();
 
-		this.bgPickr = Pickr.create(
-			getPickrSettings({
+		const bgToggleEl = this.bgSingle.createEl('button');
+		this.bgPicker = new ColorPicker(
+			bgToggleEl,
+			getColorPickerConfig({
 				isView: false,
-				el: this.bgSingle.createDiv({ cls: 'picker' }),
-				containerEl: contentEl,
+				container: contentEl,
 				swatches: [this.bgColor],
 				opacity: false,
 				defaultColor: this.bgColor,
 			})
 		);
-		this.bgPickr.on(
-			'save',
-			(color: Pickr.HSVaColor | null, instance: Pickr) => {
+		this.bgPicker.on(
+			'pick',
+			(color) => {
 				if (color) {
-					this.bgColor = color.toHEXA().toString();
+					this.bgColor = color.string('hex').toUpperCase();
 					this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 					this.updateResults();
 				}
-				instance.hide();
 			}
 		);
 
@@ -189,8 +189,8 @@ export class ColorContrastChecker {
 	private swapColors(): void {
 		[this.fgColor, this.bgColor] = [this.bgColor, this.fgColor];
 
-		this.fgPickr?.setColor(this.fgColor);
-		this.bgPickr?.setColor(this.bgColor);
+		this.fgPicker?.setColor(this.fgColor);
+		this.bgPicker?.setColor(this.bgColor);
 
 		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
@@ -202,8 +202,8 @@ export class ColorContrastChecker {
 		this.fgColor = chroma.random().hex();
 		this.bgColor = chroma.random().hex();
 
-		this.fgPickr?.setColor(this.fgColor);
-		this.bgPickr?.setColor(this.bgColor);
+		this.fgPicker?.setColor(this.fgColor);
+		this.bgPicker?.setColor(this.bgColor);
 
 		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
@@ -243,8 +243,8 @@ export class ColorContrastChecker {
 			this.fgColor = fgColor.hex();
 		}
 
-		this.fgPickr?.setColor(this.fgColor);
-		this.bgPickr?.setColor(this.bgColor);
+		this.fgPicker?.setColor(this.fgColor);
+		this.bgPicker?.setColor(this.bgColor);
 
 		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
@@ -273,7 +273,7 @@ export class ColorContrastChecker {
 			this.fgColor = fgColor.hex();
 		}
 
-		this.fgPickr?.setColor(this.fgColor);
+		this.fgPicker?.setColor(this.fgColor);
 		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 
 		this.updateResults();
@@ -300,7 +300,7 @@ export class ColorContrastChecker {
 			this.bgColor = bgColor.hex();
 		}
 
-		this.bgPickr?.setColor(this.bgColor);
+		this.bgPicker?.setColor(this.bgColor);
 		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 
 		this.updateResults();
@@ -392,13 +392,13 @@ export class ColorContrastChecker {
 	}
 
 	destroy(): void {
-		if (this.fgPickr) {
-			this.fgPickr.destroyAndRemove();
-			this.fgPickr = null;
+		if (this.fgPicker) {
+			this.fgPicker.destroy();
+			this.fgPicker = null;
 		}
-		if (this.bgPickr) {
-			this.bgPickr.destroyAndRemove();
-			this.bgPickr = null;
+		if (this.bgPicker) {
+			this.bgPicker.destroy();
+			this.bgPicker = null;
 		}
 	}
 }

@@ -1,53 +1,55 @@
-import Pickr from '@simonwep/pickr';
-
+import ColorPicker from '../lib/colorpicker/colorpicker.js';
 import { t } from '../infrastructure/lang/helpers';
 
 /**
- * Returns configuration for the Pickr color picker.
+ * Checks if a color string can be successfully parsed by the color picker.
  */
-export function getPickrSettings(opts: {
+export function isColorValid(color: string | undefined | null): boolean {
+	if (!color || color.trim() === '' || color.trim() === '#') return false;
+	try {
+		new ColorPicker.Color(color);
+		return true;
+	} catch {
+		return false;
+	}
+}
+
+/**
+ * Returns configuration for the jscolorpicker color picker.
+ */
+export function getColorPickerConfig(opts: {
 	isView: boolean;
-	el: HTMLElement;
-	containerEl: HTMLElement;
+	container: HTMLElement;
 	swatches: string[];
 	opacity: boolean | undefined;
 	defaultColor: string;
-	position?: Pickr.Options['position'];
-}): Pickr.Options {
-	const { el, isView, containerEl, swatches, opacity, defaultColor } = opts;
+}): ConstructorParameters<typeof ColorPicker>[1] {
+	const { isView, container, swatches, opacity, defaultColor } = opts;
+
+	const safeColor = isColorValid(defaultColor) ? defaultColor : null;
+	const safeSwatches = swatches.filter(isColorValid);
 
 	return {
-		el,
-		container: isView ? document.body : containerEl,
-		theme: 'monolith',
-		swatches,
-		lockOpacity: !opacity,
-		default: defaultColor,
-		position: opts.position || 'left-middle',
-		components: {
-			preview: true,
-			hue: true,
-			opacity: !!opacity,
-			interaction: {
-				hex: true,
-				rgba: true,
-				hsla: true,
-				input: true,
-				cancel: true,
-				clear: false,
-				save: true,
-			},
-		},
+		container: isView ? document.body : container,
+		color: safeColor,
+		swatches: safeSwatches.length ? safeSwatches : null,
+		enableAlpha: !!opacity,
+		enableEyedropper: false,
+		submitMode: 'confirm',
+		defaultFormat: 'hex',
+		formats: ['hex', 'rgb', 'hsl'],
+		showClearButton: false,
 	};
 }
 
 /**
- * Resolves a color value for use in Pickr.
+ * Resolves a color value for use in the color picker.
  *
- * Pickr cannot parse CSS variables like `var(--my-color)` and silently falls
- * back to transparent. This function detects such values and reads the real
- * computed color from the document body, returning a plain hex/rgb string that
- * Pickr can parse. Falls back to the original value if resolution fails.
+ * The color picker cannot parse CSS variables like `var(--my-color)` and
+ * silently falls back to transparent. This function detects such values and
+ * reads the real computed color from the document body, returning a plain
+ * hex/rgb string that the picker can parse. Falls back to the original value
+ * if resolution fails.
  */
 export function resolveDefaultColor(color: string): string {
 	if (!color) return color;
@@ -61,15 +63,10 @@ export function resolveDefaultColor(color: string): string {
 	const computed = getComputedStyle(document.body)
 		.getPropertyValue(propName)
 		.trim();
-	return computed || trimmed;
+	return computed || 'transparent';
 }
 
-/**
- * Hides the Pickr instance.
- */
-export function onPickrCancel(instance: Pickr): void {
-	instance.hide();
-}
+// onPickrCancel removed — jscolorpicker's submitMode: 'confirm' handles cancel internally
 
 /**
  * Creates a DocumentFragment with a description and default value label.

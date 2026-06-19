@@ -1,13 +1,13 @@
-import Pickr from '@simonwep/pickr';
+import ColorPicker from '../../lib/colorpicker/colorpicker.js';
 import { App, Modal } from 'obsidian';
 
-import { getPickrSettings, onPickrCancel } from '../../utils/UIUtils';
+import { getColorPickerConfig } from '../../utils/UIUtils';
 
 export class BoxOutlineColorPromptModal extends Modal {
 	resolve: (value: string | null) => void;
 	value: string | null = null;
 	resolved = false;
-	pickr: Pickr | null = null;
+	pickr: ColorPicker | null = null;
 
 	constructor(
 		app: App,
@@ -33,32 +33,30 @@ export class BoxOutlineColorPromptModal extends Modal {
 		const wrapper = contentEl.createDiv({
 			cls: 'style-manager-color-picker-wrapper',
 		});
-		const pickrEl = wrapper.createDiv({ cls: 'pickr-reset' });
+		const pickrToggle = wrapper.createEl('button', { cls: 'color-picker-reset' });
 
-		this.pickr = Pickr.create(
-			getPickrSettings({
+		this.pickr = new ColorPicker(
+			pickrToggle,
+			getColorPickerConfig({
 				isView: false,
-				el: pickrEl,
-				containerEl: contentEl,
+				container: contentEl,
 				swatches: [],
 				opacity: true,
 				defaultColor: this.value ?? 'red',
 			})
 		);
 
-		this.pickr.on('save', (color: Pickr.HSVaColor | null, _instance: Pickr) => {
+		this.pickr.on('pick', (color) => {
 			if (color) {
-				this.value = color.toHEXA().toString();
+				this.value = color.string('hex').toUpperCase();
 				this.close();
 			}
 		});
-
-		this.pickr.on('cancel', () => onPickrCancel(this.pickr!));
 	}
 
 	onClose(): void {
 		if (this.pickr) {
-			this.pickr.destroyAndRemove();
+			this.pickr.destroy();
 			this.pickr = null;
 		}
 		this.contentEl.empty();

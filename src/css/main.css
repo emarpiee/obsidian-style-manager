@@ -1,6 +1,6 @@
 /* TODO: vars for colors*/
 
-@import '@simonwep/pickr/dist/themes/monolith.min.css';
+@import '../lib/colorpicker/colorpicker.css';
 
 @container (max-width: 720px) {
 	.style-manager-plugin > * {
@@ -2050,23 +2050,20 @@ body.is-mobile .style-manager-editor-title-container {
 /* CUSTOM PICKR STYLE */
 
 .style-manager-plugin:not(.style-manager-accent-trigger-container)
-	.pickr
-	.pcr-button,
+	.color-picker,
 .style-manager-plugin:not(.style-manager-accent-trigger-container)
-	.pickr
-	.pcr-button::before,
+	.color-picker::before,
 .style-manager-plugin:not(.style-manager-accent-trigger-container)
-	.pickr
-	.pcr-button::after,
-.style-manager-color-contrast-modal .pickr .pcr-button,
-.style-manager-color-contrast-modal .pickr .pcr-button::before,
-.style-manager-color-contrast-modal .pickr .pcr-button::after {
+	.color-picker::after,
+.style-manager-color-contrast-modal .color-picker,
+.style-manager-color-contrast-modal .color-picker::before,
+.style-manager-color-contrast-modal .color-picker::after {
 	border-radius: var(--sm-color-picker-border-radius);
 	width: var(--sm-color-picker-width) !important;
 	height: var(--sm-color-picker-height) !important;
 }
 
-.style-manager-plugin .pickr-reset button {
+.style-manager-plugin .color-picker-reset button {
 	padding: revert;
 	background: revert;
 	color: revert;

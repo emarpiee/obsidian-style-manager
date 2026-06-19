@@ -18,23 +18,23 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import Pickr from '@simonwep/pickr';
+import ColorPicker from '../../../lib/colorpicker/colorpicker.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
 import { VariableThemedColor, resetTooltip } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import {
-	getPickrSettings,
-	onPickrCancel,
+	getColorPickerConfig,
 	resolveDefaultColor,
+	isColorValid,
 } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
 export class VariableThemedColorField extends AbstractSettingComponent {
 	settingEl: Setting;
 	setting: VariableThemedColor;
-	pickrLight: Pickr | null;
-	pickrDark: Pickr | null;
+	pickerLight: ColorPicker | null;
+	pickerDark: ColorPicker | null;
 	themeLightWrapper: HTMLElement | null = null;
 	themeDarkWrapper: HTMLElement | null = null;
 
@@ -50,7 +50,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		const swatchesLight: string[] = [];
 		const swatchesDark: string[] = [];
 
-		// Resolve schema defaults for Pickr (CSS vars like var(--x) are not parseable by Pickr)
+		// Resolve schema defaults for the color picker (CSS vars like var(--x) are not parseable)
 		const resolvedDefaultLight = resolveDefaultColor(
 			this.setting['default-light']
 		);
@@ -126,66 +126,41 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 	}
 
 	destroy(): void {
-		this.pickrLight?.destroyAndRemove();
-		this.pickrDark?.destroyAndRemove();
-		this.pickrLight = null;
-		this.pickrDark = null;
+		this.pickerLight?.destroy();
+		this.pickerDark?.destroy();
+		this.pickerLight = null;
+		this.pickerDark = null;
 		this.settingEl?.settingEl.remove();
 	}
 
 	private updateVisualsLight(color: string | null): void {
-		if (!this.themeLightWrapper || !this.pickrLight) return;
+		if (!this.themeLightWrapper) return;
 
 		const resolvedDefault = resolveDefaultColor(this.setting['default-light']);
 		const displayColor = color || resolvedDefault || 'transparent';
 
 		this.themeLightWrapper.style.setProperty('--pcr-color', displayColor);
-
-		const pickrRoot = (
-			this.pickrLight.getRoot() as unknown as { root: HTMLElement }
-		).root;
-		if (pickrRoot) {
-			pickrRoot.style.setProperty('--pcr-color', displayColor);
-			const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
-			if (button) {
-				button.style.setProperty('--pcr-color', displayColor);
-			}
-		}
 	}
 
 	private updateVisualsDark(color: string | null): void {
-		if (!this.themeDarkWrapper || !this.pickrDark) return;
+		if (!this.themeDarkWrapper) return;
 
 		const resolvedDefault = resolveDefaultColor(this.setting['default-dark']);
 		const displayColor = color || resolvedDefault || 'transparent';
 
 		this.themeDarkWrapper.style.setProperty('--pcr-color', displayColor);
-
-		const pickrRoot = (
-			this.pickrDark.getRoot() as unknown as { root: HTMLElement }
-		).root;
-		if (pickrRoot) {
-			pickrRoot.style.setProperty('--pcr-color', displayColor);
-			const button = pickrRoot.querySelector('.pcr-button') as HTMLElement;
-			if (button) {
-				button.style.setProperty('--pcr-color', displayColor);
-			}
-		}
 	}
 
 	refresh(): void {
-		const isColorValid = (color: string | undefined): color is string =>
-			!!color && color.trim() !== '' && color.trim() !== '#';
-
 		// Light theme
 		const defaultLightRaw = this.setting['default-light'];
 		const resolvedDefaultLight = resolveDefaultColor(defaultLightRaw);
-		if (this.pickrLight) {
+		if (this.pickerLight) {
 			if (isColorValid(resolvedDefaultLight)) {
-				this.pickrLight.setColor(resolvedDefaultLight, true);
+				this.pickerLight.setColor(resolvedDefaultLight, false);
 				this.updateVisualsLight(resolvedDefaultLight);
 			} else {
-				this.pickrLight.setColor('#00000000', true);
+				this.pickerLight.setColor(null, false);
 				this.updateVisualsLight(null);
 			}
 		}
@@ -193,12 +168,12 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		// Dark theme
 		const defaultDarkRaw = this.setting['default-dark'];
 		const resolvedDefaultDark = resolveDefaultColor(defaultDarkRaw);
-		if (this.pickrDark) {
+		if (this.pickerDark) {
 			if (isColorValid(resolvedDefaultDark)) {
-				this.pickrDark.setColor(resolvedDefaultDark, true);
+				this.pickerDark.setColor(resolvedDefaultDark, false);
 				this.updateVisualsDark(resolvedDefaultDark);
 			} else {
-				this.pickrDark.setColor('#00000000', true);
+				this.pickerDark.setColor(null, false);
 				this.updateVisualsDark(null);
 			}
 		}
@@ -223,47 +198,44 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				: resolvedDefault;
 		this.themeLightWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		const pickrLight = (this.pickrLight = Pickr.create(
-			getPickrSettings({
+		const toggleElLight = this.themeLightWrapper.createEl('button');
+		const pickerLight = (this.pickerLight = new ColorPicker(
+			toggleElLight,
+			getColorPickerConfig({
 				isView: this.isView,
-				el: this.themeLightWrapper.createDiv({ cls: 'picker' }),
-				containerEl,
+				container: containerEl,
 				swatches: swatchesLight,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 			})
 		));
 
-		pickrLight.on('show', () => {
+		pickerLight.on('open', () => {
 			// Do not auto-focus result input as it opens the keyboard on mobile
 		});
 
-		pickrLight.on('save', (color: Pickr.HSVaColor | null, instance: Pickr) => {
-			this.onSave(idLight, color, instance);
-			this.updateVisualsLight(color ? color.toHEXA().toString() : null);
+		pickerLight.on('pick', (color) => {
+			this.onSave(idLight, color, pickerLight, swatchesLight);
+			this.updateVisualsLight(color ? color.string('hex').toUpperCase() : null);
 		});
 
-		pickrLight.on('cancel', onPickrCancel);
-
 		const themeLightReset = new ButtonComponent(
-			this.themeLightWrapper.createDiv({ cls: 'pickr-reset' })
+			this.themeLightWrapper.createDiv({ cls: 'color-picker-reset' })
 		);
 		themeLightReset.setIcon('reset');
 		themeLightReset.onClick(() => {
 			const defaultColorRaw = this.setting['default-light'];
 			const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
-			const isColorValid = (color: string | undefined): color is string =>
-				!!color && color.trim() !== '' && color.trim() !== '#';
 
 			this.settingsService.clearSetting(this.sectionId, idLight, {
 				silentUI: true,
 			});
 
 			if (isColorValid(resolvedDefaultValue)) {
-				pickrLight.setColor(resolvedDefaultValue, true);
+				pickerLight.setColor(resolvedDefaultValue, false);
 				this.updateVisualsLight(resolvedDefaultValue);
 			} else {
-				pickrLight.setColor('#00000000', true);
+				pickerLight.setColor(null, false);
 				this.updateVisualsLight(null);
 			}
 
@@ -289,47 +261,44 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				: resolvedDefault;
 		this.themeDarkWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		const pickrDark = (this.pickrDark = Pickr.create(
-			getPickrSettings({
+		const toggleElDark = this.themeDarkWrapper.createEl('button');
+		const pickerDark = (this.pickerDark = new ColorPicker(
+			toggleElDark,
+			getColorPickerConfig({
 				isView: this.isView,
-				el: this.themeDarkWrapper.createDiv({ cls: 'picker' }),
-				containerEl,
+				container: containerEl,
 				swatches: swatchesDark,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 			})
 		));
 
-		pickrDark.on('show', () => {
+		pickerDark.on('open', () => {
 			// Do not auto-focus result input as it opens the keyboard on mobile
 		});
 
-		pickrDark.on('save', (color: Pickr.HSVaColor | null, instance: Pickr) => {
-			this.onSave(idDark, color, instance);
-			this.updateVisualsDark(color ? color.toHEXA().toString() : null);
+		pickerDark.on('pick', (color) => {
+			this.onSave(idDark, color, pickerDark, swatchesDark);
+			this.updateVisualsDark(color ? color.string('hex').toUpperCase() : null);
 		});
 
-		pickrDark.on('cancel', onPickrCancel);
-
 		const themeDarkReset = new ButtonComponent(
-			this.themeDarkWrapper.createDiv({ cls: 'pickr-reset' })
+			this.themeDarkWrapper.createDiv({ cls: 'color-picker-reset' })
 		);
 		themeDarkReset.setIcon('reset');
 		themeDarkReset.onClick(() => {
 			const defaultColorRaw = this.setting['default-dark'];
 			const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
-			const isColorValid = (color: string | undefined): color is string =>
-				!!color && color.trim() !== '' && color.trim() !== '#';
 
 			this.settingsService.clearSetting(this.sectionId, idDark, {
 				silentUI: true,
 			});
 
 			if (isColorValid(resolvedDefaultValue)) {
-				pickrDark.setColor(resolvedDefaultValue, true);
+				pickerDark.setColor(resolvedDefaultValue, false);
 				this.updateVisualsDark(resolvedDefaultValue);
 			} else {
-				pickrDark.setColor('#00000000', true);
+				pickerDark.setColor(null, false);
 				this.updateVisualsDark(null);
 			}
 
@@ -340,13 +309,14 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 
 	private onColorChange(
 		id: string,
-		color: Pickr.HSVaColor | null,
-		instance: Pickr
+		color: InstanceType<typeof ColorPicker.Color> | null,
+		instance: ColorPicker,
+		swatches: string[]
 	): void {
 		if (!color) {
 			this.settingsService.clearSetting(this.sectionId, id, { silentUI: true });
 		} else {
-			const hexValue = color.toHEXA().toString();
+			const hexValue = color.string('hex').toUpperCase();
 			const normalizedHex = hexValue.toLowerCase();
 
 			const isLight = id.endsWith('@@light');
@@ -363,7 +333,8 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				this.settingsService.setSetting(this.sectionId, id, hexValue, {
 					silentUI: true,
 				});
-				instance.addSwatch(hexValue);
+				// Update swatches to include the newly saved color
+				instance.setSwatches([...swatches.filter(Boolean), hexValue]);
 			}
 		}
 
@@ -372,11 +343,11 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 
 	private onSave(
 		id: string,
-		color: Pickr.HSVaColor | null,
-		instance: Pickr
+		color: InstanceType<typeof ColorPicker.Color> | null,
+		instance: ColorPicker,
+		swatches: string[]
 	): void {
-		this.onColorChange(id, color, instance);
-		instance.hide();
+		this.onColorChange(id, color, instance, swatches);
 	}
 
 	isModified(): boolean {

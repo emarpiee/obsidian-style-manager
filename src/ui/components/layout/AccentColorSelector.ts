@@ -1,9 +1,9 @@
-import Pickr from '@simonwep/pickr';
+import ColorPicker from '../../../lib/colorpicker/colorpicker.js';
 import { Menu, setTooltip } from 'obsidian';
 
 import { ACCENT_COLOR_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
-import { getPickrSettings, onPickrCancel } from '../../../utils/UIUtils';
+import { getColorPickerConfig } from '../../../utils/UIUtils';
 
 /**
  * Renders the accent color selector circle in the main toolbar.
@@ -37,31 +37,28 @@ export function renderAccentColorSelect(
 	});
 	circle.style.setProperty('--sm-accent-trigger-color', displayColor);
 
-	// We use Pickr but we need to ensure it doesn't conflict with the circle's own styling
-	const pickr = Pickr.create(
-		getPickrSettings({
+	// We use jscolorpicker but we need to ensure it doesn't conflict with the circle's own styling
+	const pickerToggle = circle.createEl('button', { cls: 'color-picker-reset' });
+	const pickr = new ColorPicker(
+		pickerToggle,
+		getColorPickerConfig({
 			isView: false,
-			el: circle,
-			containerEl: containerEl,
+			container: containerEl,
 			swatches: accentColor ? [accentColor] : [],
 			opacity: false,
 			defaultColor: displayColor,
-			position: 'bottom-start',
 		})
 	);
 
-	pickr.on('save', async (color: Pickr.HSVaColor | null) => {
-		const hexValue = color ? color.toHEXA().toString() : '';
+	pickr.on('pick', async (color) => {
+		const hexValue = color ? color.string('hex').toUpperCase() : '';
 		await plugin.settingsService.setSetting(ACCENT_COLOR_KEY, hexValue, {
 			silentUI: true,
 		});
 		// Visual application is handled by the setSetting -> applyAccentColor flow
 		plugin.settingsService.applyAccentColor(hexValue);
-		pickr.hide();
 		onRerender();
 	});
-
-	pickr.on('cancel', () => onPickrCancel(pickr));
 
 	// Handle right-click for quick reset
 	triggerContainer.addEventListener('contextmenu', (e: MouseEvent) => {
