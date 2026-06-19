@@ -47,29 +47,6 @@ export class VariableThemedColorSettingComponent extends AbstractSettingComponen
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 
-		if (
-			typeof this.setting['default-light'] !== 'string' ||
-			!isValidDefaultColor(this.setting['default-light'])
-		) {
-			Logger.error(
-				`${t('Error:')} ${title} ${t(
-					'missing default light value, or value is not in a valid color format'
-				)}`
-			);
-			return;
-		}
-
-		if (
-			typeof this.setting['default-dark'] !== 'string' ||
-			!isValidDefaultColor(this.setting['default-dark'])
-		) {
-			Logger.error(
-				`${t('Error:')} ${title} ${t(
-					'missing default dark value, or value is not in a valid color format'
-				)}`
-			);
-			return;
-		}
 
 		const idLight = `${this.setting.id}@@light`;
 		const idDark = `${this.setting.id}@@dark`;

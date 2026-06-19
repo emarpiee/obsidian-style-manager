@@ -39,10 +39,6 @@ export class VariableTextSettingComponent extends AbstractSettingComponent {
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 
-		if (typeof this.setting.default !== 'string') {
-			Logger.error(`${t('Error:')} ${title} ${t('missing default value')}`);
-			return;
-		}
 
 		this.settingEl = new Setting(this.containerEl);
 		this.settingEl.setClass('style-manager-style-settings-item');

@@ -55,17 +55,6 @@ export class VariableColorSettingComponent extends AbstractSettingComponent {
 				?.current?.trim();
 		}
 
-		if (
-			typeof this.setting.default !== 'string' ||
-			!isValidDefaultColor(this.setting.default)
-		) {
-			Logger.error(
-				`${t('Error:')} ${title} ${t(
-					'missing default value, or value is not in a valid color format'
-				)}`
-			);
-			return;
-		}
 
 		const value = this.settingsService.getSetting(
 			this.sectionId,

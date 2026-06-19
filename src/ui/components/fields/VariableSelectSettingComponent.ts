@@ -35,10 +35,6 @@ export class VariableSelectSettingComponent extends AbstractSettingComponent {
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 
-		if (typeof this.setting.default !== 'string') {
-			Logger.error(`${t('Error:')} ${title} ${t('missing default value')}`);
-			return;
-		}
 
 		const defaultLabel = this.getDefaultOptionLabel();
 

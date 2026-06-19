@@ -162,6 +162,12 @@ export class CSSParser {
 						parseLogs?.push({ name, message: `INVALID_HEADING_LEVEL: Heading '${setting.id}' has invalid level (${originalLevel}), falling back to ${setting.level}`, type: 'warning', timestamp: Date.now() });
 					}
 					break;
+								case 'class-multi-toggle':
+					if (typeof setting.default !== 'string') {
+						setting.default = '';
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Class multi toggle '${setting.id}' missing default, falling back to empty string`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
 				case 'class-toggle':
 					if (typeof setting.default !== 'boolean') {
 						setting.default = false;
@@ -211,11 +217,14 @@ export class CSSParser {
 					}
 					break;
 				}
-				case 'variable-color':
+								case 'variable-color':
 					if (!setting.format || !['hsl', 'hsl-values', 'hsl-split', 'hsl-split-decimal', 'rgb', 'rgb-values', 'rgb-split', 'hex'].includes(setting.format)) {
 						const issue = !setting.format ? 'MISSING_COLOR_FORMAT' : 'UNSUPPORTED_COLOR_FORMAT';
 						setting.format = 'hex';
 						parseLogs?.push({ name, message: `${issue}: Color '${setting.id}' format invalid, falling back to 'hex'`, type: 'warning', timestamp: Date.now() });
+					}
+					if (typeof setting.default !== 'string') {
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable color '${setting.id}' missing default value`, type: 'warning', timestamp: Date.now() });
 					}
 					break;
 				case 'variable-themed-color':
