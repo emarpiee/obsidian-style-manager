@@ -561,7 +561,7 @@ Creates a dropdown selection to assign values to a CSS variable. The \`id\` of t
 #### 9. \`variable-color\`
 
 Creates an interactive color picker interface. The \`id\` of the setting will be used as the variable name.
-- **Required:** \`default\` (hex color values must be wrapped in quotes, or use CSS variables like \`var(--color-name)\`), \`format\`.
+- **Required:** \`default\` (hex color values must be wrapped in quotes, or use CSS variables like \`var(--color-name)\`), \`format\` (e.g., \`hex\`, \`rgb\`, \`hsl\`, \`oklch\`).
 - **Optional:** \`opacity\` (boolean - enables transparency), \`alt-format\` (outputs alternative values to helper variable targets).
 
 \`\`\`css
@@ -586,7 +586,7 @@ Creates an interactive color picker interface. The \`id\` of the setting will be
 #### 10. \`variable-themed-color\`
 
 Generates dual color pickers for light and dark appearance profiles. The \`id\` of the setting will be used as the variable name.
-- **Required:** \`format\`, \`default-light\`, \`default-dark\` (hex color values must be wrapped in quotes, or use CSS variables like \`var(--color-name)\`).
+- **Required:** \`format\` (e.g., \`hex\`, \`rgb\`, \`hsl\`, \`oklch\`), \`default-light\`, \`default-dark\` (hex color values must be wrapped in quotes, or use CSS variables like \`var(--color-name)\`).
 - **Optional:** \`opacity\`.
 
 \`\`\`css
@@ -615,7 +615,7 @@ Calculates intermediate color steps along a gradient between two defined CSS col
 - \`from\`: The starting color, or color that will be at step 0
 - \`to\`: The ending color, or color that will be at step 100
 - \`step\`: The increment at which to output a CSS variable. For example, setting \`step\` to \`10\` will output \`--var-0\`, \`--var-10\`, \`--var-20\`, etc…
-- \`format\`: Can be one of: \`hsl\`, \`rgb\`, or \`hex\`;
+- \`format\`: Can be one of: \`hsl\`, \`rgb\`, \`hex\`, or \`oklch\`;
 - \`pad\`: When set, the number section of the variable will be padded with \`0\`'s until it contains this number of digits. For example, setting \`pad\` to \`3\` and \`step\` to \`10\` will output \`--var-000\`, \`--var-010\`, \`--var-020\`
 
 \`\`\`css
@@ -703,6 +703,14 @@ The following color format options are available:
 --accent-l: 0.5;
 /* With opacity: true */
 --accent-a: 1;
+\`\`\`
+
+#### \`oklch\`
+
+\`\`\`css
+--accent: oklch(70% 0.1 150);
+/* With opacity: true */
+--accent: oklch(70% 0.1 150 / 0.5);
 \`\`\`
 
 ### Localization Support
