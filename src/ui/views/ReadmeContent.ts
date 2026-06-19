@@ -561,7 +561,7 @@ Creates a dropdown selection to assign values to a CSS variable. The \`id\` of t
 #### 9. \`variable-color\`
 
 Creates an interactive color picker interface. The \`id\` of the setting will be used as the variable name.
-- **Required:** \`default\` (hex color values must be wrapped in quotes), \`format\`.
+- **Required:** \`default\` (hex color values must be wrapped in quotes, or use CSS variables like \`var(--color-name)\`), \`format\`.
 - **Optional:** \`opacity\` (boolean - enables transparency), \`alt-format\` (outputs alternative values to helper variable targets).
 
 \`\`\`css
@@ -578,10 +578,15 @@ Creates an interactive color picker interface. The \`id\` of the setting will be
         default: '#007AFF'
 \`\`\`
 
+*Alternatively, use a CSS variable for the default value:*
+\`\`\`css
+        default: 'var(--accent-color)'
+\`\`\`
+
 #### 10. \`variable-themed-color\`
 
 Generates dual color pickers for light and dark appearance profiles. The \`id\` of the setting will be used as the variable name.
-- **Required:** \`format\`, \`default-light\`, \`default-dark\`.
+- **Required:** \`format\`, \`default-light\`, \`default-dark\` (hex color values must be wrapped in quotes, or use CSS variables like \`var(--color-name)\`).
 - **Optional:** \`opacity\`.
 
 \`\`\`css
@@ -592,6 +597,12 @@ Generates dual color pickers for light and dark appearance profiles. The \`id\` 
         format: hex
         default-light: '#111111'
         default-dark: '#f5f5f5'
+\`\`\`
+
+*Alternatively, use CSS variables for themed defaults:*
+\`\`\`css
+        default-light: 'var(--text-light)'
+        default-dark: 'var(--text-dark)'
 \`\`\`
 
 #### 11. \`color-gradient\`
