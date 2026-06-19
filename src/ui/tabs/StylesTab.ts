@@ -112,6 +112,16 @@ export class StylesTab {
 			})
 			.addExtraButton((btn) => {
 				btn
+					.setIcon('chevrons-up-down')
+					.setTooltip('Collapse/Expand all')
+					.onClick(() => {
+						const trees = this.deps.getSettingsComponentTrees();
+						const anyExpanded = trees.some((t) => !t.setting.collapsed);
+						trees.forEach((t) => t.setCollapsedRecursive(anyExpanded));
+					});
+			})
+			.addExtraButton((btn) => {
+				btn
 					.setIcon('info')
 					.setTooltip('View Parse Logs')
 					.onClick(() => {
@@ -123,16 +133,6 @@ export class StylesTab {
 								this.deps.onNavigateToSettingId(settingId);
 							}
 						).open();
-					});
-			})
-			.addExtraButton((btn) => {
-				btn
-					.setIcon('chevrons-up-down')
-					.setTooltip('Collapse/Expand all')
-					.onClick(() => {
-						const trees = this.deps.getSettingsComponentTrees();
-						const anyExpanded = trees.some((t) => !t.setting.collapsed);
-						trees.forEach((t) => t.setCollapsedRecursive(anyExpanded));
 					});
 			});
 
