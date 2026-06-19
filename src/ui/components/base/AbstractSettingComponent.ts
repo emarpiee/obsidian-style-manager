@@ -96,6 +96,10 @@ export abstract class AbstractSettingComponent extends Component {
 	 * @param str the string to match this Component against.
 	 */
 	decisiveMatch(str: string): boolean {
+		if (str.startsWith('@id ')) {
+			const searchId = str.substring(4).trim().toLowerCase();
+			return this.setting.id.toLowerCase().includes(searchId);
+		}
 		return this.match(str) > -100000;
 	}
 
