@@ -19,14 +19,14 @@
 import { App, PluginSettingTab } from 'obsidian';
 
 import StyleManagerPlugin from '../main';
-import { ErrorList, ParsedCSSSettings } from '../types';
+import { ParseLogList, ParsedCSSSettings } from '../types';
 import { StyleManagerLayoutRenderer } from './StyleManagerLayoutRenderer';
 
 export class StyleManagerSettingTab extends PluginSettingTab {
 	settingsMarkup: StyleManagerLayoutRenderer | null;
 	plugin: StyleManagerPlugin;
 	settings: ParsedCSSSettings[];
-	errorList: ErrorList;
+	parseLogs: ParseLogList;
 
 	constructor(app: App, plugin: StyleManagerPlugin) {
 		super(app, plugin);
@@ -37,11 +37,11 @@ export class StyleManagerSettingTab extends PluginSettingTab {
 		this.settingsMarkup?.rerender();
 	}
 
-	setSettings(settings: ParsedCSSSettings[], errorList: ErrorList): void {
+	setSettings(settings: ParsedCSSSettings[], parseLogs: ParseLogList): void {
 		this.settings = settings;
-		this.errorList = errorList;
+		this.parseLogs = parseLogs;
 		if (this.settingsMarkup) {
-			this.settingsMarkup.setSettings(settings, errorList);
+			this.settingsMarkup.setSettings(settings, parseLogs);
 		}
 	}
 
@@ -53,7 +53,7 @@ export class StyleManagerSettingTab extends PluginSettingTab {
 			new StyleManagerLayoutRenderer(this.app, this.plugin, this.containerEl)
 		);
 		if (this.settings) {
-			this.settingsMarkup.setSettings(this.settings, this.errorList);
+			this.settingsMarkup.setSettings(this.settings, this.parseLogs);
 		}
 	}
 

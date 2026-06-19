@@ -80,11 +80,11 @@ settings:
 
 	describe('parseCSSText', () => {
 		it('should return empty result if no settings blocks are found', () => {
-			const { settingsList, errorList } = CSSParser.parseCSSText(
+			const { settingsList, parseLogs } = CSSParser.parseCSSText(
 				'body { color: red; }'
 			);
 			expect(settingsList).toEqual([]);
-			expect(errorList).toEqual([]);
+			expect(parseLogs).toEqual([]);
 		});
 	});
 
@@ -107,8 +107,8 @@ body { color: red; }
 				},
 			} as unknown as CSSStyleSheet;
 
-			const { settingsList, errorList } = CSSParser.parseCSS(mockSheet);
-			expect(errorList.length).toBe(0);
+			const { settingsList, parseLogs } = CSSParser.parseCSS(mockSheet);
+			expect(parseLogs.length).toBe(0);
 			expect(settingsList.length).toBe(1);
 			expect(settingsList[0].name).toBe('CSS Settings');
 		});
@@ -158,8 +158,8 @@ settings:
 				},
 			} as unknown as CSSStyleSheet;
 
-			const { settingsList, errorList } = CSSParser.parseCSS(mockSheet);
-			expect(errorList.length).toBe(0);
+			const { settingsList, parseLogs } = CSSParser.parseCSS(mockSheet);
+			expect(parseLogs.length).toBe(0);
 			expect(settingsList.length).toBe(1);
 			expect(settingsList[0].name).toBe('Important Settings');
 		});
@@ -187,7 +187,7 @@ settings:
 		it('should handle empty, null, or incomplete input gracefully', () => {
 			expect(CSSParser.parseCSS(null as any)).toEqual({
 				settingsList: [],
-				errorList: [],
+				parseLogs: [],
 			});
 
 			const mockNoOwner = {
@@ -195,7 +195,7 @@ settings:
 			} as unknown as CSSStyleSheet;
 			expect(CSSParser.parseCSS(mockNoOwner)).toEqual({
 				settingsList: [],
-				errorList: [],
+				parseLogs: [],
 			});
 
 			const mockEmptySheet = {
@@ -205,7 +205,7 @@ settings:
 			} as unknown as CSSStyleSheet;
 			expect(CSSParser.parseCSS(mockEmptySheet)).toEqual({
 				settingsList: [],
-				errorList: [],
+				parseLogs: [],
 			});
 		});
 
@@ -235,8 +235,8 @@ settings:
 				},
 			} as unknown as CSSStyleSheet;
 
-			const { settingsList, errorList } = CSSParser.parseCSS(mockSheet);
-			expect(errorList.length).toBe(0);
+			const { settingsList, parseLogs } = CSSParser.parseCSS(mockSheet);
+			expect(parseLogs.length).toBe(0);
 			expect(settingsList.length).toBe(2);
 			expect(settingsList[0].name).toBe('Block 1');
 			expect(settingsList[1].name).toBe('Block 2');
@@ -264,10 +264,10 @@ settings:
 				},
 			} as unknown as CSSStyleSheet;
 
-			const { errorList } = CSSParser.parseCSS(mockSheet);
-			expect(errorList.length).toBe(2);
-			expect(errorList[0].name).toBe('Named Broken');
-			expect(errorList[1].name).toBe('Unknown');
+			const { parseLogs } = CSSParser.parseCSS(mockSheet);
+			expect(parseLogs.length).toBe(2);
+			expect(parseLogs[0].name).toBe('Named Broken');
+			expect(parseLogs[1].name).toBe('Unknown');
 		});
 
 		it('should be robust against unusual spacing and newlines', () => {
@@ -352,6 +352,7 @@ name: Shallow Test
 id: shallow-test
 settings:
   - id: nested
+    type: heading
     meta: { value: 1 }
 */
 `;

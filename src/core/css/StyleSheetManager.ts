@@ -19,7 +19,7 @@
 import { CSSParser } from './CSSParser';
 
 import { ObsidianBridge } from '../../infrastructure/bridge/ObsidianBridge';
-import { ErrorList, ParsedCSSSettings } from '../../types';
+import { ParseLogList, ParsedCSSSettings } from '../../types';
 
 /** Typed accessor for internal bridge fields used only in this module. */
 interface BridgeInternals {
@@ -233,11 +233,11 @@ export class StyleSheetManager {
 	 */
 	public getSettingsFromStyles(): {
 		settingsList: ParsedCSSSettings[];
-		errorList: ErrorList;
+		parseLogs: ParseLogList;
 	} {
 		try {
 			const settingsMap = new Map<string, ParsedCSSSettings>();
-			const errorList: ErrorList = [];
+			const parseLogs: ParseLogList = [];
 			const styleSheets = document.styleSheets;
 			const processedContent = new Set<string>();
 			const activeTheme = this.getStableActiveTheme();
@@ -301,7 +301,7 @@ export class StyleSheetManager {
 					sourceType = 'Unknown';
 				}
 
-				const { settingsList: parsed, errorList: errors } =
+				const { settingsList: parsed, parseLogs: errors } =
 					CSSParser.parseCSS(sheet);
 
 				for (const section of parsed) {
@@ -400,7 +400,7 @@ export class StyleSheetManager {
 					const dedupKey = `${sectionClone.id}|${sectionClone.sourceType}|${sectionClone.sourceId}`;
 					settingsMap.set(dedupKey, sectionClone);
 				}
-				errorList.push(...errors);
+				parseLogs.push(...errors);
 			}
 
 			const settingsList = Array.from(settingsMap.values());
@@ -433,10 +433,10 @@ export class StyleSheetManager {
 				}
 			}
 
-			return { settingsList, errorList };
+			return { settingsList, parseLogs };
 		} catch (e) {
 			console.error('Style Manager | Error during CSS analysis:', e);
-			return { settingsList: [], errorList: [] };
+			return { settingsList: [], parseLogs: [] };
 		}
 	}
 }

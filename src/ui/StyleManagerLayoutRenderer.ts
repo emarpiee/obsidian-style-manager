@@ -19,7 +19,7 @@
 import { App, Component, Platform } from 'obsidian';
 
 import StyleManagerPlugin from '../main';
-import { ErrorList, ParsedCSSSettings } from '../types';
+import { ParseLogList, ParsedCSSSettings } from '../types';
 
 import { HeadingSettingComponent } from './components/fields/HeadingSettingComponent';
 import { IsolateModeHeader } from './components/layout/IsolateModeHeader';
@@ -46,7 +46,7 @@ export class StyleManagerLayoutRenderer extends Component {
 	filterString: string = '';
 	showModifiedOnly: boolean = false;
 	settings: ParsedCSSSettings[] = [];
-	errorList: ErrorList = [];
+	parseLogs: ParseLogList = [];
 	containerEl: HTMLElement;
 	settingsContainerEl: HTMLElement;
 	isView: boolean;
@@ -129,14 +129,14 @@ export class StyleManagerLayoutRenderer extends Component {
 		this.plugin.selectedSnippets.clear();
 	}
 
-	setSettings(settings: ParsedCSSSettings[], errorList: ErrorList): void {
+	setSettings(settings: ParsedCSSSettings[], parseLogs: ParseLogList): void {
 		// Only save scroll if we are not already tracking it (e.g. from rerender)
 		if (this.savedScrollTop === 0 && this.containerEl.scrollTop > 0) {
 			this.savedScrollTop = this.containerEl.scrollTop;
 		}
 
 		this.settings = settings;
-		this.errorList = errorList;
+		this.parseLogs = parseLogs;
 		if (this.containerEl.parentNode) {
 			this.generate(settings);
 		}
@@ -153,7 +153,6 @@ export class StyleManagerLayoutRenderer extends Component {
 		}
 
 		this.cleanup();
-		this.displayErrors(masterContainer);
 
 		const header = new SettingsHeaderComponent(
 			this.app,
@@ -218,6 +217,7 @@ export class StyleManagerLayoutRenderer extends Component {
 		this.stylesTab = new StylesTab(masterContainer, {
 			plugin: this.plugin,
 			isView: this.isView,
+			parseLogs: this.parseLogs,
 			filterString: this.filterString,
 			showModifiedOnly: this.showModifiedOnly,
 			onFilterChange: (value: string): void => {
@@ -258,17 +258,6 @@ export class StyleManagerLayoutRenderer extends Component {
 		}
 	}
 
-	private displayErrors(containerEl: HTMLElement): void {
-		this.errorList.forEach((err) => {
-			containerEl.createDiv({ cls: 'style-manager-error' }, (wrapper) => {
-				wrapper.createDiv({
-					cls: 'style-manager-error-name',
-					text: `Error: ${err.name}`,
-				});
-				wrapper.createDiv({ cls: 'style-manager-error-desc', text: err.error });
-			});
-		});
-	}
 
 	filter(): void {
 		if (!this.filterString && !this.showModifiedOnly) {

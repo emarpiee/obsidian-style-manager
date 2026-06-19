@@ -18,7 +18,7 @@
 */
 import { App } from 'obsidian';
 
-import { ErrorList, ParsedCSSSettings } from '../types';
+import { ParseLogList, ParsedCSSSettings } from '../types';
 import { StyleManagerSettingTab } from './StyleManagerSettingTab';
 import { StyleManagerView, viewType } from './StyleManagerView';
 
@@ -69,16 +69,16 @@ export class ViewManager {
 	 */
 	public updateData(
 		settingsList: ParsedCSSSettings[],
-		errorList: ErrorList
+		parseLogs: ParseLogList
 	): void {
 		if (this.settingsTab) {
-			this.settingsTab.setSettings(settingsList, errorList);
+			this.settingsTab.setSettings(settingsList, parseLogs);
 		}
 
 		const leaves = this.app.workspace.getLeavesOfType(viewType);
 		for (const leaf of leaves) {
 			if (leaf.view instanceof StyleManagerView) {
-				leaf.view.setSettings(settingsList, errorList);
+				leaf.view.setSettings(settingsList, parseLogs);
 			}
 		}
 	}

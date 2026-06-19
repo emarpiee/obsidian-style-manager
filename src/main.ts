@@ -28,7 +28,7 @@ import {
 } from './constants';
 import {
 	ClassToggle,
-	ErrorList,
+	ParseLogList,
 	ParsedCSSSettings,
 	RefreshLevel,
 	SettingsSeachResource,
@@ -105,7 +105,7 @@ export default class StyleManagerPlugin extends Plugin {
 	loremIpsumTool: LoremIpsumTool;
 
 	settingsList: ParsedCSSSettings[] = [];
-	errorList: ErrorList = [];
+	parseLogs: ParseLogList = [];
 	commandList: Command[] = [];
 
 	selectedSnippets: Set<string> = new Set();
@@ -480,7 +480,7 @@ export default class StyleManagerPlugin extends Plugin {
 			if (this.settingsList) {
 				this.settingsService.viewManager.updateData(
 					this.settingsList,
-					this.errorList
+					this.parseLogs
 				);
 			}
 
@@ -498,10 +498,10 @@ export default class StyleManagerPlugin extends Plugin {
 			await this.styleSheetManager.buildDiskMap();
 
 			Logger.time('StyleManager:Parsing');
-			const { settingsList, errorList } =
+			const { settingsList, parseLogs } =
 				this.styleSheetManager.getSettingsFromStyles();
 			this.settingsList = settingsList;
-			this.errorList = errorList;
+			this.parseLogs = parseLogs;
 			Logger.timeEnd('StyleManager:Parsing');
 
 			this.isInitialLoading = false;
@@ -509,7 +509,7 @@ export default class StyleManagerPlugin extends Plugin {
 			this.refreshSettingsSearchIntegration();
 			this.settingsService.viewManager.updateData(
 				this.settingsList,
-				this.errorList
+				this.parseLogs
 			);
 
 			this.settingsService.styleGenerator.setConfig(this.settingsList);
@@ -766,7 +766,7 @@ export default class StyleManagerPlugin extends Plugin {
 		});
 
 		const view = leaf.view as StyleManagerView;
-		view.setSettings(this.settingsList, this.errorList);
+		view.setSettings(this.settingsList, this.parseLogs);
 
 		if (tab && view.settingsMarkup) {
 			view.settingsMarkup.openTab(tab);

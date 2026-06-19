@@ -265,7 +265,14 @@ export interface MappedSettings {
 	};
 }
 
-export type ErrorList = Array<{ name: string; error: string }>;
+export interface ParseLogEntry {
+	name: string;
+	message: string;
+	type: 'error' | 'warning';
+	timestamp: number;
+}
+
+export type ParseLogList = Array<ParseLogEntry>;
 
 export interface SettingsSeachResource {
 	tab: string;

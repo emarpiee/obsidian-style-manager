@@ -221,6 +221,9 @@ body {
 	/* --- CSS Editor --- */
 	--sm-cm-gutters-color: unset;
 	--sm-cm-active-line-gutter-color: unset;
+
+	/* --- CSS Parser Logs --- */
+	--sm-log-warning-bg-color: oklch(from yellow l c h / 0.2);
 }
 
 .style-manager-plugin {
@@ -2141,4 +2144,18 @@ body.is-mobile .style-manager-editor-title-container {
 .style-manager-schedule-paused {
 	text-decoration: line-through;
 	opacity: 0.6;
+}
+
+/* --- CSS Parser Logs --- */
+.style-manager-log-item.style-manager-log-warning {
+	margin-block: var(--size-4-4);
+	background: var(--sm-log-warning-bg-color);
+	padding: var(--size-4-2);
+	border-radius: var(--radius-m);
+	border: 1px solid var(--text-muted);
+}
+
+.style-manager-log-header {
+	display: flex;
+	gap: var(--size-4-2);
 }

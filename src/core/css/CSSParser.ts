@@ -19,7 +19,7 @@
 import detectIndent from 'detect-indent';
 import yaml from 'js-yaml';
 
-import { ErrorList, ParsedCSSSettings, SnippetMetadata } from '../../types';
+import { ParseLogList, ParsedCSSSettings, SnippetMetadata } from '../../types';
 import {
 	metadataRegExp,
 	nameRegExp,
@@ -29,7 +29,7 @@ import {
 export class CSSParser {
 	private static parseCache: Map<
 		string,
-		{ settingsList: ParsedCSSSettings[]; errorList: ErrorList }
+		{ settingsList: ParsedCSSSettings[]; parseLogs: ParseLogList }
 	> = new Map();
 
 	/**
@@ -40,18 +40,18 @@ export class CSSParser {
 	 */
 	public static parseCSS(sheet: CSSStyleSheet): {
 		settingsList: ParsedCSSSettings[];
-		errorList: ErrorList;
+		parseLogs: ParseLogList;
 	} {
 		const text = sheet?.ownerNode?.textContent?.trim();
-		if (!text) return { settingsList: [], errorList: [] };
+		if (!text) return { settingsList: [], parseLogs: [] };
 		return this.parseCSSText(text);
 	}
 
 	public static parseCSSText(text: string): {
 		settingsList: ParsedCSSSettings[];
-		errorList: ErrorList;
+		parseLogs: ParseLogList;
 	} {
-		if (!text) return { settingsList: [], errorList: [] };
+		if (!text) return { settingsList: [], parseLogs: [] };
 
 		// CACHE CHECK: If we've already parsed this exact CSS content, return the cached result.
 		// This significantly speeds up re-parsing when only one snippet or theme changed.
@@ -66,7 +66,7 @@ export class CSSParser {
 		}
 
 		const settingsList: ParsedCSSSettings[] = [];
-		const errorList: ErrorList = [];
+		const parseLogs: ParseLogList = [];
 
 		// Reset regex lastIndex because of 'g' flag
 		settingRegExp.lastIndex = 0;
@@ -79,7 +79,7 @@ export class CSSParser {
 				const name = nameMatch ? nameMatch[1] : 'Unknown';
 
 				try {
-					const settings = this.parseCSSSettings(str, name);
+					const settings = this.parseCSSSettings(str, name, parseLogs);
 
 					if (
 						settings &&
@@ -93,12 +93,12 @@ export class CSSParser {
 						settingsList.push(settings);
 					}
 				} catch (e) {
-					errorList.push({ name, error: `${e}` });
+					parseLogs.push({ name, message: `${e}`, type: 'error', timestamp: Date.now() });
 				}
 			} while ((match = settingRegExp.exec(text)) !== null);
 		}
 
-		const result = { settingsList, errorList };
+		const result = { settingsList, parseLogs };
 
 		// CACHE POPULATE: Limit cache size to prevent memory leaks in extreme cases
 		// LRU eviction: If cache exceeds 200, remove the oldest (first) element.
@@ -118,14 +118,14 @@ export class CSSParser {
 	 */
 	private static cloneResult(result: {
 		settingsList: ParsedCSSSettings[];
-		errorList: ErrorList;
-	}): { settingsList: ParsedCSSSettings[]; errorList: ErrorList } {
+		parseLogs: ParseLogList;
+	}): { settingsList: ParsedCSSSettings[]; parseLogs: ParseLogList } {
 		return {
 			settingsList: result.settingsList.map((s) => ({
 				...s,
 				settings: [...s.settings],
 			})),
-			errorList: [...result.errorList],
+			parseLogs: [...result.parseLogs],
 		};
 	}
 
@@ -138,7 +138,8 @@ export class CSSParser {
 	 */
 	public static parseCSSSettings(
 		str: string,
-		name: string
+		name: string,
+		parseLogs?: ParseLogList
 	): ParsedCSSSettings | undefined {
 		const indent = detectIndent(str);
 
@@ -150,7 +151,102 @@ export class CSSParser {
 		) as ParsedCSSSettings;
 
 		if (!settings || !Array.isArray(settings.settings)) return undefined;
-		settings.settings = settings.settings.filter((setting) => setting);
+		settings.settings = settings.settings.filter((setting: any) => {
+			if (!setting || typeof setting !== 'object' || !setting.type) return false;
+
+			switch (setting.type) {
+				case 'heading':
+					if (typeof setting.level !== 'number' || setting.level < 1 || setting.level > 6) {
+						const originalLevel = setting.level;
+						setting.level = typeof setting.level === 'number' && !isNaN(setting.level) ? Math.max(1, Math.min(6, setting.level)) : 1;
+						parseLogs?.push({ name, message: `INVALID_HEADING_LEVEL: Heading '${setting.id}' has invalid level (${originalLevel}), falling back to ${setting.level}`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
+				case 'class-toggle':
+					if (typeof setting.default !== 'boolean') {
+						setting.default = false;
+						parseLogs?.push({ name, message: `INVALID_DEFAULT: Class toggle '${setting.id}' default is not boolean, falling back to false`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
+				case 'class-select':
+					if (setting.allowEmpty === undefined) {
+						setting.allowEmpty = false;
+						parseLogs?.push({ name, message: `MISSING_ALLOW_EMPTY: Class select '${setting.id}' missing allowEmpty, falling back to false`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
+				case 'variable-text':
+					if (setting.default === undefined) {
+						setting.default = "";
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable text '${setting.id}' missing default, falling back to ""`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
+				case 'variable-number':
+					if (setting.default === undefined) {
+						setting.default = 0;
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable number '${setting.id}' missing default, falling back to 0`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
+				case 'variable-number-slider': {
+					if (setting.min === undefined || setting.max === undefined || setting.step === undefined) {
+						setting.min = setting.min ?? 0;
+						setting.max = setting.max ?? 100;
+						setting.step = setting.step ?? 1;
+						setting.default = setting.default ?? 0;
+						parseLogs?.push({ name, message: `MISSING_SLIDER_FIELDS: Slider '${setting.id}' missing fields, using defaults`, type: 'warning', timestamp: Date.now() });
+					}
+					if (setting.min > setting.max) {
+						const temp = setting.min;
+						setting.min = setting.max;
+						setting.max = temp;
+						parseLogs?.push({ name, message: `INVALID_SLIDER_RANGE: Slider '${setting.id}' min > max, swapped values`, type: 'warning', timestamp: Date.now() });
+					}
+					if (setting.step <= 0) {
+						setting.step = 1;
+						parseLogs?.push({ name, message: `INVALID_SLIDER_STEP: Slider '${setting.id}' step <= 0, falling back to 1`, type: 'warning', timestamp: Date.now() });
+					}
+					if (setting.default === undefined || setting.default < setting.min || setting.default > setting.max) {
+						const oldDefault = setting.default;
+						setting.default = Math.max(setting.min, Math.min(setting.max, typeof setting.default === 'number' && !isNaN(setting.default) ? setting.default : setting.min));
+						parseLogs?.push({ name, message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) out of bounds, clamped to ${setting.default}`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
+				}
+				case 'variable-color':
+					if (!setting.format || !['hsl', 'hsl-values', 'hsl-split', 'hsl-split-decimal', 'rgb', 'rgb-values', 'rgb-split', 'hex'].includes(setting.format)) {
+						const issue = !setting.format ? 'MISSING_COLOR_FORMAT' : 'UNSUPPORTED_COLOR_FORMAT';
+						setting.format = 'hex';
+						parseLogs?.push({ name, message: `${issue}: Color '${setting.id}' format invalid, falling back to 'hex'`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
+				case 'variable-themed-color':
+					if (!setting['default-light'] || !setting['default-dark']) {
+						setting['default-light'] = setting['default-light'] || '#000000';
+						setting['default-dark'] = setting['default-dark'] || '#000000';
+						parseLogs?.push({ name, message: `MISSING_THEMED_COLOR_FIELDS: Themed color '${setting.id}' missing defaults, falling back to '#000000'`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
+				case 'variable-select':
+					if (setting.default === undefined) {
+						setting.default = "";
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable select '${setting.id}' missing default, falling back to ""`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
+				case 'color-gradient':
+					if (!setting.from || !setting.to || !setting.format || setting.step === undefined) {
+						setting.from = setting.from || "";
+						setting.to = setting.to || "";
+						setting.format = setting.format || "hex";
+						setting.step = setting.step === undefined ? 1 : setting.step;
+						parseLogs?.push({ name, message: `MISSING_GRADIENT_FIELDS: Gradient '${setting.id}' missing fields, using fallbacks`, type: 'warning', timestamp: Date.now() });
+					}
+					if (setting.step <= 0) {
+						setting.step = 1;
+						parseLogs?.push({ name, message: `INVALID_GRADIENT_STEP: Gradient '${setting.id}' step <= 0, falling back to 1`, type: 'warning', timestamp: Date.now() });
+					}
+					break;
+			}
+			return true;
+		});
 		return settings;
 	}
 

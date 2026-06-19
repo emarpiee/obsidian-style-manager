@@ -19,7 +19,7 @@
 import { ItemView, WorkspaceLeaf } from 'obsidian';
 
 import StyleManagerPlugin from '../main';
-import { ErrorList, ParsedCSSSettings } from '../types';
+import { ParseLogList, ParsedCSSSettings } from '../types';
 import { StyleManagerLayoutRenderer } from './StyleManagerLayoutRenderer';
 
 export const viewType = 'style-manager-view';
@@ -38,12 +38,12 @@ export class StyleManagerView extends ItemView {
 	}
 
 	settings: ParsedCSSSettings[];
-	errorList: ErrorList;
-	setSettings(settings: ParsedCSSSettings[], errorList: ErrorList): void {
+	parseLogs: ParseLogList;
+	setSettings(settings: ParsedCSSSettings[], parseLogs: ParseLogList): void {
 		this.settings = settings;
-		this.errorList = errorList;
+		this.parseLogs = parseLogs;
 		if (this.settingsMarkup) {
-			this.settingsMarkup.setSettings(settings, errorList);
+			this.settingsMarkup.setSettings(settings, parseLogs);
 		}
 	}
 
@@ -57,7 +57,7 @@ export class StyleManagerView extends ItemView {
 			)
 		);
 		if (this.settings) {
-			this.settingsMarkup.setSettings(this.settings, this.errorList);
+			this.settingsMarkup.setSettings(this.settings, this.parseLogs);
 		}
 	}
 

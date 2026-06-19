@@ -25,10 +25,13 @@ import {
 	buildSettingComponentTree,
 } from '../components/fields/HeadingSettingComponent';
 import { ReadmeModal } from '../modals/ReadmeModal';
+import { CSSParserLogsModal } from '../modals/CSSParserLogsModal';
+import { ParseLogList } from '../../types';
 
 export interface StylesTabDeps {
 	plugin: StyleManagerPlugin;
 	isView: boolean;
+	parseLogs: ParseLogList;
 	filterString: string;
 	showModifiedOnly: boolean;
 	onFilterChange: (value: string) => void;
@@ -104,6 +107,18 @@ export class StylesTab {
 					'is-active',
 					this.deps.showModifiedOnly
 				);
+			})
+			.addExtraButton((btn) => {
+				btn
+					.setIcon('info')
+					.setTooltip('View Parse Logs')
+					.onClick(() => {
+						new CSSParserLogsModal(
+							this.deps.plugin.app,
+							this.deps.plugin,
+							this.deps.parseLogs
+						).open();
+					});
 			})
 			.addExtraButton((btn) => {
 				btn
@@ -240,21 +255,6 @@ export class StylesTab {
 					}
 				);
 			}
-		});
-	}
-
-	displayErrors(
-		errors: Array<{ name: string; error: string }>,
-		containerEl: HTMLElement
-	): void {
-		errors.forEach((err) => {
-			containerEl.createDiv({ cls: 'style-manager-error' }, (wrapper) => {
-				wrapper.createDiv({
-					cls: 'style-manager-error-name',
-					text: `Error: ${err.name}`,
-				});
-				wrapper.createDiv({ cls: 'style-manager-error-desc', text: err.error });
-			});
 		});
 	}
 }

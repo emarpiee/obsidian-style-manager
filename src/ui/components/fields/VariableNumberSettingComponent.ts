@@ -72,7 +72,7 @@ export class VariableNumberSettingComponent extends AbstractSettingComponent {
 			};
 
 			text.setValue(
-				value !== undefined ? value.toString() : this.setting.default.toString()
+				value != null ? value.toString() : this.setting.default.toString()
 			);
 
 			text.inputEl.addEventListener('blur', () => {
