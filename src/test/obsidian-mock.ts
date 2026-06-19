@@ -129,6 +129,16 @@ export class Modal {
 	modalEl = document.createElement('div');
 }
 
+export class SuggestModal<T> extends Modal {
+	inputEl = document.createElement('input');
+	resultContainerEl = document.createElement('div');
+	setPlaceholder = vi.fn();
+	setInstructions = vi.fn();
+	getSuggestions(_query: string): T[] { return []; }
+	renderSuggestion(_item: T, _el: HTMLElement): void {}
+	onChooseSuggestion(_item: T, _evt: MouseEvent | KeyboardEvent): void {}
+}
+
 export class Setting {
 	constructor(public containerEl: HTMLElement) {}
 	setName = vi.fn().mockReturnThis();

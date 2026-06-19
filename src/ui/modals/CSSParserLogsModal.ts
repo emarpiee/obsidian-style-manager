@@ -13,11 +13,14 @@ export class CSSParserLogsModal extends Modal {
 	}
 
 	onOpen() {
-		const { contentEl } = this;
-		contentEl.empty();
-		contentEl.addClass('style-manager-logs-modal');
+		const { contentEl, modalEl } = this;
+		modalEl.addClass('style-manager-plugin');
+		modalEl.addClass('modal-style-manager');
+		modalEl.addClass('style-manager-logs-modal');
 
-		contentEl.createEl('h2', { text: 'CSS Parser Logs' });
+		this.setTitle('CSS Parser Logs');
+
+		contentEl.empty();
 
 		if (!this.parseLogs || this.parseLogs.length === 0) {
 			contentEl.createEl('p', { text: 'No warnings or errors found.', cls: 'style-manager-empty-desc' });
