@@ -12,7 +12,7 @@ export class CSSParserLogsModal extends Modal {
 		this.parseLogs = parseLogs;
 	}
 
-	onOpen() {
+	onOpen(): void {
 		const { contentEl, modalEl } = this;
 		modalEl.addClass('style-manager-plugin');
 		modalEl.addClass('modal-style-manager');
@@ -51,7 +51,7 @@ export class CSSParserLogsModal extends Modal {
 		});
 	}
 
-	onClose() {
+	onClose(): void {
 		const { contentEl } = this;
 		contentEl.empty();
 	}

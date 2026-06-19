@@ -374,7 +374,7 @@ describe('VariableTextSettingComponent — `value != null` init fix (fix: 59c01d
 	});
 
 	it('wraps non-empty value in single quotes when quotes=true', () => {
-		const value = 'Inter';
+		const value: string = 'Inter';
 		// onCommit sanitizes and wraps:
 		const sanitized = value !== `""` ? `'${value}'` : '';
 		expect(sanitized).toBe("'Inter'");

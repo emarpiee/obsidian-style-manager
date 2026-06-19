@@ -151,6 +151,7 @@ export class CSSParser {
 		) as ParsedCSSSettings;
 
 		if (!settings || !Array.isArray(settings.settings)) return undefined;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		settings.settings = settings.settings.filter((setting: any) => {
 			if (!setting || typeof setting !== 'object' || !setting.type) return false;
 

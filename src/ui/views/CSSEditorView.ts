@@ -38,11 +38,11 @@ export class CSSEditorView extends ItemView {
 		this.editor = new CSSEditor();
 	}
 
-	async setState(state: any, result: ViewStateResult): Promise<void> {
+	async setState(state: Record<string, unknown>, result: ViewStateResult): Promise<void> {
 		super.setState(state, result);
 
 		if (state && state.source) {
-			this.source = state.source;
+			this.source = state.source as { type: string; id: string; readOnly?: boolean };
 			this.contentEl.empty();
 			this.contentEl.addClass('style-manager-editor-view');
 			
@@ -54,8 +54,8 @@ export class CSSEditorView extends ItemView {
 		}
 	}
 
-	getState(): any {
-		const state = super.getState();
+	getState(): Record<string, unknown> {
+		const state = (super.getState() as Record<string, unknown>) || {};
 		if (this.source) {
 			state.source = this.source;
 		}
