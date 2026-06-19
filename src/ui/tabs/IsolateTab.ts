@@ -32,7 +32,7 @@ import {
 	renderCountBadge,
 	renderSnippetBadge,
 	renderThemeBadge,
-} from '../components/fields/BadgeRenderer';
+} from '../components/BadgeUtils';
 import { ConfirmModal } from '../modals/ConfirmModal';
 import { LockerPreviewModal } from '../modals/LockerPreviewModal';
 import { RenameModal } from '../modals/RenameModal';

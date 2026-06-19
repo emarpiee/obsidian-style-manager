@@ -27,7 +27,7 @@ import {
 	renderAppearanceBadge,
 	renderSnippetBadge,
 	renderThemeBadge,
-} from '../components/fields/BadgeRenderer';
+} from '../components/BadgeUtils';
 
 export class CreatePresetModal extends Modal {
 	service: PresetService;

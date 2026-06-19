@@ -24,7 +24,7 @@ import {
 	renderAppearanceBadge,
 	renderSnippetBadge,
 	renderThemeBadge,
-} from '../components/fields/BadgeRenderer';
+} from '../components/BadgeUtils';
 
 /**
  * A modal that presents a checklist of customized settings sections,

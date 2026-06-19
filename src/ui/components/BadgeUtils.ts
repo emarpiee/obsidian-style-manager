@@ -18,8 +18,8 @@
 */
 import { displayTooltip, setIcon, setTooltip } from 'obsidian';
 
-import StyleManagerPlugin from '../../../main';
-import { copyToClipboard } from '../../../utils/UIUtils';
+import StyleManagerPlugin from '../../main';
+import { copyToClipboard } from '../../utils/UIUtils';
 
 /**
  * Standardized renderer for the snippet badge across different modals.

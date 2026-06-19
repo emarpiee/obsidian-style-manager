@@ -40,7 +40,7 @@ import {
 	renderScheduleBadge,
 	renderSnippetBadge,
 	renderThemeBadge,
-} from '../../components/fields/BadgeRenderer';
+} from '../../components/BadgeUtils';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { PresetPreviewModal } from '../../modals/PresetPreviewModal';
 import { PresetScheduleModal } from '../../modals/PresetScheduleModal';
