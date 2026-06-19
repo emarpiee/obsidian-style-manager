@@ -64,3 +64,4 @@ export const SCHEDULE_APPLY_ACTION_KEY =
 	'__style_manager_schedule_apply_action';
 export const SETTINGS_BLOCK_DASH_SPACES_KEY = '__style_manager_settings_block_dash_spaces';
 export const SETTINGS_BLOCK_COMPONENT_SPACES_KEY = '__style_manager_settings_block_component_spaces';
+export const SHOW_PARSE_LOGS_ICON_KEY = '__style_manager_show_parse_logs_icon';

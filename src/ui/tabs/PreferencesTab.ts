@@ -36,6 +36,7 @@ import {
 	SETTINGS_BLOCK_COMPONENT_SPACES_KEY,
 	SETTINGS_BLOCK_DASH_SPACES_KEY,
 	SHOW_ISOLATE_NOTIFICATIONS_KEY,
+	SHOW_PARSE_LOGS_ICON_KEY,
 	SHOW_PRESET_NOTIFICATIONS_KEY,
 	SHOW_SHARED_NOTIFICATIONS_KEY,
 	SHOW_SNIPPET_METADATA_KEY,
@@ -913,6 +914,22 @@ export class PreferencesTab {
 						});
 				});
 		});
+
+		new Setting(developerContainer)
+			.setName('Show parse logs icon')
+			.setDesc('Show the "View Parse Logs" icon in the Styles tab.')
+			.addToggle((toggle) => {
+				toggle
+					.setValue(
+						(plugin.settingsService.sharedSettings[SHOW_PARSE_LOGS_ICON_KEY] as boolean) !== false
+					)
+					.onChange(async (val) => {
+						await plugin.settingsService.setSettings(
+							{ [SHOW_PARSE_LOGS_ICON_KEY]: val },
+							{ silentUI: true, target: 'shared' }
+						);
+					});
+			});
 
 		new Setting(developerContainer)
 			.setName('Enable console logging')

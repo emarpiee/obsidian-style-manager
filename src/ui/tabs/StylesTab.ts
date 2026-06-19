@@ -27,6 +27,7 @@ import {
 import { ReadmeModal } from '../modals/ReadmeModal';
 import { CSSParserLogsModal } from '../modals/CSSParserLogsModal';
 import { ParseLogList } from '../../types';
+import { SHOW_PARSE_LOGS_ICON_KEY } from '../../constants';
 
 export interface StylesTabDeps {
 	plugin: StyleManagerPlugin;
@@ -74,7 +75,7 @@ export class StylesTab {
 		const topBtns = this.containerEl.createDiv('style-manager-search-row');
 		topBtns.addClass('style-manager-styles-search-row');
 
-		new Setting(topBtns)
+		const searchSetting = new Setting(topBtns)
 			.setClass('style-manager-search-container')
 			.setClass('style-manager-styles-filter')
 			.addSearch((searchComponent) => {
@@ -119,8 +120,14 @@ export class StylesTab {
 						const anyExpanded = trees.some((t) => !t.setting.collapsed);
 						trees.forEach((t) => t.setCollapsedRecursive(anyExpanded));
 					});
-			})
-			.addExtraButton((btn) => {
+			});
+
+		if (
+			(this.deps.plugin.settingsService.sharedSettings[
+				SHOW_PARSE_LOGS_ICON_KEY
+			] as boolean) !== false
+		) {
+			searchSetting.addExtraButton((btn) => {
 				btn
 					.setIcon('info')
 					.setTooltip('View Parse Logs')
@@ -135,6 +142,7 @@ export class StylesTab {
 						).open();
 					});
 			});
+		}
 
 		this.settingsContainerEl = this.containerEl.createDiv(
 			'style-manager-styles-tab-content'
