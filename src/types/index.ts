@@ -270,6 +270,7 @@ export interface ParseLogEntry {
 	message: string;
 	type: 'error' | 'warning';
 	timestamp: number;
+	settingId?: string;
 }
 
 export type ParseLogList = Array<ParseLogEntry>;

@@ -160,37 +160,37 @@ export class CSSParser {
 					if (typeof setting.level !== 'number' || setting.level < 1 || setting.level > 6) {
 						const originalLevel = setting.level;
 						setting.level = typeof setting.level === 'number' && !isNaN(setting.level) ? Math.max(1, Math.min(6, setting.level)) : 1;
-						parseLogs?.push({ name, message: `INVALID_HEADING_LEVEL: Heading '${setting.id}' has invalid level (${originalLevel}), falling back to ${setting.level}`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `INVALID_HEADING_LEVEL: Heading '${setting.id}' has invalid level (${originalLevel}), falling back to ${setting.level}`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 								case 'class-multi-toggle':
 					if (typeof setting.default !== 'string') {
 						setting.default = '';
-						parseLogs?.push({ name, message: `MISSING_DEFAULT: Class multi toggle '${setting.id}' missing default, falling back to empty string`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Class multi toggle '${setting.id}' missing default, falling back to empty string`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 				case 'class-toggle':
 					if (typeof setting.default !== 'boolean') {
 						setting.default = false;
-						parseLogs?.push({ name, message: `INVALID_DEFAULT: Class toggle '${setting.id}' default is not boolean, falling back to false`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `INVALID_DEFAULT: Class toggle '${setting.id}' default is not boolean, falling back to false`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 				case 'class-select':
 					if (setting.allowEmpty === undefined) {
 						setting.allowEmpty = false;
-						parseLogs?.push({ name, message: `MISSING_ALLOW_EMPTY: Class select '${setting.id}' missing allowEmpty, falling back to false`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `MISSING_ALLOW_EMPTY: Class select '${setting.id}' missing allowEmpty, falling back to false`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 				case 'variable-text':
 					if (setting.default === undefined) {
 						setting.default = "";
-						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable text '${setting.id}' missing default, falling back to ""`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable text '${setting.id}' missing default, falling back to ""`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 				case 'variable-number':
 					if (setting.default === undefined) {
 						setting.default = 0;
-						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable number '${setting.id}' missing default, falling back to 0`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable number '${setting.id}' missing default, falling back to 0`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 				case 'variable-number-slider': {
@@ -199,22 +199,22 @@ export class CSSParser {
 						setting.max = setting.max ?? 100;
 						setting.step = setting.step ?? 1;
 						setting.default = setting.default ?? 0;
-						parseLogs?.push({ name, message: `MISSING_SLIDER_FIELDS: Slider '${setting.id}' missing fields, using defaults`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `MISSING_SLIDER_FIELDS: Slider '${setting.id}' missing fields, using defaults`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					if (setting.min > setting.max) {
 						const temp = setting.min;
 						setting.min = setting.max;
 						setting.max = temp;
-						parseLogs?.push({ name, message: `INVALID_SLIDER_RANGE: Slider '${setting.id}' min > max, swapped values`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `INVALID_SLIDER_RANGE: Slider '${setting.id}' min > max, swapped values`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					if (setting.step <= 0) {
 						setting.step = 1;
-						parseLogs?.push({ name, message: `INVALID_SLIDER_STEP: Slider '${setting.id}' step <= 0, falling back to 1`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `INVALID_SLIDER_STEP: Slider '${setting.id}' step <= 0, falling back to 1`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					if (setting.default === undefined || setting.default < setting.min || setting.default > setting.max) {
 						const oldDefault = setting.default;
 						setting.default = Math.max(setting.min, Math.min(setting.max, typeof setting.default === 'number' && !isNaN(setting.default) ? setting.default : setting.min));
-						parseLogs?.push({ name, message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) out of bounds, clamped to ${setting.default}`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) out of bounds, clamped to ${setting.default}`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 				}
@@ -222,24 +222,24 @@ export class CSSParser {
 					if (!setting.format || !['hsl', 'hsl-values', 'hsl-split', 'hsl-split-decimal', 'rgb', 'rgb-values', 'rgb-split', 'hex'].includes(setting.format)) {
 						const issue = !setting.format ? 'MISSING_COLOR_FORMAT' : 'UNSUPPORTED_COLOR_FORMAT';
 						setting.format = 'hex';
-						parseLogs?.push({ name, message: `${issue}: Color '${setting.id}' format invalid, falling back to 'hex'`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `${issue}: Color '${setting.id}' format invalid, falling back to 'hex'`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					if (typeof setting.default !== 'string') {
 						setting.default = '#';
-						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable color '${setting.id}' missing default value, falling back to '#'`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable color '${setting.id}' missing default value, falling back to '#'`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 				case 'variable-themed-color':
 					if (!setting['default-light'] || !setting['default-dark']) {
 						setting['default-light'] = setting['default-light'] || '#';
 						setting['default-dark'] = setting['default-dark'] || '#';
-						parseLogs?.push({ name, message: `MISSING_THEMED_COLOR_FIELDS: Themed color '${setting.id}' missing defaults, falling back to '#'`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `MISSING_THEMED_COLOR_FIELDS: Themed color '${setting.id}' missing defaults, falling back to '#'`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 				case 'variable-select':
 					if (setting.default === undefined) {
 						setting.default = "";
-						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable select '${setting.id}' missing default, falling back to ""`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `MISSING_DEFAULT: Variable select '${setting.id}' missing default, falling back to ""`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 				case 'color-gradient':
@@ -248,11 +248,11 @@ export class CSSParser {
 						setting.to = setting.to || "";
 						setting.format = setting.format || "hex";
 						setting.step = setting.step === undefined ? 1 : setting.step;
-						parseLogs?.push({ name, message: `MISSING_GRADIENT_FIELDS: Gradient '${setting.id}' missing fields, using fallbacks`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `MISSING_GRADIENT_FIELDS: Gradient '${setting.id}' missing fields, using fallbacks`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					if (setting.step <= 0) {
 						setting.step = 1;
-						parseLogs?.push({ name, message: `INVALID_GRADIENT_STEP: Gradient '${setting.id}' step <= 0, falling back to 1`, type: 'warning', timestamp: Date.now() });
+						parseLogs?.push({ name, message: `INVALID_GRADIENT_STEP: Gradient '${setting.id}' step <= 0, falling back to 1`, type: 'warning', timestamp: Date.now(), settingId: setting.id });
 					}
 					break;
 			}

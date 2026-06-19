@@ -37,6 +37,8 @@ export interface StylesTabDeps {
 	onFilterChange: (value: string) => void;
 	onFilterClear: () => void;
 	onToggleModifiedOnly: () => void;
+	/** Called when a setting ID is clicked in the parser-logs modal. Should set the filter and rerender. */
+	onNavigateToSettingId: (settingId: string) => void;
 	addChild: (child: HeadingSettingComponent) => HeadingSettingComponent;
 	getSettingsComponentTrees: () => HeadingSettingComponent[];
 	setSettingsComponentTrees: (trees: HeadingSettingComponent[]) => void;
@@ -116,7 +118,10 @@ export class StylesTab {
 						new CSSParserLogsModal(
 							this.deps.plugin.app,
 							this.deps.plugin,
-							this.deps.parseLogs
+							this.deps.parseLogs,
+							(settingId: string) => {
+								this.deps.onNavigateToSettingId(settingId);
+							}
 						).open();
 					});
 			})

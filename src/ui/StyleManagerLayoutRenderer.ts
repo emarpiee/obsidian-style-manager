@@ -232,6 +232,10 @@ export class StyleManagerLayoutRenderer extends Component {
 				this.showModifiedOnly = !this.showModifiedOnly;
 				this.filter();
 			},
+			onNavigateToSettingId: (settingId: string): void => {
+				this.filterString = `@id ${settingId}`;
+				this.rerender();
+			},
 			addChild: (child: HeadingSettingComponent): HeadingSettingComponent => {
 				this.addChild(child);
 				return child;

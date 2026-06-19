@@ -2160,3 +2160,17 @@ body.is-mobile .style-manager-editor-title-container {
 	display: flex;
 	gap: var(--size-4-2);
 }
+
+.style-manager-log-setting-id-link {
+	cursor: pointer;
+	color: var(--color-accent);
+	text-decoration: underline;
+	text-decoration-style: dotted;
+	border-radius: var(--radius-s);
+	transition: color 100ms ease, background 100ms ease;
+}
+
+.style-manager-log-setting-id-link:hover {
+	color: var(--color-accent-2, var(--color-accent));
+	background: var(--background-modifier-hover);
+}
