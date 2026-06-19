@@ -21,9 +21,9 @@ import { Setting } from 'obsidian';
 import StyleManagerPlugin from '../../main';
 import { CSSSetting, ParsedCSSSettings } from '../../types';
 import {
-	HeadingSettingComponent,
+	HeadingField,
 	buildSettingComponentTree,
-} from '../components/fields/HeadingSettingComponent';
+} from '../components/fields/HeadingField';
 import { ReadmeModal } from '../modals/ReadmeModal';
 import { CSSParserLogsModal } from '../modals/CSSParserLogsModal';
 import { ParseLogList } from '../../types';
@@ -40,9 +40,9 @@ export interface StylesTabDeps {
 	onToggleModifiedOnly: () => void;
 	/** Called when a setting ID is clicked in the parser-logs modal. Should set the filter and rerender. */
 	onNavigateToSettingId: (settingId: string) => void;
-	addChild: (child: HeadingSettingComponent) => HeadingSettingComponent;
-	getSettingsComponentTrees: () => HeadingSettingComponent[];
-	setSettingsComponentTrees: (trees: HeadingSettingComponent[]) => void;
+	addChild: (child: HeadingField) => HeadingField;
+	getSettingsComponentTrees: () => HeadingField[];
+	setSettingsComponentTrees: (trees: HeadingField[]) => void;
 	onRenderComplete?: () => void;
 }
 

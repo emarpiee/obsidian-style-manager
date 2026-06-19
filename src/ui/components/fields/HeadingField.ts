@@ -18,15 +18,15 @@
 */
 import { Platform, Setting, setIcon, setTooltip } from 'obsidian';
 
-import { ClassMultiToggleSettingComponent } from './ClassMultiToggleSettingComponent';
-import { ClassToggleSettingComponent } from './ClassToggleSettingComponent';
-import { InfoTextSettingComponent } from './InfoTextSettingComponent';
-import { VariableColorSettingComponent } from './VariableColorSettingComponent';
-import { VariableNumberSettingComponent } from './VariableNumberSettingComponent';
-import { VariableNumberSliderSettingComponent } from './VariableNumberSliderSettingComponent';
-import { VariableSelectSettingComponent } from './VariableSelectSettingComponent';
-import { VariableTextSettingComponent } from './VariableTextSettingComponent';
-import { VariableThemedColorSettingComponent } from './VariableThemedColorSettingComponent';
+import { ClassMultiToggleField } from './ClassMultiToggleField';
+import { ClassToggleField } from './ClassToggleField';
+import { InfoTextField } from './InfoTextField';
+import { VariableColorField } from './VariableColorField';
+import { VariableNumberField } from './VariableNumberField';
+import { VariableNumberSliderField } from './VariableNumberSliderField';
+import { VariableSelectField } from './VariableSelectField';
+import { VariableTextField } from './VariableTextField';
+import { VariableThemedColorField } from './VariableThemedColorField';
 
 import { SettingsService } from '../../../application/SettingsService';
 import { CSSSetting, Heading } from '../../../types';
@@ -45,7 +45,7 @@ function createSettingComponent(
 	isView: boolean
 ): AbstractSettingComponent | undefined {
 	if (setting.type === SettingType.HEADING) {
-		return new HeadingSettingComponent(
+		return new HeadingField(
 			parent,
 			sectionId,
 			sectionName,
@@ -54,7 +54,7 @@ function createSettingComponent(
 			isView
 		);
 	} else if (setting.type === SettingType.INFO_TEXT) {
-		return new InfoTextSettingComponent(
+		return new InfoTextField(
 			parent,
 			sectionId,
 			sectionName,
@@ -63,7 +63,7 @@ function createSettingComponent(
 			isView
 		);
 	} else if (setting.type === SettingType.CLASS_TOGGLE) {
-		return new ClassToggleSettingComponent(
+		return new ClassToggleField(
 			parent,
 			sectionId,
 			sectionName,
@@ -72,7 +72,7 @@ function createSettingComponent(
 			isView
 		);
 	} else if (setting.type === SettingType.CLASS_SELECT) {
-		return new ClassMultiToggleSettingComponent(
+		return new ClassMultiToggleField(
 			parent,
 			sectionId,
 			sectionName,
@@ -81,7 +81,7 @@ function createSettingComponent(
 			isView
 		);
 	} else if (setting.type === SettingType.VARIABLE_TEXT) {
-		return new VariableTextSettingComponent(
+		return new VariableTextField(
 			parent,
 			sectionId,
 			sectionName,
@@ -90,7 +90,7 @@ function createSettingComponent(
 			isView
 		);
 	} else if (setting.type === SettingType.VARIABLE_NUMBER) {
-		return new VariableNumberSettingComponent(
+		return new VariableNumberField(
 			parent,
 			sectionId,
 			sectionName,
@@ -99,7 +99,7 @@ function createSettingComponent(
 			isView
 		);
 	} else if (setting.type === SettingType.VARIABLE_NUMBER_SLIDER) {
-		return new VariableNumberSliderSettingComponent(
+		return new VariableNumberSliderField(
 			parent,
 			sectionId,
 			sectionName,
@@ -108,7 +108,7 @@ function createSettingComponent(
 			isView
 		);
 	} else if (setting.type === SettingType.VARIABLE_SELECT) {
-		return new VariableSelectSettingComponent(
+		return new VariableSelectField(
 			parent,
 			sectionId,
 			sectionName,
@@ -117,7 +117,7 @@ function createSettingComponent(
 			isView
 		);
 	} else if (setting.type === SettingType.VARIABLE_COLOR) {
-		return new VariableColorSettingComponent(
+		return new VariableColorField(
 			parent,
 			sectionId,
 			sectionName,
@@ -126,7 +126,7 @@ function createSettingComponent(
 			isView
 		);
 	} else if (setting.type === SettingType.VARIABLE_THEMED_COLOR) {
-		return new VariableThemedColorSettingComponent(
+		return new VariableThemedColorField(
 			parent,
 			sectionId,
 			sectionName,
@@ -146,7 +146,7 @@ export function buildSettingComponentTree(opts: {
 	sectionName: string;
 	settings: CSSSetting[];
 	settingsService: SettingsService;
-}): HeadingSettingComponent {
+}): HeadingField {
 	const {
 		containerEl,
 		isView,
@@ -156,7 +156,7 @@ export function buildSettingComponentTree(opts: {
 		sectionName,
 	} = opts;
 
-	const root: HeadingSettingComponent = new HeadingSettingComponent(
+	const root: HeadingField = new HeadingField(
 		containerEl,
 		sectionId,
 		sectionName,
@@ -165,7 +165,7 @@ export function buildSettingComponentTree(opts: {
 		isView
 	);
 
-	let currentHeading: HeadingSettingComponent = root;
+	let currentHeading: HeadingField = root;
 
 	for (const setting of settings.splice(1)) {
 		if (setting.type === 'heading') {
@@ -183,20 +183,20 @@ export function buildSettingComponentTree(opts: {
 				if (currentHeading.setting.id === root.setting.id) {
 					currentHeading = currentHeading.addSettingChild(
 						newHeading
-					) as HeadingSettingComponent;
+					) as HeadingField;
 				} else {
 					currentHeading = currentHeading.parent.addSettingChild(
 						newHeading
-					) as HeadingSettingComponent;
+					) as HeadingField;
 				}
 			} else if (newHeading.level === currentHeading.setting.level) {
 				currentHeading = currentHeading.parent.addSettingChild(
 					newHeading
-				) as HeadingSettingComponent;
+				) as HeadingField;
 			} else {
 				currentHeading = currentHeading.addSettingChild(
 					newHeading
-				) as HeadingSettingComponent;
+				) as HeadingField;
 			}
 		} else {
 			currentHeading.addSettingChild(setting);
@@ -206,11 +206,11 @@ export function buildSettingComponentTree(opts: {
 	return root;
 }
 
-export class HeadingSettingComponent extends AbstractSettingComponent {
+export class HeadingField extends AbstractSettingComponent {
 	settingsService: SettingsService;
 	setting: Heading;
 	settingEl: Setting;
-	parent: HeadingSettingComponent;
+	parent: HeadingField;
 	children: AbstractSettingComponent[] = [];
 	filteredChildren: AbstractSettingComponent[] = [];
 	filterMode: boolean = false;
@@ -381,7 +381,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 
 		for (const child of this.children) {
 			if (child.setting.type === SettingType.HEADING) {
-				const headingChild = child as HeadingSettingComponent;
+				const headingChild = child as HeadingField;
 
 				// Pass empty string if this heading explicitly matched the text search,
 				// so children don't get filtered out by text.
@@ -448,7 +448,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 
 		for (const child of this.children) {
 			if (child.setting.type === SettingType.HEADING) {
-				(child as HeadingSettingComponent).clearFilter();
+				(child as HeadingField).clearFilter();
 			}
 		}
 
@@ -488,7 +488,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		this.setCollapsed(collapsed);
 		for (const child of this.children) {
 			if (child.setting.type === SettingType.HEADING) {
-				(child as HeadingSettingComponent).setCollapsedRecursive(collapsed);
+				(child as HeadingField).setCollapsedRecursive(collapsed);
 			}
 		}
 	}
@@ -534,7 +534,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		for (const child of this.children) {
 			child.refresh();
 			if (child.setting.type === SettingType.HEADING) {
-				(child as HeadingSettingComponent).refreshChildren();
+				(child as HeadingField).refreshChildren();
 			}
 		}
 	}
@@ -543,7 +543,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 		for (const child of this.children) {
 			child.updateModifiedClass();
 			if (child.setting.type === SettingType.HEADING) {
-				(child as HeadingSettingComponent).updateChildrenModifiedClass();
+				(child as HeadingField).updateChildrenModifiedClass();
 			}
 		}
 	}
@@ -563,7 +563,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 	private hasModifiedChildren(): boolean {
 		for (const child of this.children) {
 			if (child.setting.type === SettingType.HEADING) {
-				const headingChild = child as HeadingSettingComponent;
+				const headingChild = child as HeadingField;
 				if (
 					headingChild.getLocalAppliedCount() > 0 ||
 					headingChild.hasModifiedChildren()
@@ -650,7 +650,7 @@ export class HeadingSettingComponent extends AbstractSettingComponent {
 			children.push(child.setting.id);
 			if (child.setting.type === SettingType.HEADING) {
 				children.push(
-					...(child as HeadingSettingComponent).getAllChildrenIds()
+					...(child as HeadingField).getAllChildrenIds()
 				);
 			}
 		}

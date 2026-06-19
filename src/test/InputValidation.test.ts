@@ -22,8 +22,8 @@
  *
  * Covers three changes:
  *  1. StyleGenerator.setConfig  — skips sections where `settings` is not an array
- *  2. VariableNumberSettingComponent — reverts input to stored/default on NaN
- *  3. VariableTextSettingComponent  — initialises field with `value != null` instead
+ *  2. VariableNumberField — reverts input to stored/default on NaN
+ *  3. VariableTextField  — initialises field with `value != null` instead
  *     of `value ?` so that "" and "0" are preserved
  */
 
@@ -165,11 +165,11 @@ describe('StyleGenerator.setConfig — non-array settings guard (fix: 59c01d4)',
 });
 
 // ---------------------------------------------------------------------------
-// 2. VariableNumberSettingComponent — onCommit NaN guard logic
+// 2. VariableNumberField — onCommit NaN guard logic
 //    (tests mirror the exact logic in the component without requiring DOM render)
 // ---------------------------------------------------------------------------
 
-describe('VariableNumberSettingComponent — NaN revert logic (fix: 59c01d4)', () => {
+describe('VariableNumberField — NaN revert logic (fix: 59c01d4)', () => {
 	const SECTION_ID = 'num-section';
 	const SETTING_ID = 'num-var';
 	const DEFAULT_VALUE = 16;
@@ -182,7 +182,7 @@ describe('VariableNumberSettingComponent — NaN revert logic (fix: 59c01d4)', (
 	};
 
 	/**
-	 * Simulate exactly what onCommit does in VariableNumberSettingComponent
+	 * Simulate exactly what onCommit does in VariableNumberField
 	 * and return whether a revert was triggered and what value was set.
 	 */
 	function runOnCommit(
@@ -281,11 +281,11 @@ describe('VariableNumberSettingComponent — NaN revert logic (fix: 59c01d4)', (
 });
 
 // ---------------------------------------------------------------------------
-// 3. VariableTextSettingComponent — `value != null` initialisation fix
+// 3. VariableTextField — `value != null` initialisation fix
 //    Tests the exact conditional expression on line 81 of the component.
 // ---------------------------------------------------------------------------
 
-describe('VariableTextSettingComponent — `value != null` init fix (fix: 59c01d4)', () => {
+describe('VariableTextField — `value != null` init fix (fix: 59c01d4)', () => {
 	const textSetting: any = {
 		id: 'text-var',
 		type: SettingType.VARIABLE_TEXT,

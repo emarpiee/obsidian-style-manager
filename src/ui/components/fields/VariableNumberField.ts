@@ -18,19 +18,15 @@
 */
 import { Setting, TextComponent } from 'obsidian';
 
-import { VariableText, resetTooltip } from '../../../types';
-import {
-	getDescription,
-	getTitle,
-	sanitizeText,
-} from '../../../utils/CommonUtils';
+import { VariableNumber, resetTooltip } from '../../../types';
+import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
-export class VariableTextSettingComponent extends AbstractSettingComponent {
+export class VariableNumberField extends AbstractSettingComponent {
 	settingEl: Setting;
 	textComponent: TextComponent;
-	setting: VariableText;
+	setting: VariableNumber;
 
 	render(): void {
 		if (!this.containerEl) return;
@@ -42,18 +38,31 @@ export class VariableTextSettingComponent extends AbstractSettingComponent {
 		this.settingEl.setClass('style-manager-style-settings-item');
 		this.settingEl.setName(title);
 		this.settingEl.setDesc(
-			createDescription(description, this.setting.default)
+			createDescription(description, this.setting.default.toString(10))
 		);
 
 		this.settingEl.addText((text) => {
-			let value = this.settingsService.getSetting(
+			const value = this.settingsService.getSetting(
 				this.sectionId,
 				this.setting.id
 			);
-
 			const onCommit = (value: string): void => {
-				const sanitizedValue = sanitizeText(value);
-				if (sanitizedValue === this.setting.default) {
+				const isFloat = /\./.test(value);
+				const numValue = isFloat ? parseFloat(value) : parseInt(value, 10);
+
+				if (isNaN(numValue)) {
+					// Revert the input to the last valid stored value (or default)
+					const stored = this.settingsService.getSetting(
+						this.sectionId,
+						this.setting.id
+					);
+					this.textComponent.setValue(
+						stored != null ? stored.toString() : this.setting.default.toString()
+					);
+					return;
+				}
+
+				if (numValue === this.setting.default) {
 					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
 						silentUI: true,
 					});
@@ -61,18 +70,16 @@ export class VariableTextSettingComponent extends AbstractSettingComponent {
 					this.settingsService.setSetting(
 						this.sectionId,
 						this.setting.id,
-						sanitizedValue,
+						numValue,
 						{ silentUI: true }
 					);
 				}
 				this.updateModifiedClass();
 			};
 
-			if (this.setting.quotes && value === `""`) {
-				value = ``;
-			}
-
-			text.setValue(value != null ? value.toString() : this.setting.default);
+			text.setValue(
+				value != null ? value.toString() : this.setting.default.toString()
+			);
 
 			text.inputEl.addEventListener('blur', () => {
 				onCommit(text.getValue());
@@ -90,7 +97,7 @@ export class VariableTextSettingComponent extends AbstractSettingComponent {
 		this.settingEl.addExtraButton((b) => {
 			b.setIcon('reset');
 			b.onClick(() => {
-				this.textComponent.setValue(this.setting.default);
+				this.textComponent.setValue(this.setting.default.toString());
 				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
 					silentUI: true,
 				});

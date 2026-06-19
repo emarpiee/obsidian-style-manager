@@ -21,7 +21,7 @@ import { App, Component, Platform } from 'obsidian';
 import StyleManagerPlugin from '../main';
 import { ParseLogList, ParsedCSSSettings } from '../types';
 
-import { HeadingSettingComponent } from './components/fields/HeadingSettingComponent';
+import { HeadingField } from './components/fields/HeadingField';
 import { IsolateModeHeader } from './components/layout/IsolateModeHeader';
 import { SettingsHeaderComponent } from './components/layout/SettingsHeaderComponent';
 import { IsolateTab } from './tabs/IsolateTab';
@@ -42,7 +42,7 @@ export type ActiveTab =
 export class StyleManagerLayoutRenderer extends Component {
 	app: App;
 	plugin: StyleManagerPlugin;
-	settingsComponentTrees: HeadingSettingComponent[] = [];
+	settingsComponentTrees: HeadingField[] = [];
 	filterString: string = '';
 	showModifiedOnly: boolean = false;
 	settings: ParsedCSSSettings[] = [];
@@ -236,13 +236,13 @@ export class StyleManagerLayoutRenderer extends Component {
 				this.filterString = `@id ${settingId}`;
 				this.rerender();
 			},
-			addChild: (child: HeadingSettingComponent): HeadingSettingComponent => {
+			addChild: (child: HeadingField): HeadingField => {
 				this.addChild(child);
 				return child;
 			},
-			getSettingsComponentTrees: (): HeadingSettingComponent[] =>
+			getSettingsComponentTrees: (): HeadingField[] =>
 				this.settingsComponentTrees,
-			setSettingsComponentTrees: (trees: HeadingSettingComponent[]): void => {
+			setSettingsComponentTrees: (trees: HeadingField[]): void => {
 				this.settingsComponentTrees = trees;
 			},
 			onRenderComplete: (): void => {

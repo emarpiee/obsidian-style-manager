@@ -23,7 +23,7 @@ import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
-export class VariableNumberSliderSettingComponent extends AbstractSettingComponent {
+export class VariableNumberSliderField extends AbstractSettingComponent {
 	settingEl: Setting;
 	sliderComponent: SliderComponent;
 	setting: VariableNumberSlider;

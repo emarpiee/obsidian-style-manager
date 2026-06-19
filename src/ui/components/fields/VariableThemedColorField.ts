@@ -31,7 +31,7 @@ import {
 } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
-export class VariableThemedColorSettingComponent extends AbstractSettingComponent {
+export class VariableThemedColorField extends AbstractSettingComponent {
 	settingEl: Setting;
 	setting: VariableThemedColor;
 	pickrLight: Pickr | null;

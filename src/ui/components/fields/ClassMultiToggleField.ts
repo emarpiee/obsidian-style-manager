@@ -23,7 +23,7 @@ import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
-export class ClassMultiToggleSettingComponent extends AbstractSettingComponent {
+export class ClassMultiToggleField extends AbstractSettingComponent {
 	settingEl: Setting;
 	dropdownComponent: DropdownComponent;
 	setting: ClassMultiToggle;

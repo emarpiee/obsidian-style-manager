@@ -33,7 +33,7 @@ import {
 } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
-export class VariableColorSettingComponent extends AbstractSettingComponent {
+export class VariableColorField extends AbstractSettingComponent {
 	settingEl: Setting;
 	setting: VariableColor;
 	pickr: Pickr | null;

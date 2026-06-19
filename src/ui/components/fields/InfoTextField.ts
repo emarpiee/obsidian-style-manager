@@ -22,7 +22,7 @@ import { InfoText } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
-export class InfoTextSettingComponent extends AbstractSettingComponent {
+export class InfoTextField extends AbstractSettingComponent {
 	settingEl: Setting;
 
 	setting: InfoText;
