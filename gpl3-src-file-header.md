@@ -1,7 +1,9 @@
 /*
     Style Manager - Obsidian Plugin
-    Copyright (c) 2023 mgmeyers
     Copyright (c) 2026 emarpiee
+
+		Style Settings - Obsidian Plugin
+    Copyright (c) 2023 mgmeyers
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
