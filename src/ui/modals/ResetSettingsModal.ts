@@ -66,22 +66,26 @@ export class ResetSettingsModal extends Modal {
 			return;
 		}
 
+		const controlsEl = contentEl.createDiv('style-manager-modal-controls');
+
+		const selectAllBtn = controlsEl.createEl('button', {
+			text: 'Select all',
+			cls: 'style-manager-modal-button',
+		});
+		const deselectAllBtn = controlsEl.createEl('button', {
+			text: 'Deselect all',
+			cls: 'style-manager-modal-button',
+		});
+
 		const listContainer = contentEl.createDiv('style-manager-reset-list');
 
-		const selectAllContainer = contentEl.createDiv(
-			'style-manager-reset-select-all'
-		);
-		const selectAllCheckbox = selectAllContainer.createEl('input', {
-			type: 'checkbox',
-		});
-		selectAllCheckbox.checked = true;
-		selectAllContainer.createEl('span', { text: 'Select All' });
-		selectAllCheckbox.onchange = (): void => {
-			if (selectAllCheckbox.checked) {
-				this.sections.forEach((s) => this.selectedIds.add(s.id));
-			} else {
-				this.selectedIds.clear();
-			}
+		selectAllBtn.onclick = (): void => {
+			this.sections.forEach((s) => this.selectedIds.add(s.id));
+			this.renderList(listContainer);
+		};
+
+		deselectAllBtn.onclick = (): void => {
+			this.selectedIds.clear();
 			this.renderList(listContainer);
 		};
 
