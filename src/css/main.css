@@ -217,6 +217,8 @@ body {
 		var(--sm-sticky-tabs-height) + var(--sm-sticky-search-height)
 	);
 	--sm-sticky-heading-height: 38px;
+	--cp-body-bg: var(--background-primary);
+	--cp-body-color: var(--text-normal);
 	display: flex;
 	flex-direction: column;
 	min-height: 0;
@@ -1038,9 +1040,6 @@ body.is-mobile
 }
 
 .style-manager-tab-actions {
-	--sm-color-picker-height: 1.5em;
-	--sm-color-picker-width: 1.5em;
-	--sm-color-picker-border-radius: 50%;
 	display: flex;
 	align-items: center;
 	align-self: center;
@@ -2047,20 +2046,53 @@ body.is-mobile .style-manager-editor-title-container {
 }
 
 /* NOTE: tovar */
-/* CUSTOM PICKR STYLE */
+/* CUSTOM PICKER STYLE */
 
-.style-manager-plugin:not(.style-manager-accent-trigger-container)
-	.color-picker,
-.style-manager-plugin:not(.style-manager-accent-trigger-container)
-	.color-picker::before,
-.style-manager-plugin:not(.style-manager-accent-trigger-container)
-	.color-picker::after,
-.style-manager-color-contrast-modal .color-picker,
-.style-manager-color-contrast-modal .color-picker::before,
-.style-manager-color-contrast-modal .color-picker::after {
-	border-radius: var(--sm-color-picker-border-radius);
+body.is-mobile .style-manager-plugin .color-picker * button {
+	padding: unset;
+}
+
+.style-manager-plugin .color-picker {
+	border-radius: var(--sm-color-picker-border-radius) !important;
 	width: var(--sm-color-picker-width) !important;
 	height: var(--sm-color-picker-height) !important;
+}
+
+.style-manager-plugin .cp_button {
+	border-radius: calc(var(--sm-color-picker-border-radius) - 3px) !important;
+}
+
+.style-manager-plugin .cp_dialog {
+	padding: var(--size-4-2) !important;
+	outline: 1px solid var(--text-faint) !important;
+}
+
+.style-manager-plugin .cp_input-group * {
+	border-radius: var(--input-radius) !important;
+}
+
+.style-manager-plugin .cp_format {
+	border-radius: var(--input-radius) !important;
+	font-size: unset !important;
+}
+
+.style-manager-plugin .cp_format[aria-checked='true'] {
+	background: var(--interactive-accent) !important;
+	color: var(--text-on-accent) !important;
+}
+
+.style-manager-plugin .cp_input-group {
+	gap: var(--size-4-2) !important;
+	box-shadow: unset !important;
+}
+
+.style-manager-plugin .cp_value {
+	border: var(--input-border-width) solid var(--background-modifier-border) !important;
+	background: var(--background-modifier-form-field) !important;
+}
+
+.style-manager-plugin .cp_value:focus-visible {
+	box-shadow: 0 0 0 1px var(--cp-tertiary-color) !important;
 }
 
 .style-manager-plugin .color-picker-reset button {
@@ -2155,4 +2187,9 @@ body.is-mobile .style-manager-editor-title-container {
 .style-manager-log-setting-id-link:hover {
 	color: var(--color-accent-2, var(--color-accent));
 	background: var(--background-modifier-hover);
+}
+
+/* NOTE: hides the picker's default arrow svg */
+.style-manager-plugin .cp_caret {
+	display: none;
 }

@@ -139,7 +139,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		const resolvedDefault = resolveDefaultColor(this.setting['default-light']);
 		const displayColor = color || resolvedDefault || 'transparent';
 
-		this.themeLightWrapper.style.setProperty('--pcr-color', displayColor);
 	}
 
 	private updateVisualsDark(color: string | null): void {
@@ -148,7 +147,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		const resolvedDefault = resolveDefaultColor(this.setting['default-dark']);
 		const displayColor = color || resolvedDefault || 'transparent';
 
-		this.themeDarkWrapper.style.setProperty('--pcr-color', displayColor);
 	}
 
 	refresh(): void {
@@ -196,11 +194,8 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			valueLight !== undefined && valueLight !== ''
 				? (valueLight as string)
 				: resolvedDefault;
-		this.themeLightWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		const toggleElLight = this.themeLightWrapper.createEl('input', {
-			type: 'text',
-		});
+		const toggleElLight = this.themeLightWrapper.createEl('button');
 		const pickerLight = (this.pickerLight = new ColorPicker(
 			toggleElLight,
 			getColorPickerConfig({
@@ -209,7 +204,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				swatches: swatchesLight,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
-				toggleStyle: 'input',
+				toggleStyle: 'button',
 			})
 		));
 
@@ -262,11 +257,8 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			valueDark !== undefined && valueDark !== ''
 				? (valueDark as string)
 				: resolvedDefault;
-		this.themeDarkWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		const toggleElDark = this.themeDarkWrapper.createEl('input', {
-			type: 'text',
-		});
+		const toggleElDark = this.themeDarkWrapper.createEl('button');
 		const pickerDark = (this.pickerDark = new ColorPicker(
 			toggleElDark,
 			getColorPickerConfig({
@@ -275,7 +267,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				swatches: swatchesDark,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
-				toggleStyle: 'input',
+				toggleStyle: 'button',
 			})
 		));
 

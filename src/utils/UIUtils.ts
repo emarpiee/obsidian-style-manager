@@ -20,26 +20,23 @@ export function isColorValid(color: string | undefined | null): boolean {
 export function getColorPickerConfig(opts: {
 	isView: boolean;
 	container: HTMLElement;
-	swatches: string[];
 	opacity: boolean | undefined;
 	defaultColor: string;
 	toggleStyle?: 'button' | 'input';
 }): ConstructorParameters<typeof ColorPicker>[1] {
-	const { isView, container, swatches, opacity, defaultColor, toggleStyle } = opts;
+	const { isView, container, opacity, defaultColor, toggleStyle } = opts;
 
 	const safeColor = isColorValid(defaultColor) ? defaultColor : null;
-	const safeSwatches = swatches.filter(isColorValid);
 
 	return {
 		container: isView ? document.body : container,
 		color: safeColor,
-		swatches: safeSwatches.length ? safeSwatches : null,
 		enableAlpha: !!opacity,
 		enableEyedropper: true,
 		submitMode: 'confirm',
 		defaultFormat: 'hex',
 		formats: ['hex', 'rgb', 'hsl', 'oklch'],
-		showClearButton: true,
+		showClearButton: false,
 		toggleStyle: toggleStyle ?? 'button',
 	};
 }

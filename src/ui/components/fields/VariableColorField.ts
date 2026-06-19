@@ -89,9 +89,8 @@ export class VariableColorField extends AbstractSettingComponent {
 		// fix, so that the color is correctly shown before the color picker has been opened
 		const defaultColor =
 			value !== undefined ? (value as string) : resolvedDefault;
-		this.singleColorWrapper.style.setProperty('--pcr-color', defaultColor);
 
-		const toggleEl = this.singleColorWrapper.createEl('input', { type: 'text' });
+		const toggleEl = this.singleColorWrapper.createEl('button');
 		const picker = (this.picker = new ColorPicker(
 			toggleEl,
 			getColorPickerConfig({
@@ -100,7 +99,7 @@ export class VariableColorField extends AbstractSettingComponent {
 				swatches: swatches,
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
-				toggleStyle: 'input',
+				toggleStyle: 'button',
 			})
 		));
 
@@ -184,7 +183,6 @@ export class VariableColorField extends AbstractSettingComponent {
 		const resolvedDefault = resolveDefaultColor(this.setting.default || '');
 		const displayColor = color || resolvedDefault || 'transparent';
 
-		this.singleColorWrapper.style.setProperty('--pcr-color', displayColor);
 	}
 
 	refresh(): void {

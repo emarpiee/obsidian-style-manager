@@ -102,7 +102,6 @@ export class ColorContrastChecker {
 			cls: 'single-color-wrapper',
 		});
 		this.fgSingle = fgWrapper.createDiv({ cls: 'single-color' });
-		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 
 		const fgSuggestBtn = fgWrapper.createDiv({ cls: 'clickable-icon' });
 		setIcon(fgSuggestBtn, 'wand-2');
@@ -125,7 +124,6 @@ export class ColorContrastChecker {
 			(color) => {
 				if (color) {
 					this.fgColor = color.string('hex').toUpperCase();
-					this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 					this.updateResults();
 				}
 			}
@@ -140,7 +138,6 @@ export class ColorContrastChecker {
 			cls: 'single-color-wrapper',
 		});
 		this.bgSingle = bgWrapper.createDiv({ cls: 'single-color' });
-		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 
 		const bgSuggestBtn = bgWrapper.createDiv({ cls: 'clickable-icon' });
 		setIcon(bgSuggestBtn, 'wand-2');
@@ -163,7 +160,6 @@ export class ColorContrastChecker {
 			(color) => {
 				if (color) {
 					this.bgColor = color.string('hex').toUpperCase();
-					this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 					this.updateResults();
 				}
 			}
@@ -192,9 +188,6 @@ export class ColorContrastChecker {
 		this.fgPicker?.setColor(this.fgColor);
 		this.bgPicker?.setColor(this.bgColor);
 
-		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
-		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
-
 		this.updateResults();
 	}
 
@@ -204,9 +197,6 @@ export class ColorContrastChecker {
 
 		this.fgPicker?.setColor(this.fgColor);
 		this.bgPicker?.setColor(this.bgColor);
-
-		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
-		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 
 		this.updateResults();
 	}
@@ -246,9 +236,6 @@ export class ColorContrastChecker {
 		this.fgPicker?.setColor(this.fgColor);
 		this.bgPicker?.setColor(this.bgColor);
 
-		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
-		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
-
 		this.updateResults();
 	}
 
@@ -274,7 +261,6 @@ export class ColorContrastChecker {
 		}
 
 		this.fgPicker?.setColor(this.fgColor);
-		this.fgSingle.style.setProperty('--pcr-color', this.fgColor);
 
 		this.updateResults();
 	}
@@ -301,7 +287,6 @@ export class ColorContrastChecker {
 		}
 
 		this.bgPicker?.setColor(this.bgColor);
-		this.bgSingle.style.setProperty('--pcr-color', this.bgColor);
 
 		this.updateResults();
 	}
