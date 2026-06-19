@@ -329,12 +329,13 @@ export class StyleGenerator {
 				case SettingType.VARIABLE_COLOR: {
 					const s = setting as VariableColor;
 					const color = value !== undefined ? value.toString() : s.default;
-					if (color && chroma.valid(color)) {
+					const resolvedColor = resolveColor(color, 'current', gradientCandidates);
+					if (resolvedColor && chroma.valid(resolvedColor)) {
 						vars.push(
 							...this.generateColorVariables(
 								setting.id,
 								s.format as ColorFormat,
-								color,
+								resolvedColor,
 								s.opacity,
 								s['alt-format'] as AltFormatList
 							)
@@ -342,7 +343,7 @@ export class StyleGenerator {
 						this.generateColorVariables(
 							setting.id,
 							'rgb',
-							color,
+							resolvedColor,
 							s.opacity
 						).forEach((kv: { key: string; value: string }) => {
 							gradientCandidates[kv.key] = kv.value;
@@ -358,12 +359,15 @@ export class StyleGenerator {
 						value !== undefined
 							? value.toString()
 							: (s as VariableThemedColor & Record<string, string>)[colorKey];
-					if (color && chroma.valid(color)) {
+					const mode = modifier === 'light' ? 'light' : 'dark';
+					const candidates = modifier === 'light' ? gradientCandidatesLight : gradientCandidatesDark;
+					const resolvedColor = resolveColor(color, mode, candidates);
+					if (resolvedColor && chroma.valid(resolvedColor)) {
 						(modifier === 'light' ? themedLight : themedDark).push(
 							...this.generateColorVariables(
 								setting.id,
 								s.format as ColorFormat,
-								color,
+								resolvedColor,
 								s.opacity,
 								s['alt-format'] as AltFormatList
 							)
@@ -371,7 +375,7 @@ export class StyleGenerator {
 						this.generateColorVariables(
 							setting.id,
 							'rgb',
-							color,
+							resolvedColor,
 							s.opacity
 						).forEach((kv: { key: string; value: string }) => {
 							if (modifier === 'light')
@@ -433,12 +437,13 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_COLOR: {
 						if (emittedIds.has(compositeKey)) break;
 						const s = setting as VariableColor;
-						if (s.default && chroma.valid(s.default)) {
+						const resolvedColor = resolveColor(s.default || '', 'current', gradientCandidates);
+						if (resolvedColor && chroma.valid(resolvedColor)) {
 							vars.push(
 								...this.generateColorVariables(
 									s.id,
 									s.format as ColorFormat,
-									s.default,
+									resolvedColor,
 									s.opacity,
 									s['alt-format'] as AltFormatList
 								)
@@ -446,7 +451,7 @@ export class StyleGenerator {
 							this.generateColorVariables(
 								s.id,
 								'rgb',
-								s.default,
+								resolvedColor,
 								s.opacity
 							).forEach((kv: { key: string; value: string }) => {
 								gradientCandidates[kv.key] = kv.value;
@@ -457,16 +462,17 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_THEMED_COLOR: {
 						const s = setting as VariableThemedColor;
 						// Emit light default if no light override was saved
+						const resolvedLight = resolveColor(s['default-light'] || '', 'light', gradientCandidatesLight);
 						if (
 							!emittedThemedLight.has(compositeKey) &&
-							s['default-light'] &&
-							chroma.valid(s['default-light'])
+							resolvedLight &&
+							chroma.valid(resolvedLight)
 						) {
 							themedLight.push(
 								...this.generateColorVariables(
 									s.id,
 									s.format as ColorFormat,
-									s['default-light'],
+									resolvedLight,
 									s.opacity,
 									s['alt-format'] as AltFormatList
 								)
@@ -474,23 +480,24 @@ export class StyleGenerator {
 							this.generateColorVariables(
 								s.id,
 								'rgb',
-								s['default-light'],
+								resolvedLight,
 								s.opacity
 							).forEach((kv: { key: string; value: string }) => {
 								gradientCandidatesLight[kv.key] = kv.value;
 							});
 						}
 						// Emit dark default if no dark override was saved
+						const resolvedDark = resolveColor(s['default-dark'] || '', 'dark', gradientCandidatesDark);
 						if (
 							!emittedThemedDark.has(compositeKey) &&
-							s['default-dark'] &&
-							chroma.valid(s['default-dark'])
+							resolvedDark &&
+							chroma.valid(resolvedDark)
 						) {
 							themedDark.push(
 								...this.generateColorVariables(
 									s.id,
 									s.format as ColorFormat,
-									s['default-dark'],
+									resolvedDark,
 									s.opacity,
 									s['alt-format'] as AltFormatList
 								)
@@ -498,7 +505,7 @@ export class StyleGenerator {
 							this.generateColorVariables(
 								s.id,
 								'rgb',
-								s['default-dark'],
+								resolvedDark,
 								s.opacity
 							).forEach((kv: { key: string; value: string }) => {
 								gradientCandidatesDark[kv.key] = kv.value;

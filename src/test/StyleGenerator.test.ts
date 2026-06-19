@@ -600,6 +600,102 @@ describe('StyleGenerator', () => {
 		});
 	});
 
+	describe('CSS Variable Resolution for Defaults', () => {
+		it('should resolve CSS variables used as default colors', () => {
+			mockPlugin.settingsService.styleSheetManager.getCSSVar.mockImplementation((id: string) => {
+				if (id === 'my-hex') return { current: '#ff0000', light: '#ff0000', dark: '#00ff00' };
+				if (id === 'my-hsl') return { current: 'hsl(120, 100%, 50%)', light: 'hsl(120, 100%, 50%)', dark: 'hsl(120, 100%, 50%)' };
+				if (id === 'my-rgb') return { current: 'rgb(0, 0, 255)', light: 'rgb(0, 0, 255)', dark: 'rgb(0, 0, 255)' };
+				return undefined;
+			});
+
+			const config = {
+				sec: {
+					c1: {
+						id: 'var-hex',
+						type: SettingType.VARIABLE_COLOR,
+						default: 'var(--my-hex)',
+						format: 'hex',
+					},
+					c2: {
+						id: 'var-hsl',
+						type: SettingType.VARIABLE_COLOR,
+						default: 'var(--my-hsl)',
+						format: 'hsl',
+					},
+					c3: {
+						id: 'var-rgb',
+						type: SettingType.VARIABLE_THEMED_COLOR,
+						'default-light': 'var(--my-rgb)',
+						'default-dark': 'var(--my-hex)',
+						format: 'rgb',
+					},
+					c4: {
+						id: 'var-num',
+						type: SettingType.VARIABLE_NUMBER,
+						default: 'var(--my-num)',
+					},
+					c5: {
+						id: 'var-text',
+						type: SettingType.VARIABLE_TEXT,
+						default: 'var(--my-str)',
+					}
+				},
+			};
+
+			const [vars, themedLight, themedDark] = generator.generateVariableArrays(
+				{},
+				config as any,
+				{},
+				mockBridge
+			);
+
+			// Check VARIABLE_COLOR
+			expect(vars).toContainEqual({ key: 'var-hex', value: '#ff0000' });
+			// hsl will be generated correctly since format is hsl
+			expect(vars).toContainEqual({ key: 'var-hsl', value: 'hsl(120deg 100% 50%)' });
+
+			// Check VARIABLE_THEMED_COLOR
+			expect(themedLight).toContainEqual({ key: 'var-rgb', value: 'rgb(0 0 255)' });
+			expect(themedDark).toContainEqual({ key: 'var-rgb', value: 'rgb(0 255 0)' }); // #00ff00 converted to rgb
+
+			// Check that non-color variables emit the var() directly
+			expect(vars).toContainEqual({ key: 'var-num', value: 'var(--my-num)' });
+			expect(vars).toContainEqual({ key: 'var-text', value: 'var(--my-str)' });
+		});
+
+		it('should resolve CSS variables when overridden by user', () => {
+			mockPlugin.settingsService.styleSheetManager.getCSSVar.mockImplementation((id: string) => {
+				if (id === 'user-override') return { current: '#aabbcc', light: '#aabbcc', dark: '#ccbbaa' };
+				return undefined;
+			});
+
+			const config = {
+				sec: {
+					c1: {
+						id: 'var-color',
+						type: SettingType.VARIABLE_COLOR,
+						default: '#000000',
+						format: 'hex',
+					},
+				},
+			};
+
+			const settings = {
+				'sec@@c1': 'var(--user-override)'
+			};
+
+			const [vars] = generator.generateVariableArrays(
+				settings,
+				config as any,
+				{},
+				mockBridge
+			);
+
+			expect(vars).toContainEqual({ key: 'var-color', value: '#aabbcc' });
+		});
+	});
+
 	describe('Variable Text and Select', () => {
 		it('should generate values for VARIABLE_TEXT without quotes', () => {
 			const config = {
