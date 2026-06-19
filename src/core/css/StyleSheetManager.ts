@@ -190,7 +190,9 @@ export class StyleSheetManager {
 		// 1. Theme
 		const activeTheme = this.getStableActiveTheme();
 		if (activeTheme !== 'default') {
-			promises.push(processFile(this.bridge.getThemePath(activeTheme), 'Theme', activeTheme));
+			promises.push(
+				processFile(this.bridge.getThemePath(activeTheme), 'Theme', activeTheme)
+			);
 		}
 
 		// 2. Plugins

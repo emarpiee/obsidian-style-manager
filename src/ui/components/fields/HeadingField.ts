@@ -631,9 +631,7 @@ export class HeadingField extends AbstractSettingComponent {
 		for (const child of this.children) {
 			children.push(child.setting.id);
 			if (child.setting.type === SettingType.HEADING) {
-				children.push(
-					...(child as HeadingField).getAllChildrenIds()
-				);
+				children.push(...(child as HeadingField).getAllChildrenIds());
 			}
 		}
 		return children;

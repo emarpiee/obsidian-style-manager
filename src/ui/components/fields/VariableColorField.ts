@@ -35,7 +35,6 @@ export class VariableColorField extends AbstractSettingComponent {
 				?.current?.trim();
 		}
 
-
 		const value = this.settingsService.getSetting(
 			this.sectionId,
 			this.setting.id

@@ -1,11 +1,10 @@
-
 import { App, Modal, Setting } from 'obsidian';
 import { RRule } from 'rrule';
-import { Logger } from '../../utils/Logger';
 
 import { PresetScheduleModal } from './PresetScheduleModal';
 
 import StyleManagerPlugin from '../../main';
+import { Logger } from '../../utils/Logger';
 
 export class ActiveSchedulesModal extends Modal {
 	plugin: StyleManagerPlugin;

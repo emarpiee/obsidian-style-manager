@@ -1,6 +1,7 @@
 import { App, Modal } from 'obsidian';
-import { ParseLogList } from '../../types';
+
 import StyleManagerPlugin from '../../main';
+import { ParseLogList } from '../../types';
 
 export class CSSParserLogsModal extends Modal {
 	private plugin: StyleManagerPlugin;
@@ -30,7 +31,10 @@ export class CSSParserLogsModal extends Modal {
 		contentEl.empty();
 
 		if (!this.parseLogs || this.parseLogs.length === 0) {
-			contentEl.createEl('p', { text: 'No warnings or errors found.', cls: 'style-manager-empty-desc' });
+			contentEl.createEl('p', {
+				text: 'No warnings or errors found.',
+				cls: 'style-manager-empty-desc',
+			});
 			return;
 		}
 
@@ -38,10 +42,14 @@ export class CSSParserLogsModal extends Modal {
 
 		this.parseLogs.forEach((log) => {
 			const itemEl = listEl.createDiv('style-manager-log-item');
-			itemEl.addClass(log.type === 'error' ? 'style-manager-log-error' : 'style-manager-log-warning');
+			itemEl.addClass(
+				log.type === 'error'
+					? 'style-manager-log-error'
+					: 'style-manager-log-warning'
+			);
 
 			const headerEl = itemEl.createDiv('style-manager-log-header');
-			
+
 			const iconEl = headerEl.createSpan('style-manager-log-icon');
 			if (log.type === 'error') {
 				iconEl.innerHTML = `❌`;
@@ -50,7 +58,7 @@ export class CSSParserLogsModal extends Modal {
 			}
 
 			headerEl.createSpan({ cls: 'style-manager-log-name', text: log.name });
-			
+
 			const time = new Date(log.timestamp).toLocaleTimeString();
 			headerEl.createSpan({ cls: 'style-manager-log-time', text: time });
 
@@ -72,7 +80,10 @@ export class CSSParserLogsModal extends Modal {
 						cls: 'style-manager-log-setting-id-link',
 						text: quotedId,
 					});
-					link.setAttribute('title', `Search for @id ${settingId} in Styles tab`);
+					link.setAttribute(
+						'title',
+						`Search for @id ${settingId} in Styles tab`
+					);
 					link.addEventListener('click', () => {
 						this.close();
 						onClickFn(settingId);

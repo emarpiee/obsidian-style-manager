@@ -65,7 +65,10 @@ export class CSSEditor {
 	private container: HTMLElement;
 	private onSaveSuccess?: (newName: string) => void;
 
-	async render(container: HTMLElement, options: CSSEditorRenderOptions): Promise<void> {
+	async render(
+		container: HTMLElement,
+		options: CSSEditorRenderOptions
+	): Promise<void> {
 		this.plugin = options.plugin;
 		this.source = options.source;
 		this.isViewMode = options.isView ?? false;
@@ -75,7 +78,7 @@ export class CSSEditor {
 		this.newName = this.source.id;
 
 		this.container.addClass('style-manager-editor-component');
-		
+
 		// Load content
 		let path = '';
 		const bridge = this.plugin.settingsService.bridge;

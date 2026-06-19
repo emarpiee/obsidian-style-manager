@@ -1,6 +1,8 @@
-import { describe, it, expect } from 'vitest';
-import { CSSParser } from '../core/css/CSSParser';
+import { describe, expect, it } from 'vitest';
+
 import { ParseLogList } from '../types';
+
+import { CSSParser } from '../core/css/CSSParser';
 
 describe('CSS Settings Validator and Normalizer', () => {
 	const parse = (settings: any, parseLogs: ParseLogList) => {
@@ -9,14 +11,14 @@ describe('CSS Settings Validator and Normalizer', () => {
 ${JSON.stringify({
 	name: 'Test',
 	id: 'test',
-	settings: [settings]
+	settings: [settings],
 })}
 */`;
 		return CSSParser.parseCSSSettings(
 			JSON.stringify({
 				name: 'Test',
 				id: 'test',
-				settings: [settings]
+				settings: [settings],
 			}),
 			'test',
 			parseLogs
@@ -33,7 +35,10 @@ ${JSON.stringify({
 
 	it('validates class-toggle default', () => {
 		const parseLogs: ParseLogList = [];
-		const result = parse({ id: 'ct1', type: 'class-toggle', default: 'yes' }, parseLogs);
+		const result = parse(
+			{ id: 'ct1', type: 'class-toggle', default: 'yes' },
+			parseLogs
+		);
 		expect((result?.settings[0] as any).default).toBe(false);
 		expect(parseLogs.length).toBe(1);
 		expect(parseLogs[0].message).toContain('INVALID_DEFAULT');
@@ -65,7 +70,10 @@ ${JSON.stringify({
 
 	it('validates variable-number-slider missing fields', () => {
 		const parseLogs: ParseLogList = [];
-		const result = parse({ id: 'vns1', type: 'variable-number-slider' }, parseLogs);
+		const result = parse(
+			{ id: 'vns1', type: 'variable-number-slider' },
+			parseLogs
+		);
 		const s = result?.settings[0] as any;
 		expect(s.min).toBe(0);
 		expect(s.max).toBe(100);
@@ -76,7 +84,17 @@ ${JSON.stringify({
 
 	it('validates variable-number-slider range swap', () => {
 		const parseLogs: ParseLogList = [];
-		const result = parse({ id: 'vns2', type: 'variable-number-slider', min: 100, max: 0, step: 1, default: 50 }, parseLogs);
+		const result = parse(
+			{
+				id: 'vns2',
+				type: 'variable-number-slider',
+				min: 100,
+				max: 0,
+				step: 1,
+				default: 50,
+			},
+			parseLogs
+		);
 		const s = result?.settings[0] as any;
 		expect(s.min).toBe(0);
 		expect(s.max).toBe(100);
@@ -85,7 +103,17 @@ ${JSON.stringify({
 
 	it('validates variable-number-slider step <= 0', () => {
 		const parseLogs: ParseLogList = [];
-		const result = parse({ id: 'vns3', type: 'variable-number-slider', min: 0, max: 100, step: -5, default: 50 }, parseLogs);
+		const result = parse(
+			{
+				id: 'vns3',
+				type: 'variable-number-slider',
+				min: 0,
+				max: 100,
+				step: -5,
+				default: 50,
+			},
+			parseLogs
+		);
 		const s = result?.settings[0] as any;
 		expect(s.step).toBe(1);
 		expect(parseLogs.length).toBe(1);
@@ -94,7 +122,17 @@ ${JSON.stringify({
 
 	it('validates variable-number-slider default clamp', () => {
 		const parseLogs: ParseLogList = [];
-		const result = parse({ id: 'vns4', type: 'variable-number-slider', min: 0, max: 100, step: 1, default: 150 }, parseLogs);
+		const result = parse(
+			{
+				id: 'vns4',
+				type: 'variable-number-slider',
+				min: 0,
+				max: 100,
+				step: 1,
+				default: 150,
+			},
+			parseLogs
+		);
 		const s = result?.settings[0] as any;
 		expect(s.default).toBe(100);
 		expect(parseLogs.length).toBe(1);
@@ -103,21 +141,30 @@ ${JSON.stringify({
 
 	it('validates variable-color missing/invalid format', () => {
 		const parseLogs: ParseLogList = [];
-		const result = parse({ id: 'vc1', type: 'variable-color', format: 'cmyk' }, parseLogs);
+		const result = parse(
+			{ id: 'vc1', type: 'variable-color', format: 'cmyk' },
+			parseLogs
+		);
 		expect((result?.settings[0] as any).format).toBe('hex');
 		expect(parseLogs[0].message).toContain('UNSUPPORTED_COLOR_FORMAT');
 	});
 
 	it('validates variable-color oklch format', () => {
 		const parseLogs: ParseLogList = [];
-		const result = parse({ id: 'vc2', type: 'variable-color', format: 'oklch', default: '#' }, parseLogs);
+		const result = parse(
+			{ id: 'vc2', type: 'variable-color', format: 'oklch', default: '#' },
+			parseLogs
+		);
 		expect((result?.settings[0] as any).format).toBe('oklch');
 		expect(parseLogs.length).toBe(0);
 	});
 
 	it('validates variable-themed-color missing defaults', () => {
 		const parseLogs: ParseLogList = [];
-		const result = parse({ id: 'vtc1', type: 'variable-themed-color', format: 'hex' }, parseLogs);
+		const result = parse(
+			{ id: 'vtc1', type: 'variable-themed-color', format: 'hex' },
+			parseLogs
+		);
 		const s = result?.settings[0] as any;
 		expect(s['default-light']).toBe('#');
 		expect(s['default-dark']).toBe('#');
@@ -144,7 +191,17 @@ ${JSON.stringify({
 
 	it('validates color-gradient step', () => {
 		const parseLogs: ParseLogList = [];
-		const result = parse({ id: 'cg2', type: 'color-gradient', from: '#fff', to: '#000', format: 'hex', step: -1 }, parseLogs);
+		const result = parse(
+			{
+				id: 'cg2',
+				type: 'color-gradient',
+				from: '#fff',
+				to: '#000',
+				format: 'hex',
+				step: -1,
+			},
+			parseLogs
+		);
 		const s = result?.settings[0] as any;
 		expect(s.step).toBe(1);
 		expect(parseLogs[0].message).toContain('INVALID_GRADIENT_STEP');

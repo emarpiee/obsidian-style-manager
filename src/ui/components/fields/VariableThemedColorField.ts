@@ -2,10 +2,7 @@ import Pickr from '@simonwep/pickr';
 import { ButtonComponent, Setting } from 'obsidian';
 
 import { VariableThemedColor, resetTooltip } from '../../../types';
-import {
-	getDescription,
-	getTitle,
-} from '../../../utils/CommonUtils';
+import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import {
 	getPickrSettings,
 	onPickrCancel,
@@ -25,7 +22,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		if (!this.containerEl) return;
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
-
 
 		const idLight = `${this.setting.id}@@light`;
 		const idDark = `${this.setting.id}@@dark`;

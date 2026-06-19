@@ -16,7 +16,6 @@ export class ClassMultiToggleField extends AbstractSettingComponent {
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 
-
 		let prevValue = this.getPreviousValue();
 
 		const defaultLabel = this.getDefaultOptionLabel();

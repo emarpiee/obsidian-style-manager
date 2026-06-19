@@ -11,7 +11,8 @@ export interface CSSEditorViewState {
 
 export class CSSEditorView extends ItemView {
 	private editor: CSSEditor;
-	private source: { type: string; id: string; readOnly?: boolean } | null = null;
+	private source: { type: string; id: string; readOnly?: boolean } | null =
+		null;
 	private plugin: StyleManagerPlugin;
 
 	constructor(leaf: WorkspaceLeaf, plugin: StyleManagerPlugin) {
@@ -20,14 +21,21 @@ export class CSSEditorView extends ItemView {
 		this.editor = new CSSEditor();
 	}
 
-	async setState(state: Record<string, unknown>, result: ViewStateResult): Promise<void> {
+	async setState(
+		state: Record<string, unknown>,
+		result: ViewStateResult
+	): Promise<void> {
 		super.setState(state, result);
 
 		if (state && state.source) {
-			this.source = state.source as { type: string; id: string; readOnly?: boolean };
+			this.source = state.source as {
+				type: string;
+				id: string;
+				readOnly?: boolean;
+			};
 			this.contentEl.empty();
 			this.contentEl.addClass('style-manager-editor-view');
-			
+
 			await this.editor.render(this.contentEl, {
 				plugin: this.plugin,
 				source: this.source!,

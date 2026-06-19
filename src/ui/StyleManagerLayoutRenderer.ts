@@ -244,7 +244,6 @@ export class StyleManagerLayoutRenderer extends Component {
 		}
 	}
 
-
 	filter(): void {
 		if (!this.filterString && !this.showModifiedOnly) {
 			this.clearFilter();

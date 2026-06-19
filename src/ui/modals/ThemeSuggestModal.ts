@@ -13,7 +13,12 @@ export class ThemeSuggestModal extends SuggestModal<ThemeOption> {
 	themes: ThemeOption[];
 	onDone: () => void;
 
-	constructor(app: App, plugin: StyleManagerPlugin, themes: ThemeOption[], onDone: () => void) {
+	constructor(
+		app: App,
+		plugin: StyleManagerPlugin,
+		themes: ThemeOption[],
+		onDone: () => void
+	) {
 		super(app);
 		this.plugin = plugin;
 		this.themes = themes;
@@ -40,7 +45,9 @@ export class ThemeSuggestModal extends SuggestModal<ThemeOption> {
 		const row = el.createDiv('style-manager-theme-suggestion-row');
 		row.createEl('div', { text: theme.name });
 
-		const activeThemeId = this.plugin.settingsService.getSetting(THEME_KEY) as string;
+		const activeThemeId = this.plugin.settingsService.getSetting(
+			THEME_KEY
+		) as string;
 		if (theme.id === activeThemeId) {
 			row.createEl('span', {
 				text: 'ACTIVE',
@@ -49,9 +56,14 @@ export class ThemeSuggestModal extends SuggestModal<ThemeOption> {
 		}
 	}
 
-	onChooseSuggestion(theme: ThemeOption, _evt: MouseEvent | KeyboardEvent): void {
-		this.plugin.settingsService.setSetting(THEME_KEY, theme.id, { silentUI: true }).then(() => {
-			this.onDone();
-		});
+	onChooseSuggestion(
+		theme: ThemeOption,
+		_evt: MouseEvent | KeyboardEvent
+	): void {
+		this.plugin.settingsService
+			.setSetting(THEME_KEY, theme.id, { silentUI: true })
+			.then(() => {
+				this.onDone();
+			});
 	}
 }

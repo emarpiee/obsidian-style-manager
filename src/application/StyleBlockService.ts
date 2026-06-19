@@ -1,9 +1,10 @@
 import { EditorView } from '@codemirror/view';
-import type StyleManagerPlugin from '../main';
+
 import {
-	SETTINGS_BLOCK_DASH_SPACES_KEY,
 	SETTINGS_BLOCK_COMPONENT_SPACES_KEY,
+	SETTINGS_BLOCK_DASH_SPACES_KEY,
 } from '../constants';
+import type StyleManagerPlugin from '../main';
 
 import { settingRegExp } from '../utils/CommonUtils';
 
@@ -250,13 +251,19 @@ settings:
 	 * Returns the list of available blocks.
 	 */
 	public getAvailableBlocks(): StyleBlockDefinition[] {
-		const dashCount = (this.plugin.settingsService.getSetting(SETTINGS_BLOCK_DASH_SPACES_KEY) as number) ?? 4;
-		const compCount = (this.plugin.settingsService.getSetting(SETTINGS_BLOCK_COMPONENT_SPACES_KEY) as number) ?? 8;
-		
+		const dashCount =
+			(this.plugin.settingsService.getSetting(
+				SETTINGS_BLOCK_DASH_SPACES_KEY
+			) as number) ?? 4;
+		const compCount =
+			(this.plugin.settingsService.getSetting(
+				SETTINGS_BLOCK_COMPONENT_SPACES_KEY
+			) as number) ?? 8;
+
 		const dashStr = ' '.repeat(dashCount) + '- ';
 		const compStr = ' '.repeat(compCount);
 
-		return this.blocks.map(block => {
+		return this.blocks.map((block) => {
 			if (block.group === 'field' || block.id === 'settings') {
 				let template = block.template.replace(/ {4}- /g, dashStr);
 				template = template.replace(/ {8}/g, compStr);
@@ -320,7 +327,10 @@ settings:
 					const blockContent = targetBlock[0];
 
 					// Find all field starts within this block
-					const dashCount = (this.plugin.settingsService.getSetting(SETTINGS_BLOCK_DASH_SPACES_KEY) as number) ?? 4;
+					const dashCount =
+						(this.plugin.settingsService.getSetting(
+							SETTINGS_BLOCK_DASH_SPACES_KEY
+						) as number) ?? 4;
 					const fieldRegExp = new RegExp(`^ {${dashCount}}- `, 'gm');
 					let match;
 					const fieldStarts: number[] = [];

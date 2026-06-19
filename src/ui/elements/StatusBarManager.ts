@@ -1,4 +1,3 @@
-
 import { Menu, setIcon, setTooltip } from 'obsidian';
 
 import {
@@ -131,17 +130,19 @@ export class StatusBarManager {
 				)
 				.setIcon('palette')
 				.onClick(async () => {
-					const themes: ThemeOption[] = [
-						{ id: 'default', name: 'Default' },
-					];
+					const themes: ThemeOption[] = [{ id: 'default', name: 'Default' }];
 
 					try {
-						const themeObjects = await this.plugin.settingsService.themeBuilderService.getThemes();
+						const themeObjects =
+							await this.plugin.settingsService.themeBuilderService.getThemes();
 						for (const id in themeObjects) {
 							themes.push({ id, name: themeObjects[id].name });
 						}
 					} catch (e) {
-						console.error('Style Manager | Error loading themes for status bar suggest modal:', e);
+						console.error(
+							'Style Manager | Error loading themes for status bar suggest modal:',
+							e
+						);
 					}
 
 					new ThemeSuggestModal(this.plugin.app, this.plugin, themes, () =>

@@ -1,4 +1,5 @@
 import { Plugin } from 'obsidian';
+
 import { Logger } from '../utils/Logger';
 
 interface UndocumentedApp {

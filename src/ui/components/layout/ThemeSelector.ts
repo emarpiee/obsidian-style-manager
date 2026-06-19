@@ -32,17 +32,19 @@ export function renderThemeSelect(
 	});
 
 	triggerContainer.onclick = async (_e: MouseEvent): Promise<void> => {
-		const themes: ThemeOption[] = [
-			{ id: 'default', name: 'Default' },
-		];
+		const themes: ThemeOption[] = [{ id: 'default', name: 'Default' }];
 
 		try {
-			const themeObjects = await plugin.settingsService.themeBuilderService.getThemes();
+			const themeObjects =
+				await plugin.settingsService.themeBuilderService.getThemes();
 			for (const id in themeObjects) {
 				themes.push({ id, name: themeObjects[id].name });
 			}
 		} catch (e) {
-			console.error('Style Manager | Error loading themes for suggest modal:', e);
+			console.error(
+				'Style Manager | Error loading themes for suggest modal:',
+				e
+			);
 		}
 
 		new ThemeSuggestModal(plugin.app, plugin, themes, onDone).open();

@@ -1,15 +1,15 @@
 import { Setting } from 'obsidian';
 
+import { SHOW_PARSE_LOGS_ICON_KEY } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { CSSSetting, ParsedCSSSettings } from '../../types';
+import { ParseLogList } from '../../types';
 import {
 	HeadingField,
 	buildSettingComponentTree,
 } from '../components/fields/HeadingField';
-import { ReadmeModal } from '../modals/ReadmeModal';
 import { CSSParserLogsModal } from '../modals/CSSParserLogsModal';
-import { ParseLogList } from '../../types';
-import { SHOW_PARSE_LOGS_ICON_KEY } from '../../constants';
+import { ReadmeModal } from '../modals/ReadmeModal';
 
 export interface StylesTabDeps {
 	plugin: StyleManagerPlugin;

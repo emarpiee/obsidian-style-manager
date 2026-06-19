@@ -1,5 +1,4 @@
 import { App, Component, Menu, Platform, setIcon, setTooltip } from 'obsidian';
-import { Logger } from '../../../utils/Logger';
 
 import { renderAccentColorSelect } from './AccentColorSelector';
 import { IsolateModeHeader } from './IsolateModeHeader';
@@ -12,6 +11,7 @@ import {
 } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { RefreshLevel } from '../../../types';
+import { Logger } from '../../../utils/Logger';
 import { ActiveTab } from '../../StyleManagerLayoutRenderer';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { CreatePresetModal } from '../../modals/CreatePresetModal';

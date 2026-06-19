@@ -52,14 +52,11 @@ import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
 import { LoremIpsumModal } from './ui/modals/LoremIpsumModal';
 import { ReadmeModal } from './ui/modals/ReadmeModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
+import { CSSEditorView, cssEditorViewType } from './ui/views/CSSEditorView';
 import {
 	ColorContrastCheckerView,
 	colorContrastViewType,
 } from './ui/views/ColorContrastCheckerView';
-import {
-	CSSEditorView,
-	cssEditorViewType,
-} from './ui/views/CSSEditorView';
 import { LoremIpsumView, loremIpsumViewType } from './ui/views/LoremIpsumView';
 import { ReadmeView, readmeViewType } from './ui/views/ReadmeView';
 import { getDescription, getTitle } from './utils/CommonUtils';
@@ -765,7 +762,11 @@ export default class StyleManagerPlugin extends Plugin {
 		});
 	}
 
-	async activateCSSEditorView(source: { type: string; id: string; readOnly?: boolean }): Promise<void> {
+	async activateCSSEditorView(source: {
+		type: string;
+		id: string;
+		readOnly?: boolean;
+	}): Promise<void> {
 		this.deactivateCSSEditorView();
 		const leaf = this.app.workspace.getLeaf('tab');
 

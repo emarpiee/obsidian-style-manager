@@ -10,8 +10,9 @@ import { SettingType } from '../ui/components/base/types';
 function makeSettingsService(initial: Record<string, unknown> = {}) {
 	const store: Record<string, unknown> = { ...initial };
 	return {
-		getSetting: vi.fn((sectionId: string, settingId: string) =>
-			store[`${sectionId}@@${settingId}`]
+		getSetting: vi.fn(
+			(sectionId: string, settingId: string) =>
+				store[`${sectionId}@@${settingId}`]
 		),
 		setSetting: vi.fn(
 			(sectionId: string, settingId: string, value: unknown) => {
@@ -177,9 +178,7 @@ describe('VariableNumberField — NaN revert logic (fix: 59c01d4)', () => {
 		if (isNaN(numValue)) {
 			const stored = svc.getSetting(SECTION_ID, SETTING_ID);
 			text.setValue(
-				stored != null
-					? stored.toString()
-					: numberSetting.default.toString()
+				stored != null ? stored.toString() : numberSetting.default.toString()
 			);
 			reverted = true;
 		}
@@ -267,16 +266,12 @@ describe('VariableTextField — `value != null` init fix (fix: 59c01d4)', () => 
 
 	/** Post-fix expression: value != null ? value.toString() : setting.default */
 	function initFixed(storedValue: unknown, setting: any): string {
-		return storedValue != null
-			? storedValue.toString()
-			: setting.default;
+		return storedValue != null ? storedValue.toString() : setting.default;
 	}
 
 	/** Pre-fix expression: value ? value.toString() : setting.default */
 	function initOld(storedValue: unknown, setting: any): string {
-		return (storedValue as any)
-			? storedValue!.toString()
-			: setting.default;
+		return (storedValue as any) ? storedValue!.toString() : setting.default;
 	}
 
 	// --- correct post-fix behaviour ---

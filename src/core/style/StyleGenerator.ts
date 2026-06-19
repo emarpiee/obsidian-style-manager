@@ -312,7 +312,11 @@ export class StyleGenerator {
 				case SettingType.VARIABLE_COLOR: {
 					const s = setting as VariableColor;
 					const color = value !== undefined ? value.toString() : s.default;
-					const resolvedColor = resolveColor(color, 'current', gradientCandidates);
+					const resolvedColor = resolveColor(
+						color,
+						'current',
+						gradientCandidates
+					);
 					if (resolvedColor && chroma.valid(resolvedColor)) {
 						vars.push(
 							...this.generateColorVariables(
@@ -343,7 +347,10 @@ export class StyleGenerator {
 							? value.toString()
 							: (s as VariableThemedColor & Record<string, string>)[colorKey];
 					const mode = modifier === 'light' ? 'light' : 'dark';
-					const candidates = modifier === 'light' ? gradientCandidatesLight : gradientCandidatesDark;
+					const candidates =
+						modifier === 'light'
+							? gradientCandidatesLight
+							: gradientCandidatesDark;
 					const resolvedColor = resolveColor(color, mode, candidates);
 					if (resolvedColor && chroma.valid(resolvedColor)) {
 						(modifier === 'light' ? themedLight : themedDark).push(
@@ -420,7 +427,11 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_COLOR: {
 						if (emittedIds.has(compositeKey)) break;
 						const s = setting as VariableColor;
-						const resolvedColor = resolveColor(s.default || '', 'current', gradientCandidates);
+						const resolvedColor = resolveColor(
+							s.default || '',
+							'current',
+							gradientCandidates
+						);
 						if (resolvedColor && chroma.valid(resolvedColor)) {
 							vars.push(
 								...this.generateColorVariables(
@@ -445,7 +456,11 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_THEMED_COLOR: {
 						const s = setting as VariableThemedColor;
 						// Emit light default if no light override was saved
-						const resolvedLight = resolveColor(s['default-light'] || '', 'light', gradientCandidatesLight);
+						const resolvedLight = resolveColor(
+							s['default-light'] || '',
+							'light',
+							gradientCandidatesLight
+						);
 						if (
 							!emittedThemedLight.has(compositeKey) &&
 							resolvedLight &&
@@ -470,7 +485,11 @@ export class StyleGenerator {
 							});
 						}
 						// Emit dark default if no dark override was saved
-						const resolvedDark = resolveColor(s['default-dark'] || '', 'dark', gradientCandidatesDark);
+						const resolvedDark = resolveColor(
+							s['default-dark'] || '',
+							'dark',
+							gradientCandidatesDark
+						);
 						if (
 							!emittedThemedDark.has(compositeKey) &&
 							resolvedDark &&
@@ -599,7 +618,7 @@ export class StyleGenerator {
 		switch (format) {
 			case 'oklch': {
 				const oklch = parsedColor.oklch();
-				const round = (n: number) => isNaN(n) ? 0 : parseFloat(n.toFixed(5));
+				const round = (n: number): number => (isNaN(n) ? 0 : parseFloat(n.toFixed(5)));
 				const l = round(oklch[0]);
 				const c = round(oklch[1]);
 				const h = round(oklch[2]);

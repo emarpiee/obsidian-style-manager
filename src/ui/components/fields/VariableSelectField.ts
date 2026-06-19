@@ -15,7 +15,6 @@ export class VariableSelectField extends AbstractSettingComponent {
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 
-
 		const defaultLabel = this.getDefaultOptionLabel();
 
 		this.settingEl = new Setting(this.containerEl);

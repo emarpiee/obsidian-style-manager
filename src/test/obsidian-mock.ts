@@ -116,7 +116,9 @@ export class SuggestModal<T> extends Modal {
 	resultContainerEl = document.createElement('div');
 	setPlaceholder = vi.fn();
 	setInstructions = vi.fn();
-	getSuggestions(_query: string): T[] { return []; }
+	getSuggestions(_query: string): T[] {
+		return [];
+	}
 	renderSuggestion(_item: T, _el: HTMLElement): void {}
 	onChooseSuggestion(_item: T, _evt: MouseEvent | KeyboardEvent): void {}
 }

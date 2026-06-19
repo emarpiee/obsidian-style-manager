@@ -1,8 +1,8 @@
 import { LoremUnit, loremIpsum } from 'lorem-ipsum';
 import { Notice, setIcon, setTooltip } from 'obsidian';
-import { Logger } from '../../utils/Logger';
 
 import StyleManagerPlugin from '../../main';
+import { Logger } from '../../utils/Logger';
 
 export type LoremIpsumUnit = LoremUnit;
 

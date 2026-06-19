@@ -52,14 +52,12 @@ export class PreferencesTab {
 			.setClass('style-manager-search-container')
 			.setClass('style-manager-preferences-filter')
 			.addSearch((search) => {
-				search
-					.setPlaceholder('Search preferences...')
-					.onChange(
-						debounce((value) => {
-							this.filterString = value.toLowerCase();
-							this.applyFilter();
-						}, 250)
-					);
+				search.setPlaceholder('Search preferences...').onChange(
+					debounce((value) => {
+						this.filterString = value.toLowerCase();
+						this.applyFilter();
+					}, 250)
+				);
 			});
 
 		this.renderUISettings();
@@ -855,7 +853,9 @@ export class PreferencesTab {
 			.addToggle((toggle) => {
 				toggle
 					.setValue(
-						(plugin.settingsService.sharedSettings[SHOW_PARSE_LOGS_ICON_KEY] as boolean) !== false
+						(plugin.settingsService.sharedSettings[
+							SHOW_PARSE_LOGS_ICON_KEY
+						] as boolean) !== false
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
@@ -968,7 +968,10 @@ export class PreferencesTab {
 			container.style.display = anyVisible ? '' : 'none';
 
 			const header = container.previousElementSibling as HTMLElement | null;
-			if (header && header.classList.contains('style-manager-settings-tab-title')) {
+			if (
+				header &&
+				header.classList.contains('style-manager-settings-tab-title')
+			) {
 				header.style.display = anyVisible ? '' : 'none';
 			}
 		});

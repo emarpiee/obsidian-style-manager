@@ -314,7 +314,7 @@ export class SettingsService extends Events {
 			this.trigger('device-lockers-updated');
 		}
 
-	this.installPatches();
+		this.installPatches();
 
 		const theme = this.settings[THEME_KEY];
 		if (theme) {

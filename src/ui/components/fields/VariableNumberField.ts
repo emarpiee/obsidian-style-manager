@@ -15,7 +15,6 @@ export class VariableNumberField extends AbstractSettingComponent {
 		const title = getTitle(this.setting);
 		const description = getDescription(this.setting);
 
-
 		this.settingEl = new Setting(this.containerEl);
 		this.settingEl.setClass('style-manager-style-settings-item');
 		this.settingEl.setName(title);
