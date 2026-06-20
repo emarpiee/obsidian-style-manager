@@ -10,7 +10,7 @@
 		) !important;
 	}
 	.style-manager-tabs-container {
-		flex-direction: column-reverse;
+		flex-direction: column-reverse !important;
 	}
 
 	.style-manager-tabs-scroll-wrap {
@@ -222,6 +222,7 @@ body {
 		var(--sm-sticky-tabs-height) + var(--sm-sticky-search-height)
 	);
 	--sm-sticky-heading-height: 38px;
+	container-type: inline-size;
 }
 
 /* NOTE: tovar*/
