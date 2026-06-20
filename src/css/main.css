@@ -333,7 +333,12 @@ body:not(.is-phone) .modal:has(.style-manager-plugin) .modal-close-button {
 .style-manager-style-wrapper {
 	position: relative;
 	width: 100%;
-	background: var(--sm-wrapper-bg);
+	background: var(--sm-wrapper-bg) !important;
+}
+
+/* NOTE: add bottom spacing so that color picker component can adjust when the virtual keyboard is active in mobile devices */
+body.is-mobile .style-manager-wrapper {
+	padding-bottom: calc(var(--safe-area-inset-bottom) + 128px);
 }
 
 .style-manager-style-item-group {
