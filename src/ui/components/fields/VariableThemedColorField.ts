@@ -116,7 +116,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		if (!this.themeLightWrapper) return;
 
 		const resolvedDefault = resolveDefaultColor(this.setting['default-light']);
-		const _displayColor = color || resolvedDefault || 'transparent';
 
 	}
 
@@ -124,7 +123,6 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		if (!this.themeDarkWrapper) return;
 
 		const resolvedDefault = resolveDefaultColor(this.setting['default-dark']);
-		const _displayColor = color || resolvedDefault || 'transparent';
 
 	}
 

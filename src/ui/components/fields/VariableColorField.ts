@@ -169,7 +169,6 @@ export class VariableColorField extends AbstractSettingComponent {
 		if (!this.singleColorWrapper) return;
 
 		const resolvedDefault = resolveDefaultColor(this.setting.default || '');
-		const _displayColor = color || resolvedDefault || 'transparent';
 
 	}
 
