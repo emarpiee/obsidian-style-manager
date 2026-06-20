@@ -31,11 +31,11 @@ export function getColorPickerConfig(opts: {
 	let targetContainer = container;
 	if (isView) {
 		let sharedContainer = document.querySelector(
-			'.sm-color-picker-wrapper'
+			'.style-manager-color-picker-wrapper'
 		) as HTMLElement;
 		if (!sharedContainer) {
 			sharedContainer = document.createElement('div');
-			sharedContainer.className = 'sm-color-picker-wrapper style-manager-plugin';
+			sharedContainer.className = 'style-manager-color-picker-wrapper style-manager-plugin';
 			document.body.appendChild(sharedContainer);
 		}
 		targetContainer = sharedContainer;
@@ -48,7 +48,7 @@ export function getColorPickerConfig(opts: {
 		enableEyedropper: true,
 		submitMode: 'confirm',
 		defaultFormat: 'hex',
-		formats: ['hex', 'rgb', 'hsl', 'oklch'],
+		formats: ['hex', 'rgb', 'hsl', 'hsv','oklch'],
 		showClearButton: false,
 		toggleStyle: toggleStyle ?? 'button',
 	};
