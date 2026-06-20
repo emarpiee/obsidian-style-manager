@@ -23,8 +23,9 @@ export function getColorPickerConfig(opts: {
 	opacity: boolean | undefined;
 	defaultColor: string;
 	toggleStyle?: 'button' | 'input';
+	dialogPlacement: string;
 }): ConstructorParameters<typeof ColorPicker>[1] {
-	const { isView, container, opacity, defaultColor, toggleStyle } = opts;
+	const { isView, container, opacity, defaultColor, toggleStyle, dialogPlacement } = opts;
 
 	const safeColor = isColorValid(defaultColor) ? defaultColor : null;
 
@@ -51,6 +52,7 @@ export function getColorPickerConfig(opts: {
 		formats: ['hex', 'rgb', 'hsl', 'hsv','oklch'],
 		showClearButton: false,
 		toggleStyle: toggleStyle ?? 'button',
+		dialogPlacement: dialogPlacement ?? 'auto',
 	};
 }
 
