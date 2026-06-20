@@ -56,8 +56,25 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 		- [10. \`variable-themed-color\`](#10-variable-themed-color)
 		- [11. \`color-gradient\`](#11-color-gradient)
 	- [Color Variable Formatting Options](#color-variable-formatting-options)
+		- [\`hex\`](#hex)
+		- [\`rgb\`](#rgb)
+		- [\`rgb-values\`](#rgb-values)
+		- [\`rgb-split\`](#rgb-split)
+		- [\`hsl\`](#hsl)
+		- [\`hsl-values\`](#hsl-values)
+		- [\`hsl-split\`](#hsl-split)
+		- [\`hsl-split-decimal\`](#hsl-split-decimal)
+		- [\`oklch\`](#oklch)
 	- [Localization Support](#localization-support)
 		- [Supported Language Postfix Codes:](#supported-language-postfix-codes)
+- [Storage Mapping](#storage-mapping)
+	- [1. Core Sync Keys](#1-core-sync-keys)
+	- [2. Plugin Configuration Keys](#2-plugin-configuration-keys)
+	- [3. Structural Management Keys](#3-structural-management-keys)
+	- [4. Dynamic Settings (@@) Keys](#4-dynamic-settings--keys)
+		- [Format](#format)
+		- [Examples & Logic](#examples--logic)
+		- [Purpose](#purpose)
 - [Developer and Testing Utilities](#developer-and-testing-utilities)
 - [Transparency](#transparency)
 
@@ -760,27 +777,6 @@ You can provide translated titles and descriptions for every language Obsidian n
 
 ---
 
-## Developer and Testing Utilities
-
-The Style Manager includes a suite of built-in tools designed to streamline the process of theme development and UI debugging within Obsidian. These tools provide developers with quick access to common debugging tasks, accessibility checks, and UI testing utilities, all of which are accessible via the Obsidian command palette.
-
-> **Note**: Tools marked with a \`(+)\` are adapted from the [obsidian-theme-design-utilities](https://github.com/chrisgrieser/obsidian-theme-design-utilities) project.
-
-| Tool                       | Type               | Description                                                                                                 |
-| :------------------------- | :----------------- | :---------------------------------------------------------------------------------------------------------- |
-| **Color Contrast Checker** | Accessibility      | Opens a contrast checker modal to ensure color accessibility WCAG standards. Can be expanded to a full tab. |
-| **Lorem Ipsum**            | Content Generation | Opens a lorem ipsum generator modal for layout and content testing. Can be expanded to a full tab.          |
-| **Copy Accent Color**      | Utility            | Quickly copies the vault's current accent color to the clipboard.                                           |
-| **CSS Compatibility** (+)  | Information        | Displays the current Chrome, Node, and Electron versions for CSS feature support verification.              |
-| **Box Outline** (+)        | UI Debugger        | Toggles a global outline on all elements to help visualize the box model.                                   |
-| **Freeze Obsidian** (+)    | Debugger           | Triggers a \`debugger\` statement after a specified delay to freeze the application state.                    |
-| **Garbled Text** (+)       | UI Testing         | Toggles a garbled text on non-hovered text.                                                                 |
-| **Mobile Emulation** (+)   | UI Testing         | Toggles Obsidian's built-in mobile emulation mode to test responsive designs.                               |
-| **Test Notice** (+)        | Testing            | Displays a persistent test notice to verify notification behavior and styling.                              |
-| **Toggle DevTools** (+)    | Debugger           | Quickly opens or closes the Electron developer tools.                                                       |
-
----
-
 ## Storage Mapping
 
 This section provides a comprehensive mapping of the storage structure used by the plugin.
@@ -863,7 +859,27 @@ Keys containing \`@@\` are used to store user-defined CSS style settings. These 
 - **Namespace Isolation:** Prevents collisions between settings with the same name in different sections.
 - **Efficient Injection:** Allows the \`StyleGenerator\` to quickly identify and apply CSS variables to the document.
 - **Themed Overrides:** Provides native support for appearance-mode specific styling.
- |
+
+---
+
+## Developer and Testing Utilities
+
+The Style Manager includes a suite of built-in tools designed to streamline the process of theme development and UI debugging within Obsidian. These tools provide developers with quick access to common debugging tasks, accessibility checks, and UI testing utilities, all of which are accessible via the Obsidian command palette.
+
+> **Note**: Tools marked with a \`(+)\` are adapted from the [obsidian-theme-design-utilities](https://github.com/chrisgrieser/obsidian-theme-design-utilities) project.
+
+| Tool                       | Type               | Description                                                                                                 |
+| :------------------------- | :----------------- | :---------------------------------------------------------------------------------------------------------- |
+| **Color Contrast Checker** | Accessibility      | Opens a contrast checker modal to ensure color accessibility WCAG standards. Can be expanded to a full tab. |
+| **Lorem Ipsum**            | Content Generation | Opens a lorem ipsum generator modal for layout and content testing. Can be expanded to a full tab.          |
+| **Copy Accent Color**      | Utility            | Quickly copies the vault's current accent color to the clipboard.                                           |
+| **CSS Compatibility** (+)  | Information        | Displays the current Chrome, Node, and Electron versions for CSS feature support verification.              |
+| **Box Outline** (+)        | UI Debugger        | Toggles a global outline on all elements to help visualize the box model.                                   |
+| **Freeze Obsidian** (+)    | Debugger           | Triggers a \`debugger\` statement after a specified delay to freeze the application state.                    |
+| **Garbled Text** (+)       | UI Testing         | Toggles a garbled text on non-hovered text.                                                                 |
+| **Mobile Emulation** (+)   | UI Testing         | Toggles Obsidian's built-in mobile emulation mode to test responsive designs.                               |
+| **Test Notice** (+)        | Testing            | Displays a persistent test notice to verify notification behavior and styling.                              |
+| **Toggle DevTools** (+)    | Debugger           | Quickly opens or closes the Electron developer tools.                                                       |
 
 ---
 
