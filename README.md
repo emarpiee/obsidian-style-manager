@@ -114,7 +114,7 @@ When you modify styles in Shared Mode, the configurations are synced across your
 Isolate Mode is your "Creative Sandbox." Isolate Mode creates a private local environment that **never** writes to the shared `appearance.json` file, protecting other devices from unexpected style changes.
 - **The Visual Overlay:** The plugin applies style changes as a live visual layer directly inside your current Obsidian client.
 - **Device Locker:** The plugin creates a device locker for your device. Each device you use (your Mac, your Android phone, your iPad) is given a unique ID. The plugin creates a dedicated "locker" for that ID within `data.json`.
-- **Sync Behavior:** Because the changes exist only within your local device's locker inside `data.json`, other devices running in Isolate Mode will ignore them and run their own isolated configurations. When you're on your phone, the plugin looks into `data.json`, finds the bucket labeled **"Phone,"** and loads your **Isolate Locker** from there. When you move to your desktop, it finds the locker labeled **"Desktop"** and loads a completely different set of styles.
+- **Sync Behavior:** Because the changes exist only within your local device's locker inside `data.json`, other devices running in Isolate Mode will ignore them and run their own isolated configurations. When you're on your phone, the plugin looks into `data.json`, finds the locker labeled **"Phone,"** and loads your **Isolate Locker** from there. When you move to your desktop, it finds the locker labeled **"Desktop"** and loads a completely different set of styles.
 
 ---
 
@@ -778,6 +778,92 @@ The Style Manager includes a suite of built-in tools designed to streamline the 
 | **Mobile Emulation** (+)   | UI Testing         | Toggles Obsidian's built-in mobile emulation mode to test responsive designs.                               |
 | **Test Notice** (+)        | Testing            | Displays a persistent test notice to verify notification behavior and styling.                              |
 | **Toggle DevTools** (+)    | Debugger           | Quickly opens or closes the Electron developer tools.                                                       |
+
+---
+
+## Storage Mapping
+
+This section provides a comprehensive mapping of the storage structure used by the plugin.
+
+### 1. Core Sync Keys
+
+These keys are the "Master Ledger" for settings that are mirrored in Obsidian's native `appearance.json` to ensure they sync across devices via Obsidian Sync or other sync services.
+
+| `data.json` key | Description | `appearance.json` mapping |
+| :--- | :--- | :--- |
+| `__style_manager_theme` | The active theme name | `cssTheme` |
+| `__style_manager_appearance` | Appearance mode (`light`, `dark`, or `system`) | `theme` |
+| `__style_manager_accent_color` | Custom accent color (hex code) | `accentColor` |
+| `__style_manager_snippets` | List of currently enabled CSS snippet IDs | `enabledCssSnippets` |
+
+### 2. Plugin Configuration Keys
+
+These keys store the internal preferences that control the Style Manager's UI, behavior, and utility settings. They are not mirrored in Obsidian's native config.
+
+| `data.json` key                                   | Description                                                           |
+| :------------------------------------------------ | :-------------------------------------------------------------------- |
+| `__style_manager_show_status_bar`                 | Toggles visibility of the Style Manager icon in status bar            |
+| `__style_manager_show_snippet_metadata`           | Toggles display of metadata for CSS snippets                          |
+| `__style_manager_show_shared_notifications`       | Toggles notifications when shared settings change                     |
+| `__style_manager_show_preset_notifications`       | Toggles notifications when a preset is applied                        |
+| `__style_manager_show_isolate_notifications`      | Toggles notifications for Isolate Mode changes                        |
+| `__style_manager_show_snippet_notifications`      | Toggles snippet-related notifications                                 |
+| `__style_manager_show_utility_notifications`      | Toggles general plugin utility notifications                          |
+| `__style_manager_open_modal_on_create`            | Opens a manifest modal when creating a new snippet                    |
+| `__style_manager_separate_bulk_presets`           | Controls behavior for bulk preset operations                          |
+| `__style_manager_editor_tab_size`                 | Tab indentation size for the CSS editor                               |
+| `__style_manager_enable_console_logging`          | Enables verbose debugging logs in the console                         |
+| `__style_manager_backup_path`                     | Custom directory for plugin backups                                   |
+| `__style_manager_backup_date_format`              | Date format used for backup filenames                                 |
+| `__style_manager_tool_freeze_delay`               | Delay before the UI freezes during (freeze tool)                      |
+| `__style_manager_tool_box_outline_color`          | Custom color for the box outline tool                                 |
+| `__style_manager_sticky_heading`                  | Enables sticky headers in **styles tab**                              |
+| `__style_manager_export_path`                     | Custom directory for exported preset                                  |
+| `__style_manager_export_extension`                | File extension used for exported preset                               |
+| `__style_manager_export_date_format`              | Date format used in exported preset filenames                         |
+| `__style_manager_created_date_format`             | Timestamp format for "Created" dates in **presets tab**               |
+| `__style_manager_skip_delete_confirm`             | Bypasses confirmation when deleting a preset                          |
+| `__style_manager_skip_export_confirm`             | Bypasses confirmation when exporting a preset                         |
+| `__style_manager_skip_import_confirm`             | Bypasses confirmation when importing a preset                         |
+| `__style_manager_always_shared_presets`           | Forces **presets tab** to always show shared preset list              |
+| `__style_manager_open_in_default_app`             | Opens CSS files in the OS default text editor                         |
+| `__style_manager_preset_apply_action`             | Default action (ask/merge/overwrite) for single preset application    |
+| `__style_manager_bulk_preset_apply_action`        | Default action for bulk preset application                            |
+| `__style_manager_schedule_apply_action`           | Default action for scheduled preset application                       |
+| `__style_manager_settings_block_dash_spaces`      | CSS formatting: spaces around dashes in `@settings` block             |
+| `__style_manager_settings_block_component_spaces` | CSS formatting: spaces before setting components in `@settings` block |
+| `__style_manager_show_parse_logs_icon`            | Toggles visibility of the CSS parse log icon in **styles tab**        |
+
+### 3. Structural Management Keys
+
+These keys store complex data structures and metadata used for the plugin's advanced features (Isolate Mode, Scheduling, and Presets).
+
+| `data.json` key      | Description                                                              |
+| :------------------- | :----------------------------------------------------------------------- |
+| `_manager_presets`   | Array of `Preset` objects containing saved style configurations          |
+| `_manager_schedules` | Array of `PresetSchedule` objects for automated style switching          |
+| `__devices`          | Map of Device IDs $\rightarrow$ `isolateSettings` (the "Locker" system)  |
+| `__shared_version`   | Version counter used to detect and resolve shared data conflicts         |
+
+### 4. Dynamic Settings (@@) Keys
+
+Keys containing `@@` are used to store user-defined CSS style settings. These are dynamically generated to link a specific setting to its parent section.
+
+#### Format
+
+`[Section ID]@@[Setting ID]` (and optionally `@@light` or `@@dark` for themed colors)
+
+#### Examples & Logic
+
+- **Standard Settings:** `theme-settings@@font-size` refers to the `font-size` setting within the `theme-settings` section.
+- **Themed Colors:** `theme-settings@@accent-color@@light` and `theme-settings@@accent-color@@dark` allow separate values for Light and Dark modes.
+
+#### Purpose
+
+- **Namespace Isolation:** Prevents collisions between settings with the same name in different sections.
+- **Efficient Injection:** Allows the `StyleGenerator` to quickly identify and apply CSS variables to the document.
+- **Themed Overrides:** Provides native support for appearance-mode specific styling.
+ |
 
 ---
 
