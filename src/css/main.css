@@ -1530,6 +1530,10 @@ body.theme-dark .style-manager-badge-primary.dynamic {
 	cursor: pointer;
 }
 
+.style-manager-modal-textarea {
+	height: 2.5rem;
+}
+
 .style-manager-modal-controls {
 	display: flex;
 	gap: var(--size-4-2);
@@ -2049,6 +2053,10 @@ body.is-mobile .style-manager-editor-title-container {
 /* NOTE: tovar */
 /* CUSTOM PICKER STYLE */
 
+/* NOTE: hides the picker's default arrow svg */
+.style-manager-plugin .cp_caret {
+	display: none;
+}
 .style-manager-plugin button.color-picker {
 	padding: 2px !important;
 }
@@ -2071,6 +2079,7 @@ body.is-mobile .style-manager-editor-title-container {
 .style-manager-plugin .cp_dialog {
 	padding: var(--size-4-2) !important;
 	outline: 1px solid var(--text-faint) !important;
+	box-shadow: 0 0 6px 0;
 }
 
 .style-manager-plugin .cp_input-group * {
@@ -2095,6 +2104,31 @@ body.is-mobile .style-manager-editor-title-container {
 .style-manager-plugin .cp_value {
 	border: var(--input-border-width) solid var(--background-modifier-border) !important;
 	background: var(--background-modifier-form-field) !important;
+}
+
+.style-manager-plugin .cp_slider {
+	box-shadow: inset 0 0 4px 2px;
+	border: unset;
+	outline: 2px solid;
+	outline-offset: 2px;
+	border-radius: var(--radius-m);
+}
+
+.style-manager-plugin .cp_thumb {
+	box-shadow: inset 0 0 2px 0;
+	border-radius: var(--radius-m);
+}
+
+.style-manager-plugin .cp_area {
+	border-radius: var(--radius-m);
+	box-shadow: inset 0 0 3px 1px;
+}
+
+.style-manager-plugin .cp_sample {
+	outline: 1px solid;
+	outline-offset: 2px;
+	box-shadow: inset 0 0 2px 1px;
+	border-radius: var(--radius-m);
 }
 
 .style-manager-plugin .cp_value:focus-visible {
@@ -2193,9 +2227,4 @@ body.is-mobile .style-manager-editor-title-container {
 .style-manager-log-setting-id-link:hover {
 	color: var(--color-accent-2, var(--color-accent));
 	background: var(--background-modifier-hover);
-}
-
-/* NOTE: hides the picker's default arrow svg */
-.style-manager-plugin .cp_caret {
-	display: none;
 }
