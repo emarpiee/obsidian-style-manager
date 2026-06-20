@@ -90,6 +90,7 @@ export class VariableColorField extends AbstractSettingComponent {
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 				toggleStyle: 'button',
+				dialogPlacement: 'top-start',
 			})
 		));
 
