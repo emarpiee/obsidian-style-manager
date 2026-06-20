@@ -116,7 +116,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		if (!this.themeLightWrapper) return;
 
 		const resolvedDefault = resolveDefaultColor(this.setting['default-light']);
-		const displayColor = color || resolvedDefault || 'transparent';
+		const _displayColor = color || resolvedDefault || 'transparent';
 
 	}
 
@@ -124,7 +124,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		if (!this.themeDarkWrapper) return;
 
 		const resolvedDefault = resolveDefaultColor(this.setting['default-dark']);
-		const displayColor = color || resolvedDefault || 'transparent';
+		const _displayColor = color || resolvedDefault || 'transparent';
 
 	}
 
@@ -283,7 +283,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 	private onColorChange(
 		id: string,
 		color: InstanceType<typeof ColorPicker.Color> | null,
-		instance: ColorPicker
+		_instance: ColorPicker
 	): void {
 		if (!color) {
 			this.settingsService.clearSetting(this.sectionId, id, { silentUI: true });
