@@ -28,7 +28,6 @@ export class ImportPresetModal extends Modal {
 		this.setTitle('Import preset');
 
 		contentEl.createEl('p', {
-			text: 'Import a JSON preset or a ZIP bundle to restore snippets and settings.',
 			cls: 'style-manager-modal-description',
 		});
 
@@ -89,6 +88,33 @@ export class ImportPresetModal extends Modal {
 				await performImport();
 			}
 		};
+
+		new Setting(contentEl)
+			.setClass('style-manager-modal-setting')
+			.setName('Import from Style Settings')
+			.setDesc(
+				'Automatically import your settings from the Style Settings plugin.'
+			)
+			.addButton((btn) => {
+				btn
+					.setButtonText('Import')
+					.onClick(async () => {
+						const path = normalizePath(
+							`${this.app.vault.configDir}/plugins/obsidian-style-settings/data.json`
+						);
+						const exists =
+							await this.app.vault.adapter.exists(path);
+						if (!exists) {
+							this.service.plugin.settingsService.notifications.error(
+								'Style Settings data.json not found. Is the plugin installed?'
+							);
+							return;
+						}
+						const content =
+							await this.app.vault.adapter.read(path);
+						await processImports([{ content }]);
+					});
+			});
 
 		new Setting(contentEl)
 			.setClass('style-manager-modal-setting')
@@ -156,33 +182,6 @@ export class ImportPresetModal extends Modal {
 						}
 					}).open();
 				});
-			});
-
-		new Setting(contentEl)
-			.setClass('style-manager-modal-setting')
-			.setName('Import from Style Settings')
-			.setDesc(
-				'Automatically read and import your settings from the Style Settings plugin.'
-			)
-			.addButton((btn) => {
-				btn
-					.setButtonText('Import from Style Settings')
-					.onClick(async () => {
-						const path = normalizePath(
-							`${this.app.vault.configDir}/plugins/obsidian-style-settings/data.json`
-						);
-						const exists =
-							await this.app.vault.adapter.exists(path);
-						if (!exists) {
-							this.service.plugin.settingsService.notifications.error(
-								'Style Settings data.json not found. Is the plugin installed?'
-							);
-							return;
-						}
-						const content =
-							await this.app.vault.adapter.read(path);
-						await processImports([{ content }]);
-					});
 			});
 
 		new Setting(contentEl)
