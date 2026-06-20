@@ -180,6 +180,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 				toggleStyle: 'button',
+				dialogPlacement: 'top-start',
 			})
 		));
 
@@ -241,6 +242,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				opacity: this.setting.opacity,
 				defaultColor: defaultColor,
 				toggleStyle: 'button',
+				dialogPlacement: 'top-start',
 			})
 		));
 
