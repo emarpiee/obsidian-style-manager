@@ -36,7 +36,6 @@ export const SKIP_EXPORT_CONFIRM_KEY = '__style_manager_skip_export_confirm';
 export const SKIP_IMPORT_CONFIRM_KEY = '__style_manager_skip_import_confirm';
 export const ALWAYS_SHARED_PRESETS_KEY =
 	'__style_manager_always_shared_presets';
-export const LOCAL_FIRST_KEY = '__style_manager_local_first';
 export const OPEN_IN_DEFAULT_APP_KEY = '__style_manager_open_in_default_app';
 export const PRESET_APPLY_ACTION_KEY = '__style_manager_preset_apply_action';
 export const BULK_PRESET_APPLY_ACTION_KEY =
