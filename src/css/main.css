@@ -207,6 +207,12 @@ body {
 
 	/* --- CSS Parser Logs --- */
 	--sm-log-warning-bg-color: oklch(from yellow l c h / 0.2);
+
+	/* -- Color Picker --- */
+	--cp-body-bg: var(--background-primary);
+	--cp-body-color: var(--text-normal);
+	--cp-border-radius-sm: var(--radius-s);
+	--cp-border-radius-lg: var(--radius-l);
 }
 
 .style-manager-plugin {
@@ -216,17 +222,6 @@ body {
 		var(--sm-sticky-tabs-height) + var(--sm-sticky-search-height)
 	);
 	--sm-sticky-heading-height: 38px;
-	--cp-body-bg: var(--background-primary);
-	--cp-body-color: var(--text-normal);
-	--cp-border-radius-sm: var(--radius-s);
-	--cp-border-radius-lg: var(--radius-l);
-	display: flex;
-	flex-direction: column;
-	min-height: 0;
-	box-sizing: border-box;
-	position: relative;
-	container-type: inline-size;
-	background: var(--sm-wrapper-bg);
 }
 
 /* NOTE: tovar*/
@@ -337,6 +332,7 @@ body:not(.is-phone) .modal:has(.style-manager-plugin) .modal-close-button {
 .style-manager-style-wrapper {
 	position: relative;
 	width: 100%;
+	background: var(--sm-wrapper-bg);
 }
 
 .style-manager-style-item-group {
@@ -2080,6 +2076,7 @@ body.is-mobile .style-manager-editor-title-container {
 	padding: var(--size-4-2) !important;
 	outline: 1px solid var(--text-faint) !important;
 	box-shadow: 0 0 6px 0;
+	border-radius: var(--radius-m);
 }
 
 .style-manager-plugin .cp_input-group * {
