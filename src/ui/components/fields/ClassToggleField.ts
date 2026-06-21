@@ -86,4 +86,9 @@ export class ClassToggleField extends AbstractSettingComponent {
 	destroy(): void {
 		this.settingEl?.settingEl.remove();
 	}
+
+	refresh(): void {
+		this.toggleComponent.setValue(!!this.setting.default);
+		this.updateModifiedClass();
+	}
 }

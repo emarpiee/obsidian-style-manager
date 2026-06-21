@@ -114,4 +114,9 @@ export class VariableNumberField extends AbstractSettingComponent {
 	destroy(): void {
 		this.settingEl?.settingEl.remove();
 	}
+
+	refresh(): void {
+		this.textComponent.setValue(this.setting.default.toString());
+		this.updateModifiedClass();
+	}
 }

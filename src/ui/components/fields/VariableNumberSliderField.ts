@@ -96,4 +96,9 @@ export class VariableNumberSliderField extends AbstractSettingComponent {
 	destroy(): void {
 		this.settingEl?.settingEl.remove();
 	}
+
+	refresh(): void {
+		this.sliderComponent.setValue(this.setting.default);
+		this.updateModifiedClass();
+	}
 }

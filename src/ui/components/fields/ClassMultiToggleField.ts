@@ -102,6 +102,11 @@ export class ClassMultiToggleField extends AbstractSettingComponent {
 		this.settingEl?.settingEl.remove();
 	}
 
+	refresh(): void {
+		this.dropdownComponent.setValue(this.setting.default || 'none');
+		this.updateModifiedClass();
+	}
+
 	private getDefaultOption(): string | SelectOption | undefined {
 		if (this.setting.default) {
 			return this.setting.options.find((o) => {
