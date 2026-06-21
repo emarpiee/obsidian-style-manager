@@ -838,7 +838,7 @@ These keys store complex data structures and metadata used for the plugin's adva
 | :------------------- | :----------------------------------------------------------------------- |
 | \`_manager_presets\`   | Array of \`Preset\` objects containing saved style configurations          |
 | \`_manager_schedules\` | Array of \`PresetSchedule\` objects for automated style switching          |
-| \`__devices\`          | Map of Device IDs \$\rightarrow\$ \`isolateSettings\` (the "Locker" system)  |
+| \`__devices\`          | Map of Device IDs \`isolateSettings\` (the "Locker" system)                |
 | \`__shared_version\`   | Version counter used to detect and resolve shared data conflicts         |
 
 ### 4. Dynamic Settings (@@) Keys
