@@ -26,8 +26,8 @@ import {
 	metadataRegExp,
 	nameRegExp,
 	settingRegExp,
-	isValidDefaultColor,
 } from '../../utils/CommonUtils';
+import { isValidDefaultColor } from '../../utils/ColorUtils';
 import { FALLBACK_COLOR } from '../../types';
 
 export class CSSParser {

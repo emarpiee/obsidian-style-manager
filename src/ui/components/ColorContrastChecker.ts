@@ -3,7 +3,7 @@ import chroma from 'chroma-js';
 import { Notice, Setting, setIcon, setTooltip } from 'obsidian';
 
 import StyleManagerPlugin from '../../main';
-import { getColorPickerConfig } from '../../utils/UIUtils';
+import { getColorPickerConfig } from '../../utils/ColorUtils';
 
 interface RenderOptions {
 	plugin?: StyleManagerPlugin;

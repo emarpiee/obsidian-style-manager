@@ -3,7 +3,7 @@ import { Menu, setTooltip } from 'obsidian';
 
 import { ACCENT_COLOR_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
-import { getColorPickerConfig } from '../../../utils/UIUtils';
+import { getColorPickerConfig } from '../../../utils/ColorUtils';
 
 /**
  * Renders the accent color selector circle in the main toolbar.

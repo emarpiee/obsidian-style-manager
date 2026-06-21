@@ -22,17 +22,14 @@ import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
 import { VariableColor, resetTooltip } from '../../../types';
+import { getDescription, getTitle } from '../../../utils/CommonUtils';
+import { createDescription } from '../../../utils/UIUtils';
 import {
-	getDescription,
-	getTitle,
-	isValidDefaultColor,
-} from '../../../utils/CommonUtils';
-import {
-	createDescription,
 	getColorPickerConfig,
 	resolveDefaultColor,
 	isColorValid,
-} from '../../../utils/UIUtils';
+	isValidDefaultColor,
+} from '../../../utils/ColorUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
 export class VariableColorField extends AbstractSettingComponent {

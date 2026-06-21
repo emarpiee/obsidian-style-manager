@@ -27,7 +27,7 @@ import {
 	getColorPickerConfig,
 	resolveDefaultColor,
 	isColorValid,
-} from '../../../utils/UIUtils';
+} from '../../../utils/ColorUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
 export class VariableThemedColorField extends AbstractSettingComponent {

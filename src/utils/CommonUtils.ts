@@ -43,9 +43,7 @@ export function getDescription<T extends Meta>(config: T): string | undefined {
 	return config.description;
 }
 
-export function isValidDefaultColor(color: string): boolean {
-	return /^(#|rgb|hsl|var\(--|transparent)/.test(color);
-}
+
 
 export function sanitizeText(str: string): string {
 	if (str === '') {
