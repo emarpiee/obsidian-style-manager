@@ -332,7 +332,7 @@ export class StyleGenerator {
 				case SettingType.VARIABLE_COLOR: {
 					const s = setting as VariableColor;
 					const color = value !== undefined ? value.toString() : s.default;
-					const { value: resolvedColor, important: resolveImportant } = resolveColor(
+						const { value: resolvedColor } = resolveColor(
 						color,
 						'current',
 						gradientCandidates
@@ -355,7 +355,7 @@ export class StyleGenerator {
 							s.opacity,
 							[],
 							true
-						).forEach((kv: { key: string; value: string; important: boolean }) => {
+						).forEach((kv: { key: string; value: string; important?: boolean }) => {
 							gradientCandidates[kv.key] = { value: kv.value, important: kv.important };
 						});
 					}
@@ -374,7 +374,7 @@ export class StyleGenerator {
 						modifier === 'light'
 							? gradientCandidatesLight
 							: gradientCandidatesDark;
-					const { value: resolvedColor, important: resolveImportant } = resolveColor(color, mode, candidates);
+					const { value: resolvedColor } = resolveColor(color, mode, candidates);
 					if (resolvedColor && chroma.valid(resolvedColor)) {
 						(modifier === 'light' ? themedLight : themedDark).push(
 							...this.generateColorVariables(
@@ -393,7 +393,7 @@ export class StyleGenerator {
 							s.opacity,
 							[],
 							true
-						).forEach((kv: { key: string; value: string; important: boolean }) => {
+						).forEach((kv: { key: string; value: string; important?: boolean }) => {
 							if (modifier === 'light')
 								gradientCandidatesLight[kv.key] = { value: kv.value, important: kv.important };
 							else gradientCandidatesDark[kv.key] = { value: kv.value, important: kv.important };
@@ -453,7 +453,7 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_COLOR: {
 						if (emittedIds.has(compositeKey)) break;
 						const s = setting as VariableColor;
-						const { value: resolvedColor, important: resolveImportant } = resolveColor(
+					const { value: resolvedColor } = resolveColor(
 							s.default || '',
 							'current',
 							gradientCandidates
@@ -476,7 +476,7 @@ export class StyleGenerator {
 								s.opacity,
 								[],
 								false
-							).forEach((kv: { key: string; value: string; important: boolean }) => {
+							).forEach((kv: { key: string; value: string; important?: boolean }) => {
 								gradientCandidates[kv.key] = { value: kv.value, important: kv.important };
 							});
 						}
@@ -485,7 +485,7 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_THEMED_COLOR: {
 						const s = setting as VariableThemedColor;
 						// Emit light default if no light override was saved
-						const { value: resolvedLight, important: resolveLightImportant } = resolveColor(
+						const { value: resolvedLight } = resolveColor(
 							s['default-light'] || '',
 							'light',
 							gradientCandidatesLight
@@ -512,12 +512,12 @@ export class StyleGenerator {
 								s.opacity,
 								[],
 								false
-							).forEach((kv: { key: string; value: string; important: boolean }) => {
+							).forEach((kv: { key: string; value: string; important?: boolean }) => {
 								gradientCandidatesLight[kv.key] = { value: kv.value, important: kv.important };
 							});
 						}
 						// Emit dark default if no dark override was saved
-						const { value: resolvedDark, important: resolveDarkImportant } = resolveColor(
+						const { value: resolvedDark } = resolveColor(
 							s['default-dark'] || '',
 							'dark',
 							gradientCandidatesDark
@@ -544,7 +544,7 @@ export class StyleGenerator {
 								s.opacity,
 								[],
 								false
-							).forEach((kv: { key: string; value: string; important: boolean }) => {
+							).forEach((kv: { key: string; value: string; important?: boolean }) => {
 								gradientCandidatesDark[kv.key] = { value: kv.value, important: kv.important };
 							});
 						}
