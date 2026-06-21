@@ -100,15 +100,15 @@ export class StyleGenerator {
 
 		this.styleTag.textContent = `
 			body.style-manager-css {
-				${vars.reduce((combined: string, current: { key: string; value: string }) => {
-					return combined + `--${current.key}: ${current.value} !important; `;
+				${vars.reduce((combined: string, current: { key: string; value: string; important?: boolean }) => {
+					return combined + `--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `;
 				}, '')}
 			}
 
 			body.theme-light.style-manager-css {
 				${themedLight.reduce(
-					(combined: string, current: { key: string; value: string }) => {
-						return combined + `--${current.key}: ${current.value} !important; `;
+					(combined: string, current: { key: string; value: string; important?: boolean }) => {
+						return combined + `--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `;
 					},
 					''
 				)}
@@ -116,8 +116,8 @@ export class StyleGenerator {
 
 			body.theme-dark.style-manager-css {
 				${themedDark.reduce(
-					(combined: string, current: { key: string; value: string }) => {
-						return combined + `--${current.key}: ${current.value} !important; `;
+					(combined: string, current: { key: string; value: string; important?: boolean }) => {
+						return combined + `--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `;
 					},
 					''
 				)}
@@ -250,12 +250,12 @@ export class StyleGenerator {
 		const resolveColor = (
 			val: string,
 			mode: 'light' | 'dark' | 'current',
-			candidates: Record<string, string>
-		): string => {
-			if (!val) return '';
+			candidates: Record<string, { value: string; important: boolean }>
+		): { value: string; important: boolean } => {
+			if (!val) return { value: '', important: false };
 			const trimmed = val.trim();
 			if (candidates[trimmed]) return candidates[trimmed];
-			if (chroma.valid(trimmed)) return trimmed;
+			if (chroma.valid(trimmed)) return { value: trimmed, important: false };
 
 			// Handle var(--id) or --id or id
 			let id = trimmed;
@@ -279,10 +279,10 @@ export class StyleGenerator {
 			if (styleSheetManager) {
 				const res = styleSheetManager.getCSSVar(id);
 				const resolved = res?.[mode];
-				if (resolved && chroma.valid(resolved)) return resolved;
+				if (resolved && chroma.valid(resolved)) return { value: resolved, important: false };
 			}
 
-			return trimmed;
+			return { value: trimmed, important: false };
 		};
 
 		const vars: VariableKV = [];
@@ -295,9 +295,9 @@ export class StyleGenerator {
 			value: stickyHeading ? 'sticky' : 'static',
 		});
 
-		const gradientCandidates: Record<string, string> = {};
-		const gradientCandidatesLight: Record<string, string> = {};
-		const gradientCandidatesDark: Record<string, string> = {};
+		const gradientCandidates: Record<string, { value: string; important: boolean }> = {};
+		const gradientCandidatesLight: Record<string, { value: string; important: boolean }> = {};
+		const gradientCandidatesDark: Record<string, { value: string; important: boolean }> = {};
 
 		// Pass 1: Emit CSS variables for all user-saved overrides.
 		for (const key in settings) {
@@ -315,7 +315,7 @@ export class StyleGenerator {
 				case SettingType.VARIABLE_NUMBER_SLIDER: {
 					const s = setting as VariableNumber | VariableNumberSlider;
 					const val = value !== undefined ? value : s.default;
-					vars.push({ key: setting.id, value: `${val}${s.format || ''}` });
+					vars.push({ key: setting.id, value: `${val}${s.format || ''}`, important: true });
 					continue;
 				}
 				case SettingType.VARIABLE_TEXT:
@@ -326,13 +326,13 @@ export class StyleGenerator {
 					if (s.quotes) {
 						text = text !== `""` ? `'${text}'` : ``;
 					}
-					vars.push({ key: setting.id, value: text });
+					vars.push({ key: setting.id, value: text, important: true });
 					continue;
 				}
 				case SettingType.VARIABLE_COLOR: {
 					const s = setting as VariableColor;
 					const color = value !== undefined ? value.toString() : s.default;
-					const resolvedColor = resolveColor(
+					const { value: resolvedColor, important: resolveImportant } = resolveColor(
 						color,
 						'current',
 						gradientCandidates
@@ -344,16 +344,19 @@ export class StyleGenerator {
 								s.format as ColorFormat,
 								resolvedColor,
 								s.opacity,
-								s['alt-format'] as AltFormatList
+								s['alt-format'] as AltFormatList,
+								true
 							)
 						);
 						this.generateColorVariables(
 							setting.id,
 							'rgb',
 							resolvedColor,
-							s.opacity
-						).forEach((kv: { key: string; value: string }) => {
-							gradientCandidates[kv.key] = kv.value;
+							s.opacity,
+							[],
+							true
+						).forEach((kv: { key: string; value: string; important: boolean }) => {
+							gradientCandidates[kv.key] = { value: kv.value, important: kv.important };
 						});
 					}
 					continue;
@@ -371,7 +374,7 @@ export class StyleGenerator {
 						modifier === 'light'
 							? gradientCandidatesLight
 							: gradientCandidatesDark;
-					const resolvedColor = resolveColor(color, mode, candidates);
+					const { value: resolvedColor, important: resolveImportant } = resolveColor(color, mode, candidates);
 					if (resolvedColor && chroma.valid(resolvedColor)) {
 						(modifier === 'light' ? themedLight : themedDark).push(
 							...this.generateColorVariables(
@@ -379,21 +382,174 @@ export class StyleGenerator {
 								s.format as ColorFormat,
 								resolvedColor,
 								s.opacity,
-								s['alt-format'] as AltFormatList
+								s['alt-format'] as AltFormatList,
+								true
 							)
 						);
 						this.generateColorVariables(
 							setting.id,
 							'rgb',
 							resolvedColor,
-							s.opacity
-						).forEach((kv: { key: string; value: string }) => {
+							s.opacity,
+							[],
+							true
+						).forEach((kv: { key: string; value: string; important: boolean }) => {
 							if (modifier === 'light')
-								gradientCandidatesLight[kv.key] = kv.value;
-							else gradientCandidatesDark[kv.key] = kv.value;
+								gradientCandidatesLight[kv.key] = { value: kv.value, important: kv.important };
+							else gradientCandidatesDark[kv.key] = { value: kv.value, important: kv.important };
 						});
 					}
 					continue;
+				}
+			}
+		}
+
+		// Build a set of "sectionId@@settingId" keys that were already emitted in Pass 1.
+		// For themed colors, also track per-mode overrides ("sectionId@@settingId@@light/dark").
+		const emittedIds = new Set<string>();
+		const emittedThemedLight = new Set<string>();
+		const emittedThemedDark = new Set<string>();
+		for (const key in settings) {
+			const parts = key.split('@@');
+			if (parts.length >= 2 && config[parts[0]]?.[parts[1]]) {
+				emittedIds.add(`${parts[0]}@@${parts[1]}`);
+				if (parts[2] === 'light')
+					emittedThemedLight.add(`${parts[0]}@@${parts[1]}`);
+				if (parts[2] === 'dark')
+					emittedThemedDark.add(`${parts[0]}@@${parts[1]}`);
+			}
+		}
+
+		// Pass 2: For every setting in the schema that has no user override, emit its
+		// schema default as a CSS variable. This ensures defaults are always applied
+		// and CSS variables are never missing just because the user hasn't touched them.
+		for (const sectionId in config) {
+			const section = config[sectionId];
+			for (const settingId in section) {
+				const compositeKey = `${sectionId}@@${settingId}`;
+				const setting: CSSSetting = section[settingId];
+
+				switch (setting.type) {
+					case SettingType.VARIABLE_NUMBER:
+					case SettingType.VARIABLE_NUMBER_SLIDER: {
+						if (emittedIds.has(compositeKey)) break;
+						const s = setting as VariableNumber | VariableNumberSlider;
+						if (s.default !== undefined) {
+							vars.push({ key: s.id, value: `${s.default}${s.format || ''}`, important: false });
+						}
+						break;
+					}
+					case SettingType.VARIABLE_TEXT:
+					case SettingType.VARIABLE_SELECT: {
+						if (emittedIds.has(compositeKey)) break;
+						const s = setting as VariableText | VariableSelect;
+						if (s.default !== undefined) {
+							let text = s.default.toString();
+							if (s.quotes) text = text !== `""` ? `'${text}'` : ``;
+							vars.push({ key: s.id, value: text, important: false });
+						}
+						break;
+					}
+					case SettingType.VARIABLE_COLOR: {
+						if (emittedIds.has(compositeKey)) break;
+						const s = setting as VariableColor;
+						const { value: resolvedColor, important: resolveImportant } = resolveColor(
+							s.default || '',
+							'current',
+							gradientCandidates
+						);
+						if (resolvedColor && chroma.valid(resolvedColor)) {
+							vars.push(
+								...this.generateColorVariables(
+									s.id,
+									s.format as ColorFormat,
+									resolvedColor,
+									s.opacity,
+									s['alt-format'] as AltFormatList,
+									false
+								)
+							);
+							this.generateColorVariables(
+								s.id,
+								'rgb',
+								resolvedColor,
+								s.opacity,
+								[],
+								false
+							).forEach((kv: { key: string; value: string; important: boolean }) => {
+								gradientCandidates[kv.key] = { value: kv.value, important: kv.important };
+							});
+						}
+						break;
+					}
+					case SettingType.VARIABLE_THEMED_COLOR: {
+						const s = setting as VariableThemedColor;
+						// Emit light default if no light override was saved
+						const { value: resolvedLight, important: resolveLightImportant } = resolveColor(
+							s['default-light'] || '',
+							'light',
+							gradientCandidatesLight
+						);
+						if (
+							!emittedThemedLight.has(compositeKey) &&
+							resolvedLight &&
+							chroma.valid(resolvedLight)
+						) {
+							themedLight.push(
+								...this.generateColorVariables(
+									s.id,
+									s.format as ColorFormat,
+									resolvedLight,
+									s.opacity,
+									s['alt-format'] as AltFormatList,
+									false
+								)
+							);
+							this.generateColorVariables(
+								s.id,
+								'rgb',
+								resolvedLight,
+								s.opacity,
+								[],
+								false
+							).forEach((kv: { key: string; value: string; important: boolean }) => {
+								gradientCandidatesLight[kv.key] = { value: kv.value, important: kv.important };
+							});
+						}
+						// Emit dark default if no dark override was saved
+						const { value: resolvedDark, important: resolveDarkImportant } = resolveColor(
+							s['default-dark'] || '',
+							'dark',
+							gradientCandidatesDark
+						);
+						if (
+							!emittedThemedDark.has(compositeKey) &&
+							resolvedDark &&
+							chroma.valid(resolvedDark)
+						) {
+							themedDark.push(
+								...this.generateColorVariables(
+									s.id,
+									s.format as ColorFormat,
+									resolvedDark,
+									s.opacity,
+									s['alt-format'] as AltFormatList,
+									false
+								)
+							);
+							this.generateColorVariables(
+								s.id,
+								'rgb',
+								resolvedDark,
+								s.opacity,
+								[],
+								false
+							).forEach((kv: { key: string; value: string; important: boolean }) => {
+								gradientCandidatesDark[kv.key] = { value: kv.value, important: kv.important };
+							});
+						}
+						break;
+					}
 				}
 			}
 		}
@@ -406,8 +562,9 @@ export class StyleGenerator {
 				const { from, to, format, step, id, pad = 0 } = def;
 
 				if (gradientCandidatesLight[from]) {
-					const fromColor = gradientCandidatesLight[from];
-					const toColor =
+					const fromCand = gradientCandidatesLight[from];
+					const fromColor = fromCand.value;
+					const toRes =
 						gradientCandidatesLight[to] ||
 						resolveColor(to, 'light', gradientCandidatesLight) ||
 						(
@@ -415,22 +572,31 @@ export class StyleGenerator {
 								themes?: Record<string, { css?: string }>;
 							}
 						)?.themes?.[to]?.css;
-					if (toColor && chroma.valid(fromColor) && chroma.valid(toColor)) {
-						this.pushColors(
-							themedLight,
-							id,
-							fromColor,
-							toColor,
-							format as 'hsl' | 'rgb' | 'hex' | 'oklch',
-							step,
-							pad
-						);
+
+					if (toRes) {
+						const toColor = typeof toRes === 'string' ? toRes : toRes.value;
+						const toImportant = typeof toRes === 'string' ? false : toRes.important;
+						const important = fromCand.important || toImportant;
+
+						if (toColor && chroma.valid(fromColor) && chroma.valid(toColor)) {
+							this.pushColors(
+								themedLight,
+								id,
+								fromColor,
+								toColor,
+								format as 'hsl' | 'rgb' | 'hex' | 'oklch',
+								step,
+								pad,
+								important
+							);
+						}
 					}
 				}
 
 				if (gradientCandidatesDark[from]) {
-					const fromColor = gradientCandidatesDark[from];
-					const toColor =
+					const fromCand = gradientCandidatesDark[from];
+					const fromColor = fromCand.value;
+					const toRes =
 						gradientCandidatesDark[to] ||
 						resolveColor(to, 'dark', gradientCandidatesDark) ||
 						(
@@ -438,22 +604,31 @@ export class StyleGenerator {
 								themes?: Record<string, { css?: string }>;
 							}
 						)?.themes?.[to]?.css;
-					if (toColor && chroma.valid(fromColor) && chroma.valid(toColor)) {
-						this.pushColors(
-							themedDark,
-							id,
-							fromColor,
-							toColor,
-							format as 'hsl' | 'rgb' | 'hex' | 'oklch',
-							step,
-							pad
-						);
+
+					if (toRes) {
+						const toColor = typeof toRes === 'string' ? toRes : toRes.value;
+						const toImportant = typeof toRes === 'string' ? false : toRes.important;
+						const important = fromCand.important || toImportant;
+
+						if (toColor && chroma.valid(fromColor) && chroma.valid(toColor)) {
+							this.pushColors(
+								themedDark,
+								id,
+								fromColor,
+								toColor,
+								format as 'hsl' | 'rgb' | 'hex' | 'oklch',
+								step,
+								pad,
+								important
+							);
+						}
 					}
 				}
 
 				if (gradientCandidates[from]) {
-					const fromColor = gradientCandidates[from];
-					const toColor =
+					const fromCand = gradientCandidates[from];
+					const fromColor = fromCand.value;
+					const toRes =
 						gradientCandidates[to] ||
 						resolveColor(to, 'current', gradientCandidates) ||
 						(
@@ -461,16 +636,24 @@ export class StyleGenerator {
 								themes?: Record<string, { css?: string }>;
 							}
 						)?.themes?.[to]?.css;
-					if (toColor && chroma.valid(fromColor) && chroma.valid(toColor)) {
-						this.pushColors(
-							vars,
-							id,
-							fromColor,
-							toColor,
-							format as 'hsl' | 'rgb' | 'hex' | 'oklch',
-							step,
-							pad
-						);
+
+					if (toRes) {
+						const toColor = typeof toRes === 'string' ? toRes : toRes.value;
+						const toImportant = typeof toRes === 'string' ? false : toRes.important;
+						const important = fromCand.important || toImportant;
+
+						if (toColor && chroma.valid(fromColor) && chroma.valid(toColor)) {
+							this.pushColors(
+								vars,
+								id,
+								fromColor,
+								toColor,
+								format as 'hsl' | 'rgb' | 'hex' | 'oklch',
+								step,
+								pad,
+								important
+							);
+						}
 					}
 				}
 			});
@@ -484,12 +667,13 @@ export class StyleGenerator {
 		format: ColorFormat,
 		colorStr: string,
 		opacity: boolean | undefined,
-		altFormats: AltFormatList = []
+		altFormats: AltFormatList = [],
+		important = false
 	): VariableKV {
 		const parsedColor = chroma(colorStr);
 		const alts = altFormats.reduce<VariableKV>((a, alt) => {
 			a.push(
-				...this.generateColorVariables(alt.id, alt.format, colorStr, opacity)
+				...this.generateColorVariables(alt.id, alt.format, colorStr, opacity, [], important)
 			);
 			return a;
 		}, []);
@@ -503,18 +687,18 @@ export class StyleGenerator {
 				const h = round(oklch[2]);
 				const alpha = parsedColor.alpha();
 				const alphaStr = opacity && alpha !== 1 ? ` / ${round(alpha)}` : '';
-				return [{ key, value: `oklch(${l} ${c} ${h}${alphaStr})` }, ...alts];
+				return [{ key, value: `oklch(${l} ${c} ${h}${alphaStr})`, important }, ...alts];
 			}
 			case 'hex':
-				return [{ key, value: colorStr }, ...alts];
+				return [{ key, value: colorStr, important }, ...alts];
 			case 'hsl':
-				return [{ key, value: parsedColor.css('hsl') }, ...alts];
+				return [{ key, value: parsedColor.css('hsl'), important }, ...alts];
 			case 'hsl-values': {
 				const hsl = parsedColor.hsl();
 				const alpha = opacity ? `,${parsedColor.alpha()}` : '';
 				const h = isNaN(hsl[0]) ? 0 : hsl[0];
 				return [
-					{ key, value: `${h},${hsl[1] * 100}%,${hsl[2] * 100}%${alpha}` },
+					{ key, value: `${h},${hsl[1] * 100}%,${hsl[2] * 100}%${alpha}`, important },
 					...alts,
 				];
 			}
@@ -522,48 +706,48 @@ export class StyleGenerator {
 				const hsl = parsedColor.hsl();
 				const h = isNaN(hsl[0]) ? 0 : hsl[0];
 				const out = [
-					{ key: `${key}-h`, value: h.toString() },
-					{ key: `${key}-s`, value: (hsl[1] * 100).toString() + '%' },
-					{ key: `${key}-l`, value: (hsl[2] * 100).toString() + '%' },
+					{ key: `${key}-h`, value: h.toString(), important },
+					{ key: `${key}-s`, value: (hsl[1] * 100).toString() + '%', important },
+					{ key: `${key}-l`, value: (hsl[2] * 100).toString() + '%', important },
 					...alts,
 				];
 				if (opacity)
-					out.push({ key: `${key}-a`, value: parsedColor.alpha().toString() });
+					out.push({ key: `${key}-a`, value: parsedColor.alpha().toString(), important });
 				return out;
 			}
 			case 'hsl-split-decimal': {
 				const hsl = parsedColor.hsl();
 				const h = isNaN(hsl[0]) ? 0 : hsl[0];
 				const out = [
-					{ key: `${key}-h`, value: h.toString() },
-					{ key: `${key}-s`, value: hsl[1].toString() },
-					{ key: `${key}-l`, value: hsl[2].toString() },
+					{ key: `${key}-h`, value: h.toString(), important },
+					{ key: `${key}-s`, value: hsl[1].toString(), important },
+					{ key: `${key}-l`, value: hsl[2].toString(), important },
 					...alts,
 				];
 				if (opacity)
-					out.push({ key: `${key}-a`, value: parsedColor.alpha().toString() });
+					out.push({ key: `${key}-a`, value: parsedColor.alpha().toString(), important });
 				return out;
 			}
 			case 'rgb':
-				return [{ key, value: parsedColor.css() }, ...alts];
+				return [{ key, value: parsedColor.css(), important }, ...alts];
 			case 'rgb-values': {
 				const rgb = parsedColor.rgb();
 				const alpha = opacity ? `,${parsedColor.alpha()}` : '';
 				return [
-					{ key, value: `${rgb[0]},${rgb[1]},${rgb[2]}${alpha}` },
+					{ key, value: `${rgb[0]},${rgb[1]},${rgb[2]}${alpha}`, important },
 					...alts,
 				];
 			}
 			case 'rgb-split': {
 				const rgb = parsedColor.rgb();
 				const out = [
-					{ key: `${key}-r`, value: rgb[0].toString() },
-					{ key: `${key}-g`, value: rgb[1].toString() },
-					{ key: `${key}-b`, value: rgb[2].toString() },
+					{ key: `${key}-r`, value: rgb[0].toString(), important },
+					{ key: `${key}-g`, value: rgb[1].toString(), important },
+					{ key: `${key}-b`, value: rgb[2].toString(), important },
 					...alts,
 				];
 				if (opacity)
-					out.push({ key: `${key}-a`, value: parsedColor.alpha().toString() });
+					out.push({ key: `${key}-a`, value: parsedColor.alpha().toString(), important });
 				return out;
 			}
 		}
@@ -576,7 +760,8 @@ export class StyleGenerator {
 		to: string,
 		format: 'hsl' | 'rgb' | 'hex' | 'oklch',
 		step: number,
-		pad: number
+		pad: number,
+		important = false
 	): void {
 		const scale = chroma.scale([from.trim(), to.trim()]).domain([0, 100]);
 		for (let i = 0; i <= 100; i++) {
@@ -587,7 +772,9 @@ export class StyleGenerator {
 						`${id}-${i.toString().padStart(pad, '0')}`,
 						format,
 						c.css(),
-						c.alpha() !== 1
+						c.alpha() !== 1,
+						[],
+						important
 					)
 				);
 			}
