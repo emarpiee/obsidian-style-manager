@@ -160,7 +160,7 @@ body {
 	--sm-tab-color-hover: var(--interactive-accent);
 	--sm-tab-actions-bg: var(--setting-items-background);
 	--sm-tab-actions-border-color: var(--background-modifier-border);
-	--sm-tab-actions-border-radius: var(--radius-l);
+	--sm-tab-actions-border-radius: var(--radius-m);
 	--sm-tab-actions-padding: 2px;
 
 	/* --- Modified Setting Indicator --- */
@@ -170,7 +170,7 @@ body {
 	/* --- Color Picker Wrapper --- */
 	--sm-color-picker-bg: var(--background-secondary);
 	--sm-color-picker-themed-border-radius: var(--radius-m);
-	--sm-color-picker-border-radius: var(--radius-m);
+	--sm-color-picker-border-radius: var(--button-radius);
 	--sm-color-picker-width: 2em;
 	--sm-color-picker-height: 2em;
 
