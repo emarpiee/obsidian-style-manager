@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 
 import { CSSParser } from '../core/css/CSSParser';
+import { ParseLogList, FALLBACK_COLOR, VariableColor, VariableThemedColor } from '../types';
 
 describe('CSSParser', () => {
 	describe('parseCSSSettings', () => {
@@ -21,6 +22,100 @@ settings:
 			expect(result?.settings.length).toBe(1);
 			expect(result?.settings[0].id).toBe('accent-color');
 		});
+
+		it('should throw INVALID_DEFAULT warning and fallback for invalid variable-color default', () => {
+			const yamlStr = `
+name: Color Test
+id: color-test
+settings:
+  - id: invalid-color
+    type: variable-color
+    format: hex
+    default: "invalid-color-value"
+`;
+			const parseLogs: ParseLogList = [];
+			const result = CSSParser.parseCSSSettings(yamlStr, 'test.css', parseLogs);
+			expect((result?.settings[0] as VariableColor).default).toBe(FALLBACK_COLOR);
+			expect(parseLogs).toContainEqual(expect.objectContaining({
+				message: expect.stringContaining('INVALID_DEFAULT'),
+				settingId: 'invalid-color',
+			}));
+		});
+
+		it('should not throw warning for valid variable-color defaults', () => {
+			const validColors = ['#ffffff', 'rgb(255,255,255)', 'hsl(0,0%,100%)', 'var(--some-var)', 'transparent'];
+			for (const color of validColors) {
+				const yamlStr = `
+name: Valid Color
+id: valid-color
+settings:
+  - id: test-color
+    type: variable-color
+    format: hex
+    default: "${color}"
+`;
+				const parseLogs: ParseLogList = [];
+				CSSParser.parseCSSSettings(yamlStr, 'test.css', parseLogs);
+				expect(parseLogs.filter(log => log.message.includes('INVALID_DEFAULT')).length).toBe(0);
+			}
+		});
+
+		it('should throw MISSING_DEFAULT warning and fallback for missing variable-color default', () => {
+			const yamlStr = `
+name: Color Test
+id: color-test
+settings:
+  - id: missing-color
+    type: variable-color
+    format: hex
+`;
+			const parseLogs: ParseLogList = [];
+			const result = CSSParser.parseCSSSettings(yamlStr, 'test.css', parseLogs);
+			expect((result?.settings[0] as VariableColor).default).toBe(FALLBACK_COLOR);
+			expect(parseLogs).toContainEqual(expect.objectContaining({
+				message: expect.stringContaining('MISSING_DEFAULT'),
+				settingId: 'missing-color',
+			}));
+		});
+
+		it('should throw INVALID_DEFAULT warning and fallback for invalid variable-themed-color defaults', () => {
+			const yamlStr = `
+name: Themed Color Test
+id: themed-color-test
+settings:
+  - id: themed-color
+    type: variable-themed-color
+    default-light: "invalid-light"
+    default-dark: "#000000"
+`;
+			const parseLogs: ParseLogList = [];
+			const result = CSSParser.parseCSSSettings(yamlStr, 'test.css', parseLogs);
+			expect((result?.settings[0] as VariableThemedColor)['default-light']).toBe(FALLBACK_COLOR);
+			expect((result?.settings[0] as VariableThemedColor)['default-dark']).toBe('#000000');
+			expect(parseLogs).toContainEqual(expect.objectContaining({
+				message: expect.stringContaining('INVALID_DEFAULT'),
+				settingId: 'themed-color',
+			}));
+		});
+
+		it('should throw MISSING_THEMED_COLOR_FIELD warning and fallback for missing themed-color fields', () => {
+			const yamlStr = `
+name: Themed Color Test
+id: themed-color-test
+settings:
+  - id: themed-color
+    type: variable-themed-color
+    default-light: "#ffffff"
+`;
+			const parseLogs: ParseLogList = [];
+			const result = CSSParser.parseCSSSettings(yamlStr, 'test.css', parseLogs);
+			expect((result?.settings[0] as VariableThemedColor)['default-dark']).toBe(FALLBACK_COLOR);
+			expect(parseLogs).toContainEqual(expect.objectContaining({
+				message: expect.stringContaining('MISSING_THEMED_COLOR_FIELD'),
+				settingId: 'themed-color',
+			}));
+		});
+
 
 		it('should return undefined if settings property is missing', () => {
 			const yamlStr = `

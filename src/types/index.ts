@@ -137,6 +137,8 @@ export type ColorFormat =
 	| 'hex'
 	| 'oklch';
 
+export const FALLBACK_COLOR = '#';
+
 export interface VariableColor extends Meta {
 	default?: string;
 	format: ColorFormat;

@@ -26,7 +26,9 @@ import {
 	metadataRegExp,
 	nameRegExp,
 	settingRegExp,
+	isValidDefaultColor,
 } from '../../utils/CommonUtils';
+import { FALLBACK_COLOR } from '../../types';
 
 export class CSSParser {
 	private static parseCache: Map<
@@ -337,29 +339,53 @@ export class CSSParser {
 						});
 					}
 					if (typeof setting.default !== 'string') {
-						setting.default = '#';
+						setting.default = FALLBACK_COLOR;
 						parseLogs?.push({
 							name,
-							message: `MISSING_DEFAULT: Variable color '${setting.id}' missing default value, falling back to '#'`,
+							message: `MISSING_DEFAULT: Variable color '${setting.id}' missing default value, falling back to '${FALLBACK_COLOR}'`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					} else if (!isValidDefaultColor(setting.default)) {
+						const oldDefault = setting.default;
+						setting.default = FALLBACK_COLOR;
+						parseLogs?.push({
+							name,
+							message: `INVALID_DEFAULT: Variable color '${setting.id}' default (${oldDefault}) is invalid, falling back to '${FALLBACK_COLOR}'`,
 							type: 'warning',
 							timestamp: Date.now(),
 							settingId: setting.id,
 						});
 					}
 					break;
-				case 'variable-themed-color':
-					if (!setting['default-light'] || !setting['default-dark']) {
-						setting['default-light'] = setting['default-light'] || '#';
-						setting['default-dark'] = setting['default-dark'] || '#';
-						parseLogs?.push({
-							name,
-							message: `MISSING_THEMED_COLOR_FIELDS: Themed color '${setting.id}' missing defaults, falling back to '#'`,
-							type: 'warning',
-							timestamp: Date.now(),
-							settingId: setting.id,
-						});
+				case 'variable-themed-color': {
+					const themedFields = ['default-light', 'default-dark'] as const;
+					for (const field of themedFields) {
+						const value = setting[field];
+						if (typeof value !== 'string') {
+							setting[field] = FALLBACK_COLOR;
+							parseLogs?.push({
+								name,
+								message: `MISSING_THEMED_COLOR_FIELD: Themed color '${setting.id}' missing ${field}, falling back to '${FALLBACK_COLOR}'`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						} else if (!isValidDefaultColor(value)) {
+							const oldDefault = value;
+							setting[field] = FALLBACK_COLOR;
+							parseLogs?.push({
+								name,
+								message: `INVALID_DEFAULT: Themed color '${setting.id}' ${field} (${oldDefault}) is invalid, falling back to '${FALLBACK_COLOR}'`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						}
 					}
 					break;
+				}
 				case 'variable-select':
 					if (setting.default === undefined) {
 						setting.default = '';
