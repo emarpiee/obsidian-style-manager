@@ -112,18 +112,12 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		this.settingEl?.settingEl.remove();
 	}
 
-	private updateVisualsLight(color: string | null): void {
+	private updateVisualsLight(): void {
 		if (!this.themeLightWrapper) return;
-
-		const resolvedDefault = resolveDefaultColor(this.setting['default-light']);
-
 	}
 
-	private updateVisualsDark(color: string | null): void {
+	private updateVisualsDark(): void {
 		if (!this.themeDarkWrapper) return;
-
-		const resolvedDefault = resolveDefaultColor(this.setting['default-dark']);
-
 	}
 
 	refresh(): void {
@@ -133,10 +127,10 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		if (this.pickerLight) {
 			if (isColorValid(resolvedDefaultLight)) {
 				this.pickerLight.setColor(resolvedDefaultLight, false);
-				this.updateVisualsLight(resolvedDefaultLight);
+				this.updateVisualsLight();
 			} else {
 				this.pickerLight.setColor(null, false);
-				this.updateVisualsLight(null);
+				this.updateVisualsLight();
 			}
 		}
 
@@ -146,10 +140,10 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		if (this.pickerDark) {
 			if (isColorValid(resolvedDefaultDark)) {
 				this.pickerDark.setColor(resolvedDefaultDark, false);
-				this.updateVisualsDark(resolvedDefaultDark);
+				this.updateVisualsDark();
 			} else {
 				this.pickerDark.setColor(null, false);
-				this.updateVisualsDark(null);
+				this.updateVisualsDark();
 			}
 		}
 
@@ -190,7 +184,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 
 		pickerLight.on('pick', (color) => {
 			this.onSave(idLight, color, pickerLight);
-			this.updateVisualsLight(color ? color.string('hex').toUpperCase() : null);
+			this.updateVisualsLight();
 		});
 
 		const themeLightReset = new ButtonComponent(
@@ -207,10 +201,10 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 
 			if (isColorValid(resolvedDefaultValue)) {
 				pickerLight.setColor(resolvedDefaultValue, false);
-				this.updateVisualsLight(resolvedDefaultValue);
+				this.updateVisualsLight();
 			} else {
 				pickerLight.setColor(null, false);
-				this.updateVisualsLight(null);
+				this.updateVisualsLight();
 			}
 
 			this.updateModifiedClass();
@@ -252,7 +246,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 
 		pickerDark.on('pick', (color) => {
 			this.onSave(idDark, color, pickerDark);
-			this.updateVisualsDark(color ? color.string('hex').toUpperCase() : null);
+			this.updateVisualsDark();
 		});
 
 		const themeDarkReset = new ButtonComponent(
@@ -269,10 +263,10 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 
 			if (isColorValid(resolvedDefaultValue)) {
 				pickerDark.setColor(resolvedDefaultValue, false);
-				this.updateVisualsDark(resolvedDefaultValue);
+				this.updateVisualsDark();
 			} else {
 				pickerDark.setColor(null, false);
-				this.updateVisualsDark(null);
+				this.updateVisualsDark();
 			}
 
 			this.updateModifiedClass();

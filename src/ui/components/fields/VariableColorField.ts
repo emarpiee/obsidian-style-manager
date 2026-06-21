@@ -120,7 +120,7 @@ export class VariableColorField extends AbstractSettingComponent {
 				}
 			}
 
-			this.updateVisuals(color ? color.string('hex').toUpperCase() : null);
+			this.updateVisuals();
 			this.updateModifiedClass();
 		};
 
@@ -146,10 +146,10 @@ export class VariableColorField extends AbstractSettingComponent {
 
 			if (isColorValid(resolvedDefaultValue)) {
 				picker.setColor(resolvedDefaultValue, false);
-				this.updateVisuals(resolvedDefaultValue);
+				this.updateVisuals();
 			} else {
 				picker.setColor(null, false);
-				this.updateVisuals(null);
+				this.updateVisuals();
 			}
 
 			this.updateModifiedClass();
@@ -166,11 +166,8 @@ export class VariableColorField extends AbstractSettingComponent {
 		this.settingEl?.settingEl.remove();
 	}
 
-	private updateVisuals(color: string | null): void {
+	private updateVisuals(): void {
 		if (!this.singleColorWrapper) return;
-
-		const resolvedDefault = resolveDefaultColor(this.setting.default || '');
-
 	}
 
 	refresh(): void {
@@ -181,10 +178,10 @@ export class VariableColorField extends AbstractSettingComponent {
 
 		if (isColorValid(resolvedDefaultValue)) {
 			this.picker.setColor(resolvedDefaultValue, false);
-			this.updateVisuals(resolvedDefaultValue);
+			this.updateVisuals();
 		} else {
 			this.picker.setColor(null, false);
-			this.updateVisuals(null);
+			this.updateVisuals();
 		}
 
 		this.updateModifiedClass();
