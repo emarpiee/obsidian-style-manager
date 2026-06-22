@@ -2139,12 +2139,17 @@ body.is-mobile .style-manager-editor-title-container {
 }
 
 .style-manager-plugin .color-picker-reset button {
+	width: var(--sm-color-picker-width) !important;
+	height: var(--sm-color-picker-height) !important;
+	border-radius: var(--sm-color-picker-border-radius);
 	padding: revert;
 	background: revert;
 	color: revert;
-	border-radius: var(--sm-color-picker-border-radius);
-	width: var(--sm-color-picker-width) !important;
-	height: var(--sm-color-picker-height) !important;
+}
+
+.style-manager-plugin .color-picker-reset svg {
+	width: auto;
+	height: auto;
 }
 
 .style-manager-plugin .single-color-wrapper {
