@@ -92,6 +92,15 @@ export abstract class AbstractSettingComponent extends Component {
 			}
 			return getTitle(this.setting).toLowerCase().includes(searchHeading);
 		}
+		if (str.startsWith('@title ') || str === '@title') {
+			const searchTitle = str.startsWith('@title ')
+				? str.substring(7).trim().toLowerCase()
+				: '';
+			if (!searchTitle) {
+				return true;
+			}
+			return (getTitle(this.setting) ?? '').toLowerCase().includes(searchTitle);
+		}
 		if (str.startsWith('@type ')) {
 			const searchType = str.substring(6).trim().toLowerCase();
 			const knownTypes = [

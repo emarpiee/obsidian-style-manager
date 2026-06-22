@@ -379,6 +379,7 @@ export class HeadingField extends AbstractSettingComponent {
 
 		const actualOriginalFilter = originalFilterString ?? filterString;
 		const isHeadingSearch = actualOriginalFilter.startsWith('@heading ') || actualOriginalFilter === '@heading' || actualOriginalFilter.startsWith('@type heading');
+		const isTitleSearch = actualOriginalFilter.startsWith('@title ') || actualOriginalFilter === '@title';
 
 		const headingMatchesString = filterString
 			? this.decisiveMatch(filterString)
@@ -391,7 +392,7 @@ export class HeadingField extends AbstractSettingComponent {
 				// Pass empty string if this heading explicitly matched the text search,
 				// so children don't get filtered out by text.
 				const childResultCount = headingChild.filter(
-					headingMatchesString ? '' : filterString,
+					(headingMatchesString && !isTitleSearch) ? '' : filterString,
 					showModifiedOnly,
 					actualOriginalFilter
 				);
@@ -414,7 +415,7 @@ export class HeadingField extends AbstractSettingComponent {
 				// 2. (We aren't filtering by modified OR it is modified)
 
 				const matchesText =
-					headingMatchesString ||
+					(!isTitleSearch && headingMatchesString) ||
 					!filterString ||
 					child.decisiveMatch(filterString);
 				const matchesModified = !showModifiedOnly || child.isModified();
@@ -428,7 +429,7 @@ export class HeadingField extends AbstractSettingComponent {
 			}
 		}
 
-		if (isHeadingSearch && headingMatchesString) {
+		if ((isHeadingSearch || isTitleSearch) && headingMatchesString) {
 			this.filterResultCount += 1;
 		}
 
