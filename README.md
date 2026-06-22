@@ -80,10 +80,6 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 
 ---
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-color_picker.webp" alt="style_manager-color_picker.webp" width="1000">
-
----
-
 ## Installation
 
 ### 1. Via BRAT (Beta Reviewer's Auto-update Tool)
@@ -924,4 +920,3 @@ Donations are greatly appreciated and will be used to fund my sanity, and my cat
 
 <a href='https://ko-fi.com/emarpiee' target='_blank'><img height='50' width='150' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
----
