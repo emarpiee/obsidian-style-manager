@@ -1,7 +1,5 @@
 import { t } from '../infrastructure/lang/helpers';
 
-// onPickrCancel removed — jscolorpicker's submitMode: 'confirm' handles cancel internally
-
 /**
  * Creates a DocumentFragment with a description and default value label.
  */
