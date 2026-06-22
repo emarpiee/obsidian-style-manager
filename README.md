@@ -80,7 +80,7 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 
 ---
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-color_picker.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-color_picker.webp" alt="style_manager-color_picker.webp" width="1000">
 
 ---
 
@@ -145,7 +145,7 @@ Style Manager interface is structured into six functional tabs.
 
 ### 1. Styles Tab
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-styles_tab.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-styles_tab.webp" alt="style_manager-styles_tab.webp" width="1000">
 
 
 *The primary workspace for Styles customization.*
@@ -156,7 +156,7 @@ Style Manager interface is structured into six functional tabs.
 
 ### 2. Snippets Tab
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-snippets_tab.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-snippets_tab.webp" alt="style_manager-snippets_tab.webp" width="1000">
 
 *Manage Obsidian's native CSS snippets from a centralized list.*
 - **Snippet Control:** Search, select, and toggle native CSS snippets through a unified list.
@@ -165,7 +165,7 @@ Style Manager interface is structured into six functional tabs.
 
 ### 3. Themes (Theme Builder) Tab
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-themes_tab.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-themes_tab.webp" alt="style_manager-themes_tab.webp" width="1000">
 
 *Tools for switching, and building custom themes.*
 - **Theme Manifest Creation:** Create new custom themes by defining their metadata (Name, Author, etc.) via a dedicated manifest modal.
@@ -176,7 +176,7 @@ Style Manager interface is structured into six functional tabs.
 
 ### 4. Presets Tab
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-presets_tab.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-presets_tab.webp" alt="style_manager-presets_tab.webp" width="1000">
 
 *Capture, restore, and schedule snapshots of your entire workspace design.*
 - **Visual State Snapshots:** Save your active Theme, active CSS Snippets, style settings, and Accent Colors into a unified "Preset".
@@ -192,7 +192,7 @@ Style Manager interface is structured into six functional tabs.
 
 ### 5. Isolate Tab
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-isolate_tab.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-isolate_tab.webp" alt="style_manager-isolate_tab.webp" width="1000">
 
 *Manage device-specific profiles.*
 - **Isolate Mode Toggle:** Enable a private "Locker" for the current device. When active, local adjustments to styles, themes, and snippets are isolated and will not overwrite the shared configuration.
@@ -206,7 +206,7 @@ Style Manager interface is structured into six functional tabs.
 
 ### 6. Preferences Tab
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-preferences_tab.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-preferences_tab.webp" alt="style_manager-preferences_tab.webp" width="1000">
 
 *Plugin configuration, safety tools, and developer options. Includes a search filter to quickly find specific settings.*
 
@@ -234,7 +234,7 @@ Style Manager interface is structured into six functional tabs.
 
 ### Instant Access Header Controls
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-toolbar.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-toolbar.webp" alt="style_manager-toolbar.webp" width="1000">
 
 The persistent toolbar header provides system actions across all tabs:
 - **Accent Color Selector:** Opens a color picker to update your theme's primary accent color.
@@ -254,7 +254,7 @@ The persistent toolbar header provides system actions across all tabs:
 The Style Manager displays a system of badges to provide quick visual cues and access to configuration details. These are categorized into two types: **interactive badges**, which trigger actions or open menus when clicked, and **info badges**, which serve as read-only indicators for status and metadata.
 
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-status_badges.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-status_badges.webp" alt="style_manager-status_badges.webp" width="1000">
 
 |     | Badge                  | Type        | Description                                                                                                                      |
 | --- | ---------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
@@ -273,7 +273,7 @@ The Style Manager displays a system of badges to provide quick visual cues and a
 
 ## Integrated CSS Code Editor
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-css_editor.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-css_editor.webp" alt="style_manager-css_editor.webp" width="1000">
 
 Style Manager features an integrated CodeMirror 6 editor that works in both a modal and a dedicated workspace tab. Use it to edit styles, snippets, and theme files without leaving Obsidian.
 
@@ -891,9 +891,9 @@ Keys containing `@@` are used to store user-defined CSS style settings. These ar
 The Style Manager includes a suite of built-in tools designed to streamline the process of theme development and UI debugging within Obsidian. These tools provide developers with quick access to common debugging tasks, accessibility checks, and UI testing utilities, all of which are accessible via the Obsidian command palette.
 
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-tool-color_contrast_checker.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-tool-color_contrast_checker.webp" alt="style_manager-color_contrast_checker.webp" width="1000">
 
-<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-tool-lorem_ipsum_generator.webp" width="1000">
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-tool-lorem_ipsum_generator.webp" alt="style_manager-lorem_ipsum_generator.webp" width="1000">
 
 > **Note**: Tools marked with a `(+)` are adapted from the [obsidian-theme-design-utilities](https://github.com/chrisgrieser/obsidian-theme-design-utilities) project.
 
@@ -924,4 +924,4 @@ Donations are greatly appreciated and will be used to fund my sanity, and my cat
 
 <a href='https://ko-fi.com/emarpiee' target='_blank'><img height='50' width='150' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
 
-<a href="https://buymeacoffee.com/emarpiee" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-red.png" alt="Buy Me A Coffee" height="40" width="150"></a>
+---
