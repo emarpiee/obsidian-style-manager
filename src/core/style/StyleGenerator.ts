@@ -1,4 +1,4 @@
-import { isColorValid } from "../../utils/ColorUtils";
+import { resolveDefaultColor } from "../../utils/ColorUtils";
 /*
     Style Manager - Obsidian Plugin
     Copyright (c) 2026 emarpiee
@@ -239,6 +239,7 @@ export class StyleGenerator {
 		this.setCSSVariables();
 	}
 
+
 	/**
 	 * Internal logic for calculating variable values.
 	 */
@@ -256,7 +257,7 @@ export class StyleGenerator {
 			if (!val) return { value: '', important: false };
 			const trimmed = val.trim();
 			if (candidates[trimmed]) return candidates[trimmed];
-			if (isColorValid(trimmed)) return { value: trimmed, important: false };
+			if (chroma.valid(trimmed)) return { value: trimmed, important: false };
 
 			// Handle var(--id) or --id or id
 			let id = trimmed;
@@ -266,6 +267,7 @@ export class StyleGenerator {
 				id = id.substring(2);
 			}
 
+			let resolved = '';
 			const styleSheetManager = (
 				this.plugin as StyleManagerPlugin & {
 					settingsService?: {
@@ -279,9 +281,14 @@ export class StyleGenerator {
 			)?.settingsService?.styleSheetManager;
 			if (styleSheetManager) {
 				const res = styleSheetManager.getCSSVar(id);
-				const resolved = res?.[mode];
-				if (resolved && isColorValid(resolved)) return { value: resolved, important: false };
+				resolved = res?.[mode] || '';
 			}
+			
+			if (!resolved) {
+				resolved = resolveDefaultColor(trimmed);
+			}
+
+			if (resolved && chroma.valid(resolved)) return { value: resolved, important: false };
 
 			return { value: trimmed, important: false };
 		};
@@ -338,7 +345,7 @@ export class StyleGenerator {
 						'current',
 						gradientCandidates
 					);
-					if (resolvedColor && isColorValid(resolvedColor)) {
+					if (resolvedColor && chroma.valid(resolvedColor)) {
 						vars.push(
 							...this.generateColorVariables(
 								setting.id,
@@ -376,7 +383,7 @@ export class StyleGenerator {
 							? gradientCandidatesLight
 							: gradientCandidatesDark;
 					const { value: resolvedColor } = resolveColor(color, mode, candidates);
-					if (resolvedColor && isColorValid(resolvedColor)) {
+					if (resolvedColor && chroma.valid(resolvedColor)) {
 						(modifier === 'light' ? themedLight : themedDark).push(
 							...this.generateColorVariables(
 								setting.id,
@@ -444,7 +451,7 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_SELECT: {
 						if (emittedIds.has(compositeKey)) break;
 						const s = setting as VariableText | VariableSelect;
-						if (s.default !== undefined) {
+						if (s.default != null) {
 							let text = s.default.toString();
 							if (s.quotes) text = text !== `""` ? `'${text}'` : ``;
 							vars.push({ key: s.id, value: text, important: false });
@@ -459,7 +466,7 @@ export class StyleGenerator {
 							'current',
 							gradientCandidates
 						);
-						if (resolvedColor && isColorValid(resolvedColor)) {
+						if (resolvedColor && chroma.valid(resolvedColor)) {
 							vars.push(
 								...this.generateColorVariables(
 									s.id,
@@ -494,7 +501,7 @@ export class StyleGenerator {
 						if (
 							!emittedThemedLight.has(compositeKey) &&
 							resolvedLight &&
-							isColorValid(resolvedLight)
+							chroma.valid(resolvedLight)
 						) {
 							themedLight.push(
 								...this.generateColorVariables(
@@ -526,7 +533,7 @@ export class StyleGenerator {
 						if (
 							!emittedThemedDark.has(compositeKey) &&
 							resolvedDark &&
-							isColorValid(resolvedDark)
+							chroma.valid(resolvedDark)
 						) {
 							themedDark.push(
 								...this.generateColorVariables(
@@ -579,7 +586,7 @@ export class StyleGenerator {
 						const toImportant = typeof toRes === 'string' ? false : toRes.important;
 						const important = fromCand.important || toImportant;
 
-						if (toColor && isColorValid(fromColor) && isColorValid(toColor)) {
+						if (toColor && chroma.valid(fromColor) && chroma.valid(toColor)) {
 							this.pushColors(
 								themedLight,
 								id,
@@ -611,7 +618,7 @@ export class StyleGenerator {
 						const toImportant = typeof toRes === 'string' ? false : toRes.important;
 						const important = fromCand.important || toImportant;
 
-						if (toColor && isColorValid(fromColor) && isColorValid(toColor)) {
+						if (toColor && chroma.valid(fromColor) && chroma.valid(toColor)) {
 							this.pushColors(
 								themedDark,
 								id,
@@ -643,7 +650,7 @@ export class StyleGenerator {
 						const toImportant = typeof toRes === 'string' ? false : toRes.important;
 						const important = fromCand.important || toImportant;
 
-						if (toColor && isColorValid(fromColor) && isColorValid(toColor)) {
+						if (toColor && chroma.valid(fromColor) && chroma.valid(toColor)) {
 							this.pushColors(
 								vars,
 								id,
