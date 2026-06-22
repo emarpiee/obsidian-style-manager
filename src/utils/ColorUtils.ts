@@ -1,3 +1,4 @@
+import chroma from 'chroma-js';
 import ColorPicker from '../lib/colorpicker/colorpicker.min.js';
 
 /**
@@ -10,11 +11,7 @@ export function isValidDefaultColor(color: string): boolean {
 	if (!color) return false;
 	const trimmed = color.trim();
 	if (trimmed === '#') return true;
-	if (trimmed.startsWith('var(--')) {
-		const resolved = resolveDefaultColor(trimmed);
-		return isColorValid(resolved);
-	}
-	return /^(#|rgb|rgba|hsl|hsla|oklch|transparent)/i.test(trimmed) && isColorValid(trimmed);
+	return isColorValid(trimmed);
 }
 
 /**
@@ -22,12 +19,15 @@ export function isValidDefaultColor(color: string): boolean {
  */
 export function isColorValid(color: string | undefined | null): boolean {
 	if (!color || color.trim() === '' || color.trim() === '#') return false;
-	try {
-		new ColorPicker.Color(color);
-		return true;
-	} catch {
-		return false;
+	const trimmed = color.trim();
+
+	// Recursively resolve variables
+	if (trimmed.startsWith('var(--')) {
+		const resolved = resolveDefaultColor(trimmed);
+		return isColorValid(resolved);
 	}
+
+	return chroma.valid(trimmed);
 }
 
 /**
