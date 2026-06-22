@@ -144,7 +144,7 @@ Style Manager interface is structured into six functional tabs.
 *The primary workspace for Styles customization.*
 - **Unified Style Control:** Renders settings (parsed from theme and snippet CSS files) into interactive toggles, sliders, and color pickers.
 - **Modified-Only Filter:** A quick switch to hide unchanged settings and view only the settings you have specifically changed.
-- **Navigation:** Search bar for instant filtering (supports \`@id [id]\`, \`@type [known-type]\`, and \`@heading [text]\` prefixes), and a "Collapse/Expand All" toggle to manage large sets of style settings.
+- **Navigation:** Search bar for instant filtering (supports \`@id [id]\`, \`@type [known-type]\`, \`@title [text]\`, and \`@heading [text]\` prefixes), and a "Collapse/Expand All" toggle to manage large sets of style settings.
 - **Parse Logs:** An info button that opens a modal listing all warnings and errors found during the parsing of \`@settings\` blocks, allowing for quick debugging of CSS configurations.
 
 ### 2. Snippets Tab
