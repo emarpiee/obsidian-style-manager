@@ -80,6 +80,10 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 
 ---
 
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-color_picker.webp)
+
+---
+
 ## Installation
 
 ### 1. Via BRAT (Beta Reviewer's Auto-update Tool)
@@ -141,6 +145,9 @@ Style Manager interface is structured into six functional tabs.
 
 ### 1. Styles Tab
 
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-styles_tab.webp)
+
+
 *The primary workspace for Styles customization.*
 - **Unified Style Control:** Renders settings (parsed from theme and snippet CSS files) into interactive toggles, sliders, and color pickers.
 - **Modified-Only Filter:** A quick switch to hide unchanged settings and view only the settings you have specifically changed.
@@ -149,12 +156,16 @@ Style Manager interface is structured into six functional tabs.
 
 ### 2. Snippets Tab
 
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-snippets_tab.webp)
+
 *Manage Obsidian's native CSS snippets from a centralized list.*
 - **Snippet Control:** Search, select, and toggle native CSS snippets through a unified list.
 - **Vault Integration:** Quick-access buttons to open your system's file explorer directly to your vault's snippets folder.
 - **Bulk Selection:** Choose multiple snippets simultaneously for coordinated actions.
 
 ### 3. Themes (Theme Builder) Tab
+
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-themes_tab.webp)
 
 *Tools for switching, and building custom themes.*
 - **Theme Manifest Creation:** Create new custom themes by defining their metadata (Name, Author, etc.) via a dedicated manifest modal.
@@ -164,6 +175,8 @@ Style Manager interface is structured into six functional tabs.
 - **Folder Shortcut:** One-click button to open your local \`.obsidian/themes\` directory.
 
 ### 4. Presets Tab
+
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-presets_tab.webp)
 
 *Capture, restore, and schedule snapshots of your entire workspace design.*
 - **Visual State Snapshots:** Save your active Theme, active CSS Snippets, style settings, and Accent Colors into a unified "Preset".
@@ -179,6 +192,8 @@ Style Manager interface is structured into six functional tabs.
 
 ### 5. Isolate Tab
 
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-isolate_tab.webp)
+
 *Manage device-specific profiles.*
 - **Isolate Mode Toggle:** Enable a private "Locker" for the current device. When active, local adjustments to styles, themes, and snippets are isolated and will not overwrite the shared configuration.
 - **Locker Identity Management:**
@@ -190,6 +205,8 @@ Style Manager interface is structured into six functional tabs.
     - **Remote Maintenance:** Rename or delete lockers for other devices.
 
 ### 6. Preferences Tab
+
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-preferences_tab.webp)
 
 *Plugin configuration, safety tools, and developer options. Includes a search filter to quickly find specific settings.*
 
@@ -217,6 +234,8 @@ Style Manager interface is structured into six functional tabs.
 
 ### Instant Access Header Controls
 
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-toolbar.webp)
+
 The persistent toolbar header provides system actions across all tabs:
 - **Accent Color Selector:** Opens a color picker to update your theme's primary accent color.
 - **Appearance Toggle:** Swap between light and dark modes.
@@ -234,6 +253,9 @@ The persistent toolbar header provides system actions across all tabs:
 
 The Style Manager displays a system of badges to provide quick visual cues and access to configuration details. These are categorized into two types: **interactive badges**, which trigger actions or open menus when clicked, and **info badges**, which serve as read-only indicators for status and metadata.
 
+
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-status_badges.webp)
+
 |     | Badge                  | Type        | Description                                                                                                                      |
 | --- | ---------------------- | ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
 | A   | \`style settings count\` | interactive | Number of settings configured in a style, preset, or device locker. In **Styles tab**, click to show per section configurations. |
@@ -250,6 +272,8 @@ The Style Manager displays a system of badges to provide quick visual cues and a
 ---
 
 ## Integrated CSS Code Editor
+
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-css_editor.webp)
 
 Style Manager features an integrated CodeMirror 6 editor that works in both a modal and a dedicated workspace tab. Use it to edit styles, snippets, and theme files without leaving Obsidian.
 
@@ -866,6 +890,11 @@ Keys containing \`@@\` are used to store user-defined CSS style settings. These 
 
 The Style Manager includes a suite of built-in tools designed to streamline the process of theme development and UI debugging within Obsidian. These tools provide developers with quick access to common debugging tasks, accessibility checks, and UI testing utilities, all of which are accessible via the Obsidian command palette.
 
+
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-tool-color_contrast_checker.webp)
+
+[image](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-tool-lorem_ipsum_generator.webp)
+
 > **Note**: Tools marked with a \`(+)\` are adapted from the [obsidian-theme-design-utilities](https://github.com/chrisgrieser/obsidian-theme-design-utilities) project.
 
 | Tool                       | Type               | Description                                                                                                 |
@@ -887,4 +916,13 @@ The Style Manager includes a suite of built-in tools designed to streamline the 
 
 I want to be open about my workflow for this project. I personally directed and designed every aspect of the UI and UX. To give myself more time to focus on that creative side, I used Gemma to help speed up the technical groundwork, specifically implementing complex logic, catching syntax errors, and generating my commit messages.
 
+---
+
+## ☕️ Buy Me A Coffee
+
+Donations are greatly appreciated and will be used to fund my sanity, and my cats' 😼 expensive tastes."
+
+<a href='https://ko-fi.com/emarpiee' target='_blank'><img height='50' width='150' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+
+<a href="https://buymeacoffee.com/emarpiee" target="_blank">[Buy Me A Coffee](https://cdn.buymeacoffee.com/buttons/default-red.png)</a>
 `;
