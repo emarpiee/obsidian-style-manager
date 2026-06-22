@@ -168,7 +168,7 @@ ${JSON.stringify({
 		const s = result?.settings[0] as any;
 		expect(s['default-light']).toBe('#');
 		expect(s['default-dark']).toBe('#');
-		expect(parseLogs[0].message).toContain('MISSING_THEMED_COLOR_FIELDS');
+		expect(parseLogs[0].message).toContain('MISSING_THEMED_COLOR_FIELD');
 	});
 
 	it('validates variable-select default', () => {
