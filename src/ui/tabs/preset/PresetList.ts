@@ -86,7 +86,7 @@ export class PresetList {
 			.addExtraButton((btn) => {
 				btn
 					.setIcon('calendar-clock')
-					.setTooltip('Active Schedules')
+					.setTooltip('View active schedules')
 					.onClick(() => {
 						new ActiveSchedulesModal(plugin.app, plugin).open();
 					});
@@ -94,7 +94,7 @@ export class PresetList {
 			.addExtraButton((btn) => {
 				btn
 					.setIcon('plus')
-					.setTooltip('Create new preset')
+					.setTooltip('Create preset')
 					.onClick(() => {
 						const prefixesArr = plugin.presetService.getPrefixesMetadata();
 						new CreatePresetModal(

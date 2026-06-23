@@ -238,7 +238,7 @@ export class SettingsHeaderComponent extends Component {
 
 			menu.addItem((item) => {
 				item
-					.setTitle('Create new preset...')
+					.setTitle('Create preset...')
 					.setIcon('plus')
 					.onClick(() => {
 						const prefixesArr = this.plugin.presetService.getPrefixesMetadata();
@@ -270,7 +270,7 @@ export class SettingsHeaderComponent extends Component {
 
 			menu.addItem((item) => {
 				item
-					.setTitle('Create new snippet...')
+					.setTitle('Create snippet...')
 					.setIcon('plus-circle')
 					.onClick(async () => {
 						const id =

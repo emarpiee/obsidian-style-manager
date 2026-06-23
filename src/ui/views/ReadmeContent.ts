@@ -241,8 +241,8 @@ The persistent toolbar header provides system actions across all tabs:
 
 #### More Actions Menu (Vertical Ellipsis)
 
-- **Preset Management:** Quickly \`Create new preset…\` or \`Import preset…\`. Completing these actions automatically switches the view to the **Presets** tab.
-- **Snippet Management:** \`Create new snippet…\` generates a new CSS file. Based on your preferences, it opens in the internal editor or your system's default text editor, then switches the view to the **Snippets** tab.
+- **Preset Management:** Quickly \`Create preset…\` or \`Import preset…\`. Completing these actions automatically switches the view to the **Presets** tab.
+- **Snippet Management:** \`Create snippet…\` generates a new CSS file. Based on your preferences, it opens in the internal editor or your system's default text editor, then switches the view to the **Snippets** tab.
 - **State Reset:** \`Reset styles\` opens the **Reset Settings Modal**, allowing you to select specific style sections to clear and return to their default theme values.
 
 ### Status Badges Reference
