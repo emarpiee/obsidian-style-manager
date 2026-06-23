@@ -431,8 +431,6 @@ export default class StyleManagerPlugin extends Plugin {
 		this.parseAllSnippetMetadata();
 
 		this.app.workspace.onLayoutReady(() => {
-			// Background Sync Guard: Check for external data.json changes every 4 seconds.
-			// (Obsidian's vault.on('modify') doesn't trigger for .obsidian/ config files).
 			this.registerInterval(
 				window.setInterval(
 					() => this.settingsService.checkForExternalChanges(),
@@ -493,7 +491,6 @@ export default class StyleManagerPlugin extends Plugin {
 
 			this.settingsService.styleGenerator.setConfig(this.settingsList);
 
-			// Refresh styles and UI to prevent visual flicker
 			this.settingsService.refreshService.trigger(RefreshLevel.FULL_VISUAL);
 
 			this.refreshSettingCommands();
