@@ -1,6 +1,6 @@
 import { setTooltip } from 'obsidian';
 
-export function isNumeric(value: any): boolean {
+export function isNumeric(value: unknown): boolean {
 	if (value === null || value === undefined) return false;
 	if (typeof value === 'number') return Number.isFinite(value);
 	if (typeof value === 'string') {
@@ -11,7 +11,7 @@ export function isNumeric(value: any): boolean {
 	return false;
 }
 
-export function isString(value: any): boolean {
+export function isString(value: unknown): boolean {
 	return typeof value === 'string';
 }
 
