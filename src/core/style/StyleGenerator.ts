@@ -1,4 +1,3 @@
-import { resolveDefaultColor } from "../../utils/ColorUtils";
 /*
     Style Manager - Obsidian Plugin
     Copyright (c) 2026 emarpiee
@@ -258,37 +257,6 @@ export class StyleGenerator {
 			const trimmed = val.trim();
 			if (candidates[trimmed]) return candidates[trimmed];
 			if (chroma.valid(trimmed)) return { value: trimmed, important: false };
-
-			// Handle var(--id) or --id or id
-			let id = trimmed;
-			if (id.startsWith('var(--') && id.endsWith(')')) {
-				id = id.substring(6, id.length - 1);
-			} else if (id.startsWith('--')) {
-				id = id.substring(2);
-			}
-
-			let resolved = '';
-			const styleSheetManager = (
-				this.plugin as StyleManagerPlugin & {
-					settingsService?: {
-						styleSheetManager?: {
-							getCSSVar: (
-								id: string
-							) => { light: string; dark: string; current: string } | undefined;
-						};
-					};
-				}
-			)?.settingsService?.styleSheetManager;
-			if (styleSheetManager) {
-				const res = styleSheetManager.getCSSVar(id);
-				resolved = res?.[mode] || '';
-			}
-			
-			if (!resolved) {
-				resolved = resolveDefaultColor(trimmed);
-			}
-
-			if (resolved && chroma.valid(resolved)) return { value: resolved, important: false };
 
 			return { value: trimmed, important: false };
 		};

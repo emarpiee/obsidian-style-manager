@@ -25,7 +25,6 @@ import { VariableThemedColor, resetTooltip } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import {
 	getColorPickerConfig,
-	resolveDefaultColor,
 	isColorValid,
 } from '../../../utils/ColorUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
@@ -47,13 +46,8 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		const idDark = `${this.setting.id}@@dark`;
 		const valueLight = this.settingsService.getSetting(this.sectionId, idLight);
 		const valueDark = this.settingsService.getSetting(this.sectionId, idDark);
-		// Resolve schema defaults for the color picker (CSS vars like var(--x) are not parseable)
-		const resolvedDefaultLight = resolveDefaultColor(
-			this.setting['default-light']
-		);
-		const resolvedDefaultDark = resolveDefaultColor(
-			this.setting['default-dark']
-		);
+		const resolvedDefaultLight = this.setting['default-light'];
+		const resolvedDefaultDark = this.setting['default-dark'];
 
 		this.settingEl = new Setting(this.containerEl);
 		this.settingEl.setClass('style-manager-style-settings-item');
@@ -123,7 +117,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 	refresh(): void {
 		// Light theme
 		const defaultLightRaw = this.setting['default-light'];
-		const resolvedDefaultLight = resolveDefaultColor(defaultLightRaw);
+		const resolvedDefaultLight = defaultLightRaw;
 		if (this.pickerLight) {
 			if (isColorValid(resolvedDefaultLight)) {
 				this.pickerLight.setColor(resolvedDefaultLight, false);
@@ -136,7 +130,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 
 		// Dark theme
 		const defaultDarkRaw = this.setting['default-dark'];
-		const resolvedDefaultDark = resolveDefaultColor(defaultDarkRaw);
+		const resolvedDefaultDark = defaultDarkRaw;
 		if (this.pickerDark) {
 			if (isColorValid(resolvedDefaultDark)) {
 				this.pickerDark.setColor(resolvedDefaultDark, false);
@@ -179,6 +173,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		));
 
 		pickerLight.on('open', () => {
+			// TODO
 			// Do not auto-focus result input as it opens the keyboard on mobile
 		});
 
@@ -193,7 +188,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		themeLightReset.setIcon('reset');
 		themeLightReset.onClick(() => {
 			const defaultColorRaw = this.setting['default-light'];
-			const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
+			const resolvedDefaultValue = defaultColorRaw || '';
 
 			this.settingsService.clearSetting(this.sectionId, idLight, {
 				silentUI: true,
@@ -255,7 +250,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		themeDarkReset.setIcon('reset');
 		themeDarkReset.onClick(() => {
 			const defaultColorRaw = this.setting['default-dark'];
-			const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
+			const resolvedDefaultValue = defaultColorRaw || '';
 
 			this.settingsService.clearSetting(this.sectionId, idDark, {
 				silentUI: true,

@@ -26,7 +26,6 @@ import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { createDescription } from '../../../utils/UIUtils';
 import {
 	getColorPickerConfig,
-	resolveDefaultColor,
 	isColorValid,
 	isValidDefaultColor,
 } from '../../../utils/ColorUtils';
@@ -56,8 +55,7 @@ export class VariableColorField extends AbstractSettingComponent {
 			this.sectionId,
 			this.setting.id
 		);
-		// Resolve the schema default for the color picker (CSS vars are not parseable)
-		const resolvedDefault = resolveDefaultColor(this.setting.default || '');
+		const resolvedDefault = this.setting.default || '';
 
 		this.settingEl = new Setting(this.containerEl);
 		this.settingEl.setClass('style-manager-style-settings-item');
@@ -135,7 +133,7 @@ export class VariableColorField extends AbstractSettingComponent {
 		resetButton.setIcon('reset');
 		resetButton.onClick(() => {
 			const defaultColorRaw = this.setting.default;
-			const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
+			const resolvedDefaultValue = defaultColorRaw || '';
 
 			this.settingsService.clearSetting(this.sectionId, this.setting.id, {
 				silentUI: true,
@@ -171,7 +169,7 @@ export class VariableColorField extends AbstractSettingComponent {
 		if (!this.picker) return;
 
 		const defaultColorRaw = this.setting.default;
-		const resolvedDefaultValue = resolveDefaultColor(defaultColorRaw || '');
+		const resolvedDefaultValue = defaultColorRaw || '';
 
 		if (isColorValid(resolvedDefaultValue)) {
 			this.picker.setColor(resolvedDefaultValue, false);
