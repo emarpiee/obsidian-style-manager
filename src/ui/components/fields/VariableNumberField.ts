@@ -23,6 +23,7 @@ import { Setting, TextComponent } from 'obsidian';
 import { VariableNumber, resetTooltip } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { createDescription } from '../../../utils/UIUtils';
+import { isNumeric } from '../../../utils/ValidationUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
 export class VariableNumberField extends AbstractSettingComponent {
@@ -48,9 +49,7 @@ export class VariableNumberField extends AbstractSettingComponent {
 				this.setting.id
 			);
 			const onCommit = (value: string): void => {
-				const numValue = Number(value);
-
-				if (value.trim() === '' || !Number.isFinite(numValue)) {
+				if (!isNumeric(value)) {
 					// Revert the input to the last valid stored value (or default)
 					const stored = this.settingsService.getSetting(
 						this.sectionId,
@@ -61,6 +60,8 @@ export class VariableNumberField extends AbstractSettingComponent {
 					);
 					return;
 				}
+
+				const numValue = Number(value);
 
 				if (numValue === this.setting.default) {
 					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
