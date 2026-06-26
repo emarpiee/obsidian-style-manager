@@ -143,7 +143,6 @@ Style Manager interface is structured into six functional tabs.
 
 [style_manager-styles_tab.webp](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-styles_tab.webp)
 
-
 *The primary workspace for Styles customization.*
 - **Unified Style Control:** Renders settings (parsed from theme and snippet CSS files) into interactive toggles, sliders, and color pickers.
 - **Modified-Only Filter:** A quick switch to hide unchanged settings and view only the settings you have specifically changed.
@@ -248,7 +247,6 @@ The persistent toolbar header provides system actions across all tabs:
 ### Status Badges Reference
 
 The Style Manager displays a system of badges to provide quick visual cues and access to configuration details. These are categorized into two types: **interactive badges**, which trigger actions or open menus when clicked, and **info badges**, which serve as read-only indicators for status and metadata.
-
 
 [style_manager-status_badges.webp](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-status_badges.webp)
 
@@ -356,7 +354,7 @@ license: MIT
 | \`description\` | A brief explanation of what the snippet does.  | \`description: Customizes the sidebar width\` |
 | \`author\`      | The name of the creator.                       | \`author: emarpiee\`                          |
 | \`version\`     | The current version of the snippet.            | \`version: 1.0.0\`                            |
-| \`authorUrl\`   | A link to the author's profile or website.     | \`authorUrl: https://example.com\`            |
+| \`authorUrl\`   | A link to the author's profile or website.     | \`authorUrl: https://github.com/emarpiee\`    |
 | \`license\`     | The license under which the snippet is shared. | \`license: MIT\`                              |
 
 To show these in your list views, enable **"Display metadata (Author, Version, etc.) for CSS snippets…"** in the **Preferences Tab**.
@@ -598,7 +596,7 @@ Creates a dropdown selection to assign values to a CSS variable. The \`id\` of t
 #### 9. \`variable-color\`
 
 Creates an interactive color picker interface. The \`id\` of the setting will be used as the variable name.
-- **Required:** \`default\` (hex color values must be wrapped in quotes, or use CSS variables like \`var(--color-name)\`), \`format\` (e.g., \`hex\`, \`rgb\`, \`hsl\`, \`oklch\`).
+- **Required:** \`default\` (hex color values must be wrapped in quote, \`format\` (e.g., \`hex\`, \`rgb\`, \`hsl\`, \`oklch\`).
 - **Optional:** \`opacity\` (boolean - enables transparency), \`alt-format\` (outputs alternative values to helper variable targets).
 
 \`\`\`css
@@ -615,16 +613,10 @@ Creates an interactive color picker interface. The \`id\` of the setting will be
         default: '#007AFF'
 \`\`\`
 
-*Alternatively, use a CSS variable for the default value:*
-
-\`\`\`css
-        default: 'var(--accent-color)'
-\`\`\`
-
 #### 10. \`variable-themed-color\`
 
 Generates dual color pickers for light and dark appearance profiles. The \`id\` of the setting will be used as the variable name.
-- **Required:** \`format\` (e.g., \`hex\`, \`rgb\`, \`hsl\`, \`oklch\`), \`default-light\`, \`default-dark\` (hex color values must be wrapped in quotes, or use CSS variables like \`var(--color-name)\`).
+- **Required:** \`format\` (e.g., \`hex\`, \`rgb\`, \`hsl\`, \`oklch\`), \`default-light\`, \`default-dark\` (hex color values must be wrapped in quotes).
 - **Optional:** \`opacity\`.
 
 \`\`\`css
@@ -635,13 +627,6 @@ Generates dual color pickers for light and dark appearance profiles. The \`id\` 
         format: hex
         default-light: '#111111'
         default-dark: '#f5f5f5'
-\`\`\`
-
-*Alternatively, use CSS variables for themed defaults:*
-
-\`\`\`css
-        default-light: 'var(--text-light)'
-        default-dark: 'var(--text-dark)'
 \`\`\`
 
 #### 11. \`color-gradient\`
@@ -886,7 +871,6 @@ Keys containing \`@@\` are used to store user-defined CSS style settings. These 
 
 The Style Manager includes a suite of built-in tools designed to streamline the process of theme development and UI debugging within Obsidian. These tools provide developers with quick access to common debugging tasks, accessibility checks, and UI testing utilities, all of which are accessible via the Obsidian command palette.
 
-
 [style_manager-color_contrast_checker.webp](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-tool-color_contrast_checker.webp)
 
 [style_manager-lorem_ipsum_generator.webp](https://github.com/emarpiee/obsidian-style-manager/blob/main/screenshots/style_manager-tool-lorem_ipsum_generator.webp)
@@ -918,6 +902,8 @@ I want to be open about my workflow for this project. I personally directed and 
 
 Donations are greatly appreciated and will be used to fund my sanity, and my cats 😼 expensive taste.
 
-<a href='https://ko-fi.com/emarpiee' target='_blank'><img height='50' width='150' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' /></a>
+<a href='https://ko-fi.com/emarpiee' target='_blank'>
+<img height='50' width='150' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+</a>
 
 `;
