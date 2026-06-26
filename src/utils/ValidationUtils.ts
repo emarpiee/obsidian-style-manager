@@ -1,5 +1,20 @@
 import { setTooltip } from 'obsidian';
 
+export function isNumeric(value: any): boolean {
+	if (value === null || value === undefined) return false;
+	if (typeof value === 'number') return Number.isFinite(value);
+	if (typeof value === 'string') {
+		const trimmed = value.trim();
+		if (trimmed === '') return false;
+		return Number.isFinite(Number(trimmed));
+	}
+	return false;
+}
+
+export function isString(value: any): boolean {
+	return typeof value === 'string';
+}
+
 export type Validator = (value: string) => string | null;
 
 export const Validators: Record<string, Validator> = {
