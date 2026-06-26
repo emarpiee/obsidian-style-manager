@@ -48,10 +48,9 @@ export class VariableNumberField extends AbstractSettingComponent {
 				this.setting.id
 			);
 			const onCommit = (value: string): void => {
-				const isFloat = /\./.test(value);
-				const numValue = isFloat ? parseFloat(value) : parseInt(value, 10);
+				const numValue = Number(value);
 
-				if (isNaN(numValue)) {
+				if (value.trim() === '' || !Number.isFinite(numValue)) {
 					// Revert the input to the last valid stored value (or default)
 					const stored = this.settingsService.getSetting(
 						this.sectionId,
@@ -75,6 +74,7 @@ export class VariableNumberField extends AbstractSettingComponent {
 						{ silentUI: true }
 					);
 				}
+				this.textComponent.setValue(numValue.toString());
 				this.updateModifiedClass();
 			};
 
