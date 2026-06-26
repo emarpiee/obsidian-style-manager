@@ -28,6 +28,7 @@ import {
 	settingRegExp,
 } from '../../utils/CommonUtils';
 import { isValidDefaultColor } from '../../utils/ColorUtils';
+import { isNumeric } from '../../utils/ValidationUtils';
 import { FALLBACK_COLOR } from '../../types';
 
 export class CSSParser {
@@ -244,6 +245,16 @@ export class CSSParser {
 							timestamp: Date.now(),
 							settingId: setting.id,
 						});
+					} else if (!isNumeric(setting.default)) {
+						const oldDefault = setting.default;
+						setting.default = 0;
+						parseLogs?.push({
+							name,
+							message: `INVALID_DEFAULT: Variable number '${setting.id}' default (${oldDefault}) is invalid, falling back to 0`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
 					}
 					break;
 				case 'variable-number-slider': {
@@ -264,6 +275,43 @@ export class CSSParser {
 							settingId: setting.id,
 						});
 					}
+
+					if (!isNumeric(setting.min)) {
+						const oldMin = setting.min;
+						setting.min = 0;
+						parseLogs?.push({
+							name,
+							message: `INVALID_NUMBER: Slider '${setting.id}' min (${oldMin}) is invalid, falling back to 0`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					}
+
+					if (!isNumeric(setting.max)) {
+						const oldMax = setting.max;
+						setting.max = 100;
+						parseLogs?.push({
+							name,
+							message: `INVALID_NUMBER: Slider '${setting.id}' max (${oldMax}) is invalid, falling back to 100`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					}
+
+					if (!isNumeric(setting.step)) {
+						const oldStep = setting.step;
+						setting.step = 1;
+						parseLogs?.push({
+							name,
+							message: `INVALID_NUMBER: Slider '${setting.id}' step (${oldStep}) is invalid, falling back to 1`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					}
+
 					if (setting.min > setting.max) {
 						const temp = setting.min;
 						setting.min = setting.max;
@@ -288,6 +336,7 @@ export class CSSParser {
 					}
 					if (
 						setting.default === undefined ||
+						!isNumeric(setting.default) ||
 						setting.default < setting.min ||
 						setting.default > setting.max
 					) {
@@ -303,7 +352,7 @@ export class CSSParser {
 						);
 						parseLogs?.push({
 							name,
-							message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) out of bounds, clamped to ${setting.default}`,
+							message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) ${!isNumeric(setting.default) ? 'is invalid' : 'out of bounds'}, clamped to ${setting.default}`,
 							type: 'warning',
 							timestamp: Date.now(),
 							settingId: setting.id,
@@ -412,6 +461,17 @@ export class CSSParser {
 						parseLogs?.push({
 							name,
 							message: `MISSING_GRADIENT_FIELDS: Gradient '${setting.id}' missing fields, using fallbacks`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					}
+					if (setting.pad !== undefined && !isNumeric(setting.pad)) {
+						const oldPad = setting.pad;
+						setting.pad = 0;
+						parseLogs?.push({
+							name,
+							message: `INVALID_NUMBER: Gradient '${setting.id}' pad (${oldPad}) is invalid, falling back to 0`,
 							type: 'warning',
 							timestamp: Date.now(),
 							settingId: setting.id,
