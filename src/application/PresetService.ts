@@ -320,6 +320,15 @@ export class PresetService {
 
 		if (action === 'overwrite') {
 			await this.plugin.settingsService.resetAllStyleSettings(isolateOnly);
+		} else if (action === 'merge') {
+			if (mergedData[StorageKeys.SNIPPETS] !== undefined) {
+				const currentSnippets =
+					(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
+				const presetSnippets = mergedData[StorageKeys.SNIPPETS] as string[];
+				mergedData[StorageKeys.SNIPPETS] = Array.from(
+					new Set([...currentSnippets, ...presetSnippets])
+				);
+			}
 		}
 
 		try {
@@ -347,6 +356,19 @@ export class PresetService {
 		const { mergedData } = await this.mergePresets(presetIds);
 		if (Object.keys(mergedData).length === 0 && !mergedData[StorageKeys.SNIPPETS])
 			return;
+
+		if (action === 'merge') {
+			if (mergedData[StorageKeys.SNIPPETS] !== undefined) {
+				const currentSnippets =
+					(this.plugin.settingsService.getEffectiveLockerSettings(deviceId)[
+						StorageKeys.SNIPPETS
+					] as string[]) || [];
+				const presetSnippets = mergedData[StorageKeys.SNIPPETS] as string[];
+				mergedData[StorageKeys.SNIPPETS] = Array.from(
+					new Set([...currentSnippets, ...presetSnippets])
+				);
+			}
+		}
 
 		await this.plugin.settingsService.identity.updateLockerSettings(
 			deviceId,
