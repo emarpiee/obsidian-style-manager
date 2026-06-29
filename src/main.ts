@@ -26,7 +26,6 @@ import { SettingsService } from './application/SettingsService';
 import { StyleBlockService } from './application/StyleBlockService';
 import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
-import './css/main.css';
 import { BoxOutlineTool } from './tools/BoxOutlineTool';
 import { CSSCompatibilityTool } from './tools/CSSCompatibilityTool';
 import { ColorContrastCheckerTool } from './tools/ColorContrastCheckerTool';
