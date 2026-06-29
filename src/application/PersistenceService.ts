@@ -1,27 +1,10 @@
-import { StyleManagerSettings } from '../types';
+import { StyleManagerSettings, PersistenceServiceOptions } from '../types';
 import { NotificationService } from './NotificationService';
 import { SharedStateService } from './SharedStateService';
 
 import { SharedStore } from '../infrastructure/storage/SharedStore';
 import { DataUtils } from '../utils/CommonUtils';
 import { Logger } from '../utils/Logger';
-
-export interface PersistenceServiceOptions {
-	sharedStore: SharedStore;
-	sharedStateService: SharedStateService;
-	notifications: NotificationService;
-	getDeviceId: () => string;
-	getDeviceName: () => string;
-	getSharedSettings: () => StyleManagerSettings;
-	setSharedSettings: (settings: StyleManagerSettings) => void;
-	getIsolateSettings: () => StyleManagerSettings;
-	getIsIsolateMode: () => boolean;
-	onDataLoaded: (
-		data: StyleManagerSettings,
-		isExternal: boolean,
-		force: boolean
-	) => Promise<void>;
-}
 
 /**
  * Service for managing settings persistence, sync, and lifecycle.

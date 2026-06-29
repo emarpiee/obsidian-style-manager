@@ -4,20 +4,11 @@ import {
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from '../constants';
-import { ParsedCSSSettings, StyleManagerSettings } from '../types';
+import { ParsedCSSSettings, StyleManagerSettings, StatsServiceOptions } from '../types';
 import { IsolateModeService } from './IsolateModeService';
 
 import { StyleSheetManager } from '../core/css/StyleSheetManager';
 import { StyleGenerator } from '../core/style/StyleGenerator';
-
-export interface StatsServiceOptions {
-	getSettings: () => StyleManagerSettings;
-	getSharedSettings: () => StyleManagerSettings;
-	isolateModeService: IsolateModeService;
-	styleGenerator: StyleGenerator;
-	styleSheetManager?: StyleSheetManager;
-	getSettingsList?: () => ParsedCSSSettings[];
-}
 
 /**
  * Service for calculating setting statistics and section metadata.

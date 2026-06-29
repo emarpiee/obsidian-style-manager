@@ -1,15 +1,9 @@
 import JSZip from 'jszip';
 
 import { SNIPPETS_KEY, THEME_KEY } from '../constants';
-import { Preset } from '../types';
+import { Preset, BundleData } from '../types';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
-
-export interface BundleData {
-	presets: Preset[];
-	snippets: { name: string; content: string }[];
-	themes?: { name: string; files: { filename: string; content: string }[] }[];
-}
 
 /**
  * Service for creating and extracting preset bundles (ZIP files).

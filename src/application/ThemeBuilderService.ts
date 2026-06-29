@@ -3,15 +3,7 @@ import { App, normalizePath } from 'obsidian';
 import { NotificationService } from './NotificationService';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
-
-export interface ThemeManifest {
-	name: string;
-	author: string;
-	version: string;
-	minAppVersion: string;
-	authorUrl?: string;
-	fundingUrl?: string | Record<string, string>;
-}
+import { ThemeManifest } from "../types";
 
 export class ThemeBuilderService {
 	constructor(

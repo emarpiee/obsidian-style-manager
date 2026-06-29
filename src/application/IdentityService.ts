@@ -7,35 +7,9 @@ import {
 import type StyleManagerPlugin from '../main';
 
 import { generateUuid } from '../utils/CommonUtils';
+import { DeviceLocker, IdentityStorageAdapter } from "../types";
 
 const DEVICE_ID_KEY = 'style-manager-device-id';
-
-export interface DeviceLocker {
-	name?: string;
-	isIsolateMode: boolean;
-	isolateSettings: Record<string, unknown>;
-}
-
-export interface IdentityStorageAdapter {
-	getDevices(): Record<string, DeviceLocker> | undefined;
-	setDevices(
-		devices: Record<
-			string,
-			{
-				name?: string;
-				isIsolateMode: boolean;
-				isolateSettings: Record<string, unknown>;
-			}
-		>
-	): void;
-	clearIsolateSettings(): void;
-	save(): Promise<void>;
-	reload(): Promise<void>;
-	updateMerged(): void;
-	rerenderAll(): void;
-	trigger(event: string): void;
-	getPlugin(): StyleManagerPlugin;
-}
 
 export class IdentityService {
 	public deviceId: string;

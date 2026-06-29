@@ -7,20 +7,7 @@ import {
 import type StyleManagerPlugin from '../main';
 
 import { settingRegExp } from '../utils/CommonUtils';
-
-/**
-	* Definition for an injectable style block.
-
- */
-export interface StyleBlockDefinition {
-	id: string;
-	label: string;
-	icon: string;
-	position: 'top' | 'bottom' | 'cursor';
-	allowDuplicates: boolean;
-	template: string;
-	group: 'meta' | 'field';
-}
+import { StyleBlockDefinition } from "../types";
 
 /**
  * Service for injecting pre-defined code blocks (@metadata, @settings) into CSS.

@@ -3,24 +3,7 @@ import { NotificationService } from './NotificationService';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
 import { Logger } from '../utils/Logger';
-
-export type AppearanceMode = 'light' | 'dark' | 'system' | string;
-
-/**
- * Deps injected by SettingsService to avoid circular references.
- */
-export interface ThemeServiceDeps {
-	bridge: ObsidianBridge;
-	isIsolateMode: () => boolean;
-	getSetting: (key: string) => unknown;
-	setSetting: (
-		key: string,
-		value: unknown,
-		options?: { silentUI?: boolean }
-	) => void;
-	triggerEvent: (name: string) => void;
-	notifications: NotificationService;
-}
+import { ThemeServiceDeps, AppearanceMode } from "../types";
 
 /**
  * Manages theme and appearance lifecycle, including:

@@ -1,19 +1,10 @@
 import StyleManagerPlugin from '../main';
-import { RefreshLevel } from '../types';
+import { RefreshLevel, SnippetServiceOptions } from '../types';
 
 import { CSSParser } from '../core/css/CSSParser';
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
 import { ViewManager } from '../ui/ViewManager';
 import { Logger } from '../utils/Logger';
-
-export interface SnippetServiceOptions {
-	plugin: StyleManagerPlugin;
-	bridge: ObsidianBridge;
-	viewManager: ViewManager;
-	getIsolateMode: () => boolean;
-	getLockerSettings: () => string[];
-	setLockerSettings: (snippets: string[]) => Promise<void>;
-}
 
 /**
  * Service for managing CSS snippets synchronization and application.

@@ -5,28 +5,12 @@ import {
 	THEME_KEY,
 } from '../constants';
 import type StyleManagerPlugin from '../main';
-import { RefreshLevel, StyleManagerSettings } from '../types';
+import { RefreshLevel, StyleManagerSettings, IsolateModeDelegate } from '../types';
 import { ThemeService } from './ThemeService';
 
 import type { StyleGenerator } from '../core/style/StyleGenerator';
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
 import type { ViewManager } from '../ui/ViewManager';
-
-export interface IsolateModeDelegate {
-	getSharedSettings(): StyleManagerSettings;
-	setSharedSettings(settings: StyleManagerSettings): void;
-	save(options?: { silent?: boolean }): Promise<void>;
-	updateMerged(): void;
-	applyTheme(themeName: string, persist: boolean): Promise<void>;
-	applyAppearance(mode: string, persist?: boolean): void;
-	applyAccentColor(color: string, persist?: boolean): void;
-	triggerGlobal(event: string): void;
-	themeService: ThemeService;
-	bridge: ObsidianBridge;
-	styleGenerator: StyleGenerator;
-	viewManager: ViewManager;
-	plugin: StyleManagerPlugin;
-}
 
 export class IsolateModeService {
 	private _isIsolateMode: boolean = false;

@@ -2,15 +2,7 @@ import JSZip from 'jszip';
 
 import { SNIPPETS_KEY, THEME_KEY } from '../constants';
 import StyleManagerPlugin from '../main';
-import { Preset } from '../types';
-
-export interface ImportAnalysis {
-	presets: Preset[];
-	snippets: { name: string; content: string }[];
-	themes: { name: string; files: { filename: string; content: string }[] }[];
-	conflicts: string[];
-	themeConflicts: string[];
-}
+import { Preset, ImportAnalysis } from '../types';
 
 export class PresetImportService {
 	constructor(private plugin: StyleManagerPlugin) {}
