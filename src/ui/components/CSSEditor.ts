@@ -36,7 +36,7 @@ import {
 	lineNumbers,
 	rectangularSelection,
 } from '@codemirror/view';
-import { Menu, Setting, setIcon, setTooltip } from 'obsidian';
+import { Menu, Setting, setIcon, setTooltip, Platform } from 'obsidian';
 import StyleManagerPlugin from '../../main';
 import { RefreshLevel } from '../../types';
 import { PreferencesKeys, StorageKeys } from "../../constants";
@@ -110,6 +110,8 @@ export class CSSEditor {
 
 		// Support right-click context menu for adding blocks
 		editorContainer.addEventListener('contextmenu', (e) => {
+			if (Platform.isMobile) return;
+
 			if (
 				(this.source.type === 'Snippet' || this.source.type === 'Theme') &&
 				!this.source.readOnly
