@@ -25,22 +25,46 @@ export class CSSEditorView extends ItemView {
 		state: Record<string, unknown>,
 		result: ViewStateResult
 	): Promise<void> {
-		super.setState(state, result);
-
+		// Set our internal state FIRST so getDisplayText() returns the right value
 		if (state && state.source) {
 			this.source = state.source as {
 				type: string;
 				id: string;
 				readOnly?: boolean;
 			};
+		}
+
+		// Let Obsidian handle its state updates
+		await super.setState(state, result);
+
+		// Now render the editor content
+		if (this.source) {
 			this.contentEl.empty();
 			this.contentEl.addClass('style-manager-editor-view');
 
 			await this.editor.render(this.contentEl, {
 				plugin: this.plugin,
-				source: this.source!,
+				source: this.source,
 				isView: true,
 			});
+
+			// Force update the tab title directly
+			const leafAny = this.leaf as any;
+			const newTitle = this.getDisplayText();
+			
+			if (leafAny.tabHeaderInnerTitleEl) {
+				leafAny.tabHeaderInnerTitleEl.innerText = newTitle;
+			}
+			if (leafAny.tabHeaderTitleEl) {
+				leafAny.tabHeaderTitleEl.innerText = newTitle;
+			}
+			// Update the header inside the view
+			if (this.containerEl) {
+				const headerTitle = this.containerEl.querySelector('.view-header-title');
+				if (headerTitle) {
+					headerTitle.textContent = newTitle;
+				}
+			}
 		}
 	}
 
@@ -66,7 +90,7 @@ export class CSSEditorView extends ItemView {
 	}
 
 	getIcon(): string {
-		return 'code'; // You can use a more appropriate icon if needed
+		return 'code';
 	}
 
 	getDisplayText(): string {
