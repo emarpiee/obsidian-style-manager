@@ -755,9 +755,20 @@ export default class StyleManagerPlugin extends Plugin {
 		id: string;
 		readOnly?: boolean;
 	}): Promise<void> {
-		this.deactivateCSSEditorView();
-		const leaf = this.app.workspace.getLeaf('tab');
+		const leaves = this.app.workspace.getLeavesOfType(cssEditorViewType);
+		for (const leaf of leaves) {
+			const state = leaf.view.getState();
+			if (
+				state.source &&
+				(state.source as any).type === source.type &&
+				(state.source as any).id === source.id
+			) {
+				this.app.workspace.setActiveLeaf(leaf, { focus: true });
+				return;
+			}
+		}
 
+		const leaf = this.app.workspace.getLeaf('tab');
 		await leaf.setViewState({
 			type: cssEditorViewType,
 			active: true,
