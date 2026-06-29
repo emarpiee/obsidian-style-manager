@@ -8,11 +8,10 @@ import {
 } from '../constants';
 
 import {
-	type DeviceLocker,
-	IdentityService,
-	IdentityStorageAdapter,
+	IdentityService
 } from '../application/IdentityService';
 import { generateUuid } from '../utils/CommonUtils';
+import { DeviceLocker, IdentityStorageAdapter } from "../types";
 
 vi.mock('../utils/CommonUtils', () => ({
 	generateUuid: vi.fn(),

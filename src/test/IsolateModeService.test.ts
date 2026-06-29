@@ -6,10 +6,9 @@ import {
 	SNIPPETS_KEY,
 	THEME_KEY,
 } from '../constants';
-import { RefreshLevel, type StyleManagerSettings } from '../types';
+import { RefreshLevel, type StyleManagerSettings, IsolateModeDelegate } from '../types';
 
 import {
-	type IsolateModeDelegate,
 	IsolateModeService,
 } from '../application/IsolateModeService';
 

@@ -1,11 +1,7 @@
 import { Plugin } from 'obsidian';
 
 import { Logger } from '../utils/Logger';
-
-interface UndocumentedApp {
-	isMobile: boolean;
-	emulateMobile: (toggle: boolean) => void;
-}
+import { UndocumentedApp } from "../types";
 
 export class MobileEmulationTool {
 	constructor(private plugin: Plugin) {}

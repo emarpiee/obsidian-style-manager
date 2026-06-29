@@ -3,8 +3,7 @@ import { App, Modal, Setting, displayTooltip } from 'obsidian';
 import { CSSEditorModal } from './CSSEditorModal';
 
 import {
-	ThemeBuilderService,
-	ThemeManifest,
+	ThemeBuilderService
 } from '../../application/ThemeBuilderService';
 import {
 	OPEN_IN_DEFAULT_APP_KEY,
@@ -17,6 +16,7 @@ import {
 	applyInvalidState,
 	clearInvalidState,
 } from '../../utils/ValidationUtils';
+import { ThemeManifest } from "../../types";
 
 export class ThemeManifestModal extends Modal {
 	private manifest: ThemeManifest;
