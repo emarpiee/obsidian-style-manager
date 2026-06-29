@@ -8,26 +8,7 @@ import {
 } from 'obsidian';
 
 import { Logger } from '../../utils/Logger';
-
-/** Typed shell for undocumented Obsidian internal APIs. */
-interface ObsidianCustomCss {
-	getSnippetPath?: (id: string) => string;
-	snippets?: string[];
-	enabledSnippets?: Set<string> | string[];
-	themes?: Record<string, unknown>;
-	setTheme?: (name: string, ...args: unknown[]) => void;
-	requestLoadSnippets?: () => void;
-	requestLoadTheme?: () => void;
-	getTheme?: () => string;
-	theme?: string;
-	setCssEnabledStatus?: (name: string, enabled: boolean) => void;
-	setSnippetEnabled?: (name: string, enabled: boolean) => void;
-}
-
-interface ObsidianInternalApp {
-	customCss: ObsidianCustomCss;
-	plugins: { manifests: Record<string, unknown> };
-}
+import { ObsidianCustomCss, ObsidianInternalApp } from "../../types";
 
 /**
  * ObsidianBridge acts as the Infrastructure Layer (Clean Architecture).

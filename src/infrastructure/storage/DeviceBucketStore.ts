@@ -1,12 +1,4 @@
-import { IStore } from './IStore';
-
-/**
- * Interface representing the structure of a device's isolated bucket.
- */
-export interface DeviceBucket {
-	isIsolateMode: boolean;
-	isolateSettings: Record<string, unknown>;
-}
+import { DeviceBucket, IStore } from "../../types";
 
 /**
  * Store implementation for device-specific isolated settings.

@@ -1,13 +1,7 @@
 import { normalizePath } from 'obsidian';
-
-import { IStore } from './IStore';
-
 import type StyleManagerPlugin from '../../main';
-import { StyleManagerSettings } from '../../types';
+import { StyleManagerSettings, PluginManifestWithDir, IStore } from '../../types';
 import { Logger } from '../../utils/Logger';
-
-/** Typed accessor for manifest.dir which is not in Obsidian's official types. */
-type PluginManifestWithDir = StyleManagerPlugin['manifest'] & { dir?: string };
 
 /**
  * Obsidian Shared implementation of IStore.
