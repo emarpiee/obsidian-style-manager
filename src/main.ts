@@ -760,8 +760,8 @@ export default class StyleManagerPlugin extends Plugin {
 			const state = leaf.view.getState();
 			if (
 				state.source &&
-				(state.source as any).type === source.type &&
-				(state.source as any).id === source.id
+				(state.source as Record<string, unknown>).type === source.type &&
+				(state.source as Record<string, unknown>).id === source.id
 			) {
 				this.app.workspace.setActiveLeaf(leaf, { focus: true });
 				return;
