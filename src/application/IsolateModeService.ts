@@ -1,10 +1,4 @@
-import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings, IsolateModeDelegate } from '../types';
-import { ThemeService } from './ThemeService';
-
-import type { StyleGenerator } from '../core/style/StyleGenerator';
-import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
-import type { ViewManager } from '../ui/ViewManager';
 import { StorageKeys } from "../constants";
 
 export class IsolateModeService {

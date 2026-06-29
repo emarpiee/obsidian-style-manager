@@ -1,8 +1,4 @@
-import { ParsedCSSSettings, StyleManagerSettings, StatsServiceOptions } from '../types';
-import { IsolateModeService } from './IsolateModeService';
-
-import { StyleSheetManager } from '../core/css/StyleSheetManager';
-import { StyleGenerator } from '../core/style/StyleGenerator';
+import { StatsServiceOptions } from '../types';
 import { StorageKeys } from "../constants";
 
 /**

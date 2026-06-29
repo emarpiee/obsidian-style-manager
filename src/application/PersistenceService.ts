@@ -1,8 +1,4 @@
 import { StyleManagerSettings, PersistenceServiceOptions } from '../types';
-import { NotificationService } from './NotificationService';
-import { SharedStateService } from './SharedStateService';
-
-import { SharedStore } from '../infrastructure/storage/SharedStore';
 import { DataUtils } from '../utils/CommonUtils';
 import { Logger } from '../utils/Logger';
 

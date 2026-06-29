@@ -1,6 +1,6 @@
 import JSZip from 'jszip';
 import StyleManagerPlugin from '../main';
-import { Preset, ImportAnalysis } from '../types';
+import { ImportAnalysis } from '../types';
 import { StorageKeys } from "../constants";
 
 export class PresetImportService {

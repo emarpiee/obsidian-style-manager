@@ -1,6 +1,3 @@
-import { NotificationService } from './NotificationService';
-
-import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
 import { Logger } from '../utils/Logger';
 import { ThemeServiceDeps, AppearanceMode } from "../types";
 import { StorageKeys } from "../constants";

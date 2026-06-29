@@ -1,9 +1,6 @@
-import StyleManagerPlugin from '../main';
 import { RefreshLevel, SnippetServiceOptions } from '../types';
 
 import { CSSParser } from '../core/css/CSSParser';
-import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
-import { ViewManager } from '../ui/ViewManager';
 import { Logger } from '../utils/Logger';
 
 /**

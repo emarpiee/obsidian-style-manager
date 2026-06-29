@@ -1,4 +1,3 @@
-import type StyleManagerPlugin from '../main';
 
 import { generateUuid } from '../utils/CommonUtils';
 import { DeviceLocker, IdentityStorageAdapter } from "../types";
