@@ -9,18 +9,6 @@ import {
 
 import { PresetItem } from './PresetItem';
 import { addApplyOptionsToMenu } from './PresetMenuHelper';
-
-import {
-	APPEARANCE_KEY,
-	BULK_PRESET_APPLY_ACTION_KEY,
-	EXPORT_DATE_FORMAT_KEY,
-	EXPORT_EXTENSION_KEY,
-	SEPARATE_BULK_PRESETS_KEY,
-	SKIP_DELETE_CONFIRM_KEY,
-	SKIP_EXPORT_CONFIRM_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { Preset } from '../../../types';
 import { getFormattedTimestamp } from '../../../utils/CommonUtils';
@@ -32,6 +20,7 @@ import { ActiveSchedulesModal } from '../../modals/ActiveSchedulesModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { CreatePresetModal } from '../../modals/CreatePresetModal';
 import { ImportPresetModal } from '../../modals/ImportPresetModal';
+import { StorageKeys, PreferencesKeys, ExportKeys, ConfirmKeys } from "../../../constants";
 
 export class PresetList {
 	private listContainer: HTMLElement;
@@ -230,7 +219,7 @@ export class PresetList {
 			);
 
 			const preferredExtension =
-				(plugin.settingsService.settings[EXPORT_EXTENSION_KEY] as string) ||
+				(plugin.settingsService.settings[ExportKeys.EXPORT_EXTENSION] as string) ||
 				'.json';
 
 			const performExport = async (includeSnippets = false): Promise<void> => {
@@ -240,7 +229,7 @@ export class PresetList {
 						: preferredExtension;
 
 					const timestamp = getFormattedTimestamp(
-						plugin.settingsService.settings[EXPORT_DATE_FORMAT_KEY] as string
+						plugin.settingsService.settings[ExportKeys.EXPORT_DATE_FORMAT] as string
 					);
 					const timestampPart = timestamp ? `-${timestamp}` : '';
 					const filename = `bulk-export-style-manager${timestampPart}${extension}`;
@@ -248,7 +237,7 @@ export class PresetList {
 					if (includeSnippets) {
 						const separatePresets =
 							(plugin.settingsService.settings[
-								SEPARATE_BULK_PRESETS_KEY
+								PreferencesKeys.SEPARATE_BULK_PRESETS
 							] as boolean) || false;
 						const data = await plugin.bundleService.createBundle(
 							presetsToExport,
@@ -274,9 +263,9 @@ export class PresetList {
 			const allSnippets = new Set<string>();
 			const allThemes = new Set<string>();
 			presetsToExport.forEach((p) => {
-				const snippets = (p.data[SNIPPETS_KEY] as string[]) || [];
+				const snippets = (p.data[StorageKeys.SNIPPETS] as string[]) || [];
 				snippets.forEach((s) => allSnippets.add(s));
-				const themeName = p.data[THEME_KEY] as string | undefined;
+				const themeName = p.data[StorageKeys.THEME] as string | undefined;
 				if (themeName && themeName !== 'default') {
 					allThemes.add(themeName);
 				}
@@ -304,7 +293,7 @@ export class PresetList {
 					() => performExport(false)
 				).open();
 			} else {
-				if (plugin.settingsService.settings[SKIP_EXPORT_CONFIRM_KEY]) {
+				if (plugin.settingsService.settings[ConfirmKeys.SKIP_EXPORT_CONFIRM]) {
 					performExport(false);
 				} else {
 					new ConfirmModal(
@@ -337,7 +326,7 @@ export class PresetList {
 					this.onRefresh();
 				};
 
-				if (plugin.settingsService.settings[SKIP_DELETE_CONFIRM_KEY]) {
+				if (plugin.settingsService.settings[ConfirmKeys.SKIP_DELETE_CONFIRM]) {
 					performDelete();
 				} else {
 					new ConfirmModal(
@@ -376,7 +365,7 @@ export class PresetList {
 					{ name: 'Bulk presets', data: {} },
 					{
 						skipConfirm: false,
-						applyActionKey: BULK_PRESET_APPLY_ACTION_KEY,
+						applyActionKey: PreferencesKeys.BULK_PRESET_APPLY_ACTION,
 						onApplyShared: async (action) => await applyAll(false, action),
 						onApplyIsolate: async (action) => await applyAll(true, action),
 						onApplyRemote: async (deviceId: string, action) => {
@@ -458,17 +447,17 @@ export class PresetList {
 			// 1. Check Tags (AND logic)
 			if (
 				themeMatch &&
-				!(p.data[THEME_KEY] as string | undefined)
+				!(p.data[StorageKeys.THEME] as string | undefined)
 					?.toLowerCase()
 					.includes(themeMatch[1])
 			)
 				return false;
 
-			if (isLight && p.data[APPEARANCE_KEY] !== 'light') return false;
-			if (isDark && p.data[APPEARANCE_KEY] !== 'dark') return false;
+			if (isLight && p.data[StorageKeys.APPEARANCE] !== 'light') return false;
+			if (isDark && p.data[StorageKeys.APPEARANCE] !== 'dark') return false;
 
 			if (snippetMatch) {
-				const snippets = (p.data[SNIPPETS_KEY] as string[]) || [];
+				const snippets = (p.data[StorageKeys.SNIPPETS] as string[]) || [];
 				if (!snippets.some((s) => s.toLowerCase().includes(snippetMatch[1])))
 					return false;
 			}

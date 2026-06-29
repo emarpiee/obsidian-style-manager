@@ -1,12 +1,6 @@
 import { App, ButtonComponent, Component, Setting, debounce } from 'obsidian';
 
 import { SnippetSettingComponent } from './SnippetSettingComponent';
-
-import {
-	OPEN_IN_DEFAULT_APP_KEY,
-	OPEN_MODAL_ON_CREATE_KEY,
-	SNIPPETS_KEY,
-} from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { Logger } from '../../../utils/Logger';
 import {
@@ -15,6 +9,7 @@ import {
 } from '../../../utils/UIUtils';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
+import { PreferencesKeys, StorageKeys } from "../../../constants";
 
 /**
  * Renders the Snippets tab: search, folder actions, and the list of snippets.
@@ -59,11 +54,11 @@ export class SnippetsTab {
 							await this.plugin.settingsService.snippetService.createSnippet();
 
 						const openModal =
-							this.plugin.settingsService.settings[OPEN_MODAL_ON_CREATE_KEY] !==
+							this.plugin.settingsService.settings[PreferencesKeys.OPEN_MODAL_ON_CREATE] !==
 							false;
 						if (openModal) {
 							const useDefaultApp =
-								localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
+								localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
 							if (useDefaultApp) {
 								const path =
 									this.plugin.settingsService.bridge.getSnippetPath(id);
@@ -309,7 +304,7 @@ export class SnippetsTab {
 
 	private async toggleAllSelected(): Promise<void> {
 		const lockerEnabled =
-			(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+			(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
 		const isEnabled = (id: string): boolean => lockerEnabled.includes(id);
 
 		// Determine target state: if any selected is disabled, enable all. Otherwise disable all.
@@ -328,7 +323,7 @@ export class SnippetsTab {
 		}
 
 		await this.plugin.settingsService.setSetting(
-			SNIPPETS_KEY,
+			StorageKeys.SNIPPETS,
 			Array.from(snippets),
 			{ silentUI: true }
 		);

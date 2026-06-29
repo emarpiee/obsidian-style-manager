@@ -1,14 +1,9 @@
-import {
-	ACCENT_COLOR_KEY,
-	APPEARANCE_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../constants';
 import { ParsedCSSSettings, StyleManagerSettings, StatsServiceOptions } from '../types';
 import { IsolateModeService } from './IsolateModeService';
 
 import { StyleSheetManager } from '../core/css/StyleSheetManager';
 import { StyleGenerator } from '../core/style/StyleGenerator';
+import { StorageKeys } from "../constants";
 
 /**
  * Service for calculating setting statistics and section metadata.
@@ -57,24 +52,24 @@ export class StatsService {
 			string,
 			{ id: string; count: number; isActive: boolean; keys: string[] }
 		> = {
-			__theme: { id: '__theme', count: 1, isActive: true, keys: [THEME_KEY] },
+			__theme: { id: '__theme', count: 1, isActive: true, keys: [StorageKeys.THEME] },
 			__appearance: {
 				id: '__appearance',
 				count: 1,
 				isActive: true,
-				keys: [APPEARANCE_KEY],
+				keys: [StorageKeys.APPEARANCE],
 			},
 			__accentColor: {
 				id: '__accentColor',
 				count: 1,
 				isActive: true,
-				keys: [ACCENT_COLOR_KEY],
+				keys: [StorageKeys.ACCENT_COLOR],
 			},
 			__snippets: {
 				id: '__snippets',
 				count: 0,
 				isActive: true,
-				keys: [SNIPPETS_KEY],
+				keys: [StorageKeys.SNIPPETS],
 			},
 		};
 
@@ -88,17 +83,17 @@ export class StatsService {
 				}
 				sections[sectionId].keys.push(key);
 			} else if (
-				key === THEME_KEY ||
-				key === APPEARANCE_KEY ||
-				key === ACCENT_COLOR_KEY ||
-				key === SNIPPETS_KEY
+				key === StorageKeys.THEME ||
+				key === StorageKeys.APPEARANCE ||
+				key === StorageKeys.ACCENT_COLOR ||
+				key === StorageKeys.SNIPPETS
 			) {
 				const sectionId =
-					key === THEME_KEY
+					key === StorageKeys.THEME
 						? '__theme'
-						: key === APPEARANCE_KEY
+						: key === StorageKeys.APPEARANCE
 							? '__appearance'
-							: key === ACCENT_COLOR_KEY
+							: key === StorageKeys.ACCENT_COLOR
 								? '__accentColor'
 								: '__snippets';
 				if (!sections[sectionId].keys.includes(key)) {
@@ -177,7 +172,7 @@ export class StatsService {
 	}> {
 		const sections = this.getRawSettingsSections();
 		const currentSettings = this.options.getSettings();
-		const currentAccent = currentSettings[ACCENT_COLOR_KEY] as string;
+		const currentAccent = currentSettings[StorageKeys.ACCENT_COLOR] as string;
 
 		return sections.map((s) => {
 			return {
@@ -185,13 +180,13 @@ export class StatsService {
 				accentColor: currentAccent,
 				value:
 					s.id === '__theme'
-						? (currentSettings[THEME_KEY] as string) || 'default'
+						? (currentSettings[StorageKeys.THEME] as string) || 'default'
 						: s.id === '__appearance'
-							? (currentSettings[APPEARANCE_KEY] as string) || 'system'
+							? (currentSettings[StorageKeys.APPEARANCE] as string) || 'system'
 							: s.id === '__accentColor'
-								? (currentSettings[ACCENT_COLOR_KEY] as string) || currentAccent
+								? (currentSettings[StorageKeys.ACCENT_COLOR] as string) || currentAccent
 								: s.id === '__snippets'
-									? (currentSettings[SNIPPETS_KEY] as string[]) || []
+									? (currentSettings[StorageKeys.SNIPPETS] as string[]) || []
 									: undefined,
 			};
 		});

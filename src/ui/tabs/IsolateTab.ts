@@ -1,12 +1,4 @@
 import { App, Menu, MenuItem, Setting } from 'obsidian';
-
-import {
-	ACCENT_COLOR_KEY,
-	ALWAYS_SHARED_PRESETS_KEY,
-	APPEARANCE_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { copyToClipboard } from '../../utils/UIUtils';
 import {
@@ -18,6 +10,7 @@ import {
 import { ConfirmModal } from '../modals/ConfirmModal';
 import { LockerPreviewModal } from '../modals/LockerPreviewModal';
 import { RenameModal } from '../modals/RenameModal';
+import { StorageKeys, PreferencesKeys } from "../../constants";
 
 /**
  * Renders the Isolate Mode tab — mode toggles, device identity management,
@@ -72,12 +65,12 @@ export class IsolateTab {
 				toggle
 					.setValue(
 						(plugin.settingsService.settings[
-							ALWAYS_SHARED_PRESETS_KEY
+							PreferencesKeys.ALWAYS_SHARED_PRESETS
 						] as boolean) ?? true
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSetting(
-							ALWAYS_SHARED_PRESETS_KEY,
+							PreferencesKeys.ALWAYS_SHARED_PRESETS,
 							val
 						);
 						plugin.presetService.targetView = 'auto';
@@ -195,8 +188,8 @@ export class IsolateTab {
 		allIds.forEach((id) => {
 			const isCurrent = id === currentId;
 			const locker = service.identity.getLockerData(id);
-			const theme = locker?.isolateSettings?.[THEME_KEY];
-			const appearance = locker?.isolateSettings?.[APPEARANCE_KEY];
+			const theme = locker?.isolateSettings?.[StorageKeys.THEME];
+			const appearance = locker?.isolateSettings?.[StorageKeys.APPEARANCE];
 			const keys = Object.keys(locker?.isolateSettings || {});
 			const count = service.countUniqueSettings(keys);
 			const name = service.identity.getLockerName(id);
@@ -299,7 +292,7 @@ export class IsolateTab {
 					metaRow,
 					plugin,
 					theme as string,
-					locker?.isolateSettings?.[ACCENT_COLOR_KEY] as string
+					locker?.isolateSettings?.[StorageKeys.ACCENT_COLOR] as string
 				);
 			}
 
@@ -310,7 +303,7 @@ export class IsolateTab {
 			renderSnippetBadge(
 				metaRow,
 				plugin,
-				locker?.isolateSettings?.[SNIPPETS_KEY] as string[]
+				locker?.isolateSettings?.[StorageKeys.SNIPPETS] as string[]
 			);
 
 			const idRow = descContainer.createDiv('style-manager-locker-id-row');

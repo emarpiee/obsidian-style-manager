@@ -1,13 +1,4 @@
 import { Command, Notice, Plugin, normalizePath } from 'obsidian';
-
-import {
-	ACCENT_COLOR_KEY,
-	APPEARANCE_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-	TOOL_BOX_OUTLINE_COLOR,
-	TOOL_FREEZE_DELAY,
-} from './constants';
 import {
 	ClassToggle,
 	ParseLogList,
@@ -60,6 +51,7 @@ import { LoremIpsumView, loremIpsumViewType } from './ui/views/LoremIpsumView';
 import { ReadmeView, readmeViewType } from './ui/views/ReadmeView';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
+import { StorageKeys, ToolKeys } from "./constants";
 
 export default class StyleManagerPlugin extends Plugin {
 	settingsService: SettingsService;
@@ -259,11 +251,11 @@ export default class StyleManagerPlugin extends Plugin {
 			name: 'Change CSS box outline color',
 			callback: () => {
 				const currentColor = (this.settingsService.getSetting(
-					TOOL_BOX_OUTLINE_COLOR
+					ToolKeys.TOOL_BOX_OUTLINE_COLOR
 				) ?? 'red') as string;
 				new BoxOutlineColorPromptModal(this.app, currentColor, (value) => {
 					if (value !== null) {
-						this.settingsService.setSetting(TOOL_BOX_OUTLINE_COLOR, value, {
+						this.settingsService.setSetting(ToolKeys.TOOL_BOX_OUTLINE_COLOR, value, {
 							silentUI: true,
 						});
 						this.boxOutlineTool.updateColor();
@@ -291,7 +283,7 @@ export default class StyleManagerPlugin extends Plugin {
 			callback: () => {
 				new FreezeDelayPromptModal(this.app, (value) => {
 					if (value !== null) {
-						this.settingsService.setSetting(TOOL_FREEZE_DELAY, value, {
+						this.settingsService.setSetting(ToolKeys.TOOL_FREEZE_DELAY, value, {
 							silentUI: true,
 						});
 						new Notice(`Freeze Obsidian delay set to ${value}s`);
@@ -372,7 +364,7 @@ export default class StyleManagerPlugin extends Plugin {
 						const currentEnabled =
 							this.settingsService.bridge.getEnabledSnippets();
 						const lockerEnabled =
-							(this.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+							(this.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
 
 						const currentString = JSON.stringify([...currentEnabled].sort());
 						const lockerString = JSON.stringify([...lockerEnabled].sort());
@@ -381,7 +373,7 @@ export default class StyleManagerPlugin extends Plugin {
 							Logger.log(
 								`Style Manager | Snippets: Adopting native snippet change (${isIsolate ? 'isolate' : 'shared'}).`
 							);
-							this.settingsService.setSetting(SNIPPETS_KEY, currentEnabled, {
+							this.settingsService.setSetting(StorageKeys.SNIPPETS, currentEnabled, {
 								silentUI: false,
 								target: isIsolate ? 'isolate' : 'shared',
 							});
@@ -394,7 +386,7 @@ export default class StyleManagerPlugin extends Plugin {
 					const currentTheme =
 						this.settingsService.bridge.getNativeConfig('cssTheme') || '';
 					const desiredTheme =
-						this.settingsService.settings[THEME_KEY] || 'default';
+						this.settingsService.settings[StorageKeys.THEME] || 'default';
 					const desiredNormalized =
 						desiredTheme === 'default' || !desiredTheme ? '' : desiredTheme;
 
@@ -558,17 +550,17 @@ export default class StyleManagerPlugin extends Plugin {
 		// Apply core identity settings
 		const persist = !this.settingsService.isIsolateMode();
 
-		const theme = settings[THEME_KEY];
+		const theme = settings[StorageKeys.THEME];
 		if (theme) {
 			await this.settingsService.applyTheme(theme as string, persist);
 		}
 
-		const appearance = settings[APPEARANCE_KEY];
+		const appearance = settings[StorageKeys.APPEARANCE];
 		if (appearance) {
 			this.settingsService.applyAppearance(appearance as string, persist);
 		}
 
-		const accent = settings[ACCENT_COLOR_KEY];
+		const accent = settings[StorageKeys.ACCENT_COLOR];
 		if (accent) {
 			this.settingsService.applyAccentColor(accent as string, persist);
 		}

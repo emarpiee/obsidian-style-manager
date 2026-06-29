@@ -1,9 +1,3 @@
-import {
-	ACCENT_COLOR_KEY,
-	APPEARANCE_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../constants';
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings, IsolateModeDelegate } from '../types';
 import { ThemeService } from './ThemeService';
@@ -11,6 +5,7 @@ import { ThemeService } from './ThemeService';
 import type { StyleGenerator } from '../core/style/StyleGenerator';
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
 import type { ViewManager } from '../ui/ViewManager';
+import { StorageKeys } from "../constants";
 
 export class IsolateModeService {
 	private _isIsolateMode: boolean = false;
@@ -58,23 +53,23 @@ export class IsolateModeService {
 		this.delegate.updateMerged();
 
 		const currentTheme =
-			this.delegate.plugin.settingsService.settings[THEME_KEY];
+			this.delegate.plugin.settingsService.settings[StorageKeys.THEME];
 		if (currentTheme)
 			this.delegate.applyTheme(currentTheme as string, !enabled);
 
 		const currentApp =
-			this.delegate.plugin.settingsService.settings[APPEARANCE_KEY];
+			this.delegate.plugin.settingsService.settings[StorageKeys.APPEARANCE];
 		if (currentApp)
 			this.delegate.applyAppearance(currentApp as string, !enabled);
 
 		const currentAccent =
-			this.delegate.plugin.settingsService.settings[ACCENT_COLOR_KEY];
+			this.delegate.plugin.settingsService.settings[StorageKeys.ACCENT_COLOR];
 		if (currentAccent)
 			this.delegate.applyAccentColor(currentAccent as string, !enabled);
 
 		const currentSnippets =
 			(this.delegate.plugin.settingsService.settings[
-				SNIPPETS_KEY
+				StorageKeys.SNIPPETS
 			] as string[]) || [];
 		await this.delegate.plugin.settingsService.applySnippets(
 			currentSnippets,
@@ -111,34 +106,34 @@ export class IsolateModeService {
 			Object.keys(sharedSettings).forEach((key) => {
 				if (
 					key.includes('@@') ||
-					key === THEME_KEY ||
-					key === APPEARANCE_KEY ||
-					key === SNIPPETS_KEY ||
-					key === ACCENT_COLOR_KEY
+					key === StorageKeys.THEME ||
+					key === StorageKeys.APPEARANCE ||
+					key === StorageKeys.SNIPPETS ||
+					key === StorageKeys.ACCENT_COLOR
 				) {
 					snapshot[key] = sharedSettings[key];
 				}
 			});
 
-			if (!snapshot[THEME_KEY]) {
+			if (!snapshot[StorageKeys.THEME]) {
 				const currentTheme =
 					this.delegate.bridge.getNativeConfig('cssTheme') || 'default';
-				snapshot[THEME_KEY] = currentTheme;
+				snapshot[StorageKeys.THEME] = currentTheme;
 			}
 
-			if (!snapshot[APPEARANCE_KEY]) {
+			if (!snapshot[StorageKeys.APPEARANCE]) {
 				const currentAppearance = this.delegate.bridge.getNativeConfig('theme');
-				snapshot[APPEARANCE_KEY] =
+				snapshot[StorageKeys.APPEARANCE] =
 					currentAppearance === 'moonstone' ? 'light' : 'dark';
 			}
 
-			if (!snapshot[ACCENT_COLOR_KEY]) {
-				snapshot[ACCENT_COLOR_KEY] =
+			if (!snapshot[StorageKeys.ACCENT_COLOR]) {
+				snapshot[StorageKeys.ACCENT_COLOR] =
 					this.delegate.bridge.getNativeConfig('accentColor') || '';
 			}
 
-			if (!snapshot[SNIPPETS_KEY]) {
-				snapshot[SNIPPETS_KEY] = this.delegate.bridge.getEnabledSnippets();
+			if (!snapshot[StorageKeys.SNIPPETS]) {
+				snapshot[StorageKeys.SNIPPETS] = this.delegate.bridge.getEnabledSnippets();
 			}
 		} finally {
 			this.delegate.themeService.isApplyingPersistentTheme = false;
@@ -164,26 +159,26 @@ export class IsolateModeService {
 	public async pushToShared(): Promise<void> {
 		this.delegate.themeService.isApplyingPersistentTheme = true;
 		try {
-			const localTheme = this._isolateSettings[THEME_KEY];
+			const localTheme = this._isolateSettings[StorageKeys.THEME];
 			if (localTheme) {
 				const targetTheme =
 					localTheme === 'default' || !localTheme ? '' : localTheme;
 				this.delegate.bridge.setNativeConfig('cssTheme', targetTheme);
 			}
 
-			const localAppearance = this._isolateSettings[APPEARANCE_KEY];
+			const localAppearance = this._isolateSettings[StorageKeys.APPEARANCE];
 			if (localAppearance) {
 				const targetTheme =
 					localAppearance === 'dark' ? 'obsidian' : 'moonstone';
 				this.delegate.bridge.setNativeConfig('theme', targetTheme);
 			}
 
-			const localAccent = this._isolateSettings[ACCENT_COLOR_KEY];
+			const localAccent = this._isolateSettings[StorageKeys.ACCENT_COLOR];
 			if (localAccent) {
 				this.delegate.bridge.setNativeConfig('accentColor', localAccent);
 			}
 
-			const localSnippets = this._isolateSettings[SNIPPETS_KEY];
+			const localSnippets = this._isolateSettings[StorageKeys.SNIPPETS];
 			if (Array.isArray(localSnippets)) {
 				this.delegate.bridge.setNativeConfig(
 					'enabledCssSnippets',

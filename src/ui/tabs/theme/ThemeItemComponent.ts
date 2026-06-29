@@ -1,11 +1,11 @@
 import { App, Component, Menu, Setting, setIcon } from 'obsidian';
-import { OPEN_IN_DEFAULT_APP_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { RenameModal } from '../../modals/RenameModal';
 import { ThemeManifestModal } from '../../modals/ThemeManifestModal';
 import { ThemeManifest } from "../../../types";
+import { PreferencesKeys } from "../../../constants";
 
 export class ThemeItemComponent extends Component {
 	private setting: Setting;
@@ -176,7 +176,7 @@ export class ThemeItemComponent extends Component {
 
 	private onEdit(): void {
 		const useDefaultApp =
-			localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
+			localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
 		if (useDefaultApp) {
 			const path = this.plugin.settingsService.bridge.getThemePath(
 				this.themeId

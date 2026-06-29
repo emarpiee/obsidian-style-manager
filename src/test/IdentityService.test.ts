@@ -1,17 +1,10 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-
-import {
-	ACCENT_COLOR_KEY,
-	APPEARANCE_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../constants';
-
 import {
 	IdentityService
 } from '../application/IdentityService';
 import { generateUuid } from '../utils/CommonUtils';
 import { DeviceLocker, IdentityStorageAdapter } from "../types";
+import { StorageKeys } from "../constants";
 
 vi.mock('../utils/CommonUtils', () => ({
 	generateUuid: vi.fn(),
@@ -160,7 +153,7 @@ describe('IdentityService', () => {
 					name: 'Dev 1',
 					isIsolateMode: true,
 					isolateSettings: {
-						[THEME_KEY]: 'old-theme',
+						[StorageKeys.THEME]: 'old-theme',
 						'custom@@key': 'keep-me',
 						other: 'remove-me',
 					},
@@ -171,13 +164,13 @@ describe('IdentityService', () => {
 
 			await service.updateLockerSettings(
 				'dev-1',
-				{ [THEME_KEY]: 'new-theme' },
+				{ [StorageKeys.THEME]: 'new-theme' },
 				true
 			);
 
 			expect(devices['dev-1'].isolateSettings).toEqual({
 				other: 'remove-me', // Note: updateLockerSettings only deletes keys that match the filter
-				[THEME_KEY]: 'new-theme',
+				[StorageKeys.THEME]: 'new-theme',
 			});
 			// Wait, let's check the implementation of updateLockerSettings
 			// 117: Object.keys(locker.isolateSettings).forEach((key) => {

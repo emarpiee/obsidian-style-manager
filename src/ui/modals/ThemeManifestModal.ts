@@ -5,10 +5,6 @@ import { CSSEditorModal } from './CSSEditorModal';
 import {
 	ThemeBuilderService
 } from '../../application/ThemeBuilderService';
-import {
-	OPEN_IN_DEFAULT_APP_KEY,
-	OPEN_MODAL_ON_CREATE_KEY,
-} from '../../constants';
 import StyleManagerPlugin from '../../main';
 import {
 	Validator,
@@ -17,6 +13,7 @@ import {
 	clearInvalidState,
 } from '../../utils/ValidationUtils';
 import { ThemeManifest } from "../../types";
+import { PreferencesKeys } from "../../constants";
 
 export class ThemeManifestModal extends Modal {
 	private manifest: ThemeManifest;
@@ -232,11 +229,11 @@ export class ThemeManifestModal extends Modal {
 
 								const openModal =
 									this.plugin.settingsService.settings[
-										OPEN_MODAL_ON_CREATE_KEY
+										PreferencesKeys.OPEN_MODAL_ON_CREATE
 									] !== false;
 								if (openModal) {
 									const useDefaultApp =
-										localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
+										localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
 									if (useDefaultApp) {
 										const path =
 											this.plugin.settingsService.bridge.getThemePath(themeId);

@@ -1,13 +1,9 @@
 import { EditorView } from '@codemirror/view';
-
-import {
-	SETTINGS_BLOCK_COMPONENT_SPACES_KEY,
-	SETTINGS_BLOCK_DASH_SPACES_KEY,
-} from '../constants';
 import type StyleManagerPlugin from '../main';
 
 import { settingRegExp } from '../utils/CommonUtils';
 import { StyleBlockDefinition } from "../types";
+import { PreferencesKeys } from "../constants";
 
 /**
  * Service for injecting pre-defined code blocks (@metadata, @settings) into CSS.
@@ -240,11 +236,11 @@ settings:
 	public getAvailableBlocks(): StyleBlockDefinition[] {
 		const dashCount =
 			(this.plugin.settingsService.getSetting(
-				SETTINGS_BLOCK_DASH_SPACES_KEY
+				PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
 			) as number) ?? 4;
 		const compCount =
 			(this.plugin.settingsService.getSetting(
-				SETTINGS_BLOCK_COMPONENT_SPACES_KEY
+				PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES
 			) as number) ?? 8;
 
 		const dashStr = ' '.repeat(dashCount) + '- ';
@@ -316,7 +312,7 @@ settings:
 					// Find all field starts within this block
 					const dashCount =
 						(this.plugin.settingsService.getSetting(
-							SETTINGS_BLOCK_DASH_SPACES_KEY
+							PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
 						) as number) ?? 4;
 					const fieldRegExp = new RegExp(`^ {${dashCount}}- `, 'gm');
 					let match;

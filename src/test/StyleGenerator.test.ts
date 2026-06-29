@@ -1,9 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import { STICKY_HEADING_KEY } from '../constants';
-
 import { StyleGenerator } from '../core/style/StyleGenerator';
 import { SettingType } from '../ui/components/base/types';
+import { PreferencesKeys } from "../constants";
 
 describe('StyleGenerator', () => {
 	let mockPlugin: any;
@@ -586,7 +584,7 @@ describe('StyleGenerator', () => {
 				value: 'sticky',
 			});
 
-			settingsStore[STICKY_HEADING_KEY] = false;
+			settingsStore[PreferencesKeys.STICKY_HEADING] = false;
 			const [varsOff] = generator.generateVariableArrays(
 				settingsStore,
 				{},

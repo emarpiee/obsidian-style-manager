@@ -1,20 +1,9 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import {
-	ACCENT_COLOR_KEY,
-	ALWAYS_SHARED_PRESETS_KEY,
-	APPEARANCE_KEY,
-	EXPORT_DATE_FORMAT_KEY,
-	EXPORT_EXTENSION_KEY,
-	EXPORT_PATH_KEY,
-	PRESET_APPLY_ACTION_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../constants';
 import { Preset } from '../types';
 
 import { PresetService } from '../application/PresetService';
 import { ConfirmModal } from '../ui/modals/ConfirmModal';
+import { StorageKeys, PreferencesKeys, ExportKeys } from "../constants";
 
 vi.mock('../ui/modals/ConfirmModal', () => {
 	return {
@@ -40,14 +29,14 @@ describe('PresetService', () => {
 		mockPlugin = {
 			settingsService: {
 				settings: {
-					[ALWAYS_SHARED_PRESETS_KEY]: false,
-					[EXPORT_DATE_FORMAT_KEY]: 'YYYYMMDD',
-					[EXPORT_PATH_KEY]: 'Exports',
-					[PRESET_APPLY_ACTION_KEY]: 'ask',
-					[THEME_KEY]: 'default-theme',
-					[APPEARANCE_KEY]: 'dark',
-					[SNIPPETS_KEY]: ['snippet1'],
-					[ACCENT_COLOR_KEY]: '#ff0000',
+					[PreferencesKeys.ALWAYS_SHARED_PRESETS]: false,
+					[ExportKeys.EXPORT_DATE_FORMAT]: 'YYYYMMDD',
+					[ExportKeys.EXPORT_PATH]: 'Exports',
+					[PreferencesKeys.PRESET_APPLY_ACTION]: 'ask',
+					[StorageKeys.THEME]: 'default-theme',
+					[StorageKeys.APPEARANCE]: 'dark',
+					[StorageKeys.SNIPPETS]: ['snippet1'],
+					[StorageKeys.ACCENT_COLOR]: '#ff0000',
 					'plugin@@setting1': 'value1',
 					'plugin@@setting2': 'value2',
 					'other@@setting1': 'value3',
@@ -122,7 +111,7 @@ describe('PresetService', () => {
 
 		it('should return shared when ALWAYS_SHARED_PRESETS_KEY is true regardless of isolate mode', () => {
 			presetService.targetView = 'auto';
-			mockPlugin.settingsService.settings[ALWAYS_SHARED_PRESETS_KEY] = true;
+			mockPlugin.settingsService.settings[PreferencesKeys.ALWAYS_SHARED_PRESETS] = true;
 			mockPlugin.settingsService.isIsolateMode.mockReturnValue(true);
 			expect(presetService.getEffectiveViewMode()).toBe('shared');
 		});
@@ -184,10 +173,10 @@ describe('PresetService', () => {
 			expect(data['plugin@@setting1']).toBe('value1');
 			expect(data['plugin@@setting2']).toBe('value2');
 			expect(data['other@@setting1']).toBe('value3');
-			expect(data[THEME_KEY]).toBe('default-theme');
-			expect(data[APPEARANCE_KEY]).toBe('dark');
-			expect(data[SNIPPETS_KEY]).toEqual(['snippet1']);
-			expect(data[ACCENT_COLOR_KEY]).toBe('#ff0000');
+			expect(data[StorageKeys.THEME]).toBe('default-theme');
+			expect(data[StorageKeys.APPEARANCE]).toBe('dark');
+			expect(data[StorageKeys.SNIPPETS]).toEqual(['snippet1']);
+			expect(data[StorageKeys.ACCENT_COLOR]).toBe('#ff0000');
 			expect(data['some-other-key']).toBeUndefined();
 		});
 
@@ -197,7 +186,7 @@ describe('PresetService', () => {
 			const call = mockPlugin.settingsService.setSettings.mock.calls[0][0];
 			const preset = call._manager_presets[0];
 			expect(preset.name).toBe('All Preset');
-			expect(preset.data[THEME_KEY]).toBe('default-theme');
+			expect(preset.data[StorageKeys.THEME]).toBe('default-theme');
 			expect(preset.targetedPrefixes).toBeUndefined();
 		});
 
@@ -209,7 +198,7 @@ describe('PresetService', () => {
 			const preset = call._manager_presets[0];
 			expect(preset.data['plugin@@setting1']).toBe('value1');
 			expect(preset.data['other@@setting1']).toBeUndefined();
-			expect(preset.data[THEME_KEY]).toBeUndefined();
+			expect(preset.data[StorageKeys.THEME]).toBeUndefined();
 			expect(preset.targetedPrefixes).toEqual(['plugin']);
 		});
 
@@ -220,8 +209,8 @@ describe('PresetService', () => {
 			]);
 			const call = mockPlugin.settingsService.setSettings.mock.calls[0][0];
 			const preset = call._manager_presets[0];
-			expect(preset.data[THEME_KEY]).toBe('default-theme');
-			expect(preset.data[APPEARANCE_KEY]).toBe('dark');
+			expect(preset.data[StorageKeys.THEME]).toBe('default-theme');
+			expect(preset.data[StorageKeys.APPEARANCE]).toBe('dark');
 			expect(preset.data['plugin@@setting1']).toBeUndefined();
 		});
 	});
@@ -247,7 +236,7 @@ describe('PresetService', () => {
 		});
 
 		it('should use custom extension from settings', async () => {
-			mockPlugin.settingsService.settings[EXPORT_EXTENSION_KEY] = '.txt';
+			mockPlugin.settingsService.settings[ExportKeys.EXPORT_EXTENSION] = '.txt';
 			await presetService.saveFileToVault('my-preset', 'content');
 			expect(mockPlugin.settingsService.bridge.createFile).toHaveBeenCalledWith(
 				'Exports/my-preset.txt',
@@ -273,13 +262,13 @@ describe('PresetService', () => {
 			id: '1',
 			name: 'P1',
 			created: 100,
-			data: { a: 1, [SNIPPETS_KEY]: ['s1'] },
+			data: { a: 1, [StorageKeys.SNIPPETS]: ['s1'] },
 		};
 		const preset2: Preset = {
 			id: '2',
 			name: 'P2',
 			created: 200,
-			data: { b: 2, [SNIPPETS_KEY]: ['s2'] },
+			data: { b: 2, [StorageKeys.SNIPPETS]: ['s2'] },
 		};
 
 		beforeEach(() => {
@@ -294,7 +283,7 @@ describe('PresetService', () => {
 			expect(
 				mockPlugin.settingsService.applySettingsOverlay
 			).toHaveBeenCalledWith(
-				expect.objectContaining({ a: 1, b: 2, [SNIPPETS_KEY]: ['s1', 's2'] }),
+				expect.objectContaining({ a: 1, b: 2, [StorageKeys.SNIPPETS]: ['s1', 's2'] }),
 				false
 			);
 		});
@@ -326,7 +315,7 @@ describe('PresetService', () => {
 			await presetService.applyPresets(['1', '2'], false);
 			const mergedData =
 				mockPlugin.settingsService.applySettingsOverlay.mock.calls[0][0];
-			expect(mergedData[SNIPPETS_KEY]).toEqual(['s1']);
+			expect(mergedData[StorageKeys.SNIPPETS]).toEqual(['s1']);
 		});
 
 		it('should apply to locker when requested with action "overwrite"', async () => {
@@ -391,8 +380,8 @@ describe('PresetService', () => {
 		});
 
 		it('should handle fallback for appearance and accent color', () => {
-			mockPlugin.settingsService.settings[APPEARANCE_KEY] = 'system';
-			mockPlugin.settingsService.settings[ACCENT_COLOR_KEY] = '';
+			mockPlugin.settingsService.settings[StorageKeys.APPEARANCE] = 'system';
+			mockPlugin.settingsService.settings[StorageKeys.ACCENT_COLOR] = '';
 
 			// Mock document.body for appearance fallback
 			document.body.classList.add('theme-dark');
@@ -421,7 +410,7 @@ describe('PresetService', () => {
 
 	describe('Confirmation', () => {
 		it('should call onConfirm immediately with overwrite if PRESET_APPLY_ACTION_KEY is overwrite', () => {
-			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] =
+			mockPlugin.settingsService.settings[PreferencesKeys.PRESET_APPLY_ACTION] =
 				'overwrite';
 			const onConfirm = vi.fn();
 			presetService.confirmApply('Preset', onConfirm);
@@ -429,14 +418,14 @@ describe('PresetService', () => {
 		});
 
 		it('should call onConfirm immediately with merge if PRESET_APPLY_ACTION_KEY is merge', () => {
-			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'merge';
+			mockPlugin.settingsService.settings[PreferencesKeys.PRESET_APPLY_ACTION] = 'merge';
 			const onConfirm = vi.fn();
 			presetService.confirmApply('Preset', onConfirm);
 			expect(onConfirm).toHaveBeenCalledWith('merge');
 		});
 
 		it('should open ConfirmModal with correct text for target "shared"', () => {
-			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			mockPlugin.settingsService.settings[PreferencesKeys.PRESET_APPLY_ACTION] = 'ask';
 			const onConfirm = vi.fn();
 			presetService.confirmApply('My Preset', onConfirm, 'shared');
 			expect(ConfirmModal).toHaveBeenCalledWith(
@@ -454,7 +443,7 @@ describe('PresetService', () => {
 		});
 
 		it('should open ConfirmModal with correct text for target "isolate"', () => {
-			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			mockPlugin.settingsService.settings[PreferencesKeys.PRESET_APPLY_ACTION] = 'ask';
 			const onConfirm = vi.fn();
 			presetService.confirmApply('My Preset', onConfirm, 'isolate');
 			expect(ConfirmModal).toHaveBeenCalledWith(
@@ -470,13 +459,13 @@ describe('PresetService', () => {
 		});
 
 		it('should open ConfirmModal with correct text for target "remote" with device name', () => {
-			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			mockPlugin.settingsService.settings[PreferencesKeys.PRESET_APPLY_ACTION] = 'ask';
 			const onConfirm = vi.fn();
 			presetService.confirmApply(
 				'My Preset',
 				onConfirm,
 				'remote',
-				PRESET_APPLY_ACTION_KEY,
+				PreferencesKeys.PRESET_APPLY_ACTION,
 				'My MacBook'
 			);
 			expect(ConfirmModal).toHaveBeenCalledWith(
@@ -492,7 +481,7 @@ describe('PresetService', () => {
 		});
 
 		it('should open ConfirmModal with correct text for target "remote" without device name', () => {
-			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			mockPlugin.settingsService.settings[PreferencesKeys.PRESET_APPLY_ACTION] = 'ask';
 			const onConfirm = vi.fn();
 			presetService.confirmApply('My Preset', onConfirm, 'remote');
 			expect(ConfirmModal).toHaveBeenCalledWith(
@@ -510,7 +499,7 @@ describe('PresetService', () => {
 		});
 
 		it('should use bulk description when applyActionKey is not PRESET_APPLY_ACTION_KEY', () => {
-			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			mockPlugin.settingsService.settings[PreferencesKeys.PRESET_APPLY_ACTION] = 'ask';
 			const onConfirm = vi.fn();
 			presetService.confirmApply(
 				'My Preset',
@@ -545,7 +534,7 @@ describe('PresetService', () => {
 		});
 
 		it('should open ConfirmModal if PRESET_APPLY_ACTION_KEY is ask', () => {
-			mockPlugin.settingsService.settings[PRESET_APPLY_ACTION_KEY] = 'ask';
+			mockPlugin.settingsService.settings[PreferencesKeys.PRESET_APPLY_ACTION] = 'ask';
 			const onConfirm = vi.fn();
 			presetService.confirmApply('Preset', onConfirm);
 			expect(onConfirm).not.toHaveBeenCalled();

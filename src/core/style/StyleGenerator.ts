@@ -19,8 +19,6 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import chroma from 'chroma-js';
-
-import { STICKY_HEADING_KEY } from '../../constants';
 import { ObsidianBridge } from '../../infrastructure/bridge/ObsidianBridge';
 import type StyleManagerPlugin from '../../main';
 import {
@@ -37,6 +35,7 @@ import {
 	VariableText,
 	VariableThemedColor, ColorFormat, AltFormatList } from '../../types';
 import { SettingType } from '../../ui/components/base/types';
+import { PreferencesKeys } from "../../constants";
 
 /**
  * Core Engine for generating CSS variables and managing DOM classes.
@@ -252,7 +251,7 @@ export class StyleGenerator {
 		const themedLight: VariableKV = [];
 		const themedDark: VariableKV = [];
 
-		const stickyHeading = settings[STICKY_HEADING_KEY] !== false;
+		const stickyHeading = settings[PreferencesKeys.STICKY_HEADING] !== false;
 		vars.push({
 			key: 'sm-style-heading-position',
 			value: stickyHeading ? 'sticky' : 'static',

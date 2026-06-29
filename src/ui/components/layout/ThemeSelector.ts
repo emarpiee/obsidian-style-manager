@@ -1,8 +1,7 @@
 import { setIcon, setTooltip } from 'obsidian';
-
-import { THEME_KEY } from '../../../application/SettingsService';
 import StyleManagerPlugin from '../../../main';
 import { ThemeOption, ThemeSuggestModal } from '../../modals/ThemeSuggestModal';
+import { StorageKeys } from "../../../constants";
 
 export function renderThemeSelect(
 	plugin: StyleManagerPlugin,
@@ -10,7 +9,7 @@ export function renderThemeSelect(
 	onDone: () => void
 ): void {
 	const currentValue =
-		(plugin.settingsService.getSetting(THEME_KEY) as string) || 'default';
+		(plugin.settingsService.getSetting(StorageKeys.THEME) as string) || 'default';
 	const currentThemeName =
 		currentValue === 'default' ? 'Default' : currentValue;
 

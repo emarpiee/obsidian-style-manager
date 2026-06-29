@@ -1,12 +1,5 @@
 import { Notice } from 'obsidian';
-
-import {
-	SHOW_ISOLATE_NOTIFICATIONS_KEY,
-	SHOW_PRESET_NOTIFICATIONS_KEY,
-	SHOW_SHARED_NOTIFICATIONS_KEY,
-	SHOW_SNIPPET_NOTIFICATIONS_KEY,
-	SHOW_UTILITY_NOTIFICATIONS_KEY,
-} from '../constants';
+import { NotificationKeys } from "../constants";
 
 export enum NotificationType {
 	SHARED = 'shared',
@@ -38,19 +31,19 @@ export class NotificationService {
 
 		switch (type) {
 			case NotificationType.SHARED:
-				show = settings[SHOW_SHARED_NOTIFICATIONS_KEY] === true; // Default OFF
+				show = settings[NotificationKeys.SHOW_SHARED_NOTIFICATIONS] === true; // Default OFF
 				break;
 			case NotificationType.PRESET:
-				show = settings[SHOW_PRESET_NOTIFICATIONS_KEY] !== false; // Default ON
+				show = settings[NotificationKeys.SHOW_PRESET_NOTIFICATIONS] !== false; // Default ON
 				break;
 			case NotificationType.ISOLATE:
-				show = settings[SHOW_ISOLATE_NOTIFICATIONS_KEY] !== false; // Default ON
+				show = settings[NotificationKeys.SHOW_ISOLATE_NOTIFICATIONS] !== false; // Default ON
 				break;
 			case NotificationType.SNIPPET:
-				show = settings[SHOW_SNIPPET_NOTIFICATIONS_KEY] !== false; // Default ON
+				show = settings[NotificationKeys.SHOW_SNIPPET_NOTIFICATIONS] !== false; // Default ON
 				break;
 			case NotificationType.UTILITY:
-				show = settings[SHOW_UTILITY_NOTIFICATIONS_KEY] !== false; // Default ON
+				show = settings[NotificationKeys.SHOW_UTILITY_NOTIFICATIONS] !== false; // Default ON
 				break;
 			case NotificationType.ERROR:
 				show = true; // Always show errors

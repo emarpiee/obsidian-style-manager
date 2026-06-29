@@ -1,7 +1,6 @@
 import { Notice } from 'obsidian';
-
-import { TOOL_FREEZE_DELAY } from '../constants';
 import type StyleManagerPlugin from '../main';
+import { ToolKeys } from "../constants";
 
 declare const electronWindow: {
 	openDevTools: () => void;
@@ -13,7 +12,7 @@ export class FreezeObsidianTool {
 
 	freeze(delay?: number): void {
 		const finalDelay = (delay ??
-			this.plugin.settingsService.settings[TOOL_FREEZE_DELAY] ??
+			this.plugin.settingsService.settings[ToolKeys.TOOL_FREEZE_DELAY] ??
 			4) as number;
 
 		const freezeNotice = new Notice(

@@ -1,9 +1,9 @@
-import { ACCENT_COLOR_KEY, APPEARANCE_KEY, THEME_KEY } from '../constants';
 import { NotificationService } from './NotificationService';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
 import { Logger } from '../utils/Logger';
 import { ThemeServiceDeps, AppearanceMode } from "../types";
+import { StorageKeys } from "../constants";
 
 /**
  * Manages theme and appearance lifecycle, including:
@@ -221,7 +221,7 @@ export class ThemeService {
 		const rawNativeTheme = (this.deps.bridge.getActiveTheme() || '').trim();
 		const nativeTheme = rawNativeTheme || 'default';
 		const ourTheme =
-			((getSettingValue(THEME_KEY) as string) || '').trim() || 'default';
+			((getSettingValue(StorageKeys.THEME) as string) || '').trim() || 'default';
 
 		// Blank-Native Guard: SM clears the native theme as part of its CSS injection strategy.
 		// After that, getActiveTheme() returns 'default'. If we have a real stored preference,
@@ -233,18 +233,18 @@ export class ThemeService {
 			Logger.log(
 				`Style Manager | Adopting native theme: ${nativeTheme} (was ${ourTheme})`
 			);
-			setSettingValue(THEME_KEY, nativeTheme);
+			setSettingValue(StorageKeys.THEME, nativeTheme);
 			modified = true;
 		}
 
 		const nativeAppearance = this.deps.bridge.getActiveAppearance();
-		const ourAppearance = getSettingValue(APPEARANCE_KEY);
+		const ourAppearance = getSettingValue(StorageKeys.APPEARANCE);
 
 		if (ourAppearance !== nativeAppearance) {
 			Logger.log(
 				`Style Manager | Adopting native appearance: ${nativeAppearance} (was ${ourAppearance})`
 			);
-			setSettingValue(APPEARANCE_KEY, nativeAppearance);
+			setSettingValue(StorageKeys.APPEARANCE, nativeAppearance);
 			modified = true;
 		}
 
@@ -252,14 +252,14 @@ export class ThemeService {
 			(this.deps.bridge.getNativeConfig('accentColor') as string) || ''
 		).toLowerCase();
 		const ourAccent = (
-			(getSettingValue(ACCENT_COLOR_KEY) as string) || ''
+			(getSettingValue(StorageKeys.ACCENT_COLOR) as string) || ''
 		).toLowerCase();
 
 		if (nativeAccent && ourAccent !== nativeAccent) {
 			Logger.log(
 				`Style Manager | Adopting native accent color: ${nativeAccent} (was ${ourAccent})`
 			);
-			setSettingValue(ACCENT_COLOR_KEY, nativeAccent);
+			setSettingValue(StorageKeys.ACCENT_COLOR, nativeAccent);
 			modified = true;
 		}
 
@@ -269,23 +269,23 @@ export class ThemeService {
 	/** Installs monkey-patches on vault.getConfig/setConfig and customCss.setTheme. */
 	installPatches(): void {
 		this.deps.bridge.installPatches(
-			() => (this.deps.getSetting(THEME_KEY) as string) || '',
+			() => (this.deps.getSetting(StorageKeys.THEME) as string) || '',
 			(theme: string) =>
-				this.deps.setSetting(THEME_KEY, theme, { silentUI: true }),
+				this.deps.setSetting(StorageKeys.THEME, theme, { silentUI: true }),
 			() => {
-				const appearance = this.deps.getSetting(APPEARANCE_KEY) as string;
+				const appearance = this.deps.getSetting(StorageKeys.APPEARANCE) as string;
 				if (appearance && appearance !== 'system')
 					return appearance === 'dark' ? 'obsidian' : 'moonstone';
 				return this.deps.bridge.getNativeConfig('theme') as string;
 			},
 			(appearance: string) => {
 				const val = appearance === 'obsidian' ? 'dark' : 'light';
-				this.deps.setSetting(APPEARANCE_KEY, val, { silentUI: true });
+				this.deps.setSetting(StorageKeys.APPEARANCE, val, { silentUI: true });
 				this.applyAppearance(val);
 			},
-			() => (this.deps.getSetting(ACCENT_COLOR_KEY) as string) || '',
+			() => (this.deps.getSetting(StorageKeys.ACCENT_COLOR) as string) || '',
 			(color: string) => {
-				this.deps.setSetting(ACCENT_COLOR_KEY, color, { silentUI: true });
+				this.deps.setSetting(StorageKeys.ACCENT_COLOR, color, { silentUI: true });
 				this.applyAccentColor(color);
 			},
 			() => this.isApplyingPersistentTheme,

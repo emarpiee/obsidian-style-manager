@@ -1,9 +1,8 @@
 import JSZip from 'jszip';
 import { normalizePath } from 'obsidian';
-
-import { BACKUP_PATH_KEY, EXPORT_EXTENSION_KEY } from '../constants';
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
+import { BackupKeys, ExportKeys } from "../constants";
 
 /**
  * Service for managing full plugin backups, safety snapshots, and loop-free restores.
@@ -47,7 +46,7 @@ export class BackupService {
 		const zip = new JSZip();
 		const settings = this.plugin.settingsService.sharedSettings;
 		const preferredExtension =
-			(this.plugin.settingsService.settings[EXPORT_EXTENSION_KEY] as string) ||
+			(this.plugin.settingsService.settings[ExportKeys.EXPORT_EXTENSION] as string) ||
 			'.json';
 
 		// 1. Add settings file (using a unique name for Shared Locker Backups)
@@ -334,7 +333,7 @@ export class BackupService {
 		const settings = this.plugin.settingsService.settings;
 
 		// Resolve backup path from backup-specific key only; empty = vault root
-		let backupPath = (settings[BACKUP_PATH_KEY] as string) || '';
+		let backupPath = (settings[BackupKeys.BACKUP_PATH] as string) || '';
 
 		if (backupPath && !backupPath.endsWith('/')) {
 			backupPath += '/';

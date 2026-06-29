@@ -1,9 +1,8 @@
 import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
 import { Menu, setTooltip } from 'obsidian';
-
-import { ACCENT_COLOR_KEY } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { getColorPickerConfig } from '../../../utils/ColorUtils';
+import { StorageKeys } from "../../../constants";
 
 /**
  * Renders the accent color selector circle in the main toolbar.
@@ -15,7 +14,7 @@ export function renderAccentColorSelect(
 	onRerender: () => void
 ): void {
 	const accentColor =
-		(plugin.settingsService.getSetting(ACCENT_COLOR_KEY) as string) || '';
+		(plugin.settingsService.getSetting(StorageKeys.ACCENT_COLOR) as string) || '';
 	const vConfigAccent = plugin.settingsService.bridge.getNativeConfig(
 		'accentColor'
 	) as string;
@@ -51,7 +50,7 @@ export function renderAccentColorSelect(
 
 	pickr.on('pick', async (color) => {
 		const hexValue = color ? color.string('hex').toUpperCase() : '';
-		await plugin.settingsService.setSetting(ACCENT_COLOR_KEY, hexValue, {
+		await plugin.settingsService.setSetting(StorageKeys.ACCENT_COLOR, hexValue, {
 			silentUI: true,
 		});
 		// Visual application is handled by the setSetting -> applyAccentColor flow
@@ -69,7 +68,7 @@ export function renderAccentColorSelect(
 				.setIcon('rotate-ccw')
 				.onClick(async () => {
 					// Explicitly set to #8a5cf5 to ensure the setting persists for all UI components
-					await plugin.settingsService.setSetting(ACCENT_COLOR_KEY, '#8a5cf5', {
+					await plugin.settingsService.setSetting(StorageKeys.ACCENT_COLOR, '#8a5cf5', {
 						silentUI: true,
 					});
 					plugin.settingsService.applyAccentColor('#8a5cf5');

@@ -1,5 +1,5 @@
-import { TOOL_BOX_OUTLINE_COLOR } from '../constants';
 import type StyleManagerPlugin from '../main';
+import { ToolKeys } from "../constants";
 
 export class BoxOutlineTool {
 	private styleEl: HTMLElement | undefined;
@@ -12,7 +12,7 @@ export class BoxOutlineTool {
 
 		if (!currentCSS) {
 			const color =
-				this.plugin.settingsService.settings[TOOL_BOX_OUTLINE_COLOR] ?? 'red';
+				this.plugin.settingsService.settings[ToolKeys.TOOL_BOX_OUTLINE_COLOR] ?? 'red';
 			cssToApply = `* {outline: ${color} 1px solid !important}`;
 			this.styleEl = document.createElement('style');
 			this.styleEl.setAttribute('type', 'text/css');
@@ -31,7 +31,7 @@ export class BoxOutlineTool {
 	updateColor(): void {
 		if (this.styleEl && this.styleEl.textContent) {
 			const color =
-				this.plugin.settingsService.settings[TOOL_BOX_OUTLINE_COLOR] ?? 'red';
+				this.plugin.settingsService.settings[ToolKeys.TOOL_BOX_OUTLINE_COLOR] ?? 'red';
 			this.styleEl.textContent = `* {outline: ${color} 1px solid !important}`;
 			this.plugin.app.workspace.trigger('css-change');
 		}

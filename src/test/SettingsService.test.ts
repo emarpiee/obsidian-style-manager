@@ -1,18 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import {
-	ACCENT_COLOR_KEY,
-	APPEARANCE_KEY,
-	ENABLE_CONSOLE_LOGGING_KEY,
-	EXPORT_PATH_KEY,
-	SHOW_STATUS_BAR_KEY,
-	SNIPPETS_KEY,
-	STICKY_HEADING_KEY,
-	THEME_KEY,
-} from '../constants';
 import { RefreshLevel } from '../types';
 
 import { SettingsService } from '../application/SettingsService';
+import { StorageKeys, PreferencesKeys, ExportKeys } from "../constants";
 
 describe('SettingsService', () => {
 	let settingsService: SettingsService;
@@ -133,7 +123,7 @@ describe('SettingsService', () => {
 
 		it('should route global config to sharedSettings regardless of isolate mode', async () => {
 			await settingsService.isolateModeService.setIsolateMode(true);
-			const key = EXPORT_PATH_KEY;
+			const key = ExportKeys.EXPORT_PATH;
 			const val = 'Exports';
 
 			await settingsService.setSettings({ [key]: val });
@@ -234,7 +224,7 @@ describe('SettingsService', () => {
 				},
 			};
 
-			await settingsService.clearSetting(undefined, THEME_KEY);
+			await settingsService.clearSetting(undefined, StorageKeys.THEME);
 			(settingsService as any).updateMerged();
 
 			// Mock the bridge to return 'default' for the theme
@@ -248,7 +238,7 @@ describe('SettingsService', () => {
 
 			expect(
 				settingsService.getEffectiveLockerSettings(settingsService.deviceId)[
-					THEME_KEY
+					StorageKeys.THEME
 				]
 			).toBe('default');
 		});
@@ -262,7 +252,7 @@ describe('SettingsService', () => {
 				},
 			};
 
-			await settingsService.clearSetting(undefined, APPEARANCE_KEY);
+			await settingsService.clearSetting(undefined, StorageKeys.APPEARANCE);
 			(settingsService as any).updateMerged();
 
 			vi.mocked(mockPlugin.app.vault.getConfig).mockImplementation(
@@ -274,11 +264,11 @@ describe('SettingsService', () => {
 
 			expect(
 				settingsService.getEffectiveLockerSettings(settingsService.deviceId)[
-					APPEARANCE_KEY
+					StorageKeys.APPEARANCE
 				]
 			).toBe('light');
 
-			await settingsService.clearSetting(undefined, ACCENT_COLOR_KEY);
+			await settingsService.clearSetting(undefined, StorageKeys.ACCENT_COLOR);
 			(settingsService as any).updateMerged();
 
 			vi.mocked(mockPlugin.app.vault.getConfig).mockImplementation(
@@ -290,11 +280,11 @@ describe('SettingsService', () => {
 
 			expect(
 				settingsService.getEffectiveLockerSettings(settingsService.deviceId)[
-					ACCENT_COLOR_KEY
+					StorageKeys.ACCENT_COLOR
 				]
 			).toBe('');
 
-			await settingsService.clearSetting(undefined, SNIPPETS_KEY);
+			await settingsService.clearSetting(undefined, StorageKeys.SNIPPETS);
 			(settingsService as any).updateMerged();
 
 			// Mock Obsidian internal customCss.enabledSnippets
@@ -302,7 +292,7 @@ describe('SettingsService', () => {
 
 			expect(
 				settingsService.getEffectiveLockerSettings(settingsService.deviceId)[
-					SNIPPETS_KEY
+					StorageKeys.SNIPPETS
 				]
 			).toEqual(['snippet1']);
 		});
@@ -322,10 +312,10 @@ describe('SettingsService', () => {
 				'__accentColor',
 				'__snippets',
 			]);
-			expect(settingsService.sharedSettings[THEME_KEY]).toBe('default');
-			expect(settingsService.sharedSettings[APPEARANCE_KEY]).toBe('light');
-			expect(settingsService.sharedSettings[ACCENT_COLOR_KEY]).toBe('#8a5cf5');
-			expect(settingsService.sharedSettings[SNIPPETS_KEY]).toEqual([]);
+			expect(settingsService.sharedSettings[StorageKeys.THEME]).toBe('default');
+			expect(settingsService.sharedSettings[StorageKeys.APPEARANCE]).toBe('light');
+			expect(settingsService.sharedSettings[StorageKeys.ACCENT_COLOR]).toBe('#8a5cf5');
+			expect(settingsService.sharedSettings[StorageKeys.SNIPPETS]).toEqual([]);
 			expect(settingsService.notifications.notify).toHaveBeenCalled();
 		});
 
@@ -338,14 +328,14 @@ describe('SettingsService', () => {
 		});
 
 		it('should restore defaults when resetting core keys', async () => {
-			settingsService.sharedSettings[THEME_KEY] = 'custom';
+			settingsService.sharedSettings[StorageKeys.THEME] = 'custom';
 
 			const applyThemeSpy = vi.spyOn(settingsService, 'applyTheme');
 
 			// We must create a setting that matches the pattern ${sectionId}@@${id}
 			// to make modified = true, so that the core key matched block is executed.
-			settingsService.sharedSettings[`${THEME_KEY}@@some`] = 'val';
-			await settingsService.resetSettings(THEME_KEY, ['some']);
+			settingsService.sharedSettings[`${StorageKeys.THEME}@@some`] = 'val';
+			await settingsService.resetSettings(StorageKeys.THEME, ['some']);
 
 			expect(applyThemeSpy).toHaveBeenCalledWith(
 				'default',
@@ -435,7 +425,7 @@ describe('SettingsService', () => {
 
 		it('should skip UI_ONLY refresh when only snippets are updated', async () => {
 			const refreshSpy = vi.spyOn(settingsService.refreshService, 'trigger');
-			await settingsService.setSetting(SNIPPETS_KEY, ['snippet1']);
+			await settingsService.setSetting(StorageKeys.SNIPPETS, ['snippet1']);
 			expect(refreshSpy).not.toHaveBeenCalledWith(RefreshLevel.UI_ONLY);
 		});
 
@@ -452,7 +442,7 @@ describe('SettingsService', () => {
 
 		it('should trigger STYLES_ONLY refresh but skip UI_ONLY for snippet-only updates', async () => {
 			const refreshSpy = vi.spyOn(settingsService.refreshService, 'trigger');
-			await settingsService.setSetting(SNIPPETS_KEY, ['snippet1']);
+			await settingsService.setSetting(StorageKeys.SNIPPETS, ['snippet1']);
 			// Snippets are considered style settings (isStyleSetting returns true)
 			// but they are "snippet only", so they should skip UI_ONLY but potentially still trigger STYLES_ONLY?
 			// Let's check implementation:
@@ -462,9 +452,9 @@ describe('SettingsService', () => {
 			expect(refreshSpy).not.toHaveBeenCalledWith(RefreshLevel.UI_ONLY);
 		});
 
-		it('should trigger refresh-status-bar when SHOW_STATUS_BAR_KEY is updated', async () => {
+		it('should trigger refresh-status-bar when PreferencesKeys.SHOW_STATUS_BAR is updated', async () => {
 			const triggerSpy = vi.spyOn(settingsService, 'trigger');
-			await settingsService.setSetting(SHOW_STATUS_BAR_KEY, true);
+			await settingsService.setSetting(PreferencesKeys.SHOW_STATUS_BAR, true);
 			expect(triggerSpy).toHaveBeenCalledWith('refresh-status-bar');
 		});
 	});
@@ -519,33 +509,33 @@ describe('SettingsService', () => {
 			const settings =
 				settingsService.getEffectiveLockerSettings('empty-device');
 			// Should still have core fallbacks
-			expect(settings[THEME_KEY]).toBeDefined();
+			expect(settings[StorageKeys.THEME]).toBeDefined();
 		});
 
 		it('should fallback to bridge config in getEffectiveLockerSettings if missing', async () => {
 			settingsService.sharedSettings.__devices = {
 				'empty-device': { isIsolateMode: true, isolateSettings: {} },
 			};
-			delete settingsService.sharedSettings[THEME_KEY];
+			delete settingsService.sharedSettings[StorageKeys.THEME];
 
 			const settings =
 				settingsService.getEffectiveLockerSettings('empty-device');
-			expect(settings[THEME_KEY]).toBe('global-theme'); // from mock bridge
+			expect(settings[StorageKeys.THEME]).toBe('global-theme'); // from mock bridge
 		});
 	});
 
 	describe('Full Reset', () => {
 		it('should reset all style settings to defaults', async () => {
 			settingsService.sharedSettings['sec@@key'] = 'val';
-			settingsService.sharedSettings[THEME_KEY] = 'custom-theme';
+			settingsService.sharedSettings[StorageKeys.THEME] = 'custom-theme';
 
 			await settingsService.resetAllStyleSettings(false);
 
 			expect(settingsService.sharedSettings['sec@@key']).toBeUndefined();
-			expect(settingsService.sharedSettings[THEME_KEY]).toBe('default');
-			expect(settingsService.sharedSettings[APPEARANCE_KEY]).toBe('light');
-			expect(settingsService.sharedSettings[ACCENT_COLOR_KEY]).toBe('#8a5cf5');
-			expect(settingsService.sharedSettings[SNIPPETS_KEY]).toEqual([]);
+			expect(settingsService.sharedSettings[StorageKeys.THEME]).toBe('default');
+			expect(settingsService.sharedSettings[StorageKeys.APPEARANCE]).toBe('light');
+			expect(settingsService.sharedSettings[StorageKeys.ACCENT_COLOR]).toBe('#8a5cf5');
+			expect(settingsService.sharedSettings[StorageKeys.SNIPPETS]).toEqual([]);
 		});
 
 		it('should reset isolate settings when isIsolate is true', async () => {
@@ -558,7 +548,7 @@ describe('SettingsService', () => {
 				settingsService.isolateModeService.isolateSettings['sec@@key']
 			).toBeUndefined();
 			expect(
-				settingsService.isolateModeService.isolateSettings[THEME_KEY]
+				settingsService.isolateModeService.isolateSettings[StorageKeys.THEME]
 			).toBe('default');
 		});
 	});
@@ -626,9 +616,9 @@ describe('SettingsService', () => {
 			const applyAppSpy = vi.spyOn(settingsService, 'applyAppearance');
 			const applyAccentSpy = vi.spyOn(settingsService, 'applyAccentColor');
 
-			settingsService.sharedSettings[THEME_KEY] = 'theme-x';
-			settingsService.sharedSettings[APPEARANCE_KEY] = 'dark';
-			settingsService.sharedSettings[ACCENT_COLOR_KEY] = '#123456';
+			settingsService.sharedSettings[StorageKeys.THEME] = 'theme-x';
+			settingsService.sharedSettings[StorageKeys.APPEARANCE] = 'dark';
+			settingsService.sharedSettings[StorageKeys.ACCENT_COLOR] = '#123456';
 
 			await settingsService.onDataLoaded(
 				settingsService.sharedSettings,

@@ -1,6 +1,4 @@
 import { Setting } from 'obsidian';
-
-import { SHOW_PARSE_LOGS_ICON_KEY } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { CSSSetting, ParsedCSSSettings } from '../../types';
 import { ParseLogList } from '../../types';
@@ -10,6 +8,7 @@ import {
 } from '../components/fields/HeadingField';
 import { CSSParserLogsModal } from '../modals/CSSParserLogsModal';
 import { ReadmeModal } from '../modals/ReadmeModal';
+import { PreferencesKeys } from "../../constants";
 
 export interface StylesTabDeps {
 	plugin: StyleManagerPlugin;
@@ -108,7 +107,7 @@ export class StylesTab {
 
 		if (
 			(this.deps.plugin.settingsService.sharedSettings[
-				SHOW_PARSE_LOGS_ICON_KEY
+				PreferencesKeys.SHOW_PARSE_LOGS_ICON
 			] as boolean) !== false
 		) {
 			searchSetting.addExtraButton((btn) => {

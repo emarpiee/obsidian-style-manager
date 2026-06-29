@@ -1,21 +1,10 @@
 import { normalizePath } from 'obsidian';
-
-import {
-	ACCENT_COLOR_KEY,
-	ALWAYS_SHARED_PRESETS_KEY,
-	APPEARANCE_KEY,
-	EXPORT_DATE_FORMAT_KEY,
-	EXPORT_EXTENSION_KEY,
-	EXPORT_PATH_KEY,
-	PRESET_APPLY_ACTION_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../constants';
 import StyleManagerPlugin from '../main';
 import { PrefixMetadata, Preset } from '../types';
 
 import { ConfirmModal } from '../ui/modals/ConfirmModal';
 import { getFormattedTimestamp } from '../utils/CommonUtils';
+import { StorageKeys, PreferencesKeys, ExportKeys } from "../constants";
 
 export class PresetService {
 	plugin: StyleManagerPlugin;
@@ -34,7 +23,7 @@ export class PresetService {
 	public getEffectiveViewMode(): 'shared' | 'isolate' {
 		if (this.targetView !== 'auto') return this.targetView;
 		const alwaysShared =
-			this.plugin.settingsService.settings[ALWAYS_SHARED_PRESETS_KEY];
+			this.plugin.settingsService.settings[PreferencesKeys.ALWAYS_SHARED_PRESETS];
 		if (alwaysShared === undefined || alwaysShared === true) {
 			return 'shared';
 		}
@@ -93,7 +82,7 @@ export class PresetService {
 		if (trashOption === 'none') return;
 
 		const timestamp = getFormattedTimestamp(
-			this.plugin.settingsService.settings[EXPORT_DATE_FORMAT_KEY] as string
+			this.plugin.settingsService.settings[ExportKeys.EXPORT_DATE_FORMAT] as string
 		);
 		const timestampPart = timestamp ? `-${timestamp}` : '';
 		const bridge = this.plugin.settingsService.bridge;
@@ -122,7 +111,7 @@ export class PresetService {
 		content: string | ArrayBuffer | Uint8Array
 	): Promise<void> {
 		let exportPath: string =
-			(this.plugin.settingsService.settings[EXPORT_PATH_KEY] as string) || '';
+			(this.plugin.settingsService.settings[ExportKeys.EXPORT_PATH] as string) || '';
 
 		const isZip =
 			content instanceof ArrayBuffer ||
@@ -133,7 +122,7 @@ export class PresetService {
 		const extension: string = isZip
 			? '.zip'
 			: (this.plugin.settingsService.settings[
-					EXPORT_EXTENSION_KEY
+					ExportKeys.EXPORT_EXTENSION
 				] as string) || '.json';
 
 		// Ensure filename has the correct extension
@@ -188,27 +177,27 @@ export class PresetService {
 		}
 
 		// 2. Explicitly Capture Active Theme
-		const theme = settings[THEME_KEY];
+		const theme = settings[StorageKeys.THEME];
 		if (theme !== undefined && theme !== null) {
-			data[THEME_KEY] = theme;
+			data[StorageKeys.THEME] = theme;
 		}
 
 		// 3. Explicitly Capture Appearance
-		const appearance = settings[APPEARANCE_KEY];
+		const appearance = settings[StorageKeys.APPEARANCE];
 		if (appearance !== undefined && appearance !== null) {
-			data[APPEARANCE_KEY] = appearance;
+			data[StorageKeys.APPEARANCE] = appearance;
 		}
 
 		// 4. Explicitly Capture Snippets
-		const snippets = settings[SNIPPETS_KEY];
+		const snippets = settings[StorageKeys.SNIPPETS];
 		if (Array.isArray(snippets)) {
-			data[SNIPPETS_KEY] = snippets;
+			data[StorageKeys.SNIPPETS] = snippets;
 		}
 
 		// 5. Explicitly Capture Accent Color
-		const accent = settings[ACCENT_COLOR_KEY];
+		const accent = settings[StorageKeys.ACCENT_COLOR];
 		if (accent !== undefined && accent !== null) {
-			data[ACCENT_COLOR_KEY] = accent;
+			data[StorageKeys.ACCENT_COLOR] = accent;
 		}
 
 		return data;
@@ -236,20 +225,20 @@ export class PresetService {
 					if (targetPrefixes.includes(prefix)) {
 						filteredData[key] = data[key];
 					}
-				} else if (key === THEME_KEY && targetPrefixes.includes('__theme')) {
+				} else if (key === StorageKeys.THEME && targetPrefixes.includes('__theme')) {
 					filteredData[key] = data[key];
 				} else if (
-					key === APPEARANCE_KEY &&
+					key === StorageKeys.APPEARANCE &&
 					targetPrefixes.includes('__appearance')
 				) {
 					filteredData[key] = data[key];
 				} else if (
-					key === SNIPPETS_KEY &&
+					key === StorageKeys.SNIPPETS &&
 					targetPrefixes.includes('__snippets')
 				) {
 					filteredData[key] = data[key];
 				} else if (
-					key === ACCENT_COLOR_KEY &&
+					key === StorageKeys.ACCENT_COLOR &&
 					targetPrefixes.includes('__accentColor')
 				) {
 					filteredData[key] = data[key];
@@ -287,7 +276,7 @@ export class PresetService {
 
 		for (const preset of selectedPresets) {
 			for (const [key, value] of Object.entries(preset.data)) {
-				if (key === SNIPPETS_KEY && Array.isArray(value)) {
+				if (key === StorageKeys.SNIPPETS && Array.isArray(value)) {
 					snippetsEncountered = true;
 					value.forEach((s) => mergedSnippets.add(s));
 				} else {
@@ -304,7 +293,7 @@ export class PresetService {
 					return exists ? s : null;
 				})
 			);
-			mergedData[SNIPPETS_KEY] = existingSnippets.filter(
+			mergedData[StorageKeys.SNIPPETS] = existingSnippets.filter(
 				(s): s is string => s !== null
 			);
 		}
@@ -326,7 +315,7 @@ export class PresetService {
 		action: 'overwrite' | 'merge' = 'overwrite'
 	): Promise<void> {
 		const { mergedData } = await this.mergePresets(presetIds);
-		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY])
+		if (Object.keys(mergedData).length === 0 && !mergedData[StorageKeys.SNIPPETS])
 			return;
 
 		if (action === 'overwrite') {
@@ -356,7 +345,7 @@ export class PresetService {
 		action: 'overwrite' | 'merge' = 'overwrite'
 	): Promise<void> {
 		const { mergedData } = await this.mergePresets(presetIds);
-		if (Object.keys(mergedData).length === 0 && !mergedData[SNIPPETS_KEY])
+		if (Object.keys(mergedData).length === 0 && !mergedData[StorageKeys.SNIPPETS])
 			return;
 
 		await this.plugin.settingsService.identity.updateLockerSettings(
@@ -370,7 +359,7 @@ export class PresetService {
 		presetName: string,
 		onConfirm: (action: 'overwrite' | 'merge') => void,
 		target: 'shared' | 'isolate' | 'remote' = 'shared',
-		applyActionKey: string = PRESET_APPLY_ACTION_KEY,
+		applyActionKey: string = PreferencesKeys.PRESET_APPLY_ACTION,
 		remoteDeviceName?: string
 	): void {
 		const defaultAction =
@@ -381,7 +370,7 @@ export class PresetService {
 		} else if (defaultAction === 'merge') {
 			onConfirm('merge');
 		} else {
-			const isBulk = applyActionKey !== PRESET_APPLY_ACTION_KEY;
+			const isBulk = applyActionKey !== PreferencesKeys.PRESET_APPLY_ACTION;
 			const mergeOverwriteDesc = isBulk
 				? 'Do you want to merge these presets with your current settings, or overwrite them?'
 				: 'Do you want to merge with your current settings, or overwrite them?';
@@ -444,7 +433,7 @@ export class PresetService {
 		const themeMeta = categories.get('__theme');
 		if (themeMeta) {
 			themeMeta.value =
-				(this.plugin.settingsService.settings[THEME_KEY] as string) ||
+				(this.plugin.settingsService.settings[StorageKeys.THEME] as string) ||
 				'Default';
 		}
 
@@ -452,7 +441,7 @@ export class PresetService {
 		const appearanceMeta = categories.get('__appearance');
 		if (appearanceMeta) {
 			const appearance = this.plugin.settingsService.settings[
-				APPEARANCE_KEY
+				StorageKeys.APPEARANCE
 			] as string;
 			appearanceMeta.value =
 				appearance && appearance !== 'system'
@@ -466,7 +455,7 @@ export class PresetService {
 		const snippetsMeta = categories.get('__snippets');
 		if (snippetsMeta) {
 			const enabledSnippets =
-				(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+				(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
 			snippetsMeta.value = enabledSnippets;
 		}
 
@@ -474,7 +463,7 @@ export class PresetService {
 		const accentMeta = categories.get('__accentColor');
 		if (accentMeta) {
 			const accentColor =
-				(this.plugin.settingsService.settings[ACCENT_COLOR_KEY] as string) ||
+				(this.plugin.settingsService.settings[StorageKeys.ACCENT_COLOR] as string) ||
 				'';
 			const vConfigAccent =
 				this.plugin.settingsService.bridge.getNativeConfig('accentColor');

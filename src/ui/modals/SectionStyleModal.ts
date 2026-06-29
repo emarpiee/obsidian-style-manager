@@ -1,15 +1,10 @@
 import { App, Modal, Setting } from 'obsidian';
 
 import { PresetNamePromptModal } from './PresetNamePromptModal';
-
-import {
-	EXPORT_DATE_FORMAT_KEY,
-	EXPORT_EXTENSION_KEY,
-	THEME_KEY,
-} from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { Preset, SettingValue } from '../../types';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
+import { ExportKeys, StorageKeys } from "../../constants";
 
 export class SectionStyleModal extends Modal {
 	plugin: StyleManagerPlugin;
@@ -66,13 +61,13 @@ export class SectionStyleModal extends Modal {
 					a.href = url;
 					const timestamp = getFormattedTimestamp(
 						this.plugin.settingsService.settings[
-							EXPORT_DATE_FORMAT_KEY
+							ExportKeys.EXPORT_DATE_FORMAT
 						] as string
 					);
 					const timestampPart = timestamp ? `-${timestamp}` : '';
 					const preferredExtension =
 						(this.plugin.settingsService.settings[
-							EXPORT_EXTENSION_KEY
+							ExportKeys.EXPORT_EXTENSION
 						] as string) || '.json';
 					a.download = `${this.section
 						.replace(/[^a-z0-9]/gi, '-')
@@ -99,14 +94,14 @@ export class SectionStyleModal extends Modal {
 						if (!presetName) return;
 
 						const currentTheme =
-							this.plugin.settingsService.settings[THEME_KEY];
+							this.plugin.settingsService.settings[StorageKeys.THEME];
 						const newPreset: Preset = {
 							id: crypto.randomUUID(),
 							name: presetName,
 							created: Date.now(),
 							data: {
 								...this.config,
-								...(currentTheme ? { [THEME_KEY]: currentTheme } : {}),
+								...(currentTheme ? { [StorageKeys.THEME]: currentTheme } : {}),
 							},
 							targetedPrefixes: [this.section, '__theme'],
 						};

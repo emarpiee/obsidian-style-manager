@@ -1,13 +1,8 @@
-import {
-	ACCENT_COLOR_KEY,
-	APPEARANCE_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../constants';
 import type StyleManagerPlugin from '../main';
 
 import { generateUuid } from '../utils/CommonUtils';
 import { DeviceLocker, IdentityStorageAdapter } from "../types";
+import { StorageKeys } from "../constants";
 
 const DEVICE_ID_KEY = 'style-manager-device-id';
 
@@ -73,10 +68,10 @@ export class IdentityService {
 				Object.keys(locker.isolateSettings).forEach((key) => {
 					if (
 						key.includes('@@') ||
-						key === THEME_KEY ||
-						key === APPEARANCE_KEY ||
-						key === ACCENT_COLOR_KEY ||
-						key === SNIPPETS_KEY
+						key === StorageKeys.THEME ||
+						key === StorageKeys.APPEARANCE ||
+						key === StorageKeys.ACCENT_COLOR ||
+						key === StorageKeys.SNIPPETS
 					) {
 						delete locker.isolateSettings[key];
 					}

@@ -37,10 +37,9 @@ import {
 	rectangularSelection,
 } from '@codemirror/view';
 import { Menu, Setting, setIcon, setTooltip } from 'obsidian';
-
-import { EDITOR_TAB_SIZE_KEY, SNIPPETS_KEY } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { RefreshLevel } from '../../types';
+import { PreferencesKeys, StorageKeys } from "../../constants";
 
 export interface CSSEditorRenderOptions {
 	plugin: StyleManagerPlugin;
@@ -149,7 +148,7 @@ export class CSSEditor {
 		];
 
 		const tabSize =
-			(this.plugin.settingsService.settings[EDITOR_TAB_SIZE_KEY] as number) ||
+			(this.plugin.settingsService.settings[PreferencesKeys.EDITOR_TAB_SIZE] as number) ||
 			4;
 
 		// Setup CodeMirror 6
@@ -301,21 +300,21 @@ export class CSSEditor {
 			} else {
 				if (this.source.type === 'Snippet') {
 					const currentEnabled =
-						(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) ||
+						(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) ||
 						[];
 					const isEnabled = currentEnabled.includes(this.source.id);
 					mainBtnsSetting.addToggle((toggle) => {
 						toggle.setValue(isEnabled).onChange(async (value) => {
 							const snippets = new Set(
 								(this.plugin.settingsService.settings[
-									SNIPPETS_KEY
+									StorageKeys.SNIPPETS
 								] as string[]) || []
 							);
 							if (value) snippets.add(this.source.id);
 							else snippets.delete(this.source.id);
 
 							const list = Array.from(snippets);
-							await this.plugin.settingsService.setSetting(SNIPPETS_KEY, list, {
+							await this.plugin.settingsService.setSetting(StorageKeys.SNIPPETS, list, {
 								silentUI: true,
 							});
 						});

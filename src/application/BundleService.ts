@@ -1,9 +1,8 @@
 import JSZip from 'jszip';
-
-import { SNIPPETS_KEY, THEME_KEY } from '../constants';
 import { Preset, BundleData } from '../types';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
+import { StorageKeys } from "../constants";
 
 /**
  * Service for creating and extracting preset bundles (ZIP files).
@@ -49,7 +48,7 @@ export class BundleService {
 		// 2. Collect unique snippets across all presets
 		const allSnippetNames = new Set<string>();
 		for (const preset of presets) {
-			const enabledSnippets = (preset.data[SNIPPETS_KEY] as string[]) || [];
+			const enabledSnippets = (preset.data[StorageKeys.SNIPPETS] as string[]) || [];
 			enabledSnippets.forEach((name) => allSnippetNames.add(name));
 		}
 
@@ -69,7 +68,7 @@ export class BundleService {
 		// 4. Collect unique active themes across all presets
 		const allThemeNames = new Set<string>();
 		for (const preset of presets) {
-			const themeName = preset.data[THEME_KEY] as string | undefined;
+			const themeName = preset.data[StorageKeys.THEME] as string | undefined;
 			if (themeName && themeName !== 'default') {
 				allThemeNames.add(themeName);
 			}

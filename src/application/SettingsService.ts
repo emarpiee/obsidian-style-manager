@@ -1,14 +1,4 @@
 import { Events } from 'obsidian';
-
-import {
-	ACCENT_COLOR_KEY,
-	APPEARANCE_KEY,
-	ENABLE_CONSOLE_LOGGING_KEY,
-	SHOW_STATUS_BAR_KEY,
-	SNIPPETS_KEY,
-	STICKY_HEADING_KEY,
-	THEME_KEY,
-} from '../constants';
 import type StyleManagerPlugin from '../main';
 import {
 	ParsedCSSSettings,
@@ -35,8 +25,7 @@ import { SharedStore } from '../infrastructure/storage/SharedStore';
 import { ViewManager } from '../ui/ViewManager';
 import { DataUtils } from '../utils/CommonUtils';
 import { Logger } from '../utils/Logger';
-
-export { THEME_KEY, APPEARANCE_KEY, SNIPPETS_KEY, ACCENT_COLOR_KEY };
+import { StorageKeys, PreferencesKeys } from "../constants";
 
 export class SettingsService extends Events {
 	public sharedSettings: StyleManagerSettings = {};
@@ -185,11 +174,11 @@ export class SettingsService extends Events {
 			getLockerSettings: (): string[] =>
 				this.isolateModeService.isIsolateMode()
 					? (this.isolateModeService.isolateSettings[
-							SNIPPETS_KEY
+							StorageKeys.SNIPPETS
 						] as string[]) || []
-					: (this.sharedSettings[SNIPPETS_KEY] as string[]) || [],
+					: (this.sharedSettings[StorageKeys.SNIPPETS] as string[]) || [],
 			setLockerSettings: async (snippets): Promise<void> => {
-				this.sharedSettings[SNIPPETS_KEY] = snippets;
+				this.sharedSettings[StorageKeys.SNIPPETS] = snippets;
 				this.updateMerged();
 				await this.save({ silent: true });
 			},
@@ -242,9 +231,9 @@ export class SettingsService extends Events {
 		const oldDevices = DataUtils.getCanonicalString(
 			this.sharedSettings.__devices || {}
 		);
-		const oldTheme = this.sharedSettings[THEME_KEY];
-		const oldApp = this.sharedSettings[APPEARANCE_KEY];
-		const oldAccent = this.sharedSettings[ACCENT_COLOR_KEY];
+		const oldTheme = this.sharedSettings[StorageKeys.THEME];
+		const oldApp = this.sharedSettings[StorageKeys.APPEARANCE];
+		const oldAccent = this.sharedSettings[StorageKeys.ACCENT_COLOR];
 		const oldVersion = Number(this.sharedSettings.__shared_version) || 0;
 
 		if (loadedData === null && !(await this.sharedStore.hasBackup())) {
@@ -290,9 +279,9 @@ export class SettingsService extends Events {
 				(newVersion !== oldVersion && newVersion > 0)) &&
 			this.isSafeToSave
 		) {
-			const newTheme = this.sharedSettings[THEME_KEY];
-			const newApp = this.sharedSettings[APPEARANCE_KEY];
-			const newAccent = this.sharedSettings[ACCENT_COLOR_KEY];
+			const newTheme = this.sharedSettings[StorageKeys.THEME];
+			const newApp = this.sharedSettings[StorageKeys.APPEARANCE];
+			const newAccent = this.sharedSettings[StorageKeys.ACCENT_COLOR];
 
 			if (
 				oldTheme !== newTheme ||
@@ -316,18 +305,18 @@ export class SettingsService extends Events {
 
 		this.installPatches();
 
-		const theme = this.settings[THEME_KEY];
+		const theme = this.settings[StorageKeys.THEME];
 		if (theme) {
 			const shouldPersist =
 				!this.isolateModeService.isIsolateMode() && !wasAdopted;
 			this.applyTheme(theme as string, shouldPersist);
 		}
 
-		this.applyAppearance(this.settings[APPEARANCE_KEY] as string);
+		this.applyAppearance(this.settings[StorageKeys.APPEARANCE] as string);
 
 		const persistAccent = !this.isolateModeService.isIsolateMode();
 		this.applyAccentColor(
-			this.settings[ACCENT_COLOR_KEY] as string,
+			this.settings[StorageKeys.ACCENT_COLOR] as string,
 			persistAccent
 		);
 
@@ -345,10 +334,10 @@ export class SettingsService extends Events {
 			Object.keys(merged).forEach((key) => {
 				if (
 					key.includes('@@') ||
-					key === THEME_KEY ||
-					key === APPEARANCE_KEY ||
-					key === ACCENT_COLOR_KEY ||
-					key === SNIPPETS_KEY
+					key === StorageKeys.THEME ||
+					key === StorageKeys.APPEARANCE ||
+					key === StorageKeys.ACCENT_COLOR ||
+					key === StorageKeys.SNIPPETS
 				) {
 					delete merged[key];
 				}
@@ -358,10 +347,10 @@ export class SettingsService extends Events {
 			Object.keys(this.isolateModeService.isolateSettings).forEach((key) => {
 				if (
 					key.includes('@@') ||
-					key === THEME_KEY ||
-					key === APPEARANCE_KEY ||
-					key === ACCENT_COLOR_KEY ||
-					key === SNIPPETS_KEY ||
+					key === StorageKeys.THEME ||
+					key === StorageKeys.APPEARANCE ||
+					key === StorageKeys.ACCENT_COLOR ||
+					key === StorageKeys.SNIPPETS ||
 					key === '_manager_presets' ||
 					key === '_manager_schedules'
 				) {
@@ -374,7 +363,7 @@ export class SettingsService extends Events {
 
 		this._mergedSettings = merged;
 		Logger.setEnabled(
-			this._mergedSettings[ENABLE_CONSOLE_LOGGING_KEY] === true
+			this._mergedSettings[PreferencesKeys.ENABLE_CONSOLE_LOGGING] === true
 		);
 	}
 
@@ -466,10 +455,10 @@ export class SettingsService extends Events {
 
 		// 2. Capture core settings from shared
 		const coreKeys = [
-			THEME_KEY,
-			APPEARANCE_KEY,
-			SNIPPETS_KEY,
-			ACCENT_COLOR_KEY,
+			StorageKeys.THEME,
+			StorageKeys.APPEARANCE,
+			StorageKeys.SNIPPETS,
+			StorageKeys.ACCENT_COLOR,
 		];
 		for (const key of coreKeys) {
 			if (this.sharedSettings[key] !== undefined) {
@@ -493,18 +482,18 @@ export class SettingsService extends Events {
 
 		// 4. Fallback for core settings if still missing
 		// This ensures the preset is "complete" even if some keys weren't explicitly set.
-		if (data[THEME_KEY] === undefined) {
-			data[THEME_KEY] = this.bridge.getNativeConfig('cssTheme') || 'default';
+		if (data[StorageKeys.THEME] === undefined) {
+			data[StorageKeys.THEME] = this.bridge.getNativeConfig('cssTheme') || 'default';
 		}
-		if (data[APPEARANCE_KEY] === undefined) {
-			data[APPEARANCE_KEY] =
+		if (data[StorageKeys.APPEARANCE] === undefined) {
+			data[StorageKeys.APPEARANCE] =
 				this.bridge.getNativeConfig('theme') === 'moonstone' ? 'light' : 'dark';
 		}
-		if (data[ACCENT_COLOR_KEY] === undefined) {
-			data[ACCENT_COLOR_KEY] = this.bridge.getNativeConfig('accentColor') || '';
+		if (data[StorageKeys.ACCENT_COLOR] === undefined) {
+			data[StorageKeys.ACCENT_COLOR] = this.bridge.getNativeConfig('accentColor') || '';
 		}
-		if (data[SNIPPETS_KEY] === undefined) {
-			data[SNIPPETS_KEY] = this.bridge.getEnabledSnippets();
+		if (data[StorageKeys.SNIPPETS] === undefined) {
+			data[StorageKeys.SNIPPETS] = this.bridge.getEnabledSnippets();
 		}
 
 		return data;
@@ -540,10 +529,10 @@ export class SettingsService extends Events {
 			}
 		});
 
-		targetBuffer[THEME_KEY] = 'default';
-		targetBuffer[APPEARANCE_KEY] = 'light';
-		targetBuffer[ACCENT_COLOR_KEY] = '#8a5cf5';
-		targetBuffer[SNIPPETS_KEY] = [];
+		targetBuffer[StorageKeys.THEME] = 'default';
+		targetBuffer[StorageKeys.APPEARANCE] = 'light';
+		targetBuffer[StorageKeys.ACCENT_COLOR] = '#8a5cf5';
+		targetBuffer[StorageKeys.SNIPPETS] = [];
 
 		this.updateMerged();
 		this.styleSheetManager.clearCache();
@@ -556,11 +545,11 @@ export class SettingsService extends Events {
 	private isStyleSetting(key: string): boolean {
 		return (
 			key.includes('@@') ||
-			key === THEME_KEY ||
-			key === APPEARANCE_KEY ||
-			key === ACCENT_COLOR_KEY ||
-			key === SNIPPETS_KEY ||
-			key === STICKY_HEADING_KEY
+			key === StorageKeys.THEME ||
+			key === StorageKeys.APPEARANCE ||
+			key === StorageKeys.ACCENT_COLOR ||
+			key === StorageKeys.SNIPPETS ||
+			key === PreferencesKeys.STICKY_HEADING
 		);
 	}
 
@@ -568,9 +557,9 @@ export class SettingsService extends Events {
 		if (settingId === undefined) {
 			return this.settings[sectionId];
 		}
-		if (sectionId === THEME_KEY) return this.settings[THEME_KEY];
-		if (sectionId === APPEARANCE_KEY) return this.settings[APPEARANCE_KEY];
-		if (sectionId === ACCENT_COLOR_KEY) return this.settings[ACCENT_COLOR_KEY];
+		if (sectionId === StorageKeys.THEME) return this.settings[StorageKeys.THEME];
+		if (sectionId === StorageKeys.APPEARANCE) return this.settings[StorageKeys.APPEARANCE];
+		if (sectionId === StorageKeys.ACCENT_COLOR) return this.settings[StorageKeys.ACCENT_COLOR];
 		return this.settings[`${sectionId}@@${settingId}`];
 	}
 
@@ -710,17 +699,17 @@ export class SettingsService extends Events {
 
 		const persist = !isIsolate && options?.persistNative !== false;
 
-		if (updates[THEME_KEY]) {
-			await this.applyTheme(updates[THEME_KEY] as string, persist);
+		if (updates[StorageKeys.THEME]) {
+			await this.applyTheme(updates[StorageKeys.THEME] as string, persist);
 		}
-		if (updates[APPEARANCE_KEY]) {
-			this.applyAppearance(updates[APPEARANCE_KEY] as string, persist);
+		if (updates[StorageKeys.APPEARANCE]) {
+			this.applyAppearance(updates[StorageKeys.APPEARANCE] as string, persist);
 		}
-		if (updates[ACCENT_COLOR_KEY]) {
-			this.applyAccentColor(updates[ACCENT_COLOR_KEY] as string, persist);
+		if (updates[StorageKeys.ACCENT_COLOR]) {
+			this.applyAccentColor(updates[StorageKeys.ACCENT_COLOR] as string, persist);
 		}
-		if (updates[SNIPPETS_KEY]) {
-			await this.applySnippets(updates[SNIPPETS_KEY] as string[], isIsolate);
+		if (updates[StorageKeys.SNIPPETS]) {
+			await this.applySnippets(updates[StorageKeys.SNIPPETS] as string[], isIsolate);
 		}
 
 		this.updateMerged();
@@ -728,9 +717,9 @@ export class SettingsService extends Events {
 			this.isStyleSetting(key)
 		);
 		const isSnippetOnly =
-			updates[SNIPPETS_KEY] !== undefined &&
+			updates[StorageKeys.SNIPPETS] !== undefined &&
 			!Object.keys(updates).some(
-				(key) => key !== SNIPPETS_KEY && this.isStyleSetting(key)
+				(key) => key !== StorageKeys.SNIPPETS && this.isStyleSetting(key)
 			);
 
 		if (hasStyleChange && !isSnippetOnly) {
@@ -746,7 +735,7 @@ export class SettingsService extends Events {
 			this.trigger('refresh-status-bar');
 		}
 
-		if (updates[SHOW_STATUS_BAR_KEY] !== undefined) {
+		if (updates[PreferencesKeys.SHOW_STATUS_BAR] !== undefined) {
 			this.trigger('refresh-status-bar');
 		}
 
@@ -762,10 +751,10 @@ export class SettingsService extends Events {
 		let key: string;
 		if (
 			!sectionId ||
-			sectionId === THEME_KEY ||
-			sectionId === APPEARANCE_KEY ||
-			sectionId === ACCENT_COLOR_KEY ||
-			sectionId === SNIPPETS_KEY
+			sectionId === StorageKeys.THEME ||
+			sectionId === StorageKeys.APPEARANCE ||
+			sectionId === StorageKeys.ACCENT_COLOR ||
+			sectionId === StorageKeys.SNIPPETS
 		) {
 			key = settingId;
 		} else {
@@ -784,19 +773,19 @@ export class SettingsService extends Events {
 		}
 
 		const keyMatched = (key: string): boolean =>
-			key === THEME_KEY ||
-			key === APPEARANCE_KEY ||
-			key === ACCENT_COLOR_KEY ||
-			key === SNIPPETS_KEY;
+			key === StorageKeys.THEME ||
+			key === StorageKeys.APPEARANCE ||
+			key === StorageKeys.ACCENT_COLOR ||
+			key === StorageKeys.SNIPPETS;
 		const isIsolate = this.isolateModeService.isIsolateMode();
 
 		if (keyMatched(key)) {
-			if (key === THEME_KEY) await this.applyTheme('default', !isIsolate);
-			else if (key === APPEARANCE_KEY)
+			if (key === StorageKeys.THEME) await this.applyTheme('default', !isIsolate);
+			else if (key === StorageKeys.APPEARANCE)
 				this.applyAppearance('light', !isIsolate);
-			else if (key === ACCENT_COLOR_KEY)
+			else if (key === StorageKeys.ACCENT_COLOR)
 				this.applyAccentColor('#8a5cf5', !isIsolate);
-			else if (key === SNIPPETS_KEY) await this.applySnippets([], isIsolate);
+			else if (key === StorageKeys.SNIPPETS) await this.applySnippets([], isIsolate);
 		}
 
 		if (options?.silentUI) {
@@ -840,19 +829,19 @@ export class SettingsService extends Events {
 
 		// Explicit handle for core settings to match requested defaults
 		if (sectionIds.includes('__theme')) {
-			targetBuffer[THEME_KEY] = 'default';
+			targetBuffer[StorageKeys.THEME] = 'default';
 			modified = true;
 		}
 		if (sectionIds.includes('__appearance')) {
-			targetBuffer[APPEARANCE_KEY] = 'light';
+			targetBuffer[StorageKeys.APPEARANCE] = 'light';
 			modified = true;
 		}
 		if (sectionIds.includes('__accentColor')) {
-			targetBuffer[ACCENT_COLOR_KEY] = '#8a5cf5';
+			targetBuffer[StorageKeys.ACCENT_COLOR] = '#8a5cf5';
 			modified = true;
 		}
 		if (sectionIds.includes('__snippets')) {
-			targetBuffer[SNIPPETS_KEY] = [];
+			targetBuffer[StorageKeys.SNIPPETS] = [];
 			modified = true;
 		}
 
@@ -942,19 +931,19 @@ export class SettingsService extends Events {
 			await this.save();
 
 			const keyMatched = (key: string): boolean =>
-				key === THEME_KEY ||
-				key === APPEARANCE_KEY ||
-				key === ACCENT_COLOR_KEY ||
-				key === SNIPPETS_KEY;
+				key === StorageKeys.THEME ||
+				key === StorageKeys.APPEARANCE ||
+				key === StorageKeys.ACCENT_COLOR ||
+				key === StorageKeys.SNIPPETS;
 
 			if (keyMatched(sectionId)) {
-				if (sectionId === THEME_KEY)
+				if (sectionId === StorageKeys.THEME)
 					await this.applyTheme('default', !isIsolate);
-				else if (sectionId === APPEARANCE_KEY)
+				else if (sectionId === StorageKeys.APPEARANCE)
 					this.applyAppearance('light', !isIsolate);
-				else if (sectionId === ACCENT_COLOR_KEY)
+				else if (sectionId === StorageKeys.ACCENT_COLOR)
 					this.applyAccentColor('#8a5cf5', !isIsolate);
-				else if (sectionId === SNIPPETS_KEY)
+				else if (sectionId === StorageKeys.SNIPPETS)
 					await this.applySnippets([], isIsolate);
 			}
 

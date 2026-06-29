@@ -1,18 +1,6 @@
 import { Menu, Setting, setIcon, setTooltip } from 'obsidian';
 
 import { addApplyOptionsToMenu } from './PresetMenuHelper';
-
-import {
-	ACCENT_COLOR_KEY,
-	APPEARANCE_KEY,
-	CREATED_DATE_FORMAT_KEY,
-	EXPORT_DATE_FORMAT_KEY,
-	EXPORT_EXTENSION_KEY,
-	SKIP_DELETE_CONFIRM_KEY,
-	SKIP_EXPORT_CONFIRM_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { Preset } from '../../../types';
 import { formatPresetDate } from '../../../utils/CommonUtils';
@@ -27,6 +15,7 @@ import { ConfirmModal } from '../../modals/ConfirmModal';
 import { PresetPreviewModal } from '../../modals/PresetPreviewModal';
 import { PresetScheduleModal } from '../../modals/PresetScheduleModal';
 import { RenameModal } from '../../modals/RenameModal';
+import { StorageKeys, ExportKeys, ConfirmKeys } from "../../../constants";
 
 export class PresetItem {
 	constructor(
@@ -57,7 +46,7 @@ export class PresetItem {
 						? formatPresetDate(
 								preset.created,
 								plugin.settingsService.settings[
-									CREATED_DATE_FORMAT_KEY
+									ExportKeys.CREATED_DATE_FORMAT
 								] as string
 							)
 						: 'Unknown Date'
@@ -70,19 +59,19 @@ export class PresetItem {
 		);
 
 		// Appearance Badge
-		const appearance = preset.data[APPEARANCE_KEY] as string | undefined;
+		const appearance = preset.data[StorageKeys.APPEARANCE] as string | undefined;
 		if (appearance) {
 			renderAppearanceBadge(badgesContainer, appearance);
 		}
 
 		// Theme Badge
-		const theme = preset.data[THEME_KEY] as string | undefined;
+		const theme = preset.data[StorageKeys.THEME] as string | undefined;
 		if (theme) {
 			renderThemeBadge(
 				badgesContainer,
 				plugin,
 				theme,
-				preset.data[ACCENT_COLOR_KEY] as string
+				preset.data[StorageKeys.ACCENT_COLOR] as string
 			);
 		}
 
@@ -93,7 +82,7 @@ export class PresetItem {
 		renderSnippetBadge(
 			badgesContainer,
 			plugin,
-			preset.data[SNIPPETS_KEY] as string[]
+			preset.data[StorageKeys.SNIPPETS] as string[]
 		);
 
 		// Schedule Badge
@@ -169,7 +158,7 @@ export class PresetItem {
 									try {
 										const preferredExtension =
 											(plugin.settingsService.settings[
-												EXPORT_EXTENSION_KEY
+												ExportKeys.EXPORT_EXTENSION
 											] as string) || '.json';
 
 										const extension: string = includeSnippets
@@ -182,7 +171,7 @@ export class PresetItem {
 										const timestamp =
 											plugin.presetService.getFormattedTimestamp(
 												plugin.settingsService.settings[
-													EXPORT_DATE_FORMAT_KEY
+													ExportKeys.EXPORT_DATE_FORMAT
 												] as string
 											);
 										const timestampPart = timestamp ? `-${timestamp}` : '';
@@ -214,12 +203,12 @@ export class PresetItem {
 
 								const preferredExtension =
 									(plugin.settingsService.settings[
-										EXPORT_EXTENSION_KEY
+										ExportKeys.EXPORT_EXTENSION
 									] as string) || '.json';
 
 								const snippetList =
-									(preset.data[SNIPPETS_KEY] as string[]) || [];
-								const activeTheme = preset.data[THEME_KEY] as
+									(preset.data[StorageKeys.SNIPPETS] as string[]) || [];
+								const activeTheme = preset.data[StorageKeys.THEME] as
 									| string
 									| undefined;
 								const hasTheme = activeTheme && activeTheme !== 'default';
@@ -248,7 +237,7 @@ export class PresetItem {
 									).open();
 								} else {
 									if (
-										plugin.settingsService.settings[SKIP_EXPORT_CONFIRM_KEY]
+										plugin.settingsService.settings[ConfirmKeys.SKIP_EXPORT_CONFIRM]
 									) {
 										performExport(false);
 									} else {
@@ -287,7 +276,7 @@ export class PresetItem {
 									}
 								};
 
-								if (plugin.settingsService.settings[SKIP_DELETE_CONFIRM_KEY]) {
+								if (plugin.settingsService.settings[ConfirmKeys.SKIP_DELETE_CONFIRM]) {
 									performDelete();
 								} else {
 									new ConfirmModal(

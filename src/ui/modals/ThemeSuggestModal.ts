@@ -1,7 +1,6 @@
 import { App, SuggestModal } from 'obsidian';
-
-import { THEME_KEY } from '../../application/SettingsService';
 import StyleManagerPlugin from '../../main';
+import { StorageKeys } from "../../constants";
 
 export interface ThemeOption {
 	id: string;
@@ -46,7 +45,7 @@ export class ThemeSuggestModal extends SuggestModal<ThemeOption> {
 		row.createEl('div', { text: theme.name });
 
 		const activeThemeId = this.plugin.settingsService.getSetting(
-			THEME_KEY
+			StorageKeys.THEME
 		) as string;
 		if (theme.id === activeThemeId) {
 			row.createEl('span', {
@@ -61,7 +60,7 @@ export class ThemeSuggestModal extends SuggestModal<ThemeOption> {
 		_evt: MouseEvent | KeyboardEvent
 	): void {
 		this.plugin.settingsService
-			.setSetting(THEME_KEY, theme.id, { silentUI: true })
+			.setSetting(StorageKeys.THEME, theme.id, { silentUI: true })
 			.then(() => {
 				this.onDone();
 			});

@@ -1,8 +1,7 @@
 import { RRule } from 'rrule';
-
-import { SCHEDULE_APPLY_ACTION_KEY } from '../constants';
 import StyleManagerPlugin from '../main';
 import { PresetSchedule } from '../types';
+import { PreferencesKeys } from "../constants";
 
 export class PresetScheduleService {
 	plugin: StyleManagerPlugin;
@@ -274,7 +273,7 @@ export class PresetScheduleService {
 		);
 
 		const action =
-			(this.plugin.settingsService.settings[SCHEDULE_APPLY_ACTION_KEY] as
+			(this.plugin.settingsService.settings[PreferencesKeys.SCHEDULE_APPLY_ACTION] as
 				| 'overwrite'
 				| 'merge') || 'overwrite';
 

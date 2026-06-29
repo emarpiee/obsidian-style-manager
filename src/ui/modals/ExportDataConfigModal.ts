@@ -1,8 +1,7 @@
 import { App, Modal, Setting } from 'obsidian';
-
-import { EXPORT_DATE_FORMAT_KEY, EXPORT_EXTENSION_KEY } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
+import { ExportKeys } from "../../constants";
 
 /**
  * Modal for exporting global settings as a raw JSON file.
@@ -59,13 +58,13 @@ export class ExportDataConfigModal extends Modal {
 						a.href = url;
 						const timestamp = getFormattedTimestamp(
 							this.plugin.settingsService.settings[
-								EXPORT_DATE_FORMAT_KEY
+								ExportKeys.EXPORT_DATE_FORMAT
 							] as string
 						);
 						const timestampPart = timestamp ? `-${timestamp}` : '';
 						const preferredExtension =
 							(this.plugin.settingsService.settings[
-								EXPORT_EXTENSION_KEY
+								ExportKeys.EXPORT_EXTENSION
 							] as string) || '.json';
 
 						const safeName = this.title

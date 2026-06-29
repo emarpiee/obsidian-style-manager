@@ -1,16 +1,10 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-
-import {
-	ACCENT_COLOR_KEY,
-	APPEARANCE_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../constants';
 import { RefreshLevel, type StyleManagerSettings, IsolateModeDelegate } from '../types';
 
 import {
 	IsolateModeService,
 } from '../application/IsolateModeService';
+import { StorageKeys } from "../constants";
 
 describe('IsolateModeService', () => {
 	let service: IsolateModeService;
@@ -86,14 +80,14 @@ describe('IsolateModeService', () => {
 
 		it('should activate isolate mode and take snapshot if settings are empty', async () => {
 			vi.mocked(mockDelegate.getSharedSettings).mockReturnValue({
-				[THEME_KEY]: 'shared-theme',
+				[StorageKeys.THEME]: 'shared-theme',
 				'other-key': 'should-be-ignored',
 			});
 
 			await service.setIsolateMode(true);
 
 			expect(service.isIsolateMode()).toBe(true);
-			expect(service.isolateSettings[THEME_KEY]).toBe('shared-theme');
+			expect(service.isolateSettings[StorageKeys.THEME]).toBe('shared-theme');
 			expect(service.isolateSettings['other-key']).toBeUndefined();
 			expect(mockDelegate.save).toHaveBeenCalled();
 			expect(mockDelegate.updateMerged).toHaveBeenCalled();
@@ -125,10 +119,10 @@ describe('IsolateModeService', () => {
 
 		it('should apply current settings when changing mode', async () => {
 			(mockDelegate.plugin.settingsService as any).settings = {
-				[THEME_KEY]: 'theme-x',
-				[APPEARANCE_KEY]: 'dark',
-				[ACCENT_COLOR_KEY]: '#ff0000',
-				[SNIPPETS_KEY]: ['snippet1', 'snippet2'],
+				[StorageKeys.THEME]: 'theme-x',
+				[StorageKeys.APPEARANCE]: 'dark',
+				[StorageKeys.ACCENT_COLOR]: '#ff0000',
+				[StorageKeys.SNIPPETS]: ['snippet1', 'snippet2'],
 			};
 
 			await service.setIsolateMode(true);
@@ -185,10 +179,10 @@ describe('IsolateModeService', () => {
 		it('should filter shared settings and include only relevant keys', () => {
 			vi.mocked(mockDelegate.getSharedSettings).mockReturnValue({
 				'key@@1': 'val1',
-				[THEME_KEY]: 'theme1',
-				[APPEARANCE_KEY]: 'dark',
-				[SNIPPETS_KEY]: ['s1'],
-				[ACCENT_COLOR_KEY]: '#000',
+				[StorageKeys.THEME]: 'theme1',
+				[StorageKeys.APPEARANCE]: 'dark',
+				[StorageKeys.SNIPPETS]: ['s1'],
+				[StorageKeys.ACCENT_COLOR]: '#000',
 				'ignored-key': 'val2',
 			});
 
@@ -196,10 +190,10 @@ describe('IsolateModeService', () => {
 
 			expect(snapshot).toEqual({
 				'key@@1': 'val1',
-				[THEME_KEY]: 'theme1',
-				[APPEARANCE_KEY]: 'dark',
-				[SNIPPETS_KEY]: ['s1'],
-				[ACCENT_COLOR_KEY]: '#000',
+				[StorageKeys.THEME]: 'theme1',
+				[StorageKeys.APPEARANCE]: 'dark',
+				[StorageKeys.SNIPPETS]: ['s1'],
+				[StorageKeys.ACCENT_COLOR]: '#000',
 			});
 		});
 
@@ -219,10 +213,10 @@ describe('IsolateModeService', () => {
 
 			const snapshot = service.snapshotSharedToIsolate();
 
-			expect(snapshot[THEME_KEY]).toBe('native-theme');
-			expect(snapshot[APPEARANCE_KEY]).toBe('light');
-			expect(snapshot[ACCENT_COLOR_KEY]).toBe('#native-accent');
-			expect(snapshot[SNIPPETS_KEY]).toEqual(['native-snippet']);
+			expect(snapshot[StorageKeys.THEME]).toBe('native-theme');
+			expect(snapshot[StorageKeys.APPEARANCE]).toBe('light');
+			expect(snapshot[StorageKeys.ACCENT_COLOR]).toBe('#native-accent');
+			expect(snapshot[StorageKeys.SNIPPETS]).toEqual(['native-snippet']);
 		});
 
 		it('should use default theme if native theme is missing', () => {
@@ -231,7 +225,7 @@ describe('IsolateModeService', () => {
 
 			const snapshot = service.snapshotSharedToIsolate();
 
-			expect(snapshot[THEME_KEY]).toBe('default');
+			expect(snapshot[StorageKeys.THEME]).toBe('default');
 		});
 
 		it('should use dark if native appearance is not moonstone', () => {
@@ -245,7 +239,7 @@ describe('IsolateModeService', () => {
 
 			const snapshot = service.snapshotSharedToIsolate();
 
-			expect(snapshot[APPEARANCE_KEY]).toBe('dark');
+			expect(snapshot[StorageKeys.APPEARANCE]).toBe('dark');
 		});
 
 		it('should toggle isApplyingPersistentTheme', () => {
@@ -285,10 +279,10 @@ describe('IsolateModeService', () => {
 	describe('pushToShared', () => {
 		it('should push isolate settings to native config and shared settings', async () => {
 			const isolateSettings = {
-				[THEME_KEY]: 'local-theme',
-				[APPEARANCE_KEY]: 'dark',
-				[ACCENT_COLOR_KEY]: '#123456',
-				[SNIPPETS_KEY]: ['local-snippet'],
+				[StorageKeys.THEME]: 'local-theme',
+				[StorageKeys.APPEARANCE]: 'dark',
+				[StorageKeys.ACCENT_COLOR]: '#123456',
+				[StorageKeys.SNIPPETS]: ['local-snippet'],
 				'custom@@key': 'custom-val',
 			};
 			service.loadState(true, isolateSettings);
@@ -340,8 +334,8 @@ describe('IsolateModeService', () => {
 
 		it('should handle special theme and appearance values when pushing', async () => {
 			service.loadState(true, {
-				[THEME_KEY]: 'default',
-				[APPEARANCE_KEY]: 'light',
+				[StorageKeys.THEME]: 'default',
+				[StorageKeys.APPEARANCE]: 'light',
 			});
 
 			await service.pushToShared();

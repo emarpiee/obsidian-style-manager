@@ -1,13 +1,7 @@
 import { Menu, setIcon, setTooltip } from 'obsidian';
-
-import {
-	APPEARANCE_KEY,
-	SHOW_STATUS_BAR_KEY,
-	SNIPPETS_KEY,
-	THEME_KEY,
-} from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { ThemeOption, ThemeSuggestModal } from '../modals/ThemeSuggestModal';
+import { StorageKeys, PreferencesKeys } from "../../constants";
 
 /**
  * Manages the Obsidian status bar integration for Style Manager.
@@ -47,7 +41,7 @@ export class StatusBarManager {
 	 */
 	public refresh(): void {
 		const showStatusBar =
-			this.plugin.settingsService.settings[SHOW_STATUS_BAR_KEY] === true;
+			this.plugin.settingsService.settings[PreferencesKeys.SHOW_STATUS_BAR] === true;
 
 		if (!showStatusBar) {
 			this.cleanup();
@@ -63,9 +57,9 @@ export class StatusBarManager {
 		const isIsolate = this.plugin.settingsService.isIsolateMode();
 		const modifiedCount = this.plugin.settingsService.getTotalModifiedCount();
 		const enabledSnippets =
-			(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+			(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
 		const activeTheme =
-			(this.plugin.settingsService.settings[THEME_KEY] as string) || 'Default';
+			(this.plugin.settingsService.settings[StorageKeys.THEME] as string) || 'Default';
 
 		// Update Icon
 		this.statusBarItem.empty();
@@ -102,9 +96,9 @@ export class StatusBarManager {
 		const isIsolate = this.plugin.settingsService.isIsolateMode();
 		const modifiedCount = this.plugin.settingsService.getTotalModifiedCount();
 		const enabledSnippets =
-			(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+			(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
 		const activeTheme =
-			(this.plugin.settingsService.settings[THEME_KEY] as string) || 'default';
+			(this.plugin.settingsService.settings[StorageKeys.THEME] as string) || 'default';
 
 		// 1. Mode Information & Toggle
 		menu.addItem((item) => {
@@ -153,7 +147,7 @@ export class StatusBarManager {
 
 		// 3. Appearance Toggle
 		const appearance = this.plugin.settingsService.settings[
-			APPEARANCE_KEY
+			StorageKeys.APPEARANCE
 		] as string;
 		menu.addItem((item) => {
 			let icon = '';
@@ -167,7 +161,7 @@ export class StatusBarManager {
 				.setIcon(icon)
 				.onClick(async () => {
 					const next = appearance === 'light' ? 'dark' : 'light';
-					await this.plugin.settingsService.setSetting(APPEARANCE_KEY, next, {
+					await this.plugin.settingsService.setSetting(StorageKeys.APPEARANCE, next, {
 						silentUI: true,
 					});
 					this.refresh();

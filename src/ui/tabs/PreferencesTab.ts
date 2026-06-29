@@ -1,39 +1,9 @@
 import { App, Setting, debounce, setIcon } from 'obsidian';
-
-import {
-	BACKUP_DATE_FORMAT_KEY,
-	BACKUP_PATH_KEY,
-	BULK_PRESET_APPLY_ACTION_KEY,
-	CREATED_DATE_FORMAT_KEY,
-	EDITOR_TAB_SIZE_KEY,
-	ENABLE_CONSOLE_LOGGING_KEY,
-	EXPORT_DATE_FORMAT_KEY,
-	EXPORT_EXTENSION_KEY,
-	EXPORT_PATH_KEY,
-	OPEN_IN_DEFAULT_APP_KEY,
-	OPEN_MODAL_ON_CREATE_KEY,
-	PRESET_APPLY_ACTION_KEY,
-	SCHEDULE_APPLY_ACTION_KEY,
-	SEPARATE_BULK_PRESETS_KEY,
-	SETTINGS_BLOCK_COMPONENT_SPACES_KEY,
-	SETTINGS_BLOCK_DASH_SPACES_KEY,
-	SHOW_ISOLATE_NOTIFICATIONS_KEY,
-	SHOW_PARSE_LOGS_ICON_KEY,
-	SHOW_PRESET_NOTIFICATIONS_KEY,
-	SHOW_SHARED_NOTIFICATIONS_KEY,
-	SHOW_SNIPPET_METADATA_KEY,
-	SHOW_SNIPPET_NOTIFICATIONS_KEY,
-	SHOW_STATUS_BAR_KEY,
-	SHOW_UTILITY_NOTIFICATIONS_KEY,
-	SKIP_DELETE_CONFIRM_KEY,
-	SKIP_EXPORT_CONFIRM_KEY,
-	SKIP_IMPORT_CONFIRM_KEY,
-	STICKY_HEADING_KEY,
-} from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
 import { ConfirmModal } from '../modals/ConfirmModal';
 import { ExportDataConfigModal } from '../modals/ExportDataConfigModal';
+import { BackupKeys, PreferencesKeys, ExportKeys, NotificationKeys, ConfirmKeys } from "../../constants";
 
 export class PreferencesTab {
 	private filterString: string = '';
@@ -99,7 +69,7 @@ export class PreferencesTab {
 			)
 			.addText((text) => {
 				const currentPath =
-					(plugin.settingsService.sharedSettings[BACKUP_PATH_KEY] as string) ??
+					(plugin.settingsService.sharedSettings[BackupKeys.BACKUP_PATH] as string) ??
 					'';
 				text
 					.setPlaceholder('Folder/Path (leave empty for vault root)')
@@ -107,7 +77,7 @@ export class PreferencesTab {
 					.onChange(
 						debounce(async (val) => {
 							await plugin.settingsService.setSettings(
-								{ [BACKUP_PATH_KEY]: val.trim() },
+								{ [BackupKeys.BACKUP_PATH]: val.trim() },
 								{ silentUI: true, target: 'shared' }
 							);
 						}, 500)
@@ -125,7 +95,7 @@ export class PreferencesTab {
 					.setPlaceholder('YYYYMMDDHHmmss')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							BACKUP_DATE_FORMAT_KEY
+							BackupKeys.BACKUP_DATE_FORMAT
 						] as string) ?? 'YYYYMMDDHHmmss'
 					)
 					.onChange(
@@ -133,7 +103,7 @@ export class PreferencesTab {
 							const sanitized =
 								val.replace(/[:/\\?%*|"<>]/g, '') || 'YYYYMMDDHHmmss';
 							await plugin.settingsService.setSettings(
-								{ [BACKUP_DATE_FORMAT_KEY]: sanitized },
+								{ [BackupKeys.BACKUP_DATE_FORMAT]: sanitized },
 								{ silentUI: true, target: 'shared' }
 							);
 						}, 500)
@@ -155,7 +125,7 @@ export class PreferencesTab {
 							const data = await plugin.backupService.createUniversalBackup();
 							const backupFormat =
 								(plugin.settingsService.sharedSettings[
-									BACKUP_DATE_FORMAT_KEY
+									BackupKeys.BACKUP_DATE_FORMAT
 								] as string) || 'YYYYMMDDHHmmss';
 							const timestamp = getFormattedTimestamp(backupFormat);
 							const filename = `full-backup-style-manager-${timestamp}.zip`;
@@ -292,7 +262,7 @@ export class PreferencesTab {
 			)
 			.addText((text) => {
 				const currentPath =
-					(plugin.settingsService.sharedSettings[EXPORT_PATH_KEY] as string) ||
+					(plugin.settingsService.sharedSettings[ExportKeys.EXPORT_PATH] as string) ||
 					'';
 				text
 					.setPlaceholder('Folder/Path')
@@ -300,7 +270,7 @@ export class PreferencesTab {
 					.onChange(
 						debounce(async (val) => {
 							await plugin.settingsService.setSettings(
-								{ [EXPORT_PATH_KEY]: val.trim() },
+								{ [ExportKeys.EXPORT_PATH]: val.trim() },
 								{ silentUI: true, target: 'shared' }
 							);
 						}, 500)
@@ -320,12 +290,12 @@ export class PreferencesTab {
 					.addOption('.txt', '.txt')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							EXPORT_EXTENSION_KEY
+							ExportKeys.EXPORT_EXTENSION
 						] as string) || '.json'
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [EXPORT_EXTENSION_KEY]: val },
+							{ [ExportKeys.EXPORT_EXTENSION]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -341,14 +311,14 @@ export class PreferencesTab {
 					.setPlaceholder('YYYYMMDDHHmmss')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							EXPORT_DATE_FORMAT_KEY
+							ExportKeys.EXPORT_DATE_FORMAT
 						] as string) ?? 'YYYYMMDDHHmmss'
 					)
 					.onChange(
 						debounce(async (val) => {
 							const sanitized = val.replace(/[:/\\?%*|"<>]/g, '');
 							await plugin.settingsService.setSettings(
-								{ [EXPORT_DATE_FORMAT_KEY]: sanitized },
+								{ [ExportKeys.EXPORT_DATE_FORMAT]: sanitized },
 								{ silentUI: true, target: 'shared' }
 							);
 						}, 500)
@@ -364,12 +334,12 @@ export class PreferencesTab {
 				toggle
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							SEPARATE_BULK_PRESETS_KEY
+							PreferencesKeys.SEPARATE_BULK_PRESETS
 						] as boolean) || false
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [SEPARATE_BULK_PRESETS_KEY]: val },
+							{ [PreferencesKeys.SEPARATE_BULK_PRESETS]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -394,14 +364,14 @@ export class PreferencesTab {
 					.setPlaceholder('MMM. DD, YYYY')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							CREATED_DATE_FORMAT_KEY
+							ExportKeys.CREATED_DATE_FORMAT
 						] as string) || 'MMM. DD, YYYY'
 					)
 					.onChange(
 						debounce(async (val) => {
 							await plugin.settingsService.setSettings(
 								{
-									[CREATED_DATE_FORMAT_KEY]: val || 'MMM. DD, YYYY',
+									[ExportKeys.CREATED_DATE_FORMAT]: val || 'MMM. DD, YYYY',
 								},
 								{ silentUI: true, target: 'shared' }
 							);
@@ -418,12 +388,12 @@ export class PreferencesTab {
 				toggle
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							SHOW_STATUS_BAR_KEY
+							PreferencesKeys.SHOW_STATUS_BAR
 						] as boolean) === true
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [SHOW_STATUS_BAR_KEY]: val },
+							{ [PreferencesKeys.SHOW_STATUS_BAR]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -438,12 +408,12 @@ export class PreferencesTab {
 				toggle
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							SHOW_SNIPPET_METADATA_KEY
+							PreferencesKeys.SHOW_SNIPPET_METADATA
 						] as boolean) !== false
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [SHOW_SNIPPET_METADATA_KEY]: val },
+							{ [PreferencesKeys.SHOW_SNIPPET_METADATA]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -458,12 +428,12 @@ export class PreferencesTab {
 				toggle
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							STICKY_HEADING_KEY
+							PreferencesKeys.STICKY_HEADING
 						] as boolean) !== false
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [STICKY_HEADING_KEY]: val },
+							{ [PreferencesKeys.STICKY_HEADING]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -484,17 +454,17 @@ export class PreferencesTab {
 			desc: string;
 		}> = [
 			{
-				key: SKIP_DELETE_CONFIRM_KEY,
+				key: ConfirmKeys.SKIP_DELETE_CONFIRM,
 				name: 'Skip delete confirmation',
 				desc: 'Instantly delete presets without showing the confirmation dialog.',
 			},
 			{
-				key: SKIP_EXPORT_CONFIRM_KEY,
+				key: ConfirmKeys.SKIP_EXPORT_CONFIRM,
 				name: 'Skip export confirmation',
 				desc: 'Instantly export presets without showing the confirmation dialog.',
 			},
 			{
-				key: SKIP_IMPORT_CONFIRM_KEY,
+				key: ConfirmKeys.SKIP_IMPORT_CONFIRM,
 				name: 'Skip import confirmation',
 				desc: 'Instantly import presets or styles without showing the confirmation dialog.',
 			},
@@ -510,12 +480,12 @@ export class PreferencesTab {
 					.addOption('merge', 'Merge (Apply without resetting)')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							PRESET_APPLY_ACTION_KEY
+							PreferencesKeys.PRESET_APPLY_ACTION
 						] as string) || 'ask'
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [PRESET_APPLY_ACTION_KEY]: val },
+							{ [PreferencesKeys.PRESET_APPLY_ACTION]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -531,12 +501,12 @@ export class PreferencesTab {
 					.addOption('merge', 'Merge (Apply without resetting)')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							BULK_PRESET_APPLY_ACTION_KEY
+							PreferencesKeys.BULK_PRESET_APPLY_ACTION
 						] as string) || 'ask'
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [BULK_PRESET_APPLY_ACTION_KEY]: val },
+							{ [PreferencesKeys.BULK_PRESET_APPLY_ACTION]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -551,12 +521,12 @@ export class PreferencesTab {
 					.addOption('merge', 'Merge (Apply without resetting)')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							SCHEDULE_APPLY_ACTION_KEY
+							PreferencesKeys.SCHEDULE_APPLY_ACTION
 						] as string) || 'overwrite'
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [SCHEDULE_APPLY_ACTION_KEY]: val },
+							{ [PreferencesKeys.SCHEDULE_APPLY_ACTION]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -598,12 +568,12 @@ export class PreferencesTab {
 				toggle
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							OPEN_MODAL_ON_CREATE_KEY
+							PreferencesKeys.OPEN_MODAL_ON_CREATE
 						] as boolean) !== false
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [OPEN_MODAL_ON_CREATE_KEY]: val },
+							{ [PreferencesKeys.OPEN_MODAL_ON_CREATE]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -616,9 +586,9 @@ export class PreferencesTab {
 			)
 			.addToggle((toggle) => {
 				toggle
-					.setValue(localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true')
+					.setValue(localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true')
 					.onChange(async (val) => {
-						localStorage.setItem(OPEN_IN_DEFAULT_APP_KEY, String(val));
+						localStorage.setItem(PreferencesKeys.OPEN_IN_DEFAULT_APP, String(val));
 					});
 			});
 
@@ -631,12 +601,12 @@ export class PreferencesTab {
 					.setDynamicTooltip()
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							EDITOR_TAB_SIZE_KEY
+							PreferencesKeys.EDITOR_TAB_SIZE
 						] as number) || 4
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [EDITOR_TAB_SIZE_KEY]: val },
+							{ [PreferencesKeys.EDITOR_TAB_SIZE]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -654,7 +624,7 @@ export class PreferencesTab {
 					.setTooltip('Reset to default (4)')
 					.onClick(async () => {
 						await plugin.settingsService.setSettings(
-							{ [EDITOR_TAB_SIZE_KEY]: 4 },
+							{ [PreferencesKeys.EDITOR_TAB_SIZE]: 4 },
 							{ silentUI: true, target: 'shared' }
 						);
 						const slider = (
@@ -679,22 +649,22 @@ export class PreferencesTab {
 					.setDynamicTooltip()
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							SETTINGS_BLOCK_DASH_SPACES_KEY
+							PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
 						] as number) ?? 4
 					)
 					.onChange(async (val) => {
 						let compVal =
 							(plugin.settingsService.sharedSettings[
-								SETTINGS_BLOCK_COMPONENT_SPACES_KEY
+								PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES
 							] as number) ?? 8;
 
 						const updates: Record<string, number> = {
-							[SETTINGS_BLOCK_DASH_SPACES_KEY]: val,
+							[PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES]: val,
 						};
 
 						if (val >= compVal) {
 							compVal = val + 1;
-							updates[SETTINGS_BLOCK_COMPONENT_SPACES_KEY] = compVal;
+							updates[PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES] = compVal;
 						}
 
 						await plugin.settingsService.setSettings(updates, {
@@ -727,16 +697,16 @@ export class PreferencesTab {
 						const dashDefault = 4;
 						let compVal =
 							(plugin.settingsService.sharedSettings[
-								SETTINGS_BLOCK_COMPONENT_SPACES_KEY
+								PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES
 							] as number) ?? 8;
 
 						const updates: Record<string, number> = {
-							[SETTINGS_BLOCK_DASH_SPACES_KEY]: dashDefault,
+							[PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES]: dashDefault,
 						};
 
 						if (dashDefault >= compVal) {
 							compVal = dashDefault + 1;
-							updates[SETTINGS_BLOCK_COMPONENT_SPACES_KEY] = compVal;
+							updates[PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES] = compVal;
 						}
 
 						await plugin.settingsService.setSettings(updates, {
@@ -775,13 +745,13 @@ export class PreferencesTab {
 					.setDynamicTooltip()
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							SETTINGS_BLOCK_COMPONENT_SPACES_KEY
+							PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES
 						] as number) ?? 8
 					)
 					.onChange(async (val) => {
 						const dashVal =
 							(plugin.settingsService.sharedSettings[
-								SETTINGS_BLOCK_DASH_SPACES_KEY
+								PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
 							] as number) ?? 4;
 
 						let finalVal = val;
@@ -790,7 +760,7 @@ export class PreferencesTab {
 						}
 
 						await plugin.settingsService.setSettings(
-							{ [SETTINGS_BLOCK_COMPONENT_SPACES_KEY]: finalVal },
+							{ [PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES]: finalVal },
 							{ silentUI: true, target: 'shared' }
 						);
 
@@ -814,7 +784,7 @@ export class PreferencesTab {
 						const compDefault = 8;
 						const dashVal =
 							(plugin.settingsService.sharedSettings[
-								SETTINGS_BLOCK_DASH_SPACES_KEY
+								PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
 							] as number) ?? 4;
 
 						let finalVal = compDefault;
@@ -823,7 +793,7 @@ export class PreferencesTab {
 						}
 
 						await plugin.settingsService.setSettings(
-							{ [SETTINGS_BLOCK_COMPONENT_SPACES_KEY]: finalVal },
+							{ [PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES]: finalVal },
 							{ silentUI: true, target: 'shared' }
 						);
 
@@ -854,12 +824,12 @@ export class PreferencesTab {
 				toggle
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							SHOW_PARSE_LOGS_ICON_KEY
+							PreferencesKeys.SHOW_PARSE_LOGS_ICON
 						] as boolean) !== false
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [SHOW_PARSE_LOGS_ICON_KEY]: val },
+							{ [PreferencesKeys.SHOW_PARSE_LOGS_ICON]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});
@@ -867,27 +837,27 @@ export class PreferencesTab {
 
 		const notificationSettings = [
 			{
-				key: SHOW_SHARED_NOTIFICATIONS_KEY,
+				key: NotificationKeys.SHOW_SHARED_NOTIFICATIONS,
 				name: 'shared notifications',
 				desc: 'Alerts when background shared changes are detected.',
 			},
 			{
-				key: SHOW_PRESET_NOTIFICATIONS_KEY,
+				key: NotificationKeys.SHOW_PRESET_NOTIFICATIONS,
 				name: 'preset notifications',
 				desc: 'Alerts when saving, applying, or exporting presets.',
 			},
 			{
-				key: SHOW_ISOLATE_NOTIFICATIONS_KEY,
+				key: NotificationKeys.SHOW_ISOLATE_NOTIFICATIONS,
 				name: 'isolate notifications',
 				desc: 'Alerts when resetting or pushing isolated configurations.',
 			},
 			{
-				key: SHOW_SNIPPET_NOTIFICATIONS_KEY,
+				key: NotificationKeys.SHOW_SNIPPET_NOTIFICATIONS,
 				name: 'snippet notifications',
 				desc: 'Alerts when managing CSS snippets (save, rename, delete).',
 			},
 			{
-				key: SHOW_UTILITY_NOTIFICATIONS_KEY,
+				key: NotificationKeys.SHOW_UTILITY_NOTIFICATIONS,
 				name: 'utility notifications',
 				desc: 'Minor UI feedback like "Copied to clipboard".',
 			},
@@ -900,7 +870,7 @@ export class PreferencesTab {
 				.addToggle((toggle) => {
 					toggle
 						.setValue(
-							key === SHOW_SHARED_NOTIFICATIONS_KEY
+							key === NotificationKeys.SHOW_SHARED_NOTIFICATIONS
 								? plugin.settingsService.sharedSettings[key] === true
 								: plugin.settingsService.sharedSettings[key] !== false
 						)
@@ -922,12 +892,12 @@ export class PreferencesTab {
 				toggle
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							ENABLE_CONSOLE_LOGGING_KEY
+							PreferencesKeys.ENABLE_CONSOLE_LOGGING
 						] as boolean) || false
 					)
 					.onChange(async (val) => {
 						await plugin.settingsService.setSettings(
-							{ [ENABLE_CONSOLE_LOGGING_KEY]: val },
+							{ [PreferencesKeys.ENABLE_CONSOLE_LOGGING]: val },
 							{ silentUI: true, target: 'shared' }
 						);
 					});

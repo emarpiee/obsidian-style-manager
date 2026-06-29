@@ -1,15 +1,10 @@
 import { App, Component, Menu, Setting, setIcon } from 'obsidian';
-
-import {
-	OPEN_IN_DEFAULT_APP_KEY,
-	SHOW_SNIPPET_METADATA_KEY,
-	SNIPPETS_KEY,
-} from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { SnippetMetadata } from '../../../types';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { RenameModal } from '../../modals/RenameModal';
+import { PreferencesKeys, StorageKeys } from "../../../constants";
 
 /**
  * A modular component that represents a single CSS snippet row.
@@ -39,7 +34,7 @@ export class SnippetSettingComponent extends Component {
 
 	render(): void {
 		const currentEnabled =
-			(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) || [];
+			(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
 		const isEnabled = currentEnabled.includes(this.snippetId);
 
 		let toggleEl: HTMLElement;
@@ -51,14 +46,14 @@ export class SnippetSettingComponent extends Component {
 				toggleEl = toggle.toggleEl;
 				toggle.setValue(isEnabled).onChange(async (value) => {
 					const snippets = new Set(
-						(this.plugin.settingsService.settings[SNIPPETS_KEY] as string[]) ||
+						(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) ||
 							[]
 					);
 					if (value) snippets.add(this.snippetId);
 					else snippets.delete(this.snippetId);
 
 					const list = Array.from(snippets);
-					await this.plugin.settingsService.setSetting(SNIPPETS_KEY, list, {
+					await this.plugin.settingsService.setSetting(StorageKeys.SNIPPETS, list, {
 						silentUI: true,
 					});
 				});
@@ -159,7 +154,7 @@ export class SnippetSettingComponent extends Component {
 	private renderMetadata(): void {
 		const showMetadata =
 			(this.plugin.settingsService.settings[
-				SHOW_SNIPPET_METADATA_KEY
+				PreferencesKeys.SHOW_SNIPPET_METADATA
 			] as boolean) !== false;
 		if (!showMetadata || !this.metadata) return;
 
@@ -248,7 +243,7 @@ export class SnippetSettingComponent extends Component {
 
 	private onEdit(): void {
 		const useDefaultApp =
-			localStorage.getItem(OPEN_IN_DEFAULT_APP_KEY) === 'true';
+			localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
 		if (useDefaultApp) {
 			const path = this.plugin.settingsService.bridge.getSnippetPath(
 				this.snippetId
