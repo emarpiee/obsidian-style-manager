@@ -35,21 +35,8 @@ import {
 	VariableNumberSlider,
 	VariableSelect,
 	VariableText,
-	VariableThemedColor,
-} from '../../types';
+	VariableThemedColor, ColorFormat, AltFormatList } from '../../types';
 import { SettingType } from '../../ui/components/base/types';
-
-type ColorFormat =
-	| 'hex'
-	| 'hsl'
-	| 'hsl-values'
-	| 'hsl-split'
-	| 'hsl-split-decimal'
-	| 'rgb'
-	| 'rgb-values'
-	| 'rgb-split'
-	| 'oklch';
-type AltFormatList = Array<{ id: string; format: ColorFormat }>;
 
 /**
  * Core Engine for generating CSS variables and managing DOM classes.

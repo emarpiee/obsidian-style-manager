@@ -1,12 +1,7 @@
 import { StyleGenerator } from './StyleGenerator';
 
-import { RefreshLevel, RefreshOptions } from '../../types';
+import { RefreshLevel, RefreshOptions, RefreshDelegates } from '../../types';
 import { ViewManager } from '../../ui/ViewManager';
-
-export interface RefreshDelegates {
-	parseCSS?: () => void;
-	systemReload?: (options?: RefreshOptions) => Promise<void>;
-}
 
 /**
  * Service for centralizing UI and CSS refresh operations.

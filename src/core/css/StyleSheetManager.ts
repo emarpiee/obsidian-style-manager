@@ -21,21 +21,7 @@
 import { CSSParser } from './CSSParser';
 
 import { ObsidianBridge } from '../../infrastructure/bridge/ObsidianBridge';
-import { ParseLogList, ParsedCSSSettings } from '../../types';
-
-/** Typed accessor for internal bridge fields used only in this module. */
-interface BridgeInternals {
-	app: {
-		customCss?: { theme?: string };
-		vault: {
-			adapter: {
-				exists: (path: string) => Promise<boolean>;
-				stat: (path: string) => Promise<{ mtime: number }>;
-				read: (path: string) => Promise<string>;
-			};
-		};
-	};
-}
+import { ParseLogList, ParsedCSSSettings, BridgeInternals } from '../../types';
 
 /**
  * Manages discovery, parsing, and caching of CSS stylesheets containing @settings blocks.
