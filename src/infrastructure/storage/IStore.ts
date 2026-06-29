@@ -1,1 +1,1 @@
-import { IStore } from "../../types";
+export type { IStore } from "../../types";
