@@ -189,7 +189,7 @@ export class CSSParser {
 					}
 					break;
 				case 'class-multi-toggle':
-					if (typeof setting.default !== 'string') {
+					if (setting.default === undefined) {
 						setting.default = '';
 						parseLogs?.push({
 							name,
@@ -198,10 +198,28 @@ export class CSSParser {
 							timestamp: Date.now(),
 							settingId: setting.id,
 						});
+					} else if (typeof setting.default !== 'string') {
+						setting.default = '';
+						parseLogs?.push({
+							name,
+							message: `INVALID_DEFAULT: Class multi toggle '${setting.id}' default is not a string, falling back to empty string`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
 					}
 					break;
 				case 'class-toggle':
-					if (typeof setting.default !== 'boolean') {
+					if (setting.default === undefined) {
+						setting.default = false;
+						parseLogs?.push({
+							name,
+							message: `MISSING_DEFAULT: Class toggle '${setting.id}' missing default, falling back to false`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					} else if (typeof setting.default !== 'boolean') {
 						setting.default = false;
 						parseLogs?.push({
 							name,
@@ -230,6 +248,15 @@ export class CSSParser {
 						parseLogs?.push({
 							name,
 							message: `MISSING_DEFAULT: Variable text '${setting.id}' missing default, falling back to ""`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					} else if (typeof setting.default !== 'string') {
+						setting.default = '';
+						parseLogs?.push({
+							name,
+							message: `INVALID_DEFAULT: Variable text '${setting.id}' default is not a string, falling back to ""`,
 							type: 'warning',
 							timestamp: Date.now(),
 							settingId: setting.id,
@@ -342,6 +369,7 @@ export class CSSParser {
 						setting.default > setting.max
 					) {
 						const oldDefault = setting.default;
+						const isMissing = setting.default === undefined;
 						setting.default = Math.max(
 							setting.min,
 							Math.min(
@@ -353,7 +381,9 @@ export class CSSParser {
 						);
 						parseLogs?.push({
 							name,
-							message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) ${!isNumeric(setting.default) ? 'is invalid' : 'out of bounds'}, clamped to ${setting.default}`,
+							message: isMissing 
+								? `MISSING_DEFAULT: Slider '${setting.id}' missing default, falling back to ${setting.default}`
+								: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) ${!isNumeric(setting.default) ? 'is invalid' : 'out of bounds'}, clamped to ${setting.default}`,
 							type: 'warning',
 							timestamp: Date.now(),
 							settingId: setting.id,
@@ -388,11 +418,20 @@ export class CSSParser {
 							settingId: setting.id,
 						});
 					}
-					if (typeof setting.default !== 'string') {
+					if (setting.default === undefined) {
 						setting.default = FALLBACK_COLOR;
 						parseLogs?.push({
 							name,
 							message: `MISSING_DEFAULT: Variable color '${setting.id}' missing default value, falling back to '${FALLBACK_COLOR}'`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					} else if (typeof setting.default !== 'string') {
+						setting.default = FALLBACK_COLOR;
+						parseLogs?.push({
+							name,
+							message: `INVALID_DEFAULT: Variable color '${setting.id}' default is not a string, falling back to '${FALLBACK_COLOR}'`,
 							type: 'warning',
 							timestamp: Date.now(),
 							settingId: setting.id,
@@ -413,11 +452,20 @@ export class CSSParser {
 					const themedFields = ['default-light', 'default-dark'] as const;
 					for (const field of themedFields) {
 						const value = setting[field];
-						if (typeof value !== 'string') {
+						if (value === undefined) {
 							setting[field] = FALLBACK_COLOR;
 							parseLogs?.push({
 								name,
 								message: `MISSING_THEMED_COLOR_FIELD: Themed color '${setting.id}' missing ${field}, falling back to '${FALLBACK_COLOR}'`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						} else if (typeof value !== 'string') {
+							setting[field] = FALLBACK_COLOR;
+							parseLogs?.push({
+								name,
+								message: `INVALID_DEFAULT: Themed color '${setting.id}' ${field} is not a string, falling back to '${FALLBACK_COLOR}'`,
 								type: 'warning',
 								timestamp: Date.now(),
 								settingId: setting.id,
@@ -442,6 +490,15 @@ export class CSSParser {
 						parseLogs?.push({
 							name,
 							message: `MISSING_DEFAULT: Variable select '${setting.id}' missing default, falling back to ""`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					} else if (typeof setting.default !== 'string') {
+						setting.default = '';
+						parseLogs?.push({
+							name,
+							message: `INVALID_DEFAULT: Variable select '${setting.id}' default is not a string, falling back to ""`,
 							type: 'warning',
 							timestamp: Date.now(),
 							settingId: setting.id,
