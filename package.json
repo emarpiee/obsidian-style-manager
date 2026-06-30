@@ -1,6 +1,6 @@
 {
 	"name": "obsidian-style-manager",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"description": "Style Manager is an Obsidian plugin that provides advanced controls for managing themes, CSS snippets, and style settings. It transforms CSS snippets and theme settings into adjustable controls, enabling you to save, export or switch between entire aesthetic configurations as presets instantly.",
 	"main": "main.js",
 	"scripts": {
