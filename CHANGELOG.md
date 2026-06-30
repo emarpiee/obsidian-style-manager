@@ -1,5 +1,5 @@
-## Changelog for 0.1.2 (7/1/2026)
+## Changelog for 0.1.3 (7/1/2026)
 
-* 0.1.2 (915be31)
-* ci: update github actions to v4 to resolve node deprecation warning (ee93e78)
-* Added CHANGELOG.md (4780006)
+* 0.1.3 (e5a5615)
+* fix(ci): fix yaml indentation in release workflow (c82aa75)
+* Added CHANGELOG.md (163c8ab)
