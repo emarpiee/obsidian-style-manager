@@ -101,7 +101,7 @@ export class VariableSelectField extends AbstractSettingComponent {
 	}
 
 	refresh(): void {
-		this.dropdownComponent.setValue(this.setting.default);
+		this.dropdownComponent?.setValue(this.setting.default);
 		this.updateModifiedClass();
 	}
 

@@ -109,7 +109,7 @@ export class VariableTextField extends AbstractSettingComponent {
 	}
 
 	refresh(): void {
-		this.textComponent.setValue(this.setting.default);
+		this.textComponent?.setValue(this.setting.default);
 		this.updateModifiedClass();
 	}
 }

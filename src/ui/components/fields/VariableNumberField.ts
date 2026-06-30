@@ -117,7 +117,7 @@ export class VariableNumberField extends AbstractSettingComponent {
 	}
 
 	refresh(): void {
-		this.textComponent.setValue(this.setting.default.toString());
+		this.textComponent?.setValue(this.setting.default.toString());
 		this.updateModifiedClass();
 	}
 }
