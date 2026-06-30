@@ -21,7 +21,6 @@ export class ReadmeModal extends Modal {
 		await this.component.render(this.contentEl, {
 			plugin: this.plugin,
 			onOpenInTab: () => this.close(),
-			component: this as unknown as Component,
 			isModal: true,
 		});
 	}
