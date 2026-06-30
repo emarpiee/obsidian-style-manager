@@ -1,5 +1,7 @@
 import { setIcon, setTooltip } from 'obsidian';
 
+import { Logger } from '../../../utils/Logger';
+
 import { StorageKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { ThemeOption, ThemeSuggestModal } from '../../modals/ThemeSuggestModal';
@@ -42,7 +44,7 @@ export function renderThemeSelect(
 				themes.push({ id, name: themeObjects[id].name });
 			}
 		} catch (e) {
-			console.error(
+			Logger.error(
 				'Style Manager | Error loading themes for suggest modal:',
 				e
 			);

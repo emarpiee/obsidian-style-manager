@@ -6,6 +6,7 @@ import { PrefixMetadata, Preset } from '../types';
 
 import { ConfirmModal } from '../ui/modals/ConfirmModal';
 import { getFormattedTimestamp } from '../utils/CommonUtils';
+import { Logger } from '../utils/Logger';
 
 export class PresetService {
 	plugin: StyleManagerPlugin;
@@ -103,7 +104,7 @@ export class PresetService {
 				const file = await bridge.createFile(filename, content);
 				await bridge.trashFile(file);
 			} catch (err) {
-				console.error('Failed to trash preset backup:', err);
+				Logger.error('Style Manager | Failed to trash preset backup:', err);
 				this.plugin.settingsService.notifications.error(
 					`Error backing up preset "${preset.name}".`
 				);
@@ -147,7 +148,7 @@ export class PresetService {
 			try {
 				await bridge.mkdir(exportPath);
 			} catch (e) {
-				console.error('Style Manager | Failed to create export folder', e);
+				Logger.error('Style Manager | Failed to create export folder', e);
 			}
 		}
 
@@ -165,7 +166,7 @@ export class PresetService {
 				`Exported to vault: ${fullPath}`
 			);
 		} catch (e) {
-			console.error('Style Manager | Failed to save file to vault', e);
+			Logger.error('Style Manager | Failed to save file to vault', e);
 			this.plugin.settingsService.notifications.error(
 				'Failed to export to vault. Check console for details.'
 			);
@@ -356,7 +357,7 @@ export class PresetService {
 				`Applied ${count} preset${count > 1 ? 's' : ''}${isolateOnly ? ' (isolated)' : ''}.`
 			);
 		} catch (e) {
-			console.error('Style Manager | Preset Error:', e);
+			Logger.error('Style Manager | Preset Error:', e);
 			this.plugin.settingsService.notifications.error(
 				'Failed to apply presets.'
 			);

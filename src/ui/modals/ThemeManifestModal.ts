@@ -6,6 +6,7 @@ import { ThemeBuilderService } from '../../application/ThemeBuilderService';
 import { PreferencesKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { ThemeManifest } from '../../types';
+import { Logger } from '../../utils/Logger';
 import {
 	Validator,
 	Validators,
@@ -255,7 +256,7 @@ export class ThemeManifestModal extends Modal {
 							this.onSave();
 							this.close();
 						} catch (e) {
-							console.error('Failed to save theme manifest:', e);
+							Logger.error('Style Manager | Failed to save theme manifest:', e);
 							const message = e instanceof Error ? e.message : 'Unknown error';
 							this.plugin.settingsService.notifications.error(
 								`Failed to save theme manifest: ${message}`

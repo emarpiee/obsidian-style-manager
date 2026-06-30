@@ -27,6 +27,7 @@ import { ActiveSchedulesModal } from '../../modals/ActiveSchedulesModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { CreatePresetModal } from '../../modals/CreatePresetModal';
 import { ImportPresetModal } from '../../modals/ImportPresetModal';
+import { Logger } from '../../../utils/Logger';
 
 export class PresetList {
 	private listContainer: HTMLElement;
@@ -262,7 +263,7 @@ export class PresetList {
 					service.selectedPresets.clear();
 					this.renderPresetListItems();
 				} catch (err) {
-					console.error('Style Manager | Bulk export failed:', err);
+					Logger.error('Style Manager | Bulk export failed:', err);
 					plugin.settingsService.notifications.error(
 						`Export failed: ${err instanceof Error ? err.message : String(err)}`
 					);

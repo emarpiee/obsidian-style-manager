@@ -4,6 +4,7 @@ import { normalizePath } from 'obsidian';
 import { BackupKeys, ExportKeys } from '../constants';
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
+import { Logger } from '../utils/Logger';
 
 /**
  * Service for managing full plugin backups, safety snapshots, and loop-free restores.
@@ -79,7 +80,7 @@ export class BackupService {
 							snippetsFolder.file(`${snippetId}.css`, content);
 						}
 					} catch (e) {
-						console.error(
+						Logger.error(
 							`BackupService | Failed to add snippet ${snippetId} to backup:`,
 							e
 						);
@@ -114,7 +115,7 @@ export class BackupService {
 							}
 						}
 					} catch (e) {
-						console.error(
+						Logger.error(
 							`BackupService | Failed to add theme "${themeName}" to backup:`,
 							e
 						);
@@ -316,7 +317,7 @@ export class BackupService {
 			);
 			return true;
 		} catch (e) {
-			console.error('BackupService | Restore failed:', e);
+			Logger.error('BackupService | Restore failed:', e);
 			this.plugin.settingsService.notifications.error(
 				`Restore failed: ${e instanceof Error ? e.message : String(e)}`
 			);
@@ -346,7 +347,7 @@ export class BackupService {
 			try {
 				await bridge.mkdir(backupPath);
 			} catch (e) {
-				console.error('BackupService | Failed to create backup folder', e);
+				Logger.error('BackupService | Failed to create backup folder', e);
 			}
 		}
 

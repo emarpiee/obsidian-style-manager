@@ -3,6 +3,7 @@ import { Options, RRule } from 'rrule';
 
 import StyleManagerPlugin from '../../main';
 import { PresetSchedule } from '../../types';
+import { Logger } from '../../utils/Logger';
 
 export class PresetScheduleModal extends Modal {
 	plugin: StyleManagerPlugin;
@@ -95,7 +96,7 @@ export class PresetScheduleModal extends Modal {
 				}
 			}
 		} catch (e) {
-			console.error('Failed to parse RRule:', e);
+			Logger.warn('Style Manager | Failed to parse RRule, using defaults:', e);
 		}
 	}
 

@@ -6,6 +6,7 @@ import { SnippetMetadata } from '../../../types';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { RenameModal } from '../../modals/RenameModal';
+import { Logger } from '../../../utils/Logger';
 
 /**
  * A modular component that represents a single CSS snippet row.
@@ -242,7 +243,7 @@ export class SnippetSettingComponent extends Component {
 				`Duplicated snippet: ${this.snippetId} -> ${newName}`
 			);
 		} catch (err) {
-			console.error('Failed to duplicate snippet:', err);
+			Logger.error('Style Manager | Failed to duplicate snippet:', err);
 			this.plugin.settingsService.notifications.error(
 				err instanceof Error ? err.message : 'Error duplicating snippet.'
 			);
@@ -284,7 +285,7 @@ export class SnippetSettingComponent extends Component {
 						`Renamed snippet to ${newName}`
 					);
 				} catch (err) {
-					console.error('Failed to rename snippet:', err);
+					Logger.error('Style Manager | Failed to rename snippet:', err);
 					this.plugin.settingsService.notifications.error(
 						err instanceof Error ? err.message : 'Error renaming snippet.'
 					);
@@ -309,7 +310,7 @@ export class SnippetSettingComponent extends Component {
 						`Deleted snippet: ${this.snippetId}`
 					);
 				} catch (err) {
-					console.error('Failed to delete snippet:', err);
+					Logger.error('Style Manager | Failed to delete snippet:', err);
 					this.plugin.settingsService.notifications.error(
 						err instanceof Error ? err.message : 'Error deleting snippet.'
 					);

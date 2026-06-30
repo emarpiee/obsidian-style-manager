@@ -5,6 +5,7 @@ import { addApplyOptionsToMenu } from './PresetMenuHelper';
 import { ConfirmKeys, ExportKeys, StorageKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { Preset } from '../../../types';
+import { Logger } from '../../../utils/Logger';
 import { formatPresetDate } from '../../../utils/CommonUtils';
 import {
 	renderAppearanceBadge,
@@ -197,7 +198,7 @@ export class PresetItem {
 											);
 										}
 									} catch (err) {
-										console.error('Style Manager | Export failed:', err);
+										Logger.error('Style Manager | Export failed:', err);
 										plugin.settingsService.notifications.error(
 											`Export failed: ${err instanceof Error ? err.message : String(err)}`
 										);

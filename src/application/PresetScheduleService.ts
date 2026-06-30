@@ -3,6 +3,7 @@ import { RRule } from 'rrule';
 import { PreferencesKeys } from '../constants';
 import StyleManagerPlugin from '../main';
 import { PresetSchedule } from '../types';
+import { Logger } from '../utils/Logger';
 
 export class PresetScheduleService {
 	plugin: StyleManagerPlugin;
@@ -254,7 +255,7 @@ export class PresetScheduleService {
 					updated = true;
 				}
 			} catch (err) {
-				console.error(
+				Logger.error(
 					`Style Manager | Error processing schedule ${schedule.id}:`,
 					err
 				);

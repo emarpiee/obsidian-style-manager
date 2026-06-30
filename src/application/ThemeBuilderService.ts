@@ -1,6 +1,7 @@
 import { App, normalizePath } from 'obsidian';
 
 import { ThemeManifest } from '../types';
+import { Logger } from '../utils/Logger';
 import { NotificationService } from './NotificationService';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
@@ -124,7 +125,7 @@ export class ThemeBuilderService {
 					themes[themeId] = JSON.parse(manifestContent);
 				}
 			} catch (e) {
-				console.error(`Failed to load manifest for theme ${themeId}:`, e);
+				Logger.warn(`Style Manager | Failed to load manifest for theme ${themeId}:`, e);
 			}
 		}
 

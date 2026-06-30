@@ -2,6 +2,7 @@ import { Menu, setIcon, setTooltip } from 'obsidian';
 
 import { PreferencesKeys, StorageKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
+import { Logger } from '../../utils/Logger';
 import { ThemeOption, ThemeSuggestModal } from '../modals/ThemeSuggestModal';
 
 /**
@@ -141,7 +142,7 @@ export class StatusBarManager {
 							themes.push({ id, name: themeObjects[id].name });
 						}
 					} catch (e) {
-						console.error(
+						Logger.error(
 							'Style Manager | Error loading themes for status bar suggest modal:',
 							e
 						);

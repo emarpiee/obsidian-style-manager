@@ -10,6 +10,7 @@ import {
 } from '../components/fields/HeadingField';
 import { CSSParserLogsModal } from '../modals/CSSParserLogsModal';
 import { ReadmeModal } from '../modals/ReadmeModal';
+import { Logger } from '../../utils/Logger';
 
 export interface StylesTabDeps {
 	plugin: StyleManagerPlugin;
@@ -189,7 +190,7 @@ export class StylesTab {
 				this.deps.addChild(tree);
 				this.deps.getSettingsComponentTrees().push(tree);
 			} catch (e) {
-				console.error('Style Manager | Failed to render section', e);
+				Logger.error('Style Manager | Failed to render section', e);
 			}
 		}
 

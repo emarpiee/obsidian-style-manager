@@ -24,6 +24,7 @@ import yaml from 'js-yaml';
 import { ParseLogList, ParsedCSSSettings, SnippetMetadata } from '../../types';
 import { FALLBACK_COLOR } from '../../types';
 import { isValidDefaultColor } from '../../utils/ColorUtils';
+import { Logger } from '../../utils/Logger';
 import {
 	metadataRegExp,
 	nameRegExp,
@@ -512,7 +513,7 @@ export class CSSParser {
 				str.replace(/\t/g, indent.type === 'space' ? indent.indent : '    ')
 			) as SnippetMetadata;
 		} catch (e) {
-			console.error('Style Manager | Metadata parse error:', e);
+			Logger.warn('Style Manager | Metadata parse error:', e);
 			return undefined;
 		}
 	}

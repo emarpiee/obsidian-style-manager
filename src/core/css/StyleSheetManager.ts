@@ -22,6 +22,7 @@ import { CSSParser } from './CSSParser';
 
 import { ObsidianBridge } from '../../infrastructure/bridge/ObsidianBridge';
 import { BridgeInternals, ParseLogList, ParsedCSSSettings } from '../../types';
+import { Logger } from '../../utils/Logger';
 
 /**
  * Manages discovery, parsing, and caching of CSS stylesheets containing @settings blocks.
@@ -425,7 +426,7 @@ export class StyleSheetManager {
 
 			return { settingsList, parseLogs };
 		} catch (e) {
-			console.error('Style Manager | Error during CSS analysis:', e);
+			Logger.error('Style Manager | Error during CSS analysis:', e);
 			return { settingsList: [], parseLogs: [] };
 		}
 	}

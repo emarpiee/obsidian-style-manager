@@ -41,6 +41,7 @@ import { Menu, Platform, Setting, setIcon, setTooltip } from 'obsidian';
 import { PreferencesKeys, StorageKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { RefreshLevel } from '../../types';
+import { Logger } from '../../utils/Logger';
 
 export interface CSSEditorRenderOptions {
 	plugin: StyleManagerPlugin;
@@ -390,7 +391,7 @@ export class CSSEditor {
 				this.onSaveSuccess(this.newName);
 			}
 		} catch (err) {
-			console.error(`Failed to save ${type}:`, err);
+			Logger.error(`Style Manager | Failed to save ${type}:`, err);
 			this.plugin.settingsService.notifications.error(
 				`Failed to save ${type.toLowerCase()}.`
 			);

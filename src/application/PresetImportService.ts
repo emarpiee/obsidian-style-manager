@@ -3,6 +3,7 @@ import JSZip from 'jszip';
 import { StorageKeys } from '../constants';
 import StyleManagerPlugin from '../main';
 import { ImportAnalysis } from '../types';
+import { Logger } from '../utils/Logger';
 
 export class PresetImportService {
 	constructor(private plugin: StyleManagerPlugin) {}
@@ -184,7 +185,7 @@ export class PresetImportService {
 							manifestObj.name = resolution.newName;
 							content = JSON.stringify(manifestObj, null, 2);
 						} catch (e) {
-							console.error(
+							Logger.error(
 								'Style Manager | Failed to parse manifest JSON during rename:',
 								e
 							);

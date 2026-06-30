@@ -9,6 +9,7 @@ import {
 } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
+import { Logger } from '../../utils/Logger';
 import { ConfirmModal } from '../modals/ConfirmModal';
 import { ExportDataConfigModal } from '../modals/ExportDataConfigModal';
 
@@ -139,7 +140,7 @@ export class PreferencesTab {
 							const filename = `full-backup-style-manager-${timestamp}.zip`;
 							await plugin.backupService.saveBackupToVault(filename, data);
 						} catch (e) {
-							console.error('Style Manager | Backup failed:', e);
+							Logger.error('Style Manager | Backup failed:', e);
 							plugin.settingsService.notifications.error(
 								'Backup failed. See console for details.'
 							);
