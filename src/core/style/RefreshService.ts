@@ -1,6 +1,6 @@
 import { StyleGenerator } from './StyleGenerator';
 
-import { RefreshLevel, RefreshOptions, RefreshDelegates } from '../../types';
+import { RefreshDelegates, RefreshLevel, RefreshOptions } from '../../types';
 import { ViewManager } from '../../ui/ViewManager';
 
 /**

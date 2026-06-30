@@ -1,4 +1,5 @@
 import chroma from 'chroma-js';
+
 import ColorPicker from '../lib/colorpicker/colorpicker.min.js';
 
 /**
@@ -35,7 +36,14 @@ export function getColorPickerConfig(opts: {
 	toggleStyle?: 'button' | 'input';
 	dialogPlacement?: string;
 }): ConstructorParameters<typeof ColorPicker>[1] {
-	const { isView, container, opacity, defaultColor, toggleStyle, dialogPlacement } = opts;
+	const {
+		isView,
+		container,
+		opacity,
+		defaultColor,
+		toggleStyle,
+		dialogPlacement,
+	} = opts;
 
 	const safeColor = isColorValid(defaultColor) ? defaultColor : null;
 
@@ -46,7 +54,8 @@ export function getColorPickerConfig(opts: {
 		) as HTMLElement;
 		if (!sharedContainer) {
 			sharedContainer = document.createElement('div');
-			sharedContainer.className = 'style-manager-color-picker-wrapper style-manager-plugin';
+			sharedContainer.className =
+				'style-manager-color-picker-wrapper style-manager-plugin';
 			document.body.appendChild(sharedContainer);
 		}
 		targetContainer = sharedContainer;

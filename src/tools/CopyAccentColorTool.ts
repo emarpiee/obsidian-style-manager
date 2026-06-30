@@ -1,6 +1,8 @@
 import { Plugin } from 'obsidian';
+
+import { StorageKeys } from '../constants';
+
 import { SettingsService } from '../application/SettingsService';
-import { StorageKeys } from "../constants";
 
 export class CopyAccentColorTool {
 	constructor(private plugin: Plugin) {}

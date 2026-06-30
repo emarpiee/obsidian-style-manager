@@ -22,14 +22,14 @@ import detectIndent from 'detect-indent';
 import yaml from 'js-yaml';
 
 import { ParseLogList, ParsedCSSSettings, SnippetMetadata } from '../../types';
+import { FALLBACK_COLOR } from '../../types';
+import { isValidDefaultColor } from '../../utils/ColorUtils';
 import {
 	metadataRegExp,
 	nameRegExp,
 	settingRegExp,
 } from '../../utils/CommonUtils';
-import { isValidDefaultColor } from '../../utils/ColorUtils';
 import { isNumeric } from '../../utils/ValidationUtils';
-import { FALLBACK_COLOR } from '../../types';
 
 export class CSSParser {
 	private static parseCache: Map<

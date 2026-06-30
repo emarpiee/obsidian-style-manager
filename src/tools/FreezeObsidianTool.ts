@@ -1,6 +1,7 @@
 import { Notice } from 'obsidian';
+
+import { ToolKeys } from '../constants';
 import type StyleManagerPlugin from '../main';
-import { ToolKeys } from "../constants";
 
 declare const electronWindow: {
 	openDevTools: () => void;

@@ -1,7 +1,8 @@
 import { Plugin } from 'obsidian';
 
+import { UndocumentedApp } from '../types';
+
 import { Logger } from '../utils/Logger';
-import { UndocumentedApp } from "../types";
 
 export class MobileEmulationTool {
 	constructor(private plugin: Plugin) {}

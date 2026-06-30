@@ -3,6 +3,8 @@ import { App, Component, Menu, Platform, setIcon, setTooltip } from 'obsidian';
 import { renderAccentColorSelect } from './AccentColorSelector';
 import { IsolateModeHeader } from './IsolateModeHeader';
 import { renderThemeSelect } from './ThemeSelector';
+
+import { PreferencesKeys, StorageKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { RefreshLevel } from '../../../types';
 import { Logger } from '../../../utils/Logger';
@@ -11,7 +13,6 @@ import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { CreatePresetModal } from '../../modals/CreatePresetModal';
 import { ImportPresetModal } from '../../modals/ImportPresetModal';
 import { ResetSettingsModal } from '../../modals/ResetSettingsModal';
-import { StorageKeys, PreferencesKeys } from "../../../constants";
 
 export interface SettingsHeaderOptions {
 	activeTab: ActiveTab;
@@ -159,8 +160,9 @@ export class SettingsHeaderComponent extends Component {
 
 	private renderAppearanceToggle(containerEl: HTMLElement): void {
 		const appearance =
-			(this.plugin.settingsService.getSetting(StorageKeys.APPEARANCE) as string) ||
-			'system';
+			(this.plugin.settingsService.getSetting(
+				StorageKeys.APPEARANCE
+			) as string) || 'system';
 		let icon = '';
 		let label = '';
 		if (appearance === 'light') {
@@ -272,11 +274,13 @@ export class SettingsHeaderComponent extends Component {
 							await this.plugin.settingsService.snippetService.createSnippet();
 
 						const openModal =
-							this.plugin.settingsService.settings[PreferencesKeys.OPEN_MODAL_ON_CREATE] !==
-							false;
+							this.plugin.settingsService.settings[
+								PreferencesKeys.OPEN_MODAL_ON_CREATE
+							] !== false;
 						if (openModal) {
 							const useDefaultApp =
-								localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
+								localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) ===
+								'true';
 							if (useDefaultApp) {
 								const path =
 									this.plugin.settingsService.bridge.getSnippetPath(id);

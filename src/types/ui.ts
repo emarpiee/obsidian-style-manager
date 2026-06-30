@@ -154,7 +154,11 @@ export interface ColorGradient extends Meta {
 	step: number;
 }
 
-export type VariableKV = Array<{ key: string; value: string; important?: boolean }>;
+export type VariableKV = Array<{
+	key: string;
+	value: string;
+	important?: boolean;
+}>;
 
 export type AltFormatList = Array<{ id: string; format: ColorFormat }>;
 

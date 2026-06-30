@@ -1,7 +1,8 @@
 import { Menu, setIcon, setTooltip } from 'obsidian';
+
+import { PreferencesKeys, StorageKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { ThemeOption, ThemeSuggestModal } from '../modals/ThemeSuggestModal';
-import { StorageKeys, PreferencesKeys } from "../../constants";
 
 /**
  * Manages the Obsidian status bar integration for Style Manager.
@@ -41,7 +42,8 @@ export class StatusBarManager {
 	 */
 	public refresh(): void {
 		const showStatusBar =
-			this.plugin.settingsService.settings[PreferencesKeys.SHOW_STATUS_BAR] === true;
+			this.plugin.settingsService.settings[PreferencesKeys.SHOW_STATUS_BAR] ===
+			true;
 
 		if (!showStatusBar) {
 			this.cleanup();
@@ -57,9 +59,12 @@ export class StatusBarManager {
 		const isIsolate = this.plugin.settingsService.isIsolateMode();
 		const modifiedCount = this.plugin.settingsService.getTotalModifiedCount();
 		const enabledSnippets =
-			(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
+			(this.plugin.settingsService.settings[
+				StorageKeys.SNIPPETS
+			] as string[]) || [];
 		const activeTheme =
-			(this.plugin.settingsService.settings[StorageKeys.THEME] as string) || 'Default';
+			(this.plugin.settingsService.settings[StorageKeys.THEME] as string) ||
+			'Default';
 
 		// Update Icon
 		this.statusBarItem.empty();
@@ -96,9 +101,12 @@ export class StatusBarManager {
 		const isIsolate = this.plugin.settingsService.isIsolateMode();
 		const modifiedCount = this.plugin.settingsService.getTotalModifiedCount();
 		const enabledSnippets =
-			(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
+			(this.plugin.settingsService.settings[
+				StorageKeys.SNIPPETS
+			] as string[]) || [];
 		const activeTheme =
-			(this.plugin.settingsService.settings[StorageKeys.THEME] as string) || 'default';
+			(this.plugin.settingsService.settings[StorageKeys.THEME] as string) ||
+			'default';
 
 		// 1. Mode Information & Toggle
 		menu.addItem((item) => {
@@ -161,9 +169,13 @@ export class StatusBarManager {
 				.setIcon(icon)
 				.onClick(async () => {
 					const next = appearance === 'light' ? 'dark' : 'light';
-					await this.plugin.settingsService.setSetting(StorageKeys.APPEARANCE, next, {
-						silentUI: true,
-					});
+					await this.plugin.settingsService.setSetting(
+						StorageKeys.APPEARANCE,
+						next,
+						{
+							silentUI: true,
+						}
+					);
 					this.refresh();
 				});
 		});

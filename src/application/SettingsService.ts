@@ -1,4 +1,6 @@
 import { Events } from 'obsidian';
+
+import { PreferencesKeys, StorageKeys } from '../constants';
 import type StyleManagerPlugin from '../main';
 import {
 	ParsedCSSSettings,
@@ -25,7 +27,6 @@ import { SharedStore } from '../infrastructure/storage/SharedStore';
 import { ViewManager } from '../ui/ViewManager';
 import { DataUtils } from '../utils/CommonUtils';
 import { Logger } from '../utils/Logger';
-import { StorageKeys, PreferencesKeys } from "../constants";
 
 export class SettingsService extends Events {
 	public sharedSettings: StyleManagerSettings = {};
@@ -483,14 +484,16 @@ export class SettingsService extends Events {
 		// 4. Fallback for core settings if still missing
 		// This ensures the preset is "complete" even if some keys weren't explicitly set.
 		if (data[StorageKeys.THEME] === undefined) {
-			data[StorageKeys.THEME] = this.bridge.getNativeConfig('cssTheme') || 'default';
+			data[StorageKeys.THEME] =
+				this.bridge.getNativeConfig('cssTheme') || 'default';
 		}
 		if (data[StorageKeys.APPEARANCE] === undefined) {
 			data[StorageKeys.APPEARANCE] =
 				this.bridge.getNativeConfig('theme') === 'moonstone' ? 'light' : 'dark';
 		}
 		if (data[StorageKeys.ACCENT_COLOR] === undefined) {
-			data[StorageKeys.ACCENT_COLOR] = this.bridge.getNativeConfig('accentColor') || '';
+			data[StorageKeys.ACCENT_COLOR] =
+				this.bridge.getNativeConfig('accentColor') || '';
 		}
 		if (data[StorageKeys.SNIPPETS] === undefined) {
 			data[StorageKeys.SNIPPETS] = this.bridge.getEnabledSnippets();
@@ -557,9 +560,12 @@ export class SettingsService extends Events {
 		if (settingId === undefined) {
 			return this.settings[sectionId];
 		}
-		if (sectionId === StorageKeys.THEME) return this.settings[StorageKeys.THEME];
-		if (sectionId === StorageKeys.APPEARANCE) return this.settings[StorageKeys.APPEARANCE];
-		if (sectionId === StorageKeys.ACCENT_COLOR) return this.settings[StorageKeys.ACCENT_COLOR];
+		if (sectionId === StorageKeys.THEME)
+			return this.settings[StorageKeys.THEME];
+		if (sectionId === StorageKeys.APPEARANCE)
+			return this.settings[StorageKeys.APPEARANCE];
+		if (sectionId === StorageKeys.ACCENT_COLOR)
+			return this.settings[StorageKeys.ACCENT_COLOR];
 		return this.settings[`${sectionId}@@${settingId}`];
 	}
 
@@ -706,10 +712,16 @@ export class SettingsService extends Events {
 			this.applyAppearance(updates[StorageKeys.APPEARANCE] as string, persist);
 		}
 		if (updates[StorageKeys.ACCENT_COLOR]) {
-			this.applyAccentColor(updates[StorageKeys.ACCENT_COLOR] as string, persist);
+			this.applyAccentColor(
+				updates[StorageKeys.ACCENT_COLOR] as string,
+				persist
+			);
 		}
 		if (updates[StorageKeys.SNIPPETS]) {
-			await this.applySnippets(updates[StorageKeys.SNIPPETS] as string[], isIsolate);
+			await this.applySnippets(
+				updates[StorageKeys.SNIPPETS] as string[],
+				isIsolate
+			);
 		}
 
 		this.updateMerged();
@@ -780,12 +792,14 @@ export class SettingsService extends Events {
 		const isIsolate = this.isolateModeService.isIsolateMode();
 
 		if (keyMatched(key)) {
-			if (key === StorageKeys.THEME) await this.applyTheme('default', !isIsolate);
+			if (key === StorageKeys.THEME)
+				await this.applyTheme('default', !isIsolate);
 			else if (key === StorageKeys.APPEARANCE)
 				this.applyAppearance('light', !isIsolate);
 			else if (key === StorageKeys.ACCENT_COLOR)
 				this.applyAccentColor('#8a5cf5', !isIsolate);
-			else if (key === StorageKeys.SNIPPETS) await this.applySnippets([], isIsolate);
+			else if (key === StorageKeys.SNIPPETS)
+				await this.applySnippets([], isIsolate);
 		}
 
 		if (options?.silentUI) {

@@ -1,4 +1,6 @@
 import { Command, Notice, Plugin, normalizePath } from 'obsidian';
+
+import { StorageKeys, ToolKeys } from './constants';
 import {
 	ClassToggle,
 	ParseLogList,
@@ -51,7 +53,6 @@ import { LoremIpsumView, loremIpsumViewType } from './ui/views/LoremIpsumView';
 import { ReadmeView, readmeViewType } from './ui/views/ReadmeView';
 import { getDescription, getTitle } from './utils/CommonUtils';
 import { Logger } from './utils/Logger';
-import { StorageKeys, ToolKeys } from "./constants";
 
 export default class StyleManagerPlugin extends Plugin {
 	settingsService: SettingsService;
@@ -255,9 +256,13 @@ export default class StyleManagerPlugin extends Plugin {
 				) ?? 'red') as string;
 				new BoxOutlineColorPromptModal(this.app, currentColor, (value) => {
 					if (value !== null) {
-						this.settingsService.setSetting(ToolKeys.TOOL_BOX_OUTLINE_COLOR, value, {
-							silentUI: true,
-						});
+						this.settingsService.setSetting(
+							ToolKeys.TOOL_BOX_OUTLINE_COLOR,
+							value,
+							{
+								silentUI: true,
+							}
+						);
 						this.boxOutlineTool.updateColor();
 						new Notice(` CSS Box outline color set to ${value}`);
 					}
@@ -364,7 +369,9 @@ export default class StyleManagerPlugin extends Plugin {
 						const currentEnabled =
 							this.settingsService.bridge.getEnabledSnippets();
 						const lockerEnabled =
-							(this.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
+							(this.settingsService.settings[
+								StorageKeys.SNIPPETS
+							] as string[]) || [];
 
 						const currentString = JSON.stringify([...currentEnabled].sort());
 						const lockerString = JSON.stringify([...lockerEnabled].sort());
@@ -373,10 +380,14 @@ export default class StyleManagerPlugin extends Plugin {
 							Logger.log(
 								`Style Manager | Snippets: Adopting native snippet change (${isIsolate ? 'isolate' : 'shared'}).`
 							);
-							this.settingsService.setSetting(StorageKeys.SNIPPETS, currentEnabled, {
-								silentUI: false,
-								target: isIsolate ? 'isolate' : 'shared',
-							});
+							this.settingsService.setSetting(
+								StorageKeys.SNIPPETS,
+								currentEnabled,
+								{
+									silentUI: false,
+									target: isIsolate ? 'isolate' : 'shared',
+								}
+							);
 						}
 					}
 

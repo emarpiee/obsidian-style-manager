@@ -104,10 +104,17 @@ export abstract class AbstractSettingComponent extends Component {
 		if (str.startsWith('@type ')) {
 			const searchType = str.substring(6).trim().toLowerCase();
 			const knownTypes = [
-				'heading', 'info-text', 'class-toggle', 'class-select', 
-				'variable-text', 'variable-number', 'variable-number-slider', 
-				'variable-select', 'variable-color', 'variable-themed-color', 
-				'color-gradient'
+				'heading',
+				'info-text',
+				'class-toggle',
+				'class-select',
+				'variable-text',
+				'variable-number',
+				'variable-number-slider',
+				'variable-select',
+				'variable-color',
+				'variable-themed-color',
+				'color-gradient',
 			];
 			if (knownTypes.includes(searchType)) {
 				return this.setting.type.toLowerCase() === searchType;

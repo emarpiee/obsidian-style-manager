@@ -1,7 +1,7 @@
-import ColorPicker from '../../lib/colorpicker/colorpicker.min.js';
 import chroma from 'chroma-js';
 import { Notice, Setting, setIcon, setTooltip } from 'obsidian';
 
+import ColorPicker from '../../lib/colorpicker/colorpicker.min.js';
 import StyleManagerPlugin from '../../main';
 import { getColorPickerConfig } from '../../utils/ColorUtils';
 
@@ -118,15 +118,12 @@ export class ColorContrastChecker {
 				defaultColor: this.fgColor,
 			})
 		);
-		this.fgPicker.on(
-			'pick',
-			(color) => {
-				if (color) {
-					this.fgColor = color.string('hex').toUpperCase();
-					this.updateResults();
-				}
+		this.fgPicker.on('pick', (color) => {
+			if (color) {
+				this.fgColor = color.string('hex').toUpperCase();
+				this.updateResults();
 			}
-		);
+		});
 
 		this.bgSetting = new Setting(contentEl)
 			.setClass('style-manager-tool-contrast-color-row')
@@ -153,15 +150,12 @@ export class ColorContrastChecker {
 				defaultColor: this.bgColor,
 			})
 		);
-		this.bgPicker.on(
-			'pick',
-			(color) => {
-				if (color) {
-					this.bgColor = color.string('hex').toUpperCase();
-					this.updateResults();
-				}
+		this.bgPicker.on('pick', (color) => {
+			if (color) {
+				this.bgColor = color.string('hex').toUpperCase();
+				this.updateResults();
 			}
-		);
+		});
 
 		if (plugin) {
 			const openInTabBtn = contentEl.createDiv({

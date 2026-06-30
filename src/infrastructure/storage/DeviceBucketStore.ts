@@ -1,4 +1,4 @@
-import { DeviceBucket, IStore } from "../../types";
+import { DeviceBucket, IStore } from '../../types';
 
 /**
  * Store implementation for device-specific isolated settings.

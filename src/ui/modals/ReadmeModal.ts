@@ -1,4 +1,4 @@
-import { App, Component, Modal } from 'obsidian';
+import { App, Modal } from 'obsidian';
 
 import StyleManagerPlugin from '../../main';
 import { ReadmeComponent } from '../components/ReadmeComponent';

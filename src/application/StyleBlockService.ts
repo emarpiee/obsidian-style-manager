@@ -1,9 +1,10 @@
 import { EditorView } from '@codemirror/view';
+
+import { PreferencesKeys } from '../constants';
 import type StyleManagerPlugin from '../main';
+import { StyleBlockDefinition } from '../types';
 
 import { settingRegExp } from '../utils/CommonUtils';
-import { StyleBlockDefinition } from "../types";
-import { PreferencesKeys } from "../constants";
 
 /**
  * Service for injecting pre-defined code blocks (@metadata, @settings) into CSS.

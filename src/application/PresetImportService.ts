@@ -1,7 +1,8 @@
 import JSZip from 'jszip';
+
+import { StorageKeys } from '../constants';
 import StyleManagerPlugin from '../main';
 import { ImportAnalysis } from '../types';
-import { StorageKeys } from "../constants";
 
 export class PresetImportService {
 	constructor(private plugin: StyleManagerPlugin) {}
@@ -152,7 +153,8 @@ export class PresetImportService {
 				);
 				// Update preset references to the renamed snippet
 				for (const preset of analysis.presets || []) {
-					const snippets = (preset.data[StorageKeys.SNIPPETS] as string[]) || [];
+					const snippets =
+						(preset.data[StorageKeys.SNIPPETS] as string[]) || [];
 					const idx = snippets.indexOf(snippet.name);
 					if (idx !== -1) snippets[idx] = resolution.newName;
 				}
@@ -196,7 +198,9 @@ export class PresetImportService {
 				}
 				// Update preset references to the renamed theme
 				for (const preset of analysis.presets || []) {
-					const themeName = preset.data[StorageKeys.THEME] as string | undefined;
+					const themeName = preset.data[StorageKeys.THEME] as
+						| string
+						| undefined;
 					if (themeName === theme.name) {
 						preset.data[StorageKeys.THEME] = resolution.newName;
 					}

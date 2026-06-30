@@ -1,11 +1,12 @@
 import { App, Component, Menu, Setting, setIcon } from 'obsidian';
+
+import { PreferencesKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
+import { ThemeManifest } from '../../../types';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { RenameModal } from '../../modals/RenameModal';
 import { ThemeManifestModal } from '../../modals/ThemeManifestModal';
-import { ThemeManifest } from "../../../types";
-import { PreferencesKeys } from "../../../constants";
 
 export class ThemeItemComponent extends Component {
 	private setting: Setting;

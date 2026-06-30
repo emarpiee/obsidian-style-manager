@@ -1,5 +1,5 @@
+import { StorageKeys } from '../constants';
 import { StatsServiceOptions } from '../types';
-import { StorageKeys } from "../constants";
 
 /**
  * Service for calculating setting statistics and section metadata.
@@ -48,7 +48,12 @@ export class StatsService {
 			string,
 			{ id: string; count: number; isActive: boolean; keys: string[] }
 		> = {
-			__theme: { id: '__theme', count: 1, isActive: true, keys: [StorageKeys.THEME] },
+			__theme: {
+				id: '__theme',
+				count: 1,
+				isActive: true,
+				keys: [StorageKeys.THEME],
+			},
 			__appearance: {
 				id: '__appearance',
 				count: 1,
@@ -180,7 +185,8 @@ export class StatsService {
 						: s.id === '__appearance'
 							? (currentSettings[StorageKeys.APPEARANCE] as string) || 'system'
 							: s.id === '__accentColor'
-								? (currentSettings[StorageKeys.ACCENT_COLOR] as string) || currentAccent
+								? (currentSettings[StorageKeys.ACCENT_COLOR] as string) ||
+									currentAccent
 								: s.id === '__snippets'
 									? (currentSettings[StorageKeys.SNIPPETS] as string[]) || []
 									: undefined,

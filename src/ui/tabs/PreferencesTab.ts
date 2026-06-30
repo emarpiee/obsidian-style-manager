@@ -1,9 +1,16 @@
 import { App, Setting, debounce, setIcon } from 'obsidian';
+
+import {
+	BackupKeys,
+	ConfirmKeys,
+	ExportKeys,
+	NotificationKeys,
+	PreferencesKeys,
+} from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
 import { ConfirmModal } from '../modals/ConfirmModal';
 import { ExportDataConfigModal } from '../modals/ExportDataConfigModal';
-import { BackupKeys, PreferencesKeys, ExportKeys, NotificationKeys, ConfirmKeys } from "../../constants";
 
 export class PreferencesTab {
 	private filterString: string = '';
@@ -69,8 +76,9 @@ export class PreferencesTab {
 			)
 			.addText((text) => {
 				const currentPath =
-					(plugin.settingsService.sharedSettings[BackupKeys.BACKUP_PATH] as string) ??
-					'';
+					(plugin.settingsService.sharedSettings[
+						BackupKeys.BACKUP_PATH
+					] as string) ?? '';
 				text
 					.setPlaceholder('Folder/Path (leave empty for vault root)')
 					.setValue(currentPath)
@@ -262,8 +270,9 @@ export class PreferencesTab {
 			)
 			.addText((text) => {
 				const currentPath =
-					(plugin.settingsService.sharedSettings[ExportKeys.EXPORT_PATH] as string) ||
-					'';
+					(plugin.settingsService.sharedSettings[
+						ExportKeys.EXPORT_PATH
+					] as string) || '';
 				text
 					.setPlaceholder('Folder/Path')
 					.setValue(currentPath)
@@ -586,9 +595,14 @@ export class PreferencesTab {
 			)
 			.addToggle((toggle) => {
 				toggle
-					.setValue(localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true')
+					.setValue(
+						localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true'
+					)
 					.onChange(async (val) => {
-						localStorage.setItem(PreferencesKeys.OPEN_IN_DEFAULT_APP, String(val));
+						localStorage.setItem(
+							PreferencesKeys.OPEN_IN_DEFAULT_APP,
+							String(val)
+						);
 					});
 			});
 
@@ -664,7 +678,8 @@ export class PreferencesTab {
 
 						if (val >= compVal) {
 							compVal = val + 1;
-							updates[PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES] = compVal;
+							updates[PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES] =
+								compVal;
 						}
 
 						await plugin.settingsService.setSettings(updates, {
@@ -706,7 +721,8 @@ export class PreferencesTab {
 
 						if (dashDefault >= compVal) {
 							compVal = dashDefault + 1;
-							updates[PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES] = compVal;
+							updates[PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES] =
+								compVal;
 						}
 
 						await plugin.settingsService.setSettings(updates, {

@@ -1,5 +1,9 @@
-import { RefreshLevel, StyleManagerSettings, IsolateModeDelegate } from '../types';
-import { StorageKeys } from "../constants";
+import { StorageKeys } from '../constants';
+import {
+	IsolateModeDelegate,
+	RefreshLevel,
+	StyleManagerSettings,
+} from '../types';
 
 export class IsolateModeService {
 	private _isIsolateMode: boolean = false;
@@ -127,7 +131,8 @@ export class IsolateModeService {
 			}
 
 			if (!snapshot[StorageKeys.SNIPPETS]) {
-				snapshot[StorageKeys.SNIPPETS] = this.delegate.bridge.getEnabledSnippets();
+				snapshot[StorageKeys.SNIPPETS] =
+					this.delegate.bridge.getEnabledSnippets();
 			}
 		} finally {
 			this.delegate.themeService.isApplyingPersistentTheme = false;

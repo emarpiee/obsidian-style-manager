@@ -1,6 +1,7 @@
+import { StorageKeys } from '../constants';
+import { AppearanceMode, ThemeServiceDeps } from '../types';
+
 import { Logger } from '../utils/Logger';
-import { ThemeServiceDeps, AppearanceMode } from "../types";
-import { StorageKeys } from "../constants";
 
 /**
  * Manages theme and appearance lifecycle, including:
@@ -218,7 +219,8 @@ export class ThemeService {
 		const rawNativeTheme = (this.deps.bridge.getActiveTheme() || '').trim();
 		const nativeTheme = rawNativeTheme || 'default';
 		const ourTheme =
-			((getSettingValue(StorageKeys.THEME) as string) || '').trim() || 'default';
+			((getSettingValue(StorageKeys.THEME) as string) || '').trim() ||
+			'default';
 
 		// Blank-Native Guard: SM clears the native theme as part of its CSS injection strategy.
 		// After that, getActiveTheme() returns 'default'. If we have a real stored preference,
@@ -270,7 +272,9 @@ export class ThemeService {
 			(theme: string) =>
 				this.deps.setSetting(StorageKeys.THEME, theme, { silentUI: true }),
 			() => {
-				const appearance = this.deps.getSetting(StorageKeys.APPEARANCE) as string;
+				const appearance = this.deps.getSetting(
+					StorageKeys.APPEARANCE
+				) as string;
 				if (appearance && appearance !== 'system')
 					return appearance === 'dark' ? 'obsidian' : 'moonstone';
 				return this.deps.bridge.getNativeConfig('theme') as string;
@@ -282,7 +286,9 @@ export class ThemeService {
 			},
 			() => (this.deps.getSetting(StorageKeys.ACCENT_COLOR) as string) || '',
 			(color: string) => {
-				this.deps.setSetting(StorageKeys.ACCENT_COLOR, color, { silentUI: true });
+				this.deps.setSetting(StorageKeys.ACCENT_COLOR, color, {
+					silentUI: true,
+				});
 				this.applyAccentColor(color);
 			},
 			() => this.isApplyingPersistentTheme,

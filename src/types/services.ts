@@ -1,14 +1,19 @@
 import type StyleManagerPlugin from '../main';
-import type { ThemeService } from '../application/ThemeService';
-import type { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
-import type { StyleGenerator } from '../core/style/StyleGenerator';
-import type { ViewManager } from '../ui/ViewManager';
-import type { SharedStore } from '../infrastructure/storage/SharedStore';
-import type { SharedStateService } from '../application/SharedStateService';
-import type { NotificationService } from '../application/NotificationService';
+import type {
+	ParsedCSSSettings,
+	Preset,
+	StyleManagerSettings,
+} from './settings';
+
 import type { IsolateModeService } from '../application/IsolateModeService';
+import type { NotificationService } from '../application/NotificationService';
+import type { SharedStateService } from '../application/SharedStateService';
+import type { ThemeService } from '../application/ThemeService';
 import type { StyleSheetManager } from '../core/css/StyleSheetManager';
-import type { Preset, StyleManagerSettings, ParsedCSSSettings } from './settings';
+import type { StyleGenerator } from '../core/style/StyleGenerator';
+import type { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
+import type { SharedStore } from '../infrastructure/storage/SharedStore';
+import type { ViewManager } from '../ui/ViewManager';
 
 export interface BundleData {
 	presets: Preset[];
@@ -138,5 +143,7 @@ export type AppearanceMode = 'light' | 'dark' | 'system' | string;
 
 export interface RefreshDelegates {
 	parseCSS?: () => void;
-	systemReload?: (options?: import('./settings').RefreshOptions) => Promise<void>;
+	systemReload?: (
+		options?: import('./settings').RefreshOptions
+	) => Promise<void>;
 }

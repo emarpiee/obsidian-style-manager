@@ -43,8 +43,6 @@ export function getDescription<T extends Meta>(config: T): string | undefined {
 	return config.description;
 }
 
-
-
 export function sanitizeText(str: string): string {
 	if (str === '') {
 		return `""`;

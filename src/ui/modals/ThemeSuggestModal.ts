@@ -1,6 +1,7 @@
 import { App, SuggestModal } from 'obsidian';
+
+import { StorageKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
-import { StorageKeys } from "../../constants";
 
 export interface ThemeOption {
 	id: string;

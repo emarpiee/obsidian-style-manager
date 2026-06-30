@@ -18,17 +18,17 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
+import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
 import { VariableColor, resetTooltip } from '../../../types';
-import { getDescription, getTitle } from '../../../utils/CommonUtils';
-import { createDescription } from '../../../utils/UIUtils';
 import {
 	getColorPickerConfig,
 	isColorValid,
 	isValidDefaultColor,
 } from '../../../utils/ColorUtils';
+import { getDescription, getTitle } from '../../../utils/CommonUtils';
+import { createDescription } from '../../../utils/UIUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
 export class VariableColorField extends AbstractSettingComponent {

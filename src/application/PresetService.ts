@@ -1,10 +1,11 @@
 import { normalizePath } from 'obsidian';
+
+import { ExportKeys, PreferencesKeys, StorageKeys } from '../constants';
 import StyleManagerPlugin from '../main';
 import { PrefixMetadata, Preset } from '../types';
 
 import { ConfirmModal } from '../ui/modals/ConfirmModal';
 import { getFormattedTimestamp } from '../utils/CommonUtils';
-import { StorageKeys, PreferencesKeys, ExportKeys } from "../constants";
 
 export class PresetService {
 	plugin: StyleManagerPlugin;
@@ -23,7 +24,9 @@ export class PresetService {
 	public getEffectiveViewMode(): 'shared' | 'isolate' {
 		if (this.targetView !== 'auto') return this.targetView;
 		const alwaysShared =
-			this.plugin.settingsService.settings[PreferencesKeys.ALWAYS_SHARED_PRESETS];
+			this.plugin.settingsService.settings[
+				PreferencesKeys.ALWAYS_SHARED_PRESETS
+			];
 		if (alwaysShared === undefined || alwaysShared === true) {
 			return 'shared';
 		}
@@ -82,7 +85,9 @@ export class PresetService {
 		if (trashOption === 'none') return;
 
 		const timestamp = getFormattedTimestamp(
-			this.plugin.settingsService.settings[ExportKeys.EXPORT_DATE_FORMAT] as string
+			this.plugin.settingsService.settings[
+				ExportKeys.EXPORT_DATE_FORMAT
+			] as string
 		);
 		const timestampPart = timestamp ? `-${timestamp}` : '';
 		const bridge = this.plugin.settingsService.bridge;
@@ -111,7 +116,9 @@ export class PresetService {
 		content: string | ArrayBuffer | Uint8Array
 	): Promise<void> {
 		let exportPath: string =
-			(this.plugin.settingsService.settings[ExportKeys.EXPORT_PATH] as string) || '';
+			(this.plugin.settingsService.settings[
+				ExportKeys.EXPORT_PATH
+			] as string) || '';
 
 		const isZip =
 			content instanceof ArrayBuffer ||
@@ -225,7 +232,10 @@ export class PresetService {
 					if (targetPrefixes.includes(prefix)) {
 						filteredData[key] = data[key];
 					}
-				} else if (key === StorageKeys.THEME && targetPrefixes.includes('__theme')) {
+				} else if (
+					key === StorageKeys.THEME &&
+					targetPrefixes.includes('__theme')
+				) {
 					filteredData[key] = data[key];
 				} else if (
 					key === StorageKeys.APPEARANCE &&
@@ -315,7 +325,10 @@ export class PresetService {
 		action: 'overwrite' | 'merge' = 'overwrite'
 	): Promise<void> {
 		const { mergedData } = await this.mergePresets(presetIds);
-		if (Object.keys(mergedData).length === 0 && !mergedData[StorageKeys.SNIPPETS])
+		if (
+			Object.keys(mergedData).length === 0 &&
+			!mergedData[StorageKeys.SNIPPETS]
+		)
 			return;
 
 		if (action === 'overwrite') {
@@ -323,7 +336,9 @@ export class PresetService {
 		} else if (action === 'merge') {
 			if (mergedData[StorageKeys.SNIPPETS] !== undefined) {
 				const currentSnippets =
-					(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
+					(this.plugin.settingsService.settings[
+						StorageKeys.SNIPPETS
+					] as string[]) || [];
 				const presetSnippets = mergedData[StorageKeys.SNIPPETS] as string[];
 				mergedData[StorageKeys.SNIPPETS] = Array.from(
 					new Set([...currentSnippets, ...presetSnippets])
@@ -354,7 +369,10 @@ export class PresetService {
 		action: 'overwrite' | 'merge' = 'overwrite'
 	): Promise<void> {
 		const { mergedData } = await this.mergePresets(presetIds);
-		if (Object.keys(mergedData).length === 0 && !mergedData[StorageKeys.SNIPPETS])
+		if (
+			Object.keys(mergedData).length === 0 &&
+			!mergedData[StorageKeys.SNIPPETS]
+		)
 			return;
 
 		if (action === 'merge') {
@@ -477,7 +495,9 @@ export class PresetService {
 		const snippetsMeta = categories.get('__snippets');
 		if (snippetsMeta) {
 			const enabledSnippets =
-				(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
+				(this.plugin.settingsService.settings[
+					StorageKeys.SNIPPETS
+				] as string[]) || [];
 			snippetsMeta.value = enabledSnippets;
 		}
 
@@ -485,8 +505,9 @@ export class PresetService {
 		const accentMeta = categories.get('__accentColor');
 		if (accentMeta) {
 			const accentColor =
-				(this.plugin.settingsService.settings[StorageKeys.ACCENT_COLOR] as string) ||
-				'';
+				(this.plugin.settingsService.settings[
+					StorageKeys.ACCENT_COLOR
+				] as string) || '';
 			const vConfigAccent =
 				this.plugin.settingsService.bridge.getNativeConfig('accentColor');
 			const nativeAccent =

@@ -1,5 +1,6 @@
 import { Notice } from 'obsidian';
-import { NotificationKeys } from "../constants";
+
+import { NotificationKeys } from '../constants';
 
 export enum NotificationType {
 	SHARED = 'shared',

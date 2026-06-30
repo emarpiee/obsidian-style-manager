@@ -1,7 +1,8 @@
 import { RRule } from 'rrule';
+
+import { PreferencesKeys } from '../constants';
 import StyleManagerPlugin from '../main';
 import { PresetSchedule } from '../types';
-import { PreferencesKeys } from "../constants";
 
 export class PresetScheduleService {
 	plugin: StyleManagerPlugin;
@@ -273,9 +274,9 @@ export class PresetScheduleService {
 		);
 
 		const action =
-			(this.plugin.settingsService.settings[PreferencesKeys.SCHEDULE_APPLY_ACTION] as
-				| 'overwrite'
-				| 'merge') || 'overwrite';
+			(this.plugin.settingsService.settings[
+				PreferencesKeys.SCHEDULE_APPLY_ACTION
+			] as 'overwrite' | 'merge') || 'overwrite';
 
 		if (schedule.targetLocker === 'shared') {
 			await this.plugin.presetService.applyPresets(

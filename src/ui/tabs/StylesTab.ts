@@ -1,4 +1,6 @@
 import { Setting } from 'obsidian';
+
+import { PreferencesKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { CSSSetting, ParsedCSSSettings } from '../../types';
 import { ParseLogList } from '../../types';
@@ -8,7 +10,6 @@ import {
 } from '../components/fields/HeadingField';
 import { CSSParserLogsModal } from '../modals/CSSParserLogsModal';
 import { ReadmeModal } from '../modals/ReadmeModal';
-import { PreferencesKeys } from "../../constants";
 
 export interface StylesTabDeps {
 	plugin: StyleManagerPlugin;

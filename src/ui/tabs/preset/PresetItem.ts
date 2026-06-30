@@ -1,6 +1,8 @@
 import { Menu, Setting, setIcon, setTooltip } from 'obsidian';
 
 import { addApplyOptionsToMenu } from './PresetMenuHelper';
+
+import { ConfirmKeys, ExportKeys, StorageKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { Preset } from '../../../types';
 import { formatPresetDate } from '../../../utils/CommonUtils';
@@ -15,7 +17,6 @@ import { ConfirmModal } from '../../modals/ConfirmModal';
 import { PresetPreviewModal } from '../../modals/PresetPreviewModal';
 import { PresetScheduleModal } from '../../modals/PresetScheduleModal';
 import { RenameModal } from '../../modals/RenameModal';
-import { StorageKeys, ExportKeys, ConfirmKeys } from "../../../constants";
 
 export class PresetItem {
 	constructor(
@@ -59,7 +60,9 @@ export class PresetItem {
 		);
 
 		// Appearance Badge
-		const appearance = preset.data[StorageKeys.APPEARANCE] as string | undefined;
+		const appearance = preset.data[StorageKeys.APPEARANCE] as
+			| string
+			| undefined;
 		if (appearance) {
 			renderAppearanceBadge(badgesContainer, appearance);
 		}
@@ -237,7 +240,9 @@ export class PresetItem {
 									).open();
 								} else {
 									if (
-										plugin.settingsService.settings[ConfirmKeys.SKIP_EXPORT_CONFIRM]
+										plugin.settingsService.settings[
+											ConfirmKeys.SKIP_EXPORT_CONFIRM
+										]
 									) {
 										performExport(false);
 									} else {
@@ -276,7 +281,11 @@ export class PresetItem {
 									}
 								};
 
-								if (plugin.settingsService.settings[ConfirmKeys.SKIP_DELETE_CONFIRM]) {
+								if (
+									plugin.settingsService.settings[
+										ConfirmKeys.SKIP_DELETE_CONFIRM
+									]
+								) {
 									performDelete();
 								} else {
 									new ConfirmModal(

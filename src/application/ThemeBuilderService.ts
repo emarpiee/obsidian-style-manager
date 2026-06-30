@@ -1,9 +1,9 @@
 import { App, normalizePath } from 'obsidian';
 
+import { ThemeManifest } from '../types';
 import { NotificationService } from './NotificationService';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
-import { ThemeManifest } from "../types";
 
 export class ThemeBuilderService {
 	constructor(

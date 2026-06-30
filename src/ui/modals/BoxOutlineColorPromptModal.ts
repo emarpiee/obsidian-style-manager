@@ -1,6 +1,6 @@
-import ColorPicker from '../../lib/colorpicker/colorpicker.min.js';
 import { App, Modal } from 'obsidian';
 
+import ColorPicker from '../../lib/colorpicker/colorpicker.min.js';
 import { getColorPickerConfig } from '../../utils/ColorUtils';
 
 export class BoxOutlineColorPromptModal extends Modal {
@@ -33,7 +33,9 @@ export class BoxOutlineColorPromptModal extends Modal {
 		const wrapper = contentEl.createDiv({
 			cls: 'style-manager-color-picker-wrapper',
 		});
-		const pickrToggle = wrapper.createEl('button', { cls: 'color-picker-reset' });
+		const pickrToggle = wrapper.createEl('button', {
+			cls: 'color-picker-reset',
+		});
 
 		this.pickr = new ColorPicker(
 			pickrToggle,

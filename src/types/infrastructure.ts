@@ -49,7 +49,9 @@ export interface IStore<T> {
 	save(data: T): Promise<void>;
 }
 
-export type PluginManifestWithDir = StyleManagerPlugin['manifest'] & { dir?: string };
+export type PluginManifestWithDir = StyleManagerPlugin['manifest'] & {
+	dir?: string;
+};
 
 export interface UndocumentedApp {
 	isMobile: boolean;

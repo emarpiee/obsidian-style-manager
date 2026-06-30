@@ -1,10 +1,11 @@
 import { App, Modal, Setting } from 'obsidian';
 
 import { PresetNamePromptModal } from './PresetNamePromptModal';
+
+import { ExportKeys, StorageKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { Preset, SettingValue } from '../../types';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
-import { ExportKeys, StorageKeys } from "../../constants";
 
 export class SectionStyleModal extends Modal {
 	plugin: StyleManagerPlugin;

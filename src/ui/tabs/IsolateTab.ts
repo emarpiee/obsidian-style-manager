@@ -1,4 +1,6 @@
 import { App, Menu, MenuItem, Setting } from 'obsidian';
+
+import { PreferencesKeys, StorageKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { copyToClipboard } from '../../utils/UIUtils';
 import {
@@ -10,7 +12,6 @@ import {
 import { ConfirmModal } from '../modals/ConfirmModal';
 import { LockerPreviewModal } from '../modals/LockerPreviewModal';
 import { RenameModal } from '../modals/RenameModal';
-import { StorageKeys, PreferencesKeys } from "../../constants";
 
 /**
  * Renders the Isolate Mode tab — mode toggles, device identity management,

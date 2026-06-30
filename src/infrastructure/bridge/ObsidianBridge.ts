@@ -7,8 +7,8 @@ import {
 	normalizePath,
 } from 'obsidian';
 
+import { ObsidianCustomCss, ObsidianInternalApp } from '../../types';
 import { Logger } from '../../utils/Logger';
-import { ObsidianCustomCss, ObsidianInternalApp } from "../../types";
 
 /**
  * ObsidianBridge acts as the Infrastructure Layer (Clean Architecture).

@@ -1,7 +1,8 @@
 import { App, Modal, Setting } from 'obsidian';
+
+import { ExportKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { getFormattedTimestamp } from '../../utils/CommonUtils';
-import { ExportKeys } from "../../constants";
 
 /**
  * Modal for exporting global settings as a raw JSON file.

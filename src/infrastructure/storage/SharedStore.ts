@@ -1,6 +1,11 @@
 import { normalizePath } from 'obsidian';
+
 import type StyleManagerPlugin from '../../main';
-import { StyleManagerSettings, PluginManifestWithDir, IStore } from '../../types';
+import {
+	IStore,
+	PluginManifestWithDir,
+	StyleManagerSettings,
+} from '../../types';
 import { Logger } from '../../utils/Logger';
 
 /**

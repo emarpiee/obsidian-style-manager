@@ -1,8 +1,9 @@
 import { Menu } from 'obsidian';
+
+import { PreferencesKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { DeviceSelectionModal } from '../../modals/DeviceSelectionModal';
 import { PresetScheduleModal } from '../../modals/PresetScheduleModal';
-import { PreferencesKeys } from "../../../constants";
 
 /**
  * Data source for applying settings. Can be a Preset object or raw isolate data.
@@ -173,7 +174,8 @@ export function addApplyOptionsToMenu(
 
 							if (skipConfirm) {
 								const actionKeyToUse =
-									options?.applyActionKey || PreferencesKeys.PRESET_APPLY_ACTION;
+									options?.applyActionKey ||
+									PreferencesKeys.PRESET_APPLY_ACTION;
 								const defaultAction =
 									(plugin.settingsService.settings[
 										actionKeyToUse

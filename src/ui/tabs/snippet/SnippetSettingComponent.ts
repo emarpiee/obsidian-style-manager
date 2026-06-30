@@ -1,10 +1,11 @@
 import { App, Component, Menu, Setting, setIcon } from 'obsidian';
+
+import { PreferencesKeys, StorageKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { SnippetMetadata } from '../../../types';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { RenameModal } from '../../modals/RenameModal';
-import { PreferencesKeys, StorageKeys } from "../../../constants";
 
 /**
  * A modular component that represents a single CSS snippet row.
@@ -34,7 +35,9 @@ export class SnippetSettingComponent extends Component {
 
 	render(): void {
 		const currentEnabled =
-			(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) || [];
+			(this.plugin.settingsService.settings[
+				StorageKeys.SNIPPETS
+			] as string[]) || [];
 		const isEnabled = currentEnabled.includes(this.snippetId);
 
 		let toggleEl: HTMLElement;
@@ -46,16 +49,21 @@ export class SnippetSettingComponent extends Component {
 				toggleEl = toggle.toggleEl;
 				toggle.setValue(isEnabled).onChange(async (value) => {
 					const snippets = new Set(
-						(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) ||
-							[]
+						(this.plugin.settingsService.settings[
+							StorageKeys.SNIPPETS
+						] as string[]) || []
 					);
 					if (value) snippets.add(this.snippetId);
 					else snippets.delete(this.snippetId);
 
 					const list = Array.from(snippets);
-					await this.plugin.settingsService.setSetting(StorageKeys.SNIPPETS, list, {
-						silentUI: true,
-					});
+					await this.plugin.settingsService.setSetting(
+						StorageKeys.SNIPPETS,
+						list,
+						{
+							silentUI: true,
+						}
+					);
 				});
 			})
 			.addExtraButton((btn) => {

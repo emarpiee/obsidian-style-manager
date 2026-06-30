@@ -1,7 +1,7 @@
+import { StorageKeys } from '../constants';
+import { DeviceLocker, IdentityStorageAdapter } from '../types';
 
 import { generateUuid } from '../utils/CommonUtils';
-import { DeviceLocker, IdentityStorageAdapter } from "../types";
-import { StorageKeys } from "../constants";
 
 const DEVICE_ID_KEY = 'style-manager-device-id';
 

@@ -2,18 +2,16 @@ import { App, Modal, Setting, displayTooltip } from 'obsidian';
 
 import { CSSEditorModal } from './CSSEditorModal';
 
-import {
-	ThemeBuilderService
-} from '../../application/ThemeBuilderService';
+import { ThemeBuilderService } from '../../application/ThemeBuilderService';
+import { PreferencesKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
+import { ThemeManifest } from '../../types';
 import {
 	Validator,
 	Validators,
 	applyInvalidState,
 	clearInvalidState,
 } from '../../utils/ValidationUtils';
-import { ThemeManifest } from "../../types";
-import { PreferencesKeys } from "../../constants";
 
 export class ThemeManifestModal extends Modal {
 	private manifest: ThemeManifest;
@@ -233,7 +231,9 @@ export class ThemeManifestModal extends Modal {
 									] !== false;
 								if (openModal) {
 									const useDefaultApp =
-										localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
+										localStorage.getItem(
+											PreferencesKeys.OPEN_IN_DEFAULT_APP
+										) === 'true';
 									if (useDefaultApp) {
 										const path =
 											this.plugin.settingsService.bridge.getThemePath(themeId);

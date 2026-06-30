@@ -9,6 +9,13 @@ import {
 
 import { PresetItem } from './PresetItem';
 import { addApplyOptionsToMenu } from './PresetMenuHelper';
+
+import {
+	ConfirmKeys,
+	ExportKeys,
+	PreferencesKeys,
+	StorageKeys,
+} from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { Preset } from '../../../types';
 import { getFormattedTimestamp } from '../../../utils/CommonUtils';
@@ -20,7 +27,6 @@ import { ActiveSchedulesModal } from '../../modals/ActiveSchedulesModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { CreatePresetModal } from '../../modals/CreatePresetModal';
 import { ImportPresetModal } from '../../modals/ImportPresetModal';
-import { StorageKeys, PreferencesKeys, ExportKeys, ConfirmKeys } from "../../../constants";
 
 export class PresetList {
 	private listContainer: HTMLElement;
@@ -219,8 +225,9 @@ export class PresetList {
 			);
 
 			const preferredExtension =
-				(plugin.settingsService.settings[ExportKeys.EXPORT_EXTENSION] as string) ||
-				'.json';
+				(plugin.settingsService.settings[
+					ExportKeys.EXPORT_EXTENSION
+				] as string) || '.json';
 
 			const performExport = async (includeSnippets = false): Promise<void> => {
 				try {
@@ -229,7 +236,9 @@ export class PresetList {
 						: preferredExtension;
 
 					const timestamp = getFormattedTimestamp(
-						plugin.settingsService.settings[ExportKeys.EXPORT_DATE_FORMAT] as string
+						plugin.settingsService.settings[
+							ExportKeys.EXPORT_DATE_FORMAT
+						] as string
 					);
 					const timestampPart = timestamp ? `-${timestamp}` : '';
 					const filename = `bulk-export-style-manager${timestampPart}${extension}`;

@@ -21,7 +21,7 @@
 import { CSSParser } from './CSSParser';
 
 import { ObsidianBridge } from '../../infrastructure/bridge/ObsidianBridge';
-import { ParseLogList, ParsedCSSSettings, BridgeInternals } from '../../types';
+import { BridgeInternals, ParseLogList, ParsedCSSSettings } from '../../types';
 
 /**
  * Manages discovery, parsing, and caching of CSS stylesheets containing @settings blocks.

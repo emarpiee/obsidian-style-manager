@@ -1,8 +1,9 @@
 import JSZip from 'jszip';
-import { Preset, BundleData } from '../types';
+
+import { StorageKeys } from '../constants';
+import { BundleData, Preset } from '../types';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
-import { StorageKeys } from "../constants";
 
 /**
  * Service for creating and extracting preset bundles (ZIP files).
@@ -48,7 +49,8 @@ export class BundleService {
 		// 2. Collect unique snippets across all presets
 		const allSnippetNames = new Set<string>();
 		for (const preset of presets) {
-			const enabledSnippets = (preset.data[StorageKeys.SNIPPETS] as string[]) || [];
+			const enabledSnippets =
+				(preset.data[StorageKeys.SNIPPETS] as string[]) || [];
 			enabledSnippets.forEach((name) => allSnippetNames.add(name));
 		}
 

@@ -1,4 +1,5 @@
-import { StyleManagerSettings, PersistenceServiceOptions } from '../types';
+import { PersistenceServiceOptions, StyleManagerSettings } from '../types';
+
 import { DataUtils } from '../utils/CommonUtils';
 import { Logger } from '../utils/Logger';
 

@@ -52,7 +52,7 @@ export class CSSEditorView extends ItemView {
 			// eslint-disable-next-line @typescript-eslint/no-explicit-any
 			const leafAny = this.leaf as any;
 			const newTitle = this.getDisplayText();
-			
+
 			if (leafAny.tabHeaderInnerTitleEl) {
 				leafAny.tabHeaderInnerTitleEl.innerText = newTitle;
 			}
@@ -61,7 +61,8 @@ export class CSSEditorView extends ItemView {
 			}
 			// Update the header inside the view
 			if (this.containerEl) {
-				const headerTitle = this.containerEl.querySelector('.view-header-title');
+				const headerTitle =
+					this.containerEl.querySelector('.view-header-title');
 				if (headerTitle) {
 					headerTitle.textContent = newTitle;
 				}
