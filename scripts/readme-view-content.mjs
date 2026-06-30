@@ -12,8 +12,8 @@ function escapeTemplateLiteral(str) {
 
 function convertImgToLink(content) {
 	return content.replace(/<img\s+([^>]+)>/gi, (match, attrs) => {
-		const srcMatch = attrs.match(/src="([^"]*)"/i);
-		const altMatch = attrs.match(/alt="([^"]*)"/i);
+		const srcMatch = attrs.match(/src=["']([^"']*)["']/i);
+		const altMatch = attrs.match(/alt=["']([^"']*)["']/i);
 		const src = srcMatch ? srcMatch[1] : '';
 		const alt = altMatch ? altMatch[1] : 'image';
 		return src ? `[${alt}](${src})` : match;
