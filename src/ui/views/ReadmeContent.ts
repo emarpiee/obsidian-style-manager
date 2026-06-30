@@ -15,6 +15,7 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 	- [1. Via BRAT (Beta Reviewer's Auto-update Tool)](#1-via-brat-beta-reviewers-auto-update-tool)
 	- [2. Manual Installation](#2-manual-installation)
 	- [3. Community Plugin Store](#3-community-plugin-store)
+- [Style Settings Migration Guide](#style-settings-migration-guide)
 - [Core Logic: Shared Mode vs. Isolate Mode](#core-logic-shared-mode-vs-isolate-mode)
 	- [Shared Mode (Default)](#shared-mode-default)
 	- [Isolate Mode](#isolate-mode)
@@ -77,6 +78,7 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 		- [Purpose](#purpose)
 - [Developer and Testing Utilities](#developer-and-testing-utilities)
 - [Transparency](#transparency)
+- [☕️ Buy Me A Coffee](#-buy-me-a-coffee)
 
 ---
 
@@ -109,6 +111,15 @@ Use this method if you prefer to install files directly without third-party tool
 ### 3. Community Plugin Store
 
 > *Coming Soon.*
+
+## Style Settings Migration Guide
+
+If you are switching from the **Style Settings** plugin, you can migrate your existing configurations into Style Manager:
+
+1. Click the **More Actions** menu (vertical ellipsis) in the global toolbar.
+2. Select **Import preset…** > **Import from Style Settings**.
+
+This will import your current Style Settings configurations as preset.
 
 ---
 
