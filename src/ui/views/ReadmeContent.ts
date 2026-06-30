@@ -903,7 +903,7 @@ I want to be open about my workflow for this project. I personally directed and 
 Donations are greatly appreciated and will be used to fund my sanity, and my cats 😼 expensive taste.
 
 <a href='https://ko-fi.com/emarpiee' target='_blank'>
-<img height='50' width='150' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' />
+[Buy Me a Coffee at ko-fi.com](https://storage.ko-fi.com/cdn/kofi6.png?v=6)
 </a>
 
 `;
