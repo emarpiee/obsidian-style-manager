@@ -1,4 +1,5 @@
 import { Command, Notice, Plugin, normalizePath } from 'obsidian';
+import './css/main.css';
 
 import { StorageKeys, ToolKeys } from './constants';
 import {
