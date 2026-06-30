@@ -1,5 +1,5 @@
-## Changelog for 0.1.1 (7/1/2026)
+## Changelog for 0.1.2 (7/1/2026)
 
-* 0.1.1 (15c9bf1)
-* fix(build): ensure styles.css is generated during build (d00c25f)
-* Added CHANGELOG.md (3999af9)
+* 0.1.2 (915be31)
+* ci: update github actions to v4 to resolve node deprecation warning (ee93e78)
+* Added CHANGELOG.md (4780006)
