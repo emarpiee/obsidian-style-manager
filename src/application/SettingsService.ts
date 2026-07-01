@@ -363,6 +363,7 @@ export class SettingsService extends Events {
 		}
 
 		this._mergedSettings = merged;
+		this.trigger('settings-changed');
 		Logger.setEnabled(
 			this._mergedSettings[PreferencesKeys.ENABLE_CONSOLE_LOGGING] === true
 		);

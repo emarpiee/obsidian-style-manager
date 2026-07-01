@@ -64,6 +64,8 @@ export class CSSEditor {
 	private source: { type: string; id: string; readOnly?: boolean };
 	private isViewMode: boolean = false;
 	private container: HTMLElement;
+	private snippetToggle: { setValue: (value: boolean) => void } | null = null;
+	private settingsChangedHandler: (() => void) | null = null;
 	private onSaveSuccess?: (newName: string) => void;
 
 	async render(
@@ -310,6 +312,7 @@ export class CSSEditor {
 						] as string[]) || [];
 					const isEnabled = currentEnabled.includes(this.source.id);
 					mainBtnsSetting.addToggle((toggle) => {
+						this.snippetToggle = toggle;
 						toggle.setValue(isEnabled).onChange(async (value) => {
 							const snippets = new Set(
 								(this.plugin.settingsService.settings[
@@ -329,6 +332,20 @@ export class CSSEditor {
 							);
 						});
 					});
+				}
+
+				if (this.source.type === 'Snippet') {
+					this.settingsChangedHandler = (): void => {
+						const currentEnabled =
+							(this.plugin.settingsService.settings[
+								StorageKeys.SNIPPETS
+							] as string[]) || [];
+						const isEnabled = currentEnabled.includes(this.source.id);
+						if (this.snippetToggle) {
+							this.snippetToggle.setValue(isEnabled);
+						}
+					};
+					this.plugin.settingsService.on('settings-changed', this.settingsChangedHandler);
 				}
 
 				mainBtnsSetting.addButton((btn) =>
@@ -399,6 +416,10 @@ export class CSSEditor {
 	}
 
 	public destroy(): void {
+		if (this.settingsChangedHandler) {
+			this.plugin.settingsService.off('settings-changed', this.settingsChangedHandler);
+			this.settingsChangedHandler = null;
+		}
 		if (this.view) {
 			this.view.destroy();
 			this.view = null;
