@@ -1,5 +1,5 @@
-## Changelog for 0.1.5 (7/1/2026)
+## Changelog for 0.1.6 (7/1/2026)
 
-* 0.1.5 (13b3e27)
-* refactor(lang): remove unused error strings from locales (3bd8b3e)
-* Added CHANGELOG.md (8e30247)
+* 0.1.6 (b8cd8b5)
+* style: format src/css/main.css (810f90c)
+* Added CHANGELOG.md (3e4523a)
