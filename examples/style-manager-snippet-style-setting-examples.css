@@ -1,0 +1,276 @@
+/* This @metadata block is rendered in Snippets tab */
+/* @metadata
+description: This is an Obsidian snippet that shows style setting examples in Style Manager plugin.
+author: emarpiee
+version: 0.0.0
+authorUrl: https://github.com/emarpiee
+license: MIT
+*/
+
+/* CLASS-TOGGLE: The Animated Underline */
+.class-toggle-sample .setting-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 4px;
+  background: linear-gradient(90deg, #22c55e, #06b6d4, #6366f1);
+
+  transform: scaleX(0);
+  transform-origin: left;
+
+  animation: drawLoop 3s ease-in-out infinite;
+}
+
+/* CLASS-SELECT: Same sample from class-toggle but different property */
+.class-select-sample .setting-item::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 100%;
+  height: 8px;
+  background: linear-gradient(90deg, #FF0000, #8A5CF5, #32FF00);
+
+  transform: scaleX(0);
+  transform-origin: center;
+
+  animation: drawLoop 1s ease-in-out infinite;
+}
+
+@keyframes drawLoop {
+  0% {
+    transform: scaleX(0);
+  }
+  40% {
+    transform: scaleX(1);
+  }
+  60% {
+    transform: scaleX(1);
+  }
+  100% {
+    transform: scaleX(0);
+  }
+}
+
+.color-gradient-sample .setting-item {
+    background: linear-gradient(
+        to right,
+        var(--demo-gradient-000, transparent),
+        var(--demo-gradient-100, transparent)
+    ) !important;
+}
+
+/* @settings
+
+name: Style Manager Example
+id: sm-example
+settings:
+    - 
+        id: heading-sample
+        title: H1 - heading
+        description: A heading creates collapsible sections to organize variables. Ensure that you follow the proper level (1-6) of headings (hierarchical order) for sticky headings to work properly in Styles tab. 
+        type: heading
+        level: 1
+        collapsed: false
+    - 
+        id: info-text-sample
+        title: info-text
+        description: Obsidian **Style Manager** uses a specific system to turn CSS class and variables into user-configurable settings in the Styles tab. This is done using special comment blocks. To expose configurable settings, wrap YAML configuration blocks inside CSS comments starting with /* @settings.
+        type: info-text
+        markdown: true
+    - 
+        id: h2-class-toggle-sample
+        title: H2 - class-toggle
+        description: 
+        type: heading
+        level: 2
+        collapsed: false
+    - 
+        id: info-class-toggle
+        title: 
+        description: This snippet has a sample class that can be toggle via the class-toggle component. This class will toggle underline effect to all setting-item class.
+        type: info-text
+        markdown: true
+    - 
+        id: class-toggle-sample
+        title: Class toggle sample
+        description: Toggles a CSS class directly on the HTML <body> element. The id of the setting will be used as the class name. You can pass 'true' in addCommand property to register this class-toggle in Obsidian's command palette.
+        type: class-toggle
+        default: false
+        addCommand: true
+    - 
+        id: h3-class-select-sample
+        title: H3 - class-select
+        description: 
+        type: heading
+        level: 3
+        collapsed: false
+    - 
+        id: class-select-sample
+        title: Class select sample
+        type: class-select
+        allowEmpty: true
+        default: none
+        options:
+            - 
+              label: Underline effect 1
+              value: class-toggle-sample
+            - 
+              label: Underline effect 2
+              value: class-select-sample
+    - 
+        id: h4-variable-text-sample
+        title: H4 - variable-text
+        description: 
+        type: heading
+        level: 4
+        collapsed: false
+    - 
+        id: font-default
+        title: Variable text sample
+        description: Try to input 'monospace'. Sets a text-based CSS variable. The id of the setting will be used as the variable name.
+        type: variable-text
+        default: Inter
+        quotes: true
+    - 
+        id: h5-variable-number-sample
+        title: H5.1 - variable-number
+        description: 
+        type: heading
+        level: 5
+        collapsed: false
+    - 
+        id: font-text-size
+        title: Markdown editor font size (px)
+        description: Sets a numeric value. The id of the setting will be used as the variable name.
+        type: variable-number
+        default: 16
+        format: px
+    - 
+        id: h5-variable-number-slider-sample
+        title: H5.2 - variable-number-slider
+        description: 
+        type: heading
+        level: 5
+        collapsed: false
+    - 
+        id: p-spacing
+        title: Reading view paragraph spacing (rem)
+        description: Creates a sliding adjustment input for numeric values. The id of the setting will be used as the variable name.
+        type: variable-number-slider
+        default: 1
+        min: 1
+        max: 12
+        step: 0.1
+        format: rem
+    - 
+        id: h5-variable-select-sample
+        title: H5.3 - variable-select
+        description: Creates a dropdown selection to assign values to a CSS variable. The id of the setting will be used as the variable name.
+        type: heading
+        level: 5
+        collapsed: false
+    - 
+        id: font-default
+        title: Font selection
+        description: The id of the setting will be used as the variable name.
+        type: variable-select
+        default: Inter
+        allowEmpty: true
+        options:
+            - 
+              label: Monospace
+              value: monospace
+            - Inter
+    - 
+        id: h6-variable-color-sample
+        title: H6.1 - variable-color
+        description: 
+        type: heading
+        level: 6
+        collapsed: false
+    - 
+        id: text-normal
+        title: Text normal color
+        type: variable-color
+        description: Creates an interactive color picker interface. The id of the setting will be used as the variable name.
+        opacity: true
+        format: hex
+        default: '#'
+    - 
+        id: h6-variable-color-themed-sample
+        title: H6.2 - variable-themed-color
+        description: 
+        type: heading
+        level: 6
+        collapsed: false
+    - 
+        id: interactive-accent
+        title: Interactive accent color
+        description: Generates dual color pickers for light and dark appearance profiles. The id of the setting will be used as the variable name.
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        default-light: '#'
+        default-dark: '#'
+    - 
+        id: h6-color-gradient-sample
+        title: H6.3 - color-gradient
+        description: 
+        type: heading
+        level: 6
+        collapsed: false
+    - 
+        id: infot-text-color-gradient-sample
+        title: 
+        description: Calculates intermediate color steps along a gradient between two defined CSS color variables.
+        type: info-text
+        markdown: true
+    - 
+        id: color-gradient-sample
+        title: Toggle color gradient sample
+        description: 
+        type: class-toggle
+        default: false
+        addCommand: true
+    - 
+        id: demo-gradient
+        title: color-gradient
+        type: color-gradient
+        from: demo-start-color
+        to: demo-end-color
+        step: 25
+        format: hex
+        pad: 3
+    - 
+        id: demo-start-color
+        title: Gradient Start Color
+        description: The starting color for the gradient
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        alt-format: []
+        default-light: 'oklch(70.05% .208 347.09)'
+        default-dark: '#'
+    - 
+        id: demo-end-color
+        title: Gradient End Color
+        description: The ending color for the gradient
+        type: variable-themed-color
+        format: hex
+        opacity: false
+        alt-format: []
+        default-light: '#8a5cf5'
+        default-dark: '#'
+*/
+
+/* 
+  Style Manager will generate:
+  --demo-gradient-000
+  --demo-gradient-025
+  --demo-gradient-050
+  --demo-gradient-075
+  --demo-gradient-100
+*/
