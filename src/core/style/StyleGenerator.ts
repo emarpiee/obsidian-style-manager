@@ -325,7 +325,9 @@ export class StyleGenerator {
 					if (s.quotes) {
 						text = text !== `""` ? `'${text}'` : ``;
 					}
-					vars.push({ key: setting.id, value: text, important: true });
+					if (text !== '') {
+						vars.push({ key: setting.id, value: text, important: true });
+					}
 					continue;
 				}
 				case SettingType.VARIABLE_COLOR: {
@@ -467,7 +469,9 @@ export class StyleGenerator {
 						if (s.default != null) {
 							let text = s.default.toString();
 							if (s.quotes) text = text !== `""` ? `'${text}'` : ``;
-							vars.push({ key: s.id, value: text, important: false });
+							if (text !== '') {
+								vars.push({ key: s.id, value: text, important: false });
+							}
 						}
 						break;
 					}
