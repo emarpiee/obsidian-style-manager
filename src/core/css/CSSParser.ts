@@ -241,6 +241,25 @@ export class CSSParser {
 							settingId: setting.id,
 						});
 					}
+					if (!setting.default && !setting.allowEmpty) {
+						parseLogs?.push({
+							name,
+							message: `MISSING_DEFAULT: Class select '${setting.id}' missing or empty default and allowEmpty is false`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					} else if (setting.default !== undefined && setting.default !== null && typeof setting.default !== 'string') {
+						const oldDefault = setting.default;
+						setting.default = undefined;
+						parseLogs?.push({
+							name,
+							message: `INVALID_DEFAULT: Class select '${setting.id}' default (${oldDefault}) is not a string, no variable will be generated`,
+							type: 'warning',
+							timestamp: Date.now(),
+							settingId: setting.id,
+						});
+					}
 					break;
 				case 'variable-text':
 					if (setting.default === undefined) {
