@@ -310,11 +310,13 @@ export class StyleGenerator {
 				case SettingType.VARIABLE_NUMBER_SLIDER: {
 					const s = setting as VariableNumber | VariableNumberSlider;
 					const val = value !== undefined ? value : s.default;
-					vars.push({
-						key: setting.id,
-						value: `${val}${s.format || ''}`,
-						important: true,
-					});
+					if (val !== undefined && val !== null) {
+						vars.push({
+							key: setting.id,
+							value: `${val}${s.format || ''}`,
+							important: true,
+						});
+					}
 					continue;
 				}
 				case SettingType.VARIABLE_TEXT:
@@ -453,7 +455,7 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_NUMBER_SLIDER: {
 						if (emittedIds.has(compositeKey)) break;
 						const s = setting as VariableNumber | VariableNumberSlider;
-						if (s.default !== undefined) {
+						if (s.default !== undefined && s.default !== null) {
 							vars.push({
 								key: s.id,
 								value: `${s.default}${s.format || ''}`,
