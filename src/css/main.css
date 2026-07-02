@@ -362,38 +362,38 @@ body.is-mobile .style-manager-wrapper {
 
 .style-manager-style-heading[data-level='0'] {
 	top: var(--sm-sticky-top-offset);
-	z-index: 100;
+	z-index: 7;
 	background-color: var(--sm-heading-bg);
 }
 
 .style-manager-style-heading[data-level='1'] {
 	top: calc(var(--sm-sticky-top-offset) + var(--sm-sticky-heading-height));
-	z-index: 14;
+	z-index: 6;
 }
 
 .style-manager-style-heading[data-level='2'] {
 	top: calc(var(--sm-sticky-top-offset) + (2 * var(--sm-sticky-heading-height)));
-	z-index: 13;
+	z-index: 5;
 }
 
 .style-manager-style-heading[data-level='3'] {
 	top: calc(var(--sm-sticky-top-offset) + (3 * var(--sm-sticky-heading-height)));
-	z-index: 12;
+	z-index: 4;
 }
 
 .style-manager-style-heading[data-level='4'] {
 	top: calc(var(--sm-sticky-top-offset) + (4 * var(--sm-sticky-heading-height)));
-	z-index: 11;
+	z-index: 3;
 }
 
 .style-manager-style-heading[data-level='5'] {
 	top: calc(var(--sm-sticky-top-offset) + (5 * var(--sm-sticky-heading-height)));
-	z-index: 10;
+	z-index: 2;
 }
 
 .style-manager-style-heading[data-level='6'] {
 	top: calc(var(--sm-sticky-top-offset) + (6 * var(--sm-sticky-heading-height)));
-	z-index: 9;
+	z-index: 1;
 }
 
 .style-manager-style-heading:not(.is-collapsed) {
@@ -895,7 +895,7 @@ body.is-mobile .modal-style-manager:not(.style-manager-confirm-modal,
 .style-manager-header-container {
 	position: sticky;
 	top: 0;
-	z-index: 102;
+	z-index: 12;
 	/* Higher than search row and headings */
 	background: var(--background-primary);
 	overflow: visible;
@@ -1083,7 +1083,7 @@ button.style-manager-icon-button {
 	background: var(--sm-search-row-bg);
 	position: sticky;
 	top: var(--sm-sticky-tabs-height);
-	z-index: 101;
+	z-index: 11;
 	/* Above headings, below tabs */
 	height: var(--sm-sticky-search-height);
 	margin-bottom: 0;
@@ -1278,7 +1278,7 @@ button.style-manager-icon-button {
 	right: 0;
 	margin-left: auto;
 	margin-right: auto;
-	z-index: 100;
+	z-index: var(--layer-menu);
 	box-shadow: var(--shadow-l);
 	width: fit-content;
 	margin-top: auto;
@@ -1741,6 +1741,7 @@ body.theme-dark .style-manager-badge-primary.dynamic {
 	height: var(--modal-height);
 	max-height: var(--modal-max-height);
 	padding-inline: 0 !important;
+	z-index: var(--layer-modal);
 }
 
 body.is-phone .style-manager-editor-modal {
