@@ -265,20 +265,19 @@ export class CSSParser {
 					break;
 				case 'variable-number':
 					if (setting.default === undefined) {
-						setting.default = 0;
 						parseLogs?.push({
 							name,
-							message: `MISSING_DEFAULT: Variable number '${setting.id}' missing default, falling back to 0`,
+							message: `MISSING_DEFAULT: Variable number '${setting.id}' missing default, no variable will be generated`,
 							type: 'warning',
 							timestamp: Date.now(),
 							settingId: setting.id,
 						});
 					} else if (!isNumeric(setting.default)) {
 						const oldDefault = setting.default;
-						setting.default = 0;
+						setting.default = undefined;
 						parseLogs?.push({
 							name,
-							message: `INVALID_DEFAULT: Variable number '${setting.id}' default (${oldDefault}) is invalid, falling back to 0`,
+							message: `INVALID_DEFAULT: Variable number '${setting.id}' default (${oldDefault}) is invalid, no variable will be generated`,
 							type: 'warning',
 							timestamp: Date.now(),
 							settingId: setting.id,
@@ -294,7 +293,6 @@ export class CSSParser {
 						setting.min = setting.min ?? 0;
 						setting.max = setting.max ?? 100;
 						setting.step = setting.step ?? 1;
-						setting.default = setting.default ?? 0;
 						parseLogs?.push({
 							name,
 							message: `MISSING_SLIDER_FIELDS: Slider '${setting.id}' missing fields, using defaults`,
@@ -363,13 +361,12 @@ export class CSSParser {
 						});
 					}
 					if (
-						setting.default === undefined ||
-						!isNumeric(setting.default) ||
+						setting.default !== undefined &&
+						(!isNumeric(setting.default) ||
 						setting.default < setting.min ||
-						setting.default > setting.max
+						setting.default > setting.max)
 					) {
 						const oldDefault = setting.default;
-						const isMissing = setting.default === undefined;
 						setting.default = Math.max(
 							setting.min,
 							Math.min(
@@ -381,9 +378,7 @@ export class CSSParser {
 						);
 						parseLogs?.push({
 							name,
-							message: isMissing 
-								? `MISSING_DEFAULT: Slider '${setting.id}' missing default, falling back to ${setting.default}`
-								: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) ${!isNumeric(setting.default) ? 'is invalid' : 'out of bounds'}, clamped to ${setting.default}`,
+							message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) ${!isNumeric(setting.default) ? 'is invalid' : 'out of bounds'}, clamped to ${setting.default}`,
 							type: 'warning',
 							timestamp: Date.now(),
 							settingId: setting.id,
