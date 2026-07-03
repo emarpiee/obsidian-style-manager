@@ -309,26 +309,52 @@ export class StyleGenerator {
 				case SettingType.VARIABLE_NUMBER:
 				case SettingType.VARIABLE_NUMBER_SLIDER: {
 					const s = setting as VariableNumber | VariableNumberSlider;
-					const val = value !== undefined ? value : s.default;
-					if (val !== undefined && val !== null) {
-						vars.push({
-							key: setting.id,
-							value: `${val}${s.format || ''}`,
-							important: true,
-						});
+					if (s.themed) {
+						if (modifier !== 'light' && modifier !== 'dark') continue;
+						const themeKey = modifier === 'light' ? 'default-light' : 'default-dark';
+						const val = value !== undefined ? value : s[themeKey];
+						if (val !== undefined && val !== null) {
+							(modifier === 'light' ? themedLight : themedDark).push({
+								key: setting.id,
+								value: `${val}${s.format || ''}`,
+								important: true,
+							});
+						}
+					} else {
+						if (modifier === 'light' || modifier === 'dark') continue;
+						const val = value !== undefined ? value : s.default;
+						if (val !== undefined && val !== null) {
+							vars.push({
+								key: setting.id,
+								value: `${val}${s.format || ''}`,
+								important: true,
+							});
+						}
 					}
 					continue;
 				}
 				case SettingType.VARIABLE_TEXT:
 				case SettingType.VARIABLE_SELECT: {
 					const s = setting as VariableText | VariableSelect;
-					let text =
-						value !== undefined ? value.toString() : s.default.toString();
-					if (s.quotes) {
-						text = text !== `""` ? `'${text}'` : ``;
-					}
-					if (text !== '') {
-						vars.push({ key: setting.id, value: text, important: true });
+					if (s.themed) {
+						if (modifier !== 'light' && modifier !== 'dark') continue;
+						const themeKey = modifier === 'light' ? 'default-light' : 'default-dark';
+						let text = value !== undefined ? value.toString() : (s[themeKey]?.toString() ?? '');
+						if (s.quotes) {
+							text = text !== `""` ? `'${text}'` : ``;
+						}
+						if (text !== '') {
+							(modifier === 'light' ? themedLight : themedDark).push({ key: setting.id, value: text, important: true });
+						}
+					} else {
+						if (modifier === 'light' || modifier === 'dark') continue;
+						let text = value !== undefined ? value.toString() : (s.default?.toString() ?? '');
+						if (s.quotes) {
+							text = text !== `""` ? `'${text}'` : ``;
+						}
+						if (text !== '') {
+							vars.push({ key: setting.id, value: text, important: true });
+						}
 					}
 					continue;
 				}
@@ -453,26 +479,60 @@ export class StyleGenerator {
 				switch (setting.type) {
 					case SettingType.VARIABLE_NUMBER:
 					case SettingType.VARIABLE_NUMBER_SLIDER: {
-						if (emittedIds.has(compositeKey)) break;
 						const s = setting as VariableNumber | VariableNumberSlider;
-						if (s.default !== undefined && s.default !== null) {
-							vars.push({
-								key: s.id,
-								value: `${s.default}${s.format || ''}`,
-								important: false,
-							});
+						if (s.themed) {
+							if (!emittedThemedLight.has(compositeKey) && s['default-light'] !== undefined && s['default-light'] !== null) {
+								themedLight.push({
+									key: s.id,
+									value: `${s['default-light']}${s.format || ''}`,
+									important: false,
+								});
+							}
+							if (!emittedThemedDark.has(compositeKey) && s['default-dark'] !== undefined && s['default-dark'] !== null) {
+								themedDark.push({
+									key: s.id,
+									value: `${s['default-dark']}${s.format || ''}`,
+									important: false,
+								});
+							}
+						} else {
+							if (emittedIds.has(compositeKey)) break;
+							if (s.default !== undefined && s.default !== null) {
+								vars.push({
+									key: s.id,
+									value: `${s.default}${s.format || ''}`,
+									important: false,
+								});
+							}
 						}
 						break;
 					}
 					case SettingType.VARIABLE_TEXT:
 					case SettingType.VARIABLE_SELECT: {
-						if (emittedIds.has(compositeKey)) break;
 						const s = setting as VariableText | VariableSelect;
-						if (s.default != null) {
-							let text = s.default.toString();
-							if (s.quotes) text = text !== `""` ? `'${text}'` : ``;
-							if (text !== '') {
-								vars.push({ key: s.id, value: text, important: false });
+						if (s.themed) {
+							if (!emittedThemedLight.has(compositeKey) && s['default-light'] != null) {
+								let text = s['default-light'].toString();
+								if (s.quotes) text = text !== `""` ? `'${text}'` : ``;
+								if (text !== '') {
+									themedLight.push({ key: s.id, value: text, important: false });
+								}
+							}
+							if (!emittedThemedDark.has(compositeKey) && s['default-dark'] != null) {
+								let text = s['default-dark'].toString();
+								if (s.quotes) text = text !== `""` ? `'${text}'` : ``;
+								if (text !== '') {
+									themedDark.push({ key: s.id, value: text, important: false });
+								}
+							}
+						} else {
+							if (emittedIds.has(compositeKey)) break;
+							if (s.default != null) {
+								let text = s.default.toString();
+								if (s.quotes) text = text !== `""` ? `'${text}'` : ``;
+								if (text !== '') {
+									vars.push({ key: s.id, value: text, important: false });
+								}
 							}
 						}
 						break;

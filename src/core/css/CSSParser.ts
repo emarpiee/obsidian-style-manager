@@ -261,48 +261,56 @@ export class CSSParser {
 						});
 					}
 					break;
-				case 'variable-text':
-					if (setting.default === undefined) {
-						parseLogs?.push({
-							name,
-							message: `MISSING_DEFAULT: Variable text '${setting.id}' missing default, no variable will be generated`,
-							type: 'warning',
-							timestamp: Date.now(),
-							settingId: setting.id,
-						});
-					} else if (typeof setting.default !== 'string') {
-						const oldDefault = setting.default;
-						setting.default = undefined;
-						parseLogs?.push({
-							name,
-							message: `INVALID_DEFAULT: Variable text '${setting.id}' default (${oldDefault}) is not a string, no variable will be generated`,
-							type: 'warning',
-							timestamp: Date.now(),
-							settingId: setting.id,
-						});
+				case 'variable-text': {
+					const fields = setting.themed ? ['default-light', 'default-dark'] : ['default'];
+					for (const field of fields) {
+						if (setting[field] === undefined) {
+							parseLogs?.push({
+								name,
+								message: `MISSING_DEFAULT: Variable text '${setting.id}' missing ${field}, no variable will be generated`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						} else if (typeof setting[field] !== 'string') {
+							const oldDefault = setting[field];
+							setting[field] = undefined;
+							parseLogs?.push({
+								name,
+								message: `INVALID_DEFAULT: Variable text '${setting.id}' ${field} (${oldDefault}) is not a string, no variable will be generated`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						}
 					}
 					break;
-				case 'variable-number':
-					if (setting.default === undefined) {
-						parseLogs?.push({
-							name,
-							message: `MISSING_DEFAULT: Variable number '${setting.id}' missing default, no variable will be generated`,
-							type: 'warning',
-							timestamp: Date.now(),
-							settingId: setting.id,
-						});
-					} else if (!isNumeric(setting.default)) {
-						const oldDefault = setting.default;
-						setting.default = undefined;
-						parseLogs?.push({
-							name,
-							message: `INVALID_DEFAULT: Variable number '${setting.id}' default (${oldDefault}) is invalid, no variable will be generated`,
-							type: 'warning',
-							timestamp: Date.now(),
-							settingId: setting.id,
-						});
+				}
+				case 'variable-number': {
+					const fields = setting.themed ? ['default-light', 'default-dark'] : ['default'];
+					for (const field of fields) {
+						if (setting[field] === undefined) {
+							parseLogs?.push({
+								name,
+								message: `MISSING_DEFAULT: Variable number '${setting.id}' missing ${field}, no variable will be generated`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						} else if (!isNumeric(setting[field])) {
+							const oldDefault = setting[field];
+							setting[field] = undefined;
+							parseLogs?.push({
+								name,
+								message: `INVALID_DEFAULT: Variable number '${setting.id}' ${field} (${oldDefault}) is invalid, no variable will be generated`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						}
 					}
 					break;
+				}
 				case 'variable-number-slider': {
 					if (
 						setting.min === undefined ||
@@ -379,29 +387,32 @@ export class CSSParser {
 							settingId: setting.id,
 						});
 					}
-					if (
-						setting.default !== undefined &&
-						(!isNumeric(setting.default) ||
-						setting.default < setting.min ||
-						setting.default > setting.max)
-					) {
-						const oldDefault = setting.default;
-						setting.default = Math.max(
-							setting.min,
-							Math.min(
-								setting.max,
-								typeof setting.default === 'number' && !isNaN(setting.default)
-									? setting.default
-									: setting.min
-							)
-						);
-						parseLogs?.push({
-							name,
-							message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) ${!isNumeric(setting.default) ? 'is invalid' : 'out of bounds'}, clamped to ${setting.default}`,
-							type: 'warning',
-							timestamp: Date.now(),
-							settingId: setting.id,
-						});
+					const fields = setting.themed ? ['default-light', 'default-dark'] : ['default'];
+					for (const field of fields) {
+						if (
+							setting[field] !== undefined &&
+							(!isNumeric(setting[field]) ||
+							setting[field] < setting.min ||
+							setting[field] > setting.max)
+						) {
+							const oldDefault = setting[field];
+							setting[field] = Math.max(
+								setting.min,
+								Math.min(
+									setting.max,
+									typeof setting[field] === 'number' && !isNaN(setting[field])
+										? setting[field]
+										: setting.min
+								)
+							);
+							parseLogs?.push({
+								name,
+								message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' ${field} (${oldDefault}) ${!isNumeric(setting[field]) ? 'is invalid' : 'out of bounds'}, clamped to ${setting[field]}`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						}
 					}
 					break;
 				}
@@ -498,27 +509,31 @@ export class CSSParser {
 					}
 					break;
 				}
-				case 'variable-select':
-					if (setting.default === undefined) {
-						parseLogs?.push({
-							name,
-							message: `MISSING_DEFAULT: Variable select '${setting.id}' missing default, no variable will be generated`,
-							type: 'warning',
-							timestamp: Date.now(),
-							settingId: setting.id,
-						});
-					} else if (typeof setting.default !== 'string') {
-						const oldDefault = setting.default;
-						setting.default = undefined;
-						parseLogs?.push({
-							name,
-							message: `INVALID_DEFAULT: Variable select '${setting.id}' default (${oldDefault}) is not a string, no variable will be generated`,
-							type: 'warning',
-							timestamp: Date.now(),
-							settingId: setting.id,
-						});
+				case 'variable-select': {
+					const fields = setting.themed ? ['default-light', 'default-dark'] : ['default'];
+					for (const field of fields) {
+						if (setting[field] === undefined) {
+							parseLogs?.push({
+								name,
+								message: `MISSING_DEFAULT: Variable select '${setting.id}' missing ${field}, no variable will be generated`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						} else if (typeof setting[field] !== 'string') {
+							const oldDefault = setting[field];
+							setting[field] = undefined;
+							parseLogs?.push({
+								name,
+								message: `INVALID_DEFAULT: Variable select '${setting.id}' ${field} (${oldDefault}) is not a string, no variable will be generated`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						}
 					}
 					break;
+				}
 				case 'color-gradient':
 					if (
 						!setting.from ||

@@ -18,7 +18,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Setting, TextComponent } from 'obsidian';
+import { Setting, TextComponent, ButtonComponent } from 'obsidian';
 
 import { VariableNumber, resetTooltip } from '../../../types';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
@@ -28,8 +28,7 @@ import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
 export class VariableNumberField extends AbstractSettingComponent {
 	settingEl: Setting;
-	textComponent: TextComponent;
-	setting: VariableNumber;
+	textComponents: Record<string, TextComponent> = {};
 
 	render(): void {
 		if (!this.containerEl) return;
@@ -39,74 +38,83 @@ export class VariableNumberField extends AbstractSettingComponent {
 		this.settingEl = new Setting(this.containerEl);
 		this.settingEl.setClass('style-manager-style-settings-item');
 		this.settingEl.setName(title);
+
+		const modes = this.setting.themed ? ['light', 'dark'] : ['default'];
+		
 		this.settingEl.setDesc(
-			createDescription(description, this.setting.default.toString(10))
+			createDescription(description, modes.map(m => {
+				const key = m === 'default' ? 'default' : `default-${m}`;
+				return this.setting.themed ? `${m}: ${this.setting[key as keyof VariableNumber]}` : `${this.setting.default}`;
+			}).join(', '))
 		);
 
-		this.settingEl.addText((text) => {
-			const value = this.settingsService.getSetting(
-				this.sectionId,
-				this.setting.id
-			);
-			const onCommit = (value: string): void => {
-				if (!isNumeric(value)) {
-					// Revert the input to the last valid stored value (or default)
-					const stored = this.settingsService.getSetting(
-						this.sectionId,
-						this.setting.id
-					);
-					this.textComponent.setValue(
-						stored != null ? stored.toString() : this.setting.default.toString()
-					);
+		let wrapper = this.settingEl.controlEl;
+		if (this.setting.themed) {
+			wrapper = this.settingEl.controlEl.createDiv({ cls: 'themed-field-wrapper' });
+		}
+
+		modes.forEach(mode => {
+			const settingId = mode === 'default' ? this.setting.id : `${this.setting.id}@@${mode}`;
+			const defaultKey = mode === 'default' ? 'default' : `default-${mode}`;
+			const defaultValue = this.setting[defaultKey as keyof VariableNumber] as number;
+			
+			const targetWrapper = this.setting.themed ? wrapper.createDiv({ cls: `theme-${mode}` }) : wrapper;
+			
+			const text = new TextComponent(targetWrapper);
+			this.textComponents[mode] = text;
+
+			const value = this.settingsService.getSetting(this.sectionId, settingId);
+			
+			const onCommit = (val: string): void => {
+				if (!isNumeric(val)) {
+					const stored = this.settingsService.getSetting(this.sectionId, settingId);
+					text.setValue(stored != null ? stored.toString() : defaultValue.toString());
 					return;
 				}
-
-				const numValue = Number(value);
-
-				if (numValue === this.setting.default) {
-					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-						silentUI: true,
-					});
+				const numValue = Number(val);
+				if (numValue === defaultValue) {
+					this.settingsService.clearSetting(this.sectionId, settingId, { silentUI: true });
 				} else {
-					this.settingsService.setSetting(
-						this.sectionId,
-						this.setting.id,
-						numValue,
-						{ silentUI: true }
-					);
+					this.settingsService.setSetting(this.sectionId, settingId, numValue, { silentUI: true });
 				}
-				this.textComponent.setValue(numValue.toString());
+				text.setValue(numValue.toString());
 				this.updateModifiedClass();
 			};
 
-			text.setValue(
-				value != null ? value.toString() : this.setting.default.toString()
-			);
-
-			text.inputEl.addEventListener('blur', () => {
-				onCommit(text.getValue());
-			});
-
+			text.setValue(value != null ? value.toString() : defaultValue.toString());
+			text.inputEl.addEventListener('blur', () => onCommit(text.getValue()));
 			text.inputEl.addEventListener('keydown', (e: KeyboardEvent) => {
-				if (e.key === 'Enter') {
-					onCommit(text.getValue());
-				}
+				if (e.key === 'Enter') onCommit(text.getValue());
 			});
-
-			this.textComponent = text;
-		});
-
-		this.settingEl.addExtraButton((b) => {
-			b.setIcon('reset');
-			b.onClick(() => {
-				this.textComponent.setValue(this.setting.default.toString());
-				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-					silentUI: true,
+			
+			if (this.setting.themed) {
+				const resetBtn = new ButtonComponent(targetWrapper.createDiv({ cls: 'setting-item-control-reset' }));
+				resetBtn.setIcon('reset');
+				resetBtn.onClick(() => {
+					text.setValue(defaultValue.toString());
+					this.settingsService.clearSetting(this.sectionId, settingId, { silentUI: true });
+					this.updateModifiedClass();
 				});
-				this.updateModifiedClass();
-			});
-			b.setTooltip(resetTooltip);
+				resetBtn.setTooltip(resetTooltip);
+			}
 		});
+
+		if (!this.setting.themed) {
+			this.settingEl.addExtraButton((b) => {
+				b.setIcon('reset');
+				b.onClick(() => {
+					modes.forEach(mode => {
+						const settingId = mode === 'default' ? this.setting.id : `${this.setting.id}@@${mode}`;
+						const defaultKey = mode === 'default' ? 'default' : `default-${mode}`;
+						const defaultValue = this.setting[defaultKey as keyof VariableNumber] as number;
+						this.textComponents[mode].setValue(defaultValue.toString());
+						this.settingsService.clearSetting(this.sectionId, settingId, { silentUI: true });
+					});
+					this.updateModifiedClass();
+				});
+				b.setTooltip(resetTooltip);
+			});
+		}
 
 		this.settingEl.settingEl.dataset.id = this.setting.id;
 		this.updateModifiedClass();
@@ -117,7 +125,33 @@ export class VariableNumberField extends AbstractSettingComponent {
 	}
 
 	refresh(): void {
-		this.textComponent?.setValue(this.setting.default.toString());
+		const modes = this.setting.themed ? ['light', 'dark'] : ['default'];
+		modes.forEach(mode => {
+			const defaultKey = mode === 'default' ? 'default' : `default-${mode}`;
+			const defaultValue = this.setting[defaultKey as keyof VariableNumber] as number;
+			this.textComponents[mode]?.setValue(defaultValue.toString());
+		});
 		this.updateModifiedClass();
+	}
+	
+	isModified(): boolean {
+		const modes = this.setting.themed ? ['light', 'dark'] : ['default'];
+		return modes.some(mode => {
+			const settingId = mode === 'default' ? this.setting.id : `${this.setting.id}@@${mode}`;
+			return this.settingsService.getSetting(this.sectionId, settingId) !== undefined;
+		});
+	}
+
+	getMatchCount(showModifiedOnly: boolean): number {
+		if (showModifiedOnly) {
+			let count = 0;
+			const modes = this.setting.themed ? ['light', 'dark'] : ['default'];
+			modes.forEach(mode => {
+				const settingId = mode === 'default' ? this.setting.id : `${this.setting.id}@@${mode}`;
+				if (this.settingsService.getSetting(this.sectionId, settingId) !== undefined) count++;
+			});
+			return count > 0 ? count : 1;
+		}
+		return 1;
 	}
 }

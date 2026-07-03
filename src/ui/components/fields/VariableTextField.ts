@@ -18,7 +18,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import { Setting, TextComponent } from 'obsidian';
+import { Setting, TextComponent, ButtonComponent } from 'obsidian';
 
 import { VariableText, resetTooltip } from '../../../types';
 import {
@@ -31,8 +31,7 @@ import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
 export class VariableTextField extends AbstractSettingComponent {
 	settingEl: Setting;
-	textComponent: TextComponent;
-	setting: VariableText;
+	textComponents: Record<string, TextComponent> = {};
 
 	render(): void {
 		if (!this.containerEl) return;
@@ -42,63 +41,80 @@ export class VariableTextField extends AbstractSettingComponent {
 		this.settingEl = new Setting(this.containerEl);
 		this.settingEl.setClass('style-manager-style-settings-item');
 		this.settingEl.setName(title);
+
+		const modes = this.setting.themed ? ['light', 'dark'] : ['default'];
+		
 		this.settingEl.setDesc(
-			createDescription(description, this.setting.default)
+			createDescription(description, modes.map(m => {
+				const key = m === 'default' ? 'default' : `default-${m}`;
+				return this.setting.themed ? `${m}: ${this.setting[key as keyof VariableText]}` : `${this.setting.default}`;
+			}).join(', '))
 		);
 
-		this.settingEl.addText((text) => {
-			let value = this.settingsService.getSetting(
-				this.sectionId,
-				this.setting.id
-			);
+		let wrapper = this.settingEl.controlEl;
+		if (this.setting.themed) {
+			wrapper = this.settingEl.controlEl.createDiv({ cls: 'themed-field-wrapper' });
+		}
 
-			const onCommit = (value: string): void => {
-				const sanitizedValue = sanitizeText(value);
-				if (sanitizedValue === this.setting.default) {
-					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-						silentUI: true,
-					});
+		modes.forEach(mode => {
+			const settingId = mode === 'default' ? this.setting.id : `${this.setting.id}@@${mode}`;
+			const defaultKey = mode === 'default' ? 'default' : `default-${mode}`;
+			const defaultValue = this.setting[defaultKey as keyof VariableText] as string;
+			
+			const targetWrapper = this.setting.themed ? wrapper.createDiv({ cls: `theme-${mode}` }) : wrapper;
+			
+			const text = new TextComponent(targetWrapper);
+			this.textComponents[mode] = text;
+
+			let value = this.settingsService.getSetting(this.sectionId, settingId);
+			if (this.setting.quotes && value === `""`) {
+				value = ``;
+			}
+			
+			const onCommit = (val: string): void => {
+				const sanitizedValue = sanitizeText(val);
+				if (sanitizedValue === defaultValue) {
+					this.settingsService.clearSetting(this.sectionId, settingId, { silentUI: true });
 				} else {
-					this.settingsService.setSetting(
-						this.sectionId,
-						this.setting.id,
-						sanitizedValue,
-						{ silentUI: true }
-					);
+					this.settingsService.setSetting(this.sectionId, settingId, sanitizedValue, { silentUI: true });
 				}
 				this.updateModifiedClass();
 			};
 
-			if (this.setting.quotes && value === `""`) {
-				value = ``;
-			}
-
-			text.setValue(value != null ? value.toString() : this.setting.default);
-
-			text.inputEl.addEventListener('blur', () => {
-				onCommit(text.getValue());
-			});
-
+			text.setValue(value != null ? value.toString() : defaultValue);
+			text.inputEl.addEventListener('blur', () => onCommit(text.getValue()));
 			text.inputEl.addEventListener('keydown', (e: KeyboardEvent) => {
-				if (e.key === 'Enter') {
-					onCommit(text.getValue());
-				}
+				if (e.key === 'Enter') onCommit(text.getValue());
 			});
-
-			this.textComponent = text;
-		});
-
-		this.settingEl.addExtraButton((b) => {
-			b.setIcon('reset');
-			b.onClick(() => {
-				this.textComponent.setValue(this.setting.default);
-				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-					silentUI: true,
+			
+			if (this.setting.themed) {
+				const resetBtn = new ButtonComponent(targetWrapper.createDiv({ cls: 'setting-item-control-reset' }));
+				resetBtn.setIcon('reset');
+				resetBtn.onClick(() => {
+					text.setValue(defaultValue);
+					this.settingsService.clearSetting(this.sectionId, settingId, { silentUI: true });
+					this.updateModifiedClass();
 				});
-				this.updateModifiedClass();
-			});
-			b.setTooltip(resetTooltip);
+				resetBtn.setTooltip(resetTooltip);
+			}
 		});
+
+		if (!this.setting.themed) {
+			this.settingEl.addExtraButton((b) => {
+				b.setIcon('reset');
+				b.onClick(() => {
+					modes.forEach(mode => {
+						const settingId = mode === 'default' ? this.setting.id : `${this.setting.id}@@${mode}`;
+						const defaultKey = mode === 'default' ? 'default' : `default-${mode}`;
+						const defaultValue = this.setting[defaultKey as keyof VariableText] as string;
+						this.textComponents[mode].setValue(defaultValue);
+						this.settingsService.clearSetting(this.sectionId, settingId, { silentUI: true });
+					});
+					this.updateModifiedClass();
+				});
+				b.setTooltip(resetTooltip);
+			});
+		}
 
 		this.settingEl.settingEl.dataset.id = this.setting.id;
 		this.updateModifiedClass();
@@ -109,7 +125,33 @@ export class VariableTextField extends AbstractSettingComponent {
 	}
 
 	refresh(): void {
-		this.textComponent?.setValue(this.setting.default);
+		const modes = this.setting.themed ? ['light', 'dark'] : ['default'];
+		modes.forEach(mode => {
+			const defaultKey = mode === 'default' ? 'default' : `default-${mode}`;
+			const defaultValue = this.setting[defaultKey as keyof VariableText] as string;
+			this.textComponents[mode]?.setValue(defaultValue);
+		});
 		this.updateModifiedClass();
+	}
+	
+	isModified(): boolean {
+		const modes = this.setting.themed ? ['light', 'dark'] : ['default'];
+		return modes.some(mode => {
+			const settingId = mode === 'default' ? this.setting.id : `${this.setting.id}@@${mode}`;
+			return this.settingsService.getSetting(this.sectionId, settingId) !== undefined;
+		});
+	}
+
+	getMatchCount(showModifiedOnly: boolean): number {
+		if (showModifiedOnly) {
+			let count = 0;
+			const modes = this.setting.themed ? ['light', 'dark'] : ['default'];
+			modes.forEach(mode => {
+				const settingId = mode === 'default' ? this.setting.id : `${this.setting.id}@@${mode}`;
+				if (this.settingsService.getSetting(this.sectionId, settingId) !== undefined) count++;
+			});
+			return count > 0 ? count : 1;
+		}
+		return 1;
 	}
 }

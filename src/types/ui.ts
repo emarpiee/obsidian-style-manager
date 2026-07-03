@@ -103,17 +103,26 @@ export interface ClassMultiToggle extends Meta {
 }
 
 export interface VariableText extends Meta {
-	default: string;
+	default?: string;
+	'default-light'?: string;
+	'default-dark'?: string;
+	themed?: boolean;
 	quotes?: boolean;
 }
 
 export interface VariableNumber extends Meta {
-	default: number;
+	default?: number;
+	'default-light'?: number;
+	'default-dark'?: number;
+	themed?: boolean;
 	format?: string;
 }
 
 export interface VariableNumberSlider extends Meta {
-	default: number;
+	default?: number;
+	'default-light'?: number;
+	'default-dark'?: number;
+	themed?: boolean;
 	min: number;
 	max: number;
 	step: number;
@@ -121,7 +130,10 @@ export interface VariableNumberSlider extends Meta {
 }
 
 export interface VariableSelect extends Meta {
-	default: string;
+	default?: string;
+	'default-light'?: string;
+	'default-dark'?: string;
+	themed?: boolean;
 	options: Array<string | SelectOption>;
 	quotes?: boolean;
 }
