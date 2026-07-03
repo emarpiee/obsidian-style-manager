@@ -40,7 +40,7 @@ export class VariableNumberField extends AbstractSettingComponent {
 		this.settingEl.setClass('style-manager-style-settings-item');
 		this.settingEl.setName(title);
 		this.settingEl.setDesc(
-			createDescription(description, this.setting.default.toString(10))
+			createDescription(description, this.setting.default?.toString(10) ?? '')
 		);
 
 		this.settingEl.addText((text) => {
@@ -56,7 +56,7 @@ export class VariableNumberField extends AbstractSettingComponent {
 						this.setting.id
 					);
 					this.textComponent.setValue(
-						stored != null ? stored.toString() : this.setting.default.toString()
+						stored != null ? stored.toString() : (this.setting.default?.toString() ?? '')
 					);
 					return;
 				}
@@ -80,7 +80,7 @@ export class VariableNumberField extends AbstractSettingComponent {
 			};
 
 			text.setValue(
-				value != null ? value.toString() : this.setting.default.toString()
+				value != null ? value.toString() : (this.setting.default?.toString() ?? '')
 			);
 
 			text.inputEl.addEventListener('blur', () => {
@@ -99,7 +99,7 @@ export class VariableNumberField extends AbstractSettingComponent {
 		this.settingEl.addExtraButton((b) => {
 			b.setIcon('reset');
 			b.onClick(() => {
-				this.textComponent.setValue(this.setting.default.toString());
+				this.textComponent.setValue(this.setting.default?.toString() ?? '');
 				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
 					silentUI: true,
 				});
@@ -117,7 +117,7 @@ export class VariableNumberField extends AbstractSettingComponent {
 	}
 
 	refresh(): void {
-		this.textComponent?.setValue(this.setting.default.toString());
+		this.textComponent?.setValue(this.setting.default?.toString() ?? '');
 		this.updateModifiedClass();
 	}
 }
