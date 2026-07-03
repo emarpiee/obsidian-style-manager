@@ -6,8 +6,8 @@ const OUTPUT_PATH = 'README.view.md';
 const CONTENT_TS_PATH = 'src/ui/views/ReadmeContent.ts';
 
 function escapeTemplateLiteral(str) {
-	// Escape backticks and dollar signs for TS template literals
-	return str.replace(/`/g, '\\`').replace(/\$/g, '\\$');
+	// Escape backslashes, backticks and dollar signs for TS template literals
+	return str.replace(/\\/g, '\\\\').replace(/`/g, '\\`').replace(/\$/g, '\\$');
 }
 
 function convertImgToLink(content) {
