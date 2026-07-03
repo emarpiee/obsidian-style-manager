@@ -315,7 +315,7 @@ settings:
 						(this.plugin.settingsService.getSetting(
 							PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
 						) as number) ?? 4;
-					const fieldRegExp = new RegExp(`^ {${dashCount}}- `, 'gm');
+					const fieldRegExp = new RegExp('^\\s*-\\s*', 'gm');
 					let match;
 					const fieldStarts: number[] = [];
 					while ((match = fieldRegExp.exec(blockContent)) !== null) {
