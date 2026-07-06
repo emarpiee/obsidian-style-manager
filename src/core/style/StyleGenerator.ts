@@ -57,7 +57,7 @@ export class StyleGenerator {
 		private getSettings: () => StyleManagerSettings
 	) {
 		this.styleTag = document.createElement('style');
-		this.styleTag.id = 'style-manager-styles';
+		this.styleTag.id = 'style-manager-css';
 		document.head.appendChild(this.styleTag);
 	}
 
@@ -89,7 +89,7 @@ export class StyleGenerator {
 		);
 
 		this.styleTag.textContent = `
-			body.style-manager-css {
+			body.css-settings-manager, body.style-manager-css {
 				${vars.reduce(
 					(
 						combined: string,
@@ -104,7 +104,7 @@ export class StyleGenerator {
 				)}
 			}
 
-			body.theme-light.style-manager-css {
+			body.theme-light.css-settings-manager, body.theme-light.style-manager-css {
 				${themedLight.reduce(
 					(
 						combined: string,
@@ -119,7 +119,7 @@ export class StyleGenerator {
 				)}
 			}
 
-			body.theme-dark.style-manager-css {
+			body.theme-dark.css-settings-manager, body.theme-dark.style-manager-css {
 				${themedDark.reduce(
 					(
 						combined: string,

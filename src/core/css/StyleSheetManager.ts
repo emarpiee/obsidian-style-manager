@@ -40,13 +40,13 @@ export class StyleSheetManager {
 		this.darkEl = document.body.createDiv('theme-dark style-manager-ref');
 
 		// Hide these elements from view
-		document.body.classList.add('style-manager-css');
+		document.body.classList.add('css-settings-manager', 'style-manager-css');
 	}
 
 	public cleanup(): void {
 		this.lightEl?.remove();
 		this.darkEl?.remove();
-		document.body.classList.remove('style-manager-css');
+		document.body.classList.remove('css-settings-manager', 'style-manager-css');
 		this.cssVarCache.clear();
 		this.fileCache.clear();
 		this.diskMapCache.clear();
