@@ -2190,3 +2190,20 @@ body.is-mobile .style-manager-editor-title-container {
 	color: var(--color-accent-2, var(--color-accent));
 	background: var(--background-modifier-hover);
 }
+
+body:has(.style-settings-ref):has(.style-manager-ref)::before {
+	position: fixed;
+	top: 5%;
+	left: 0;
+	z-index: 100000;
+	display: block;
+	width: auto;
+	height: fit-content;
+	padding: 10px 20px;
+	font-weight: 600;
+	text-align: center;
+	content: "Do not enable Style Manager and Style Settings plugin at the same time. Both plugins rely on the exact same /* @settings configuration system. If run simultaneously, they will compete to manage your CSS variables, which can lead to layout conflicts.";
+	background-color: var(--background-modifier-error);
+	color: white;
+	border-radius: 0 !important;
+}
