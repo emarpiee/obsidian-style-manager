@@ -1863,7 +1863,7 @@ body.is-mobile .style-manager-editor-title-container {
 }
 
 .style-manager-editor-view .style-manager-editor-footer {
-	padding: 0 !important;
+	padding-inline: 0 !important;
 }
 
 .style-manager-editor-view .style-manager-editor-buttons {
