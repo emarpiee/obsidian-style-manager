@@ -266,10 +266,10 @@ export class HeadingField extends AbstractSettingComponent {
 		});
 
 		const leftBadgesContainer = this.settingEl.nameEl.createDiv(
-			'style-manager-badge-container mod-left'
+			'style-manager-badge-container'
 		);
 		const rightBadgesContainer = this.settingEl.controlEl.createDiv(
-			'style-manager-badge-container mod-right'
+			'style-manager-badge-container'
 		);
 		this.settingEl.controlEl.prepend(rightBadgesContainer);
 

@@ -57,7 +57,7 @@ export class PresetItem {
 
 		// Badges for occupancy (mobile request)
 		const badgesContainer = row.nameEl.createDiv(
-			'style-manager-badge-container mod-left'
+			'style-manager-badge-container'
 		);
 
 		// Appearance Badge
