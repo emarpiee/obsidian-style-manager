@@ -13,15 +13,16 @@ import {
 import { css } from '@codemirror/lang-css';
 import {
 	bracketMatching,
-	defaultHighlightStyle,
 	foldGutter,
 	foldKeymap,
 	indentOnInput,
 	indentUnit,
 	syntaxHighlighting,
+	HighlightStyle
 } from '@codemirror/language';
+import { tags as t } from '@lezer/highlight';
 import { lintKeymap } from '@codemirror/lint';
-import { highlightSelectionMatches, searchKeymap } from '@codemirror/search';
+import { highlightSelectionMatches, searchKeymap, openSearchPanel } from '@codemirror/search';
 import { Compartment, EditorState } from '@codemirror/state';
 import {
 	EditorView,
@@ -36,7 +37,7 @@ import {
 	lineNumbers,
 	rectangularSelection,
 } from '@codemirror/view';
-import { Menu, Platform, Setting, setIcon, setTooltip } from 'obsidian';
+import { Menu, Platform, Setting, setIcon, setTooltip, ButtonComponent, ToggleComponent } from 'obsidian';
 
 import { PreferencesKeys, StorageKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
@@ -50,7 +51,48 @@ export interface CSSEditorRenderOptions {
 	onOpenInTab?: () => void;
 	onClose?: () => void;
 	onSaveSuccess?: (newName: string) => void;
+	addAction?: (icon: string, title: string, callback: (evt: MouseEvent) => void) => HTMLElement;
 }
+
+const obsidianHighlightStyle = HighlightStyle.define([
+	{ tag: t.keyword, color: 'var(--code-keyword)' },
+	{
+		tag: [t.name, t.deleted, t.character, t.propertyName, t.macroName],
+		color: 'var(--code-property)',
+	},
+	{
+		tag: [t.function(t.variableName), t.labelName],
+		color: 'var(--code-function)',
+	},
+	{
+		tag: [t.color, t.constant(t.name), t.standard(t.name)],
+		color: 'var(--code-value)',
+	},
+	{
+		tag: [t.definition(t.name), t.separator],
+		color: 'var(--code-normal)',
+	},
+	{
+		tag: [t.typeName, t.className, t.number, t.changed, t.annotation, t.modifier, t.self, t.namespace],
+		color: 'var(--code-value)',
+	},
+	{
+		tag: [t.operator, t.operatorKeyword, t.url, t.escape, t.regexp, t.link, t.special(t.string)],
+		color: 'var(--code-operator)',
+	},
+	{ tag: [t.meta, t.comment], color: 'var(--code-comment)' },
+	{ tag: t.strong, fontWeight: 'bold' },
+	{ tag: t.emphasis, fontStyle: 'italic' },
+	{ tag: t.strikethrough, textDecoration: 'line-through' },
+	{ tag: t.link, color: 'var(--text-accent)', textDecoration: 'underline' },
+	{ tag: t.heading, fontWeight: 'bold', color: 'var(--text-title)' },
+	{
+		tag: [t.atom, t.bool, t.special(t.variableName)],
+		color: 'var(--code-value)',
+	},
+	{ tag: [t.processingInstruction, t.string, t.inserted], color: 'var(--code-string)' },
+	{ tag: t.invalid, color: 'var(--text-error)' },
+]);
 
 export class CSSEditor {
 	private view: EditorView | null = null;
@@ -97,7 +139,8 @@ export class CSSEditor {
 		}
 
 		try {
-			this.content = await this.plugin.app.vault.adapter.read(path);
+			const rawContent = await this.plugin.app.vault.adapter.read(path);
+			this.content = rawContent.replace(/\r\n/g, '\n');
 		} catch (_err) {
 			this.plugin.settingsService.notifications.error(
 				`Failed to read ${this.source.type} file.`
@@ -142,6 +185,8 @@ export class CSSEditor {
 			}
 		});
 
+
+
 		// Define save command
 		const saveKeymap: KeyBinding[] = [
 			{
@@ -174,7 +219,7 @@ export class CSSEditor {
 					dropCursor(),
 					EditorState.allowMultipleSelections.of(true),
 					indentOnInput(),
-					syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+					syntaxHighlighting(obsidianHighlightStyle, { fallback: true }),
 					bracketMatching(),
 					closeBrackets(),
 					autocompletion(),
@@ -203,6 +248,8 @@ export class CSSEditor {
 								height: '100%',
 								minHeight: '0',
 								fontSize: 'var(--font-ui-small)',
+								backgroundColor: 'var(--background-primary)',
+								color: 'var(--text-normal)'
 							},
 							'.cm-scroller': {
 								fontFamily: 'var(--font-monospace)',
@@ -211,6 +258,23 @@ export class CSSEditor {
 							'&.cm-focused': {
 								outline: 'none',
 							},
+							'.cm-activeLine': {
+								backgroundColor: 'var(--background-modifier-active-hover)',
+							},
+							'.cm-activeLineGutter': {
+								backgroundColor: 'var(--background-modifier-active-hover)',
+							},
+							'.cm-selectionBackground, .cm-focused .cm-selectionBackground, &::selection': {
+								backgroundColor: 'var(--text-selection)',
+							},
+							'.cm-cursor, .cm-dropCursor': {
+								borderLeftColor: 'var(--text-normal)',
+							},
+							'.cm-gutters': {
+								backgroundColor: 'var(--background-primary)',
+								color: 'var(--text-faint)',
+								borderRight: '1px solid var(--background-modifier-border)',
+							}
 						},
 						{ dark: document.body.classList.contains('theme-dark') }
 					),
@@ -219,101 +283,184 @@ export class CSSEditor {
 			parent: editorContainer,
 		});
 
-		const footer = this.container.createDiv('style-manager-editor-footer');
+		if (this.isViewMode && options.addAction) {
+			// Tab View - Native Actions
+			// Note: Obsidian prepends actions. The first one added appears furthest to the right.
+			// Desired visual order (L to R): [Enable Snippet] [Copy/Wrap] [Add Block] [Search] [Save]
 
-		const wrapBtnContainer = footer.createDiv(
-			'style-manager-editor-wrap-container'
-		);
-		const wrapSetting = new Setting(wrapBtnContainer)
-			.setClass('style-manager-editor-buttons')
-			.addButton((btn) => {
-				btn
-					.setButtonText('Wrap')
-					.setTooltip('Toggle line wrapping')
+			// 1. Save (furthest right)
+			if (!this.source.readOnly) {
+				options.addAction('save', 'Save', () => this.handleSave());
+				options.addAction('search', 'Search', () => this.handleSearch());
+			}
+
+			// 2. Add Block
+			if (
+				(this.source.type === 'Snippet' || this.source.type === 'Theme') &&
+				!this.source.readOnly
+			) {
+				options.addAction('plus-with-circle', 'Add block', (e: MouseEvent) => {
+					const target = e.target as HTMLElement;
+					const rect = target.getBoundingClientRect();
+					this.showAddBlockMenu({ x: rect.right, y: rect.bottom });
+				});
+			}
+
+			// 3. Wrap Text
+			options.addAction('wrap-text', 'Toggle line wrapping', () => {
+				this.isWrapping = !this.isWrapping;
+				if (this.view) {
+					this.view.dispatch({
+						effects: this.wrapCompartment.reconfigure(
+							this.isWrapping ? EditorView.lineWrapping : []
+						),
+					});
+				}
+			});
+
+			// 4. Copy (if read-only)
+			if (this.source.readOnly) {
+				options.addAction('copy', 'Copy to clipboard', () => {
+					if (this.view) {
+						const currentContent = this.view.state.doc.toString();
+						navigator.clipboard.writeText(currentContent);
+						this.plugin.settingsService.notifications.util(
+							'Copied to clipboard'
+						);
+					}
+				});
+			}
+
+			// 5. Enable Snippet Toggle (furthest left)
+			if (!this.source.readOnly && this.source.type === 'Snippet') {
+				const currentEnabled =
+					(this.plugin.settingsService.settings[
+						StorageKeys.SNIPPETS
+					] as string[]) || [];
+				let isEnabled = currentEnabled.includes(this.source.id);
+				
+				const toggleActionEl = options.addAction(
+					isEnabled ? 'check-circle' : 'circle',
+					isEnabled ? 'Disable snippet' : 'Enable snippet',
+					async () => {
+						const snippets = new Set(
+							(this.plugin.settingsService.settings[
+								StorageKeys.SNIPPETS
+							] as string[]) || []
+						);
+						isEnabled = !isEnabled;
+						if (isEnabled) snippets.add(this.source.id);
+						else snippets.delete(this.source.id);
+
+						const list = Array.from(snippets);
+						await this.plugin.settingsService.setSetting(
+							StorageKeys.SNIPPETS,
+							list,
+							{ silentUI: true }
+						);
+						
+						setIcon(toggleActionEl, isEnabled ? 'check-circle' : 'circle');
+						setTooltip(toggleActionEl, isEnabled ? 'Disable snippet' : 'Enable snippet');
+					}
+				);
+
+				this.settingsChangedHandler = (): void => {
+					const currentEnabled =
+						(this.plugin.settingsService.settings[
+							StorageKeys.SNIPPETS
+						] as string[]) || [];
+					isEnabled = currentEnabled.includes(this.source.id);
+					setIcon(toggleActionEl, isEnabled ? 'check-circle' : 'circle');
+					setTooltip(toggleActionEl, isEnabled ? 'Disable snippet' : 'Enable snippet');
+				};
+				this.plugin.settingsService.on('settings-changed', this.settingsChangedHandler);
+			}
+		} else {
+			// Modal / Non-Tab View - Custom Footer
+			const footer = this.container.createDiv('modal-button-container');
+			footer.addClass('style-manager-editor-footer-modal');
+
+			const leftGroup = footer.createDiv('style-manager-editor-footer-left');
+			const rightGroup = footer.createDiv('style-manager-editor-footer-right');
+
+			const wrapBtn = new ButtonComponent(leftGroup)
+				.setButtonText('Wrap')
+				.setTooltip('Toggle line wrapping')
+				.onClick(() => {
+					this.isWrapping = !this.isWrapping;
+					wrapBtn.buttonEl.toggleClass('is-active', this.isWrapping);
+					if (this.view) {
+						this.view.dispatch({
+							effects: this.wrapCompartment.reconfigure(
+								this.isWrapping ? EditorView.lineWrapping : []
+							),
+						});
+					}
+				});
+			wrapBtn.buttonEl.toggleClass('is-active', this.isWrapping);
+
+			if (
+				(this.source.type === 'Snippet' || this.source.type === 'Theme') &&
+				!this.source.readOnly
+			) {
+				const addBlockBtn = new ButtonComponent(leftGroup)
+					.setIcon('plus-with-circle')
+					.setTooltip('Add block')
 					.onClick(() => {
-						this.isWrapping = !this.isWrapping;
-						btn.buttonEl.toggleClass('is-active', this.isWrapping);
-						if (this.view) {
-							this.view.dispatch({
-								effects: this.wrapCompartment.reconfigure(
-									this.isWrapping ? EditorView.lineWrapping : []
-								),
-							});
+						const rect = addBlockBtn.buttonEl.getBoundingClientRect();
+						this.showAddBlockMenu({ x: rect.right, y: rect.top });
+					});
+			}
+
+			if (options.onOpenInTab && !this.isViewMode) {
+				new ButtonComponent(leftGroup)
+					.setIcon('external-link')
+					.setTooltip('Open this tool in a tab')
+					.onClick(async () => {
+						await this.plugin.activateCSSEditorView(this.source);
+						if (options.onOpenInTab) {
+							options.onOpenInTab();
 						}
 					});
-				btn.buttonEl.toggleClass('is-active', this.isWrapping);
-			})
-			.addButton((btn) => {
-				if (
-					(this.source.type === 'Snippet' || this.source.type === 'Theme') &&
-					!this.source.readOnly
-				) {
-					btn
-						.setIcon('plus-with-circle')
-						.setTooltip('Add block')
-						.onClick((_e: MouseEvent) => {
-							const rect = btn.buttonEl.getBoundingClientRect();
-							this.showAddBlockMenu({ x: rect.right, y: rect.top });
-						});
-				} else {
-					btn.buttonEl.addClass('style-manager-hidden');
-				}
-			});
-
-		// Add "Open in Tab" button if a callback is provided
-		if (options.onOpenInTab && !this.isViewMode) {
-			const openInTabBtn = wrapSetting.controlEl.createDiv({
-				cls: 'clickable-icon style-manager-editor-open-in-tab-btn',
-			});
-			setIcon(openInTabBtn, 'external-link');
-			setTooltip(openInTabBtn, 'Open this tool in a tab');
-			openInTabBtn.onclick = async (): Promise<void> => {
-				await this.plugin.activateCSSEditorView(this.source);
-				if (options.onOpenInTab) {
-					options.onOpenInTab();
-				}
-			};
-		}
-
-		{
-			const mainBtns = footer.createDiv('style-manager-editor-buttons-main');
-			const mainBtnsSetting = new Setting(mainBtns).setClass(
-				'style-manager-editor-buttons'
-			);
+			}
 
 			if (this.source.readOnly) {
 				if (!this.isViewMode) {
-					mainBtnsSetting.addButton((btn) =>
-						btn.setButtonText('Close').onClick(() => {
-							if (options.onClose) options.onClose();
-						})
-					);
-				}
-				mainBtnsSetting.addButton((btn) =>
-					btn
-						.setButtonText('Copy to clipboard')
-						.setCta()
+					new ButtonComponent(rightGroup)
+						.setButtonText('Close')
 						.onClick(() => {
-							if (this.view) {
-								const currentContent = this.view.state.doc.toString();
-								navigator.clipboard.writeText(currentContent);
-								this.plugin.settingsService.notifications.util(
-									'Copied to clipboard'
-								);
-							}
-							if (!this.isViewMode && options.onClose) options.onClose();
-						})
-				);
+							if (options.onClose) options.onClose();
+						});
+				}
+				new ButtonComponent(rightGroup)
+					.setButtonText('Copy to clipboard')
+					.setCta()
+					.onClick(() => {
+						if (this.view) {
+							const currentContent = this.view.state.doc.toString();
+							navigator.clipboard.writeText(currentContent);
+							this.plugin.settingsService.notifications.util(
+								'Copied to clipboard'
+							);
+						}
+						if (!this.isViewMode && options.onClose) options.onClose();
+					});
 			} else {
 				if (this.source.type === 'Snippet') {
+					const toggleContainer = leftGroup.createDiv('style-manager-editor-toggle-container');
+					
+					const toggleLabel = toggleContainer.createSpan('style-manager-editor-toggle-label');
+					toggleLabel.setText('Enable snippet');
+					
 					const currentEnabled =
 						(this.plugin.settingsService.settings[
 							StorageKeys.SNIPPETS
 						] as string[]) || [];
 					const isEnabled = currentEnabled.includes(this.source.id);
-					mainBtnsSetting.addToggle((toggle) => {
-						this.snippetToggle = toggle;
-						toggle.setValue(isEnabled).onChange(async (value) => {
+					
+					const toggle = new ToggleComponent(toggleContainer)
+						.setValue(isEnabled)
+						.onChange(async (value) => {
 							const snippets = new Set(
 								(this.plugin.settingsService.settings[
 									StorageKeys.SNIPPETS
@@ -331,10 +478,8 @@ export class CSSEditor {
 								}
 							);
 						});
-					});
-				}
-
-				if (this.source.type === 'Snippet') {
+					
+					this.snippetToggle = toggle;
 					this.settingsChangedHandler = (): void => {
 						const currentEnabled =
 							(this.plugin.settingsService.settings[
@@ -348,13 +493,28 @@ export class CSSEditor {
 					this.plugin.settingsService.on('settings-changed', this.settingsChangedHandler);
 				}
 
-				mainBtnsSetting.addButton((btn) =>
-					btn
-						.setButtonText('Save')
-						.setCta()
-						.onClick(() => this.handleSave())
-				);
+				new ButtonComponent(rightGroup)
+					.setButtonText('Save')
+					.setCta()
+					.onClick(() => this.handleSave());
 			}
+		}
+	}
+
+	public isDirty(): boolean {
+		if (!this.view || this.source.readOnly) return false;
+		return this.view.state.doc.toString() !== this.content;
+	}
+
+	public resetDirty(): void {
+		if (this.view) {
+			this.content = this.view.state.doc.toString();
+		}
+	}
+
+	public handleSearch(): void {
+		if (this.view) {
+			openSearchPanel(this.view);
 		}
 	}
 
@@ -401,6 +561,7 @@ export class CSSEditor {
 				}
 			}
 
+			this.resetDirty();
 			this.plugin.settingsService.notifications.snippet(
 				`Saved ${type.toLowerCase()}: ${this.newName}`
 			);

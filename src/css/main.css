@@ -189,7 +189,7 @@ body {
 	--sm-bulk-actions-border-color: var(--background-modifier-border);
 
 	/* --- CSS Editor --- */
-	--sm-cm-gutters-color: unset;
+	--sm-cm-gutters-color: var(--background-primary);
 	--sm-cm-active-line-gutter-color: unset;
 
 	/* --- CSS Parser Logs --- */
@@ -208,6 +208,7 @@ body {
 	--sm-sticky-top-offset: calc(var(--sm-sticky-tabs-height) + var(--sm-sticky-search-height));
 	--sm-sticky-heading-height: 38px;
 	container-type: inline-size;
+	background: var(--sm-wrapper-bg);
 }
 
 /* NOTE: tovar*/
@@ -835,7 +836,7 @@ body.is-mobile .modal-style-manager:not(.style-manager-confirm-modal,
 	.style-manager-modal-pre,
 	.style-manager-export-modal,
 	.style-manager-preview-modal,
-	.style-manager-color-contrast-modal) {
+	.style-manager-color-contrast-modal, .style-manager-editor-modal) {
 	position: absolute !important;
 	top: calc(var(--safe-area-inset-top) + 24px) !important;
 	bottom: calc(var(--safe-area-inset-bottom) + 24px) !important;
@@ -1761,7 +1762,8 @@ body.is-phone .style-manager-editor-modal {
 	height: 100%;
 	min-height: 0 !important;
 	margin-bottom: var(--size-4-1);
-	border: 1px solid var(--background-modifier-border);
+	border-top: 1px solid var(--background-modifier-border);
+	border-bottom: 1px solid var(--background-modifier-border);
 	border-radius: 0;
 	overflow: hidden;
 }
@@ -1868,6 +1870,50 @@ body.is-mobile .style-manager-editor-title-container {
 
 .style-manager-editor-view .style-manager-editor-buttons {
 	padding-block: 0 !important;
+}
+
+.style-manager-editor-footer-modal {
+	margin-top: 0;
+	justify-content: space-between;
+	flex-direction: row !important;
+	padding-top: var(--size-4-4);
+	padding-inline: var(--size-4-4);
+}
+
+.style-manager-editor-footer-left {
+	display: flex;
+	gap: var(--size-4-2);
+	align-items: center;
+}
+
+.style-manager-editor-footer-right {
+	display: flex;
+	gap: var(--size-4-2);
+	align-items: center;
+}
+
+.style-manager-editor-toggle-container {
+	display: flex;
+	align-items: center;
+	gap: var(--size-4-2);
+	margin-left: var(--size-4-4);
+}
+
+.style-manager-editor-toggle-label {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+}
+
+.style-manager-confirm-modal .style-manager-modal-buttons .setting-item-control {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	width: 100%;
+	gap: var(--size-4-2);
+}
+
+.style-manager-confirm-modal .style-manager-modal-buttons .setting-item-control>button:first-child {
+	margin-right: auto;
 }
 
 /* Status Bar Integration */
@@ -2206,4 +2252,83 @@ body:has(.style-settings-ref):has(.style-manager-ref)::before {
 	background-color: var(--background-modifier-error);
 	color: white;
 	border-radius: 0 !important;
+}
+
+/* --- CodeMirror Search Panel Overrides --- */
+.cm-search {
+	background-color: var(--background-primary) !important;
+	border-top: 1px solid var(--background-modifier-border) !important;
+	border-bottom: none !important;
+	border-left: none !important;
+	border-right: none !important;
+	color: var(--text-normal) !important;
+	padding: var(--size-4-2) var(--size-4-4) !important;
+	display: flex !important;
+	align-items: center !important;
+	gap: var(--size-4-2) !important;
+	flex-wrap: wrap !important;
+	font-family: var(--font-interface) !important;
+}
+
+.cm-search input.cm-textfield {
+	background-color: var(--background-modifier-form-field) !important;
+	border: 1px solid var(--background-modifier-border) !important;
+	color: var(--text-normal) !important;
+	border-radius: var(--input-radius) !important;
+	padding: var(--size-4-1) var(--size-4-2) !important;
+	font-family: var(--font-interface) !important;
+	font-size: var(--font-ui-small) !important;
+}
+
+.cm-search input.cm-textfield:focus {
+	border-color: var(--background-modifier-border-focus) !important;
+	box-shadow: 0 0 0 2px var(--background-modifier-border-focus) !important;
+}
+
+.cm-search button.cm-button {
+	background-color: var(--interactive-normal) !important;
+	border: 1px solid var(--background-modifier-border) !important;
+	color: var(--text-normal) !important;
+	border-radius: var(--button-radius) !important;
+	padding: var(--size-4-1) var(--size-4-2) !important;
+	cursor: pointer !important;
+	box-shadow: none !important;
+	background-image: none !important;
+	font-family: var(--font-interface) !important;
+	font-size: var(--font-ui-small) !important;
+	text-transform: capitalize !important;
+}
+
+.cm-search button.cm-button:hover {
+	background-color: var(--interactive-hover) !important;
+}
+
+.cm-search label {
+	display: flex !important;
+	align-items: center !important;
+	gap: var(--size-4-1) !important;
+	font-size: var(--font-ui-small) !important;
+	color: var(--text-muted) !important;
+	text-transform: capitalize !important;
+}
+
+.cm-search input[type="checkbox"] {
+	margin: 0 !important;
+}
+
+.cm-search button[name="close"] {
+	position: absolute;
+	right: var(--size-4-2);
+	top: 50%;
+	background: transparent !important;
+	border: none !important;
+	padding: var(--size-4-1) !important;
+	color: var(--text-muted) !important;
+	cursor: pointer !important;
+}
+
+.cm-search button[name="close"]:hover {
+	color: var(--text-normal) !important;
+	background: var(--background-modifier-hover) !important;
+	border-radius: var(--radius-s) !important;
 }

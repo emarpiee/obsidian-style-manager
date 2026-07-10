@@ -3,9 +3,12 @@ import { App, Modal, TextComponent } from 'obsidian';
 import StyleManagerPlugin from '../../main';
 import { CSSEditor } from '../components/CSSEditor';
 
+import { ConfirmModal } from './ConfirmModal';
+
 export class CSSEditorModal extends Modal {
 	private editor: CSSEditor;
 	private newName: string = '';
+	private forceClose: boolean = false;
 
 	constructor(
 		app: App,
@@ -67,6 +70,31 @@ export class CSSEditorModal extends Modal {
 			onClose: () => this.close(),
 			onSaveSuccess: this.onSaveSuccess,
 		});
+	}
+
+	close(): void {
+		if (this.editor.isDirty() && !this.forceClose) {
+			new ConfirmModal(
+				this.app,
+				'Unsaved Changes',
+				'You have unsaved changes. Are you sure you want to close without saving?',
+				'Discard Changes',
+				true,
+				() => {
+					this.forceClose = true;
+					this.close();
+				},
+				'Save',
+				() => {
+					this.editor.handleSave().then(() => {
+						this.forceClose = true;
+						this.close();
+					});
+				}
+			).open();
+			return;
+		}
+		super.close();
 	}
 
 	onClose(): void {

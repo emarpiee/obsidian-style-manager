@@ -15,6 +15,8 @@ import { Logger } from '../../../utils/Logger';
 export class SnippetSettingComponent extends Component {
 	private setting: Setting;
 
+	public supportsStyleSettings: boolean | null = null;
+
 	constructor(
 		private app: App,
 		private containerEl: HTMLElement,
@@ -25,7 +27,8 @@ export class SnippetSettingComponent extends Component {
 			e: MouseEvent | KeyboardEvent,
 			forceToggle?: boolean
 		) => void,
-		private metadata?: SnippetMetadata
+		private metadata?: SnippetMetadata,
+		private onCssLoaded?: () => void
 	) {
 		super();
 	}
@@ -165,54 +168,78 @@ export class SnippetSettingComponent extends Component {
 			(this.plugin.settingsService.settings[
 				PreferencesKeys.SHOW_SNIPPET_METADATA
 			] as boolean) !== false;
-		if (!showMetadata || !this.metadata) return;
+		if (!showMetadata) return;
 
 		const metadataEl = this.setting.infoEl.createDiv(
 			'style-manager-item-metadata'
 		);
 
-		const fields: Array<{
-			key: keyof SnippetMetadata;
-			label: string;
-			icon: string;
-		}> = [
-			{ key: 'description', label: 'Description', icon: 'badge-info' },
-			{ key: 'version', label: 'Version', icon: 'tag' },
-			{ key: 'authorUrl', label: 'Author Url', icon: 'link' },
-			{ key: 'license', label: 'License', icon: 'scale' },
-		];
+		if (this.metadata) {
+			const fields: Array<{
+				key: keyof SnippetMetadata;
+				label: string;
+				icon: string;
+			}> = [
+				{ key: 'description', label: 'Description', icon: 'badge-info' },
+				{ key: 'version', label: 'Version', icon: 'tag' },
+				{ key: 'authorUrl', label: 'Author Url', icon: 'link' },
+				{ key: 'license', label: 'License', icon: 'scale' },
+			];
 
-		fields.forEach(({ key, label, icon }) => {
-			const value = this.metadata?.[key];
-			if (value) {
-				const fieldEl = metadataEl.createDiv('style-manager-metadata-field');
-				fieldEl.addClass(`mod-${key}`);
+			fields.forEach(({ key, label, icon }) => {
+				const value = this.metadata?.[key];
+				if (value) {
+					const fieldEl = metadataEl.createDiv('style-manager-metadata-field');
+					fieldEl.addClass(`mod-${key}`);
 
-				const iconEl = fieldEl.createDiv('style-manager-metadata-icon');
-				setIcon(iconEl, icon);
+					const iconEl = fieldEl.createDiv('style-manager-metadata-icon');
+					setIcon(iconEl, icon);
 
-				fieldEl.createSpan({
-					cls: 'style-manager-metadata-label',
-					text: `${label}: `,
-				});
-
-				if (
-					key === 'authorUrl' &&
-					typeof value === 'string' &&
-					value.startsWith('http')
-				) {
-					fieldEl.createEl('a', {
-						cls: 'style-manager-metadata-value',
-						text: value.replace(/^https?:\/\/(www\.)?/, ''),
-						href: value,
-					});
-				} else {
 					fieldEl.createSpan({
-						cls: 'style-manager-metadata-value',
-						text: String(value),
+						cls: 'style-manager-metadata-label',
+						text: `${label}: `,
 					});
+
+					if (
+						key === 'authorUrl' &&
+						typeof value === 'string' &&
+						value.startsWith('http')
+					) {
+						fieldEl.createEl('a', {
+							cls: 'style-manager-metadata-value',
+							text: value.replace(/^https?:\/\/(www\.)?/, ''),
+							href: value,
+						});
+					} else {
+						fieldEl.createSpan({
+							cls: 'style-manager-metadata-value',
+							text: String(value),
+						});
+					}
 				}
-			}
+			});
+		}
+
+		// Support Style Settings
+		const supportEl = metadataEl.createDiv('style-manager-metadata-field');
+		const supportIconEl = supportEl.createDiv('style-manager-metadata-icon');
+		setIcon(supportIconEl, 'loader');
+		supportEl.createSpan({
+			cls: 'style-manager-metadata-label',
+			text: `Style Settings`,
+		});
+
+		this.plugin.settingsService.bridge.readSnippet(this.snippetId).then(css => {
+			const supports = css && /\/\*!?\s*@settings/.test(css);
+			this.supportsStyleSettings = !!supports;
+			supportIconEl.empty();
+			setIcon(supportIconEl, supports ? 'badge-check' : 'x');
+			this.onCssLoaded?.();
+		}).catch(() => {
+			this.supportsStyleSettings = false;
+			supportIconEl.empty();
+			setIcon(supportIconEl, 'help-circle');
+			this.onCssLoaded?.();
 		});
 	}
 

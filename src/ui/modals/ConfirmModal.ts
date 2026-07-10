@@ -45,20 +45,7 @@ export class ConfirmModal extends Modal {
 			'style-manager-modal-buttons'
 		);
 
-		buttonSetting.addButton((btn) =>
-			btn.setButtonText('Cancel').onClick(() => this.close())
-		);
-
-		if (this.secondaryCtaText && this.onSecondaryConfirm) {
-			buttonSetting.addButton((btn) => {
-				btn.setButtonText(this.secondaryCtaText);
-				btn.onClick(() => {
-					this.onSecondaryConfirm?.();
-					this.close();
-				});
-			});
-		}
-
+		// 1. Primary CTA (e.g. "Discard Changes") — leftmost
 		buttonSetting.addButton((btn) => {
 			btn.setButtonText(this.ctaText);
 			if (this.isWarning) {
@@ -71,6 +58,23 @@ export class ConfirmModal extends Modal {
 				this.close();
 			});
 		});
+
+		// 2. Cancel — middle
+		buttonSetting.addButton((btn) =>
+			btn.setButtonText('Cancel').onClick(() => this.close())
+		);
+
+		// 3. Secondary CTA (e.g. "Save") — rightmost
+		if (this.secondaryCtaText && this.onSecondaryConfirm) {
+			buttonSetting.addButton((btn) => {
+				btn.setButtonText(this.secondaryCtaText);
+				btn.setCta();
+				btn.onClick(() => {
+					this.onSecondaryConfirm?.();
+					this.close();
+				});
+			});
+		}
 	}
 
 	onClose(): void {

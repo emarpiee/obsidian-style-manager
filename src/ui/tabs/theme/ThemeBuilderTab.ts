@@ -85,7 +85,8 @@ export class ThemeBuilderTab {
 				this.plugin,
 				themeId,
 				manifest,
-				() => this.onRerender()
+				() => this.onRerender(),
+				() => this.applyFilter()
 			);
 			this.themeComponents.push(comp);
 			this.addChild(comp);
@@ -101,10 +102,12 @@ export class ThemeBuilderTab {
 
 		const authorMatch = query.match(/@author\s+([^\s@]+)/);
 		const nameMatch = query.match(/@name\s+([^\s@]+)/);
+		const settingsMatch = query.match(/@settings\s+(true|false)/);
 
 		const cleanedQuery = query
 			.replace(/@author\s+[^\s@]+/g, '')
 			.replace(/@name\s+[^\s@]+/g, '')
+			.replace(/@settings\s+(true|false)/g, '')
 			.trim();
 
 		this.themeComponents.forEach((comp) => {
@@ -118,6 +121,12 @@ export class ThemeBuilderTab {
 				matches = false;
 			if (nameMatch && !manifest?.name?.toLowerCase().includes(nameMatch[1]))
 				matches = false;
+			if (settingsMatch && comp.supportsStyleSettings !== null) {
+				const expectsSettings = settingsMatch[1] === 'true';
+				if (comp.supportsStyleSettings !== expectsSettings) {
+					matches = false;
+				}
+			}
 
 			if (
 				cleanedQuery &&
