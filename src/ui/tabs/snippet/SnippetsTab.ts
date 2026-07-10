@@ -160,7 +160,8 @@ export class SnippetsTab {
 				isSelected,
 				(e, forceToggle) =>
 					this.handleSelectionChange(e, id, index, forceToggle),
-				metadata
+				metadata,
+				() => this.applyFilter()
 			);
 			this.snippetComponents.push(comp);
 			this.addChild(comp);
@@ -178,12 +179,14 @@ export class SnippetsTab {
 		const nameMatch = query.match(/@name\s+([^\s@]+)/);
 		const descMatch = query.match(/@description\s+([^\s@]+)/);
 		const licenseMatch = query.match(/@license\s+([^\s@]+)/);
+		const settingsMatch = query.match(/@settings\s+(true|false)/);
 
 		const cleanedQuery = query
 			.replace(/@author\s+[^\s@]+/g, '')
 			.replace(/@name\s+[^\s@]+/g, '')
 			.replace(/@description\s+[^\s@]+/g, '')
 			.replace(/@license\s+[^\s@]+/g, '')
+			.replace(/@settings\s+(true|false)/g, '')
 			.trim();
 
 		this.snippetComponents.forEach((comp) => {
@@ -208,6 +211,12 @@ export class SnippetsTab {
 				!metadata.license?.toLowerCase().includes(licenseMatch[1])
 			)
 				matches = false;
+			if (settingsMatch && comp.supportsStyleSettings !== null) {
+				const expectsSettings = settingsMatch[1] === 'true';
+				if (comp.supportsStyleSettings !== expectsSettings) {
+					matches = false;
+				}
+			}
 
 			if (
 				cleanedQuery &&
