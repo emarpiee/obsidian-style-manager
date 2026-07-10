@@ -168,6 +168,10 @@ Style Manager interface is structured into six functional tabs.
 
 *Manage Obsidian's native CSS snippets from a centralized list.*
 - **Snippet Control:** Search, select, and toggle native CSS snippets through a unified list.
+- **Style Settings Indicator:** Visual indicator showing if a snippet supports configurable style settings.
+- **Advanced Filter Search:** Filter snippets using specialized search attributes:
+    - \`@name\`, \`@description\`, \`@license\` – Match against snippet metadata.
+    - \`@settings [true/false]\` – Filter for snippets that do or do not support style settings.
 - **Vault Integration:** Quick-access buttons to open your system's file explorer directly to your vault's snippets folder.
 - **Bulk Selection:** Choose multiple snippets simultaneously for coordinated actions.
 
@@ -177,9 +181,11 @@ Style Manager interface is structured into six functional tabs.
 
 *Tools for switching, and building custom themes.*
 - **Theme Manifest Creation:** Create new custom themes by defining their metadata (Name, Author, etc.) via a dedicated manifest modal.
+- **Style Settings Indicator:** Visual indicator showing if a theme supports configurable style settings.
 - **Advanced Filter Search:** Filter themes using specialized search attributes:
     - \`@author [name]\` – Find themes made by a specific creator.
     - \`@name [name]\` – Find themes matching a specific title.
+    - \`@settings [true/false]\` – Filter for themes that do or do not support style settings.
 - **Folder Shortcut:** One-click button to open your local \`.obsidian/themes\` directory.
 
 ### 4. Presets Tab
