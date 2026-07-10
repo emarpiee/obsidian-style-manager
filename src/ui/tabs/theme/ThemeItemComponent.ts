@@ -10,6 +10,7 @@ import { ThemeManifestModal } from '../../modals/ThemeManifestModal';
 
 export class ThemeItemComponent extends Component {
 	private setting: Setting;
+	public supportsStyleSettings: boolean | null = null;
 
 	constructor(
 		private app: App,
@@ -17,7 +18,8 @@ export class ThemeItemComponent extends Component {
 		private plugin: StyleManagerPlugin,
 		public themeId: string,
 		public manifest: ThemeManifest,
-		private onUpdate: () => void
+		private onUpdate: () => void,
+		private onCssLoaded?: () => void
 	) {
 		super();
 	}
@@ -173,6 +175,28 @@ export class ThemeItemComponent extends Component {
 				});
 			});
 		}
+
+		// Support Style Settings
+		const supportEl = metadataEl.createDiv('style-manager-metadata-field');
+		const supportIconEl = supportEl.createDiv('style-manager-metadata-icon');
+		setIcon(supportIconEl, 'loader');
+		supportEl.createSpan({
+			cls: 'style-manager-metadata-label',
+			text: `Style Settings`,
+		});
+
+		this.plugin.settingsService.bridge.readThemeCss(this.themeId).then(css => {
+			const supports = css && /\/\*!?\s*@settings/.test(css);
+			this.supportsStyleSettings = !!supports;
+			supportIconEl.empty();
+			setIcon(supportIconEl, supports ? 'badge-check' : 'x');
+			this.onCssLoaded?.();
+		}).catch(() => {
+			this.supportsStyleSettings = false;
+			supportIconEl.empty();
+			setIcon(supportIconEl, 'help-circle');
+			this.onCssLoaded?.();
+		});
 	}
 
 	private onEdit(): void {
