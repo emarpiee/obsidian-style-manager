@@ -1,5 +1,4 @@
 import chroma from 'chroma-js';
-
 import ColorPicker from 'colorpicker/dist/colorpicker.js';
 
 /**

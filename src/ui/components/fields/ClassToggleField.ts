@@ -48,16 +48,20 @@ export class ClassToggleField extends AbstractSettingComponent {
 			toggle.setValue(value !== undefined ? !!value : !!this.setting.default);
 			toggle.onChange((value) => {
 				if (value === !!this.setting.default) {
-					void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-                    						silentUI: true,
-                    					});
+					void this.settingsService.clearSetting(
+						this.sectionId,
+						this.setting.id,
+						{
+							silentUI: true,
+						}
+					);
 				} else {
 					void this.settingsService.setSetting(
-                    						this.sectionId,
-                    						this.setting.id,
-                    						value,
-                    						{ silentUI: true }
-                    					);
+						this.sectionId,
+						this.setting.id,
+						value,
+						{ silentUI: true }
+					);
 				}
 				this.updateModifiedClass();
 			});
@@ -71,9 +75,13 @@ export class ClassToggleField extends AbstractSettingComponent {
 				const value = !!this.setting.default;
 
 				this.toggleComponent.setValue(value);
-				void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-                					silentUI: true,
-                				});
+				void this.settingsService.clearSetting(
+					this.sectionId,
+					this.setting.id,
+					{
+						silentUI: true,
+					}
+				);
 				this.updateModifiedClass();
 			});
 			b.setTooltip(resetTooltip);

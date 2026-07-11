@@ -3,6 +3,7 @@ import { RRule } from 'rrule';
 import { PreferencesKeys } from '../constants';
 import StyleManagerPlugin from '../main';
 import { PresetSchedule } from '../types';
+
 import { Logger } from '../utils/Logger';
 
 export class PresetScheduleService {
@@ -14,17 +15,14 @@ export class PresetScheduleService {
 	}
 
 	get schedules(): PresetSchedule[] {
-		return (
-			(this.plugin.settingsService.sharedSettings
-				._manager_schedules) || []
-		);
+		return this.plugin.settingsService.sharedSettings._manager_schedules || [];
 	}
 
 	set schedules(val: PresetSchedule[]) {
 		void this.plugin.settingsService.setSettings(
-        			{ _manager_schedules: val },
-        			{ silentUI: true, target: 'shared' }
-        		);
+			{ _manager_schedules: val },
+			{ silentUI: true, target: 'shared' }
+		);
 	}
 
 	public start(): void {

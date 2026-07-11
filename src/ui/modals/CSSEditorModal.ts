@@ -1,9 +1,9 @@
 import { App, Modal, TextComponent } from 'obsidian';
 
+import { ConfirmModal } from './ConfirmModal';
+
 import StyleManagerPlugin from '../../main';
 import { CSSEditor } from '../components/CSSEditor';
-
-import { ConfirmModal } from './ConfirmModal';
 
 export class CSSEditorModal extends Modal {
 	private editor: CSSEditor;
@@ -87,9 +87,9 @@ export class CSSEditorModal extends Modal {
 				'Save',
 				() => {
 					void this.editor.handleSave().then(() => {
-                    						this.forceClose = true;
-                    						this.close();
-                    					});
+						this.forceClose = true;
+						this.close();
+					});
 				}
 			).open();
 			return;

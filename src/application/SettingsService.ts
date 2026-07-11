@@ -89,7 +89,9 @@ export class SettingsService extends Events {
 			bridge: this.bridge,
 			isIsolateMode: (): boolean => this.isolateModeService.isIsolateMode(),
 			getSetting: (key): unknown => this.settings[key],
-			setSetting: (key, val): void => { void this.setMetaSetting(key, val); },
+			setSetting: (key, val): void => {
+				void this.setMetaSetting(key, val);
+			},
 			triggerEvent: (name): void => this.bridge.triggerEvent(name),
 			notifications: this.notifications,
 		});
@@ -118,7 +120,8 @@ export class SettingsService extends Events {
 			getDevices: (): typeof this.sharedSettings.__devices =>
 				this.sharedSettings.__devices,
 			loadLocalStorage: (key): unknown => this.plugin.app.loadLocalStorage(key),
-			saveLocalStorage: (key, data): void => this.plugin.app.saveLocalStorage(key, data),
+			saveLocalStorage: (key, data): void =>
+				this.plugin.app.saveLocalStorage(key, data),
 			setDevices: (devices): void => {
 				this.sharedSettings.__devices = devices;
 			},

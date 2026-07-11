@@ -185,23 +185,27 @@ export class ThemeItemComponent extends Component {
 			text: `Style Settings`,
 		});
 
-		this.plugin.settingsService.bridge.readThemeCss(this.themeId).then(css => {
-			const supports = css && /\/\*!?\s*@settings/.test(css);
-			this.supportsStyleSettings = !!supports;
-			supportIconEl.empty();
-			setIcon(supportIconEl, supports ? 'badge-check' : 'x');
-			this.onCssLoaded?.();
-		}).catch(() => {
-			this.supportsStyleSettings = false;
-			supportIconEl.empty();
-			setIcon(supportIconEl, 'help-circle');
-			this.onCssLoaded?.();
-		});
+		this.plugin.settingsService.bridge
+			.readThemeCss(this.themeId)
+			.then((css) => {
+				const supports = css && /\/\*!?\s*@settings/.test(css);
+				this.supportsStyleSettings = !!supports;
+				supportIconEl.empty();
+				setIcon(supportIconEl, supports ? 'badge-check' : 'x');
+				this.onCssLoaded?.();
+			})
+			.catch(() => {
+				this.supportsStyleSettings = false;
+				supportIconEl.empty();
+				setIcon(supportIconEl, 'help-circle');
+				this.onCssLoaded?.();
+			});
 	}
 
 	private onEdit(): void {
 		const useDefaultApp =
-			this.plugin.app.loadLocalStorage(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
+			this.plugin.app.loadLocalStorage(PreferencesKeys.OPEN_IN_DEFAULT_APP) ===
+			'true';
 		if (useDefaultApp) {
 			const path = this.plugin.settingsService.bridge.getThemePath(
 				this.themeId
@@ -233,21 +237,23 @@ export class ThemeItemComponent extends Component {
 			this.app,
 			'Duplicate theme',
 			`${this.manifest.name} Copy`,
-			(newName): void => { void (async (): Promise<void> => {
-            if (!newName) return;
-            try {
-            	await this.plugin.settingsService.themeBuilderService.duplicateTheme(
-            		this.themeId,
-            		newName
-            	);
-            	this.onUpdate();
-            } catch (e) {
-            	const message = e instanceof Error ? e.message : 'Unknown error';
-            	this.plugin.settingsService.notifications.error(
-            		`Failed to duplicate theme: ${message}`
-            	);
-            }
-            })(); }
+			(newName): void => {
+				void (async (): Promise<void> => {
+					if (!newName) return;
+					try {
+						await this.plugin.settingsService.themeBuilderService.duplicateTheme(
+							this.themeId,
+							newName
+						);
+						this.onUpdate();
+					} catch (e) {
+						const message = e instanceof Error ? e.message : 'Unknown error';
+						this.plugin.settingsService.notifications.error(
+							`Failed to duplicate theme: ${message}`
+						);
+					}
+				})();
+			}
 		).open();
 	}
 
@@ -258,19 +264,21 @@ export class ThemeItemComponent extends Component {
 			`Are you sure you want to delete the theme "${this.manifest.name}"? This action will permanently remove the theme folder.`,
 			'Delete',
 			true,
-			(): void => { void (async (): Promise<void> => {
-            try {
-            	await this.plugin.settingsService.themeBuilderService.deleteTheme(
-            		this.themeId
-            	);
-            	this.onUpdate();
-            } catch (e) {
-            	const message = e instanceof Error ? e.message : 'Unknown error';
-            	this.plugin.settingsService.notifications.error(
-            		`Failed to delete theme: ${message}`
-            	);
-            }
-            })(); }
+			(): void => {
+				void (async (): Promise<void> => {
+					try {
+						await this.plugin.settingsService.themeBuilderService.deleteTheme(
+							this.themeId
+						);
+						this.onUpdate();
+					} catch (e) {
+						const message = e instanceof Error ? e.message : 'Unknown error';
+						this.plugin.settingsService.notifications.error(
+							`Failed to delete theme: ${message}`
+						);
+					}
+				})();
+			}
 		).open();
 	}
 

@@ -55,16 +55,20 @@ export class VariableTextField extends AbstractSettingComponent {
 			const onCommit = (value: string): void => {
 				const sanitizedValue = sanitizeText(value);
 				if (sanitizedValue === this.setting.default) {
-					void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-                    						silentUI: true,
-                    					});
+					void this.settingsService.clearSetting(
+						this.sectionId,
+						this.setting.id,
+						{
+							silentUI: true,
+						}
+					);
 				} else {
 					void this.settingsService.setSetting(
-                    						this.sectionId,
-                    						this.setting.id,
-                    						sanitizedValue,
-                    						{ silentUI: true }
-                    					);
+						this.sectionId,
+						this.setting.id,
+						sanitizedValue,
+						{ silentUI: true }
+					);
 				}
 				this.updateModifiedClass();
 			};
@@ -92,9 +96,13 @@ export class VariableTextField extends AbstractSettingComponent {
 			b.setIcon('reset');
 			b.onClick(() => {
 				this.textComponent.setValue(this.setting.default);
-				void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-                					silentUI: true,
-                				});
+				void this.settingsService.clearSetting(
+					this.sectionId,
+					this.setting.id,
+					{
+						silentUI: true,
+					}
+				);
 				this.updateModifiedClass();
 			});
 			b.setTooltip(resetTooltip);

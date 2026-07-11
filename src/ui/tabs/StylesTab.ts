@@ -4,13 +4,13 @@ import { PreferencesKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
 import { CSSSetting, ParsedCSSSettings } from '../../types';
 import { ParseLogList } from '../../types';
+import { Logger } from '../../utils/Logger';
 import {
 	HeadingField,
 	buildSettingComponentTree,
 } from '../components/fields/HeadingField';
 import { CSSParserLogsModal } from '../modals/CSSParserLogsModal';
 import { ReadmeModal } from '../modals/ReadmeModal';
-import { Logger } from '../../utils/Logger';
 
 export interface StylesTabDeps {
 	plugin: StyleManagerPlugin;
@@ -170,8 +170,8 @@ export class StylesTab {
 					isDuplicate: s.isDuplicate,
 					resetFn: (): void => {
 						void plugin.settingsService.clearSection(s.id, false, {
-                        							silentUI: true,
-                        						});
+							silentUI: true,
+						});
 					},
 				},
 				...s.settings,

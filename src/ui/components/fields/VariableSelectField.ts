@@ -63,16 +63,20 @@ export class VariableSelectField extends AbstractSettingComponent {
 			);
 			dropdown.onChange((value) => {
 				if (value === this.setting.default) {
-					void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-                    						silentUI: true,
-                    					});
+					void this.settingsService.clearSetting(
+						this.sectionId,
+						this.setting.id,
+						{
+							silentUI: true,
+						}
+					);
 				} else {
 					void this.settingsService.setSetting(
-                    						this.sectionId,
-                    						this.setting.id,
-                    						value,
-                    						{ silentUI: true }
-                    					);
+						this.sectionId,
+						this.setting.id,
+						value,
+						{ silentUI: true }
+					);
 				}
 				this.updateModifiedClass();
 			});
@@ -84,9 +88,13 @@ export class VariableSelectField extends AbstractSettingComponent {
 			b.setIcon('reset');
 			b.onClick(() => {
 				this.dropdownComponent.setValue(this.setting.default);
-				void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-                					silentUI: true,
-                				});
+				void this.settingsService.clearSetting(
+					this.sectionId,
+					this.setting.id,
+					{
+						silentUI: true,
+					}
+				);
 				this.updateModifiedClass();
 			});
 			b.setTooltip(resetTooltip);

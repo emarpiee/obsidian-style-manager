@@ -61,9 +61,9 @@ export class ThemeSuggestModal extends SuggestModal<ThemeOption> {
 		_evt: MouseEvent | KeyboardEvent
 	): void {
 		void this.plugin.settingsService
-        			.setSetting(StorageKeys.THEME, theme.id, { silentUI: true })
-        			.then(() => {
-        				this.onDone();
-        			});
+			.setSetting(StorageKeys.THEME, theme.id, { silentUI: true })
+			.then(() => {
+				this.onDone();
+			});
 	}
 }

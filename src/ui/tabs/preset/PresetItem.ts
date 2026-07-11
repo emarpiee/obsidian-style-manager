@@ -5,8 +5,8 @@ import { addApplyOptionsToMenu } from './PresetMenuHelper';
 import { ConfirmKeys, ExportKeys, StorageKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { Preset } from '../../../types';
-import { Logger } from '../../../utils/Logger';
 import { formatPresetDate } from '../../../utils/CommonUtils';
+import { Logger } from '../../../utils/Logger';
 import {
 	renderAppearanceBadge,
 	renderCountBadge,
@@ -142,11 +142,13 @@ export class PresetItem {
 									plugin.app,
 									'Rename preset',
 									preset.name,
-									(newName: string): void => { void (async (): Promise<void> => {
-                                    preset.name = newName.trim() || preset.name;
-                                    await plugin.presetService.savePresets();
-                                    this.onRefresh();
-                                    })(); }
+									(newName: string): void => {
+										void (async (): Promise<void> => {
+											preset.name = newName.trim() || preset.name;
+											await plugin.presetService.savePresets();
+											this.onRefresh();
+										})();
+									}
 								).open();
 							})
 					);
@@ -235,9 +237,13 @@ export class PresetItem {
 										description,
 										'Include assets (ZIP)',
 										false,
-										(): void => { void performExport(true); },
+										(): void => {
+											void performExport(true);
+										},
 										`Preset only (${preferredExtension})`,
-										(): void => { void performExport(false); }
+										(): void => {
+											void performExport(false);
+										}
 									).open();
 								} else {
 									if (
@@ -253,7 +259,9 @@ export class PresetItem {
 											`Are you sure you want to export the preset "${preset.name}" to your vault?`,
 											`Export (${preferredExtension})`,
 											false,
-											(): void => { void performExport(false); }
+											(): void => {
+												void performExport(false);
+											}
 										).open();
 									}
 								}
@@ -269,18 +277,21 @@ export class PresetItem {
 							.setIcon('trash')
 							.setWarning(true)
 							.onClick(() => {
-								const performDelete = (): void => { void (async (): Promise<void> => {
-									await plugin.presetService.trashPresets([preset]);
+								const performDelete = (): void => {
+									void (async (): Promise<void> => {
+										await plugin.presetService.trashPresets([preset]);
 
-									const indexInPresets = plugin.presetService.presets.findIndex(
-										(p) => p.id === preset.id
-									);
-									if (indexInPresets !== -1) {
-										plugin.presetService.presets.splice(indexInPresets, 1);
-										await plugin.presetService.savePresets();
-										this.onRefresh();
-									}
-								})(); };
+										const indexInPresets =
+											plugin.presetService.presets.findIndex(
+												(p) => p.id === preset.id
+											);
+										if (indexInPresets !== -1) {
+											plugin.presetService.presets.splice(indexInPresets, 1);
+											await plugin.presetService.savePresets();
+											this.onRefresh();
+										}
+									})();
+								};
 
 								if (
 									plugin.settingsService.settings[

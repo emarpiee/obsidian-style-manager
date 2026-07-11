@@ -1,7 +1,7 @@
 import chroma from 'chroma-js';
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { Notice, Setting, setIcon, setTooltip } from 'obsidian';
 
-import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import StyleManagerPlugin from '../../main';
 import { getColorPickerConfig } from '../../utils/ColorUtils';
 
@@ -285,7 +285,10 @@ export class ColorContrastChecker {
 
 	private updateResults(): void {
 		this.updateLabels();
-		this.previewEl.setCssStyles({ backgroundColor: this.bgColor, color: this.fgColor });
+		this.previewEl.setCssStyles({
+			backgroundColor: this.bgColor,
+			color: this.fgColor,
+		});
 
 		try {
 			const contrast = chroma.contrast(this.fgColor, this.bgColor);
@@ -307,7 +310,7 @@ export class ColorContrastChecker {
 				badge.addClass('style-manager-tool-contrast-badge');
 				badge.setCssStyles({
 					backgroundColor: pass ? 'var(--color-green)' : 'var(--color-red)',
-					color: 'var(--text-on-accent)'
+					color: 'var(--text-on-accent)',
 				});
 				return badge;
 			};

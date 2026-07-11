@@ -16,14 +16,12 @@ import { Logger } from '../../utils/Logger';
  * providing a stable interface for the Core logic.
  */
 export class ObsidianBridge {
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	public originalConfigGet: ((...args: any[]) => unknown) | null = null;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	public originalConfigSet: ((...args: any[]) => void) | null =
+	public originalConfigGet: ((key: string) => unknown) | null = null;
+	public originalConfigSet: ((key: string, value: unknown) => void) | null =
 		null;
-	// eslint-disable-next-line @typescript-eslint/no-explicit-any
-	public originalSetTheme: ((...args: any[]) => void) | null =
-		null;
+	public originalSetTheme:
+		| ((themeName: string, ...args: unknown[]) => void)
+		| null = null;
 	public originalThemeDescriptor: PropertyDescriptor | undefined;
 	private _realThemeValue: string | undefined;
 
@@ -435,22 +433,20 @@ export class ObsidianBridge {
 
 		vault.getConfig = function (
 			this: Record<string, unknown>,
-			key: string,
-			...args: unknown[]
+			key: string
 		): unknown {
 			if (!isApplyingPersistentTheme()) {
 				if (key === 'cssTheme') return '';
 				if (key === 'theme') return getAppearance();
 				if (key === 'accentColor') return getAccentColor();
 			}
-			return capturedConfigGet.apply(this, [key, ...args]);
+			return capturedConfigGet.call(this, key);
 		};
 
 		vault.setConfig = function (
 			this: Record<string, unknown>,
 			key: string,
-			value: unknown,
-			...args: unknown[]
+			value: unknown
 		): void {
 			if (!isApplyingPersistentTheme()) {
 				if (key === 'cssTheme') {
@@ -474,7 +470,7 @@ export class ObsidianBridge {
 					return;
 				}
 			}
-			return capturedConfigSet.apply(this, [key, value, ...args]);
+			return capturedConfigSet.call(this, key, value);
 		};
 
 		// 2. CustomCSS Patches
@@ -541,9 +537,13 @@ export class ObsidianBridge {
 				const config = JSON.parse(content) as Record<string, unknown>;
 
 				// Obsidian typically uses enabledCssSnippets, but we check enabledSnippets as fallback
-				const list = (config.enabledCssSnippets ?? config.enabledSnippets ?? []) as unknown[];
+				const list = (config.enabledCssSnippets ??
+					config.enabledSnippets ??
+					[]) as unknown[];
 				if (Array.isArray(list)) {
-					return list.filter((item): item is string => typeof item === 'string');
+					return list.filter(
+						(item): item is string => typeof item === 'string'
+					);
 				} else {
 					Logger.warn(
 						'Style Manager | appearance.json enabled snippets key is not an array:',

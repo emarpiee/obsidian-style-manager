@@ -43,23 +43,24 @@ license: MIT
   0% {
     transform: scaleX(0);
   }
+
   40% {
     transform: scaleX(1);
   }
+
   60% {
     transform: scaleX(1);
   }
+
   100% {
     transform: scaleX(0);
   }
 }
 
 .color-gradient-sample .setting-item {
-    background: linear-gradient(
-        to right,
-        var(--demo-gradient-000, transparent),
-        var(--demo-gradient-100, transparent)
-    ) !important;
+  background: linear-gradient(to right,
+      var(--demo-gradient-000, transparent),
+      var(--demo-gradient-100, transparent));
 }
 
 /* @settings

@@ -1,5 +1,4 @@
 import { Command, Notice, Plugin, normalizePath } from 'obsidian';
-import './css/main.css';
 
 import { StorageKeys, ToolKeys } from './constants';
 import {
@@ -20,6 +19,7 @@ import { SettingsService } from './application/SettingsService';
 import { StyleBlockService } from './application/StyleBlockService';
 import { CSSParser } from './core/css/CSSParser';
 import { StyleSheetManager } from './core/css/StyleSheetManager';
+import './css/main.css';
 import { BoxOutlineTool } from './tools/BoxOutlineTool';
 import { CSSCompatibilityTool } from './tools/CSSCompatibilityTool';
 import { ColorContrastCheckerTool } from './tools/ColorContrastCheckerTool';
@@ -89,36 +89,55 @@ export default class StyleManagerPlugin extends Plugin {
 
 	setupMutationObserver(): void {
 		const observer = new MutationObserver((mutations) => {
-			if (activeDocument.body.querySelector('.style-settings-ref') && activeDocument.body.querySelector('.style-manager-ref')) {
+			if (
+				activeDocument.body.querySelector('.style-settings-ref') &&
+				activeDocument.body.querySelector('.style-manager-ref')
+			) {
 				activeDocument.body.classList.add('sm-conflict-warning');
 			} else {
 				activeDocument.body.classList.remove('sm-conflict-warning');
 			}
 
-			mutations.forEach(mutation => {
-				mutation.addedNodes.forEach(node => {
+			mutations.forEach((mutation) => {
+				mutation.addedNodes.forEach((node) => {
 					if (node.nodeType === Node.ELEMENT_NODE) {
 						const el = node as HTMLElement;
 						if (el.classList && el.classList.contains('style-manager-plugin')) {
 							const settings = el.findAll('.setting-item');
-							settings.forEach(setting => {
-								if (setting.querySelector('input[type="text"], input[type="range"], select, textarea')) {
+							settings.forEach((setting) => {
+								if (
+									setting.querySelector(
+										'input[type="text"], input[type="range"], select, textarea'
+									)
+								) {
 									setting.classList.add('sm-has-input');
 								}
 							});
 						} else if (el.findAll) {
 							const plugins = el.findAll('.style-manager-plugin');
-							plugins.forEach(plugin => {
+							plugins.forEach((plugin) => {
 								const settings = plugin.findAll('.setting-item');
-								settings.forEach(setting => {
-									if (setting.querySelector('input[type="text"], input[type="range"], select, textarea')) {
+								settings.forEach((setting) => {
+									if (
+										setting.querySelector(
+											'input[type="text"], input[type="range"], select, textarea'
+										)
+									) {
 										setting.classList.add('sm-has-input');
 									}
 								});
 							});
-							
-							if (el.classList && el.classList.contains('setting-item') && el.closest('.style-manager-plugin')) {
-								if (el.querySelector('input[type="text"], input[type="range"], select, textarea')) {
+
+							if (
+								el.classList &&
+								el.classList.contains('setting-item') &&
+								el.closest('.style-manager-plugin')
+							) {
+								if (
+									el.querySelector(
+										'input[type="text"], input[type="range"], select, textarea'
+									)
+								) {
 									el.classList.add('sm-has-input');
 								}
 							}
@@ -185,10 +204,18 @@ export default class StyleManagerPlugin extends Plugin {
 			name: 'Save current styles as preset',
 			callback: () => {
 				const prefixesArr = this.presetService.getPrefixesMetadata();
-				new CreatePresetModal(this.app, this.presetService, prefixesArr, (): void => { {
-					void this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
-			}
-				}).open();
+				new CreatePresetModal(
+					this.app,
+					this.presetService,
+					prefixesArr,
+					(): void => {
+						{
+							void this.settingsService.refreshService.trigger(
+								RefreshLevel.UI_ONLY
+							);
+						}
+					}
+				).open();
 			},
 		});
 
@@ -239,11 +266,13 @@ export default class StyleManagerPlugin extends Plugin {
 					this,
 					sectionsWithData,
 					async (selectedIds): Promise<void> => {
-                    await this.settingsService.clearSections(selectedIds, false, {
-                                            	silentUI: true,
-                                            });
-                    this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
-                    }
+						await this.settingsService.clearSections(selectedIds, false, {
+							silentUI: true,
+						});
+						await this.settingsService.refreshService.trigger(
+							RefreshLevel.UI_ONLY
+						);
+					}
 				).open();
 			},
 		});
@@ -251,19 +280,23 @@ export default class StyleManagerPlugin extends Plugin {
 		this.addCommand({
 			id: 'toggle-isolate-mode',
 			name: 'Toggle isolate mode',
-			callback: (): void => { void (async (): Promise<void> => {
-            const current = this.settingsService.isIsolateMode();
-            const next = !current;
-            await this.settingsService.setIsolateMode(next);
-            })(); },
+			callback: (): void => {
+				void (async (): Promise<void> => {
+					const current = this.settingsService.isIsolateMode();
+					const next = !current;
+					await this.settingsService.setIsolateMode(next);
+				})();
+			},
 		});
 
 		this.addCommand({
 			id: 'copy-accent-color',
 			name: 'Copy current accent color',
-			callback: (): void => { void (async (): Promise<void> => {
-            void this.copyAccentColorTool.copy()
-            })(); },
+			callback: (): void => {
+				void (async (): Promise<void> => {
+					void this.copyAccentColorTool.copy();
+				})();
+			},
 		});
 
 		this.addCommand({
@@ -305,12 +338,12 @@ export default class StyleManagerPlugin extends Plugin {
 				new BoxOutlineColorPromptModal(this.app, currentColor, (value) => {
 					if (value !== null) {
 						void this.settingsService.setSetting(
-                        							ToolKeys.TOOL_BOX_OUTLINE_COLOR,
-                        							value,
-                        							{
-                        								silentUI: true,
-                        							}
-                        						);
+							ToolKeys.TOOL_BOX_OUTLINE_COLOR,
+							value,
+							{
+								silentUI: true,
+							}
+						);
 						this.boxOutlineTool.updateColor();
 						new Notice(` CSS Box outline color set to ${value}`);
 					}
@@ -336,9 +369,13 @@ export default class StyleManagerPlugin extends Plugin {
 			callback: () => {
 				new FreezeDelayPromptModal(this.app, (value) => {
 					if (value !== null) {
-						void this.settingsService.setSetting(ToolKeys.TOOL_FREEZE_DELAY, value, {
-                        							silentUI: true,
-                        						});
+						void this.settingsService.setSetting(
+							ToolKeys.TOOL_FREEZE_DELAY,
+							value,
+							{
+								silentUI: true,
+							}
+						);
 						new Notice(`Freeze Obsidian delay set to ${value}s`);
 					}
 				}).open();
@@ -410,7 +447,9 @@ export default class StyleManagerPlugin extends Plugin {
 		this.registerEvent(
 			this.app.workspace.on('css-change', (data?: { source: string }) => {
 				if (data?.source !== 'style-manager') {
-					void this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS);
+					void this.settingsService.refreshService.trigger(
+						RefreshLevel.PARSE_CSS
+					);
 
 					if (!this.settingsService.isApplyingTheme) {
 						const isIsolate = this.settingsService.isIsolateMode();
@@ -429,13 +468,13 @@ export default class StyleManagerPlugin extends Plugin {
 								`Style Manager | Snippets: Adopting native snippet change (${isIsolate ? 'isolate' : 'shared'}).`
 							);
 							void this.settingsService.setSetting(
-                            								StorageKeys.SNIPPETS,
-                            								currentEnabled,
-                            								{
-                            									silentUI: false,
-                            									target: isIsolate ? 'isolate' : 'shared',
-                            								}
-                            							);
+								StorageKeys.SNIPPETS,
+								currentEnabled,
+								{
+									silentUI: false,
+									target: isIsolate ? 'isolate' : 'shared',
+								}
+							);
 						}
 					}
 
@@ -451,15 +490,18 @@ export default class StyleManagerPlugin extends Plugin {
 
 					if (isIsolate) {
 						if (currentTheme !== '') {
-							void this.settingsService.applyTheme(desiredTheme as string, false);
+							void this.settingsService.applyTheme(
+								desiredTheme as string,
+								false
+							);
 						}
 					}
 					if (!isIsolate) {
 						if (currentTheme !== desiredNormalized) {
 							void (async (): Promise<void> => {
-                            								// Avoid enqueuing a load if we just performed one or are in the middle of a sync
-                            								await this.settingsService.load();
-                            							})();
+								// Avoid enqueuing a load if we just performed one or are in the middle of a sync
+								await this.settingsService.load();
+							})();
 						}
 					}
 				}
@@ -468,15 +510,17 @@ export default class StyleManagerPlugin extends Plugin {
 
 		this.registerEvent(
 			this.app.workspace.on('parse-style-manager', (): void => {
-				void this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS)
-			}
-			)
+				void this.settingsService.refreshService.trigger(
+					RefreshLevel.PARSE_CSS
+				);
+			})
 		);
 		this.registerEvent(
 			this.app.workspace.on('parse-style-settings', (): void => {
-				void this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS)
-			}
-			)
+				void this.settingsService.refreshService.trigger(
+					RefreshLevel.PARSE_CSS
+				);
+			})
 		);
 
 		void this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS);
@@ -484,10 +528,9 @@ export default class StyleManagerPlugin extends Plugin {
 
 		this.app.workspace.onLayoutReady(() => {
 			this.registerInterval(
-				window.setInterval(
-					(): void => { void this.settingsService.checkForExternalChanges(); },
-					4000
-				)
+				window.setInterval((): void => {
+					void this.settingsService.checkForExternalChanges();
+				}, 4000)
 			);
 
 			this.registerDomEvent(window, 'focus', () => {
@@ -499,9 +542,9 @@ export default class StyleManagerPlugin extends Plugin {
 					'shared-update-detected',
 					(data: { skipAdopt?: boolean }) => {
 						void this.settingsService.refreshService.trigger(
-                        							RefreshLevel.SYSTEM_RELOAD,
-                        							{ skipLoad: true, skipAdopt: data?.skipAdopt }
-                        						);
+							RefreshLevel.SYSTEM_RELOAD,
+							{ skipLoad: true, skipAdopt: data?.skipAdopt }
+						);
 					}
 				)
 			);
@@ -522,76 +565,106 @@ export default class StyleManagerPlugin extends Plugin {
 		// @ts-ignore
 		if (!this.app.isMobile) return;
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const patchTrigger = (thing: any): void => {
-			if (!thing) return;
-			const proto = Object.getPrototypeOf(thing);
-			if (!proto || typeof proto.trigger !== 'function' || proto.trigger.__sm_swipe_patched) return;
+		type TriggerFn = (
+			eventName: string,
+			data: unknown,
+			...rest: unknown[]
+		) => unknown;
+		type PatchableProto = {
+			trigger: TriggerFn & { __sm_swipe_patched?: boolean };
+		};
 
-			const orig = proto.trigger;
+		const isPatchableProto = (proto: unknown): proto is PatchableProto =>
+			!!proto && typeof (proto as PatchableProto).trigger === 'function';
+
+		const patchTrigger = (thing: unknown): void => {
+			if (!thing) return;
+			const proto: unknown = Object.getPrototypeOf(thing);
+			if (!isPatchableProto(proto) || proto.trigger.__sm_swipe_patched) return;
+
+			const orig: TriggerFn = proto.trigger;
 			const app = this.app;
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			proto.trigger = function (eventName: string, data: any): any {
+
+			const patched: TriggerFn & { __sm_swipe_patched?: boolean } = function (
+				this: unknown,
+				eventName: string,
+				data: unknown,
+				...rest: unknown[]
+			): unknown {
 				try {
 					if (
 						eventName === 'swipe' &&
-						data &&
-						data.direction === 'x' &&
-						data.points === 1
+						data !== null &&
+						typeof data === 'object' &&
+						(data as Record<string, unknown>).direction === 'x' &&
+						(data as Record<string, unknown>).points === 1
 					) {
 						// Block swipe if any CSS editor leaf is visible
-						const cssEditorLeaves = app.workspace.getLeavesOfType(cssEditorViewType);
-						if (cssEditorLeaves.length > 0) return;
+						const cssEditorLeaves =
+							app.workspace.getLeavesOfType(cssEditorViewType);
+						if (cssEditorLeaves.length > 0) return undefined;
 					}
 				} catch (err) {
 					console.error(err);
 				}
-				// eslint-disable-next-line prefer-rest-params, @typescript-eslint/no-explicit-any
-				return orig.apply(this, arguments as any);
+				return orig.call(this, eventName, data, ...rest);
 			};
 
-			proto.trigger.__sm_swipe_patched = true;
+			patched.__sm_swipe_patched = true;
+			proto.trigger = patched;
 		};
 
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
-		const workspace = this.app.workspace as any;
+		type WorkspaceWithSplits = {
+			rootSplit: unknown;
+			leftSplit: unknown;
+			rightSplit: unknown;
+		};
+		const workspace = this.app.workspace as unknown as WorkspaceWithSplits;
 		// Patch the shared prototypes of workspace and rootSplit.
 		// These are sufficient — swipe events bubble through these objects.
 		// We do NOT patch activeLeaf (changes dynamically) or use instance-level hooks.
-		[workspace, workspace.rootSplit, workspace.leftSplit, workspace.rightSplit]
-			.forEach(patchTrigger);
+		[
+			this.app.workspace,
+			workspace.rootSplit,
+			workspace.leftSplit,
+			workspace.rightSplit,
+		].forEach(patchTrigger);
 	}
 
 	parseCSS(): void {
 		window.clearTimeout(this.debounceTimer);
-		this.debounceTimer = window.setTimeout((): void => { void (async (): Promise<void> => {
-        // Pre-fetch async metadata first
-        await this.parseAllSnippetMetadata();
+		this.debounceTimer = window.setTimeout((): void => {
+			void (async (): Promise<void> => {
+				// Pre-fetch async metadata first
+				await this.parseAllSnippetMetadata();
 
-        this.styleSheetManager.clearCache();
-        await this.styleSheetManager.buildDiskMap();
+				this.styleSheetManager.clearCache();
+				await this.styleSheetManager.buildDiskMap();
 
-        Logger.time('StyleManager:Parsing');
-        const { settingsList, parseLogs } =
-        	this.styleSheetManager.getSettingsFromStyles();
-        this.settingsList = settingsList;
-        this.parseLogs = parseLogs;
-        Logger.timeEnd('StyleManager:Parsing');
+				Logger.time('StyleManager:Parsing');
+				const { settingsList, parseLogs } =
+					this.styleSheetManager.getSettingsFromStyles();
+				this.settingsList = settingsList;
+				this.parseLogs = parseLogs;
+				Logger.timeEnd('StyleManager:Parsing');
 
-        this.isInitialLoading = false;
+				this.isInitialLoading = false;
 
-        this.refreshSettingsSearchIntegration();
-        this.settingsService.viewManager.updateData(
-        	this.settingsList,
-        	this.parseLogs
-        );
+				this.refreshSettingsSearchIntegration();
+				this.settingsService.viewManager.updateData(
+					this.settingsList,
+					this.parseLogs
+				);
 
-        this.settingsService.styleGenerator.setConfig(this.settingsList);
+				this.settingsService.styleGenerator.setConfig(this.settingsList);
 
-        void this.settingsService.refreshService.trigger(RefreshLevel.FULL_VISUAL);
+				void this.settingsService.refreshService.trigger(
+					RefreshLevel.FULL_VISUAL
+				);
 
-        this.refreshSettingCommands();
-        })(); }, 250);
+				this.refreshSettingCommands();
+			})();
+		}, 250);
 	}
 
 	async parseAllSnippetMetadata(): Promise<void> {

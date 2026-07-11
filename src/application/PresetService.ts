@@ -38,23 +38,19 @@ export class PresetService {
 		const mode = this.getEffectiveViewMode();
 		if (mode === 'isolate') {
 			return (
-				(this.plugin.settingsService.isolateModeService.isolateSettings
-					._manager_presets) || []
+				this.plugin.settingsService.isolateModeService.isolateSettings
+					._manager_presets || []
 			);
 		}
-		return (
-			(this.plugin.settingsService.sharedSettings
-				._manager_presets) || []
-		);
+		return this.plugin.settingsService.sharedSettings._manager_presets || [];
 	}
 
 	public getPresetById(id: string): Preset | undefined {
 		const sharedPresets =
-			(this.plugin.settingsService.sharedSettings
-				._manager_presets) || [];
+			this.plugin.settingsService.sharedSettings._manager_presets || [];
 		const isolatePresets =
-			(this.plugin.settingsService.isolateModeService.isolateSettings
-				._manager_presets) || [];
+			this.plugin.settingsService.isolateModeService.isolateSettings
+				._manager_presets || [];
 
 		return (
 			sharedPresets.find((p) => p.id === id) ||
@@ -65,9 +61,9 @@ export class PresetService {
 	set presets(val: Preset[]) {
 		const mode = this.getEffectiveViewMode();
 		void this.plugin.settingsService.setSettings(
-        			{ _manager_presets: val },
-        			{ silentUI: true, target: mode }
-        		);
+			{ _manager_presets: val },
+			{ silentUI: true, target: mode }
+		);
 	}
 
 	async savePresets(): Promise<void> {

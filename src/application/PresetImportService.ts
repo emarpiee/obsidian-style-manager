@@ -3,6 +3,7 @@ import JSZip from 'jszip';
 import { StorageKeys } from '../constants';
 import StyleManagerPlugin from '../main';
 import { ImportAnalysis } from '../types';
+
 import { Logger } from '../utils/Logger';
 
 export class PresetImportService {
@@ -74,14 +75,17 @@ export class PresetImportService {
 					}
 				} else {
 					// JSON Import
-					const parsed = JSON.parse(item.content) as Record<string, unknown> | Array<Record<string, unknown>>;
+					const parsed = JSON.parse(item.content) as
+						| Record<string, unknown>
+						| Array<Record<string, unknown>>;
 
 					if (Array.isArray(parsed)) {
 						// Bulk legacy array
 						parsed.forEach((p, idx) => {
 							analysis.presets.push({
 								id: crypto.randomUUID(),
-								name: (p.name as string) || `${item.name || 'Import'} ${idx + 1}`,
+								name:
+									(p.name as string) || `${item.name || 'Import'} ${idx + 1}`,
 								created: (p.created as number) || Date.now(),
 								data: (p.data || p) as Record<string, unknown>,
 								targetedPrefixes: p.targetedPrefixes as string[] | undefined,
@@ -105,7 +109,10 @@ export class PresetImportService {
 							id: crypto.randomUUID(),
 							name: (parsed.name as string) || item.name || 'Imported Preset',
 							created: (parsed.created as number) || Date.now(),
-							data: ('data' in parsed ? parsed.data : parsed) as Record<string, unknown>,
+							data: ('data' in parsed ? parsed.data : parsed) as Record<
+								string,
+								unknown
+							>,
 							targetedPrefixes: (parsed as { targetedPrefixes?: string[] })
 								.targetedPrefixes,
 						});
@@ -181,7 +188,10 @@ export class PresetImportService {
 					let content = file.content;
 					if (file.filename === 'manifest.json') {
 						try {
-							const manifestObj = JSON.parse(content) as Record<string, unknown>;
+							const manifestObj = JSON.parse(content) as Record<
+								string,
+								unknown
+							>;
 							manifestObj.name = resolution.newName;
 							content = JSON.stringify(manifestObj, null, 2);
 						} catch (e) {

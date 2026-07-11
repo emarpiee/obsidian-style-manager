@@ -4,6 +4,7 @@ import { normalizePath } from 'obsidian';
 import { BackupKeys, ExportKeys } from '../constants';
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
+
 import { Logger } from '../utils/Logger';
 
 /**
@@ -236,7 +237,10 @@ export class BackupService {
 						/```(?:json)?\n([\s\S]*?)\n```/
 					);
 					if (codeBlockMatch) {
-						newSettings = JSON.parse(codeBlockMatch[1].trim()) as Record<string, unknown>;
+						newSettings = JSON.parse(codeBlockMatch[1].trim()) as Record<
+							string,
+							unknown
+						>;
 					} else {
 						throw e;
 					}

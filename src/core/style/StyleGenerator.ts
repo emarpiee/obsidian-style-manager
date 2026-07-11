@@ -57,14 +57,18 @@ export class StyleGenerator {
 		private getSettings: () => StyleManagerSettings
 	) {
 		this.sheet = new CSSStyleSheet();
-		activeDocument.adoptedStyleSheets = [...activeDocument.adoptedStyleSheets, this.sheet];
+		activeDocument.adoptedStyleSheets = [
+			...activeDocument.adoptedStyleSheets,
+			this.sheet,
+		];
 	}
 
 	/**
 	 * Cleans up DOM elements and classes.
 	 */
 	public destroy(): void {
-		activeDocument.adoptedStyleSheets = activeDocument.adoptedStyleSheets.filter(s => s !== this.sheet);
+		activeDocument.adoptedStyleSheets =
+			activeDocument.adoptedStyleSheets.filter((s) => s !== this.sheet);
 		this.removeClasses();
 	}
 	/**
@@ -87,10 +91,16 @@ export class StyleGenerator {
 			this.bridge
 		);
 
-		const reduceVars = (arr: { key: string; value: string; important?: boolean }[]): string =>
+		const reduceVars = (
+			arr: { key: string; value: string; important?: boolean }[]
+		): string =>
 			arr.reduce(
-				(combined: string, current: { key: string; value: string; important?: boolean }) =>
-					combined + `--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `,
+				(
+					combined: string,
+					current: { key: string; value: string; important?: boolean }
+				) =>
+					combined +
+					`--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `,
 				''
 			);
 
@@ -104,7 +114,9 @@ export class StyleGenerator {
 			body.theme-dark.css-settings-manager, body.theme-dark.style-manager-css {
 				${reduceVars(themedDark)}
 			}
-		`.trim().replace(/[\r\n\s]+/g, ' ');
+		`
+			.trim()
+			.replace(/[\r\n\s]+/g, ' ');
 
 		void this.sheet.replace(css);
 

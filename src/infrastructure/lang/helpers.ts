@@ -1,7 +1,6 @@
 import { getLanguage } from 'obsidian';
+
 import { Logger } from '../../utils/Logger';
-
-
 import { ar } from './locale/ar';
 import { cz } from './locale/cz';
 import { da } from './locale/da';
@@ -60,7 +59,10 @@ const locale = localeMap[lang] ?? localeMap['en'];
 
 export function t(str: keyof typeof en): string {
 	if (!locale) {
-		Logger.warn('Style Manager | Locale not found, falling back to English:', lang);
+		Logger.warn(
+			'Style Manager | Locale not found, falling back to English:',
+			lang
+		);
 	}
 
 	return (

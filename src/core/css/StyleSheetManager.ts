@@ -36,17 +36,25 @@ export class StyleSheetManager {
 	private darkEl: HTMLElement;
 
 	constructor(private bridge: ObsidianBridge) {
-		this.lightEl = activeDocument.body.createDiv('theme-light style-manager-ref');
+		this.lightEl = activeDocument.body.createDiv(
+			'theme-light style-manager-ref'
+		);
 		this.darkEl = activeDocument.body.createDiv('theme-dark style-manager-ref');
 
 		// Hide these elements from view
-		activeDocument.body.classList.add('css-settings-manager', 'style-manager-css');
+		activeDocument.body.classList.add(
+			'css-settings-manager',
+			'style-manager-css'
+		);
 	}
 
 	public cleanup(): void {
 		this.lightEl?.remove();
 		this.darkEl?.remove();
-		activeDocument.body.classList.remove('css-settings-manager', 'style-manager-css');
+		activeDocument.body.classList.remove(
+			'css-settings-manager',
+			'style-manager-css'
+		);
 		this.cssVarCache.clear();
 		this.fileCache.clear();
 		this.diskMapCache.clear();
@@ -405,10 +413,8 @@ export class StyleSheetManager {
 				Unknown: 4,
 			};
 			settingsList.sort((a, b) => {
-				const priA =
-					SOURCE_PRIORITY[a.sourceType] ?? 99;
-				const priB =
-					SOURCE_PRIORITY[b.sourceType] ?? 99;
+				const priA = SOURCE_PRIORITY[a.sourceType] ?? 99;
+				const priB = SOURCE_PRIORITY[b.sourceType] ?? 99;
 				if (priA !== priB) return priA - priB;
 				return (a.sourceId || '').localeCompare(b.sourceId || '');
 			});

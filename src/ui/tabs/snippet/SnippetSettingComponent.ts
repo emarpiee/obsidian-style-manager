@@ -3,10 +3,10 @@ import { App, Component, Menu, Setting, setIcon } from 'obsidian';
 import { PreferencesKeys, StorageKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { SnippetMetadata } from '../../../types';
+import { Logger } from '../../../utils/Logger';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { RenameModal } from '../../modals/RenameModal';
-import { Logger } from '../../../utils/Logger';
 
 /**
  * A modular component that represents a single CSS snippet row.
@@ -51,24 +51,26 @@ export class SnippetSettingComponent extends Component {
 			.setName(this.snippetId + '.css')
 			.addToggle((toggle) => {
 				toggleEl = toggle.toggleEl;
-				toggle.setValue(isEnabled).onChange((value): void => { void (async (): Promise<void> => {
-                const snippets = new Set(
-                	(this.plugin.settingsService.settings[
-                		StorageKeys.SNIPPETS
-                	] as string[]) || []
-                );
-                if (value) snippets.add(this.snippetId);
-                else snippets.delete(this.snippetId);
+				toggle.setValue(isEnabled).onChange((value): void => {
+					void (async (): Promise<void> => {
+						const snippets = new Set(
+							(this.plugin.settingsService.settings[
+								StorageKeys.SNIPPETS
+							] as string[]) || []
+						);
+						if (value) snippets.add(this.snippetId);
+						else snippets.delete(this.snippetId);
 
-                const list = Array.from(snippets);
-                await this.plugin.settingsService.setSetting(
-                	StorageKeys.SNIPPETS,
-                	list,
-                	{
-                		silentUI: true,
-                	}
-                );
-                })(); });
+						const list = Array.from(snippets);
+						await this.plugin.settingsService.setSetting(
+							StorageKeys.SNIPPETS,
+							list,
+							{
+								silentUI: true,
+							}
+						);
+					})();
+				});
 			})
 			.addExtraButton((btn) => {
 				btn
@@ -229,18 +231,21 @@ export class SnippetSettingComponent extends Component {
 			text: `Style Settings`,
 		});
 
-		this.plugin.settingsService.bridge.readSnippet(this.snippetId).then(css => {
-			const supports = css && /\/\*!?\s*@settings/.test(css);
-			this.supportsStyleSettings = !!supports;
-			supportIconEl.empty();
-			setIcon(supportIconEl, supports ? 'badge-check' : 'x');
-			this.onCssLoaded?.();
-		}).catch(() => {
-			this.supportsStyleSettings = false;
-			supportIconEl.empty();
-			setIcon(supportIconEl, 'help-circle');
-			this.onCssLoaded?.();
-		});
+		this.plugin.settingsService.bridge
+			.readSnippet(this.snippetId)
+			.then((css) => {
+				const supports = css && /\/\*!?\s*@settings/.test(css);
+				this.supportsStyleSettings = !!supports;
+				supportIconEl.empty();
+				setIcon(supportIconEl, supports ? 'badge-check' : 'x');
+				this.onCssLoaded?.();
+			})
+			.catch(() => {
+				this.supportsStyleSettings = false;
+				supportIconEl.empty();
+				setIcon(supportIconEl, 'help-circle');
+				this.onCssLoaded?.();
+			});
 	}
 
 	public setVisibility(visible: boolean): void {
@@ -279,7 +284,8 @@ export class SnippetSettingComponent extends Component {
 
 	private onEdit(): void {
 		const useDefaultApp =
-			this.plugin.app.loadLocalStorage(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
+			this.plugin.app.loadLocalStorage(PreferencesKeys.OPEN_IN_DEFAULT_APP) ===
+			'true';
 		if (useDefaultApp) {
 			const path = this.plugin.settingsService.bridge.getSnippetPath(
 				this.snippetId
@@ -300,24 +306,26 @@ export class SnippetSettingComponent extends Component {
 			this.app,
 			'Rename snippet',
 			this.snippetId,
-			(newName): void => { void (async (): Promise<void> => {
-            if (!newName || newName === this.snippetId) return;
+			(newName): void => {
+				void (async (): Promise<void> => {
+					if (!newName || newName === this.snippetId) return;
 
-            try {
-            	await this.plugin.settingsService.snippetService.renameSnippet(
-            		this.snippetId,
-            		newName
-            	);
-            	this.plugin.settingsService.notifications.snippet(
-            		`Renamed snippet to ${newName}`
-            	);
-            } catch (err) {
-            	Logger.error('Style Manager | Failed to rename snippet:', err);
-            	this.plugin.settingsService.notifications.error(
-            		err instanceof Error ? err.message : 'Error renaming snippet.'
-            	);
-            }
-            })(); }
+					try {
+						await this.plugin.settingsService.snippetService.renameSnippet(
+							this.snippetId,
+							newName
+						);
+						this.plugin.settingsService.notifications.snippet(
+							`Renamed snippet to ${newName}`
+						);
+					} catch (err) {
+						Logger.error('Style Manager | Failed to rename snippet:', err);
+						this.plugin.settingsService.notifications.error(
+							err instanceof Error ? err.message : 'Error renaming snippet.'
+						);
+					}
+				})();
+			}
 		).open();
 	}
 
@@ -328,21 +336,23 @@ export class SnippetSettingComponent extends Component {
 			`Are you sure you want to delete the snippet "${this.snippetId}"? This action cannot be undone.`,
 			'Delete',
 			true,
-			(): void => { void (async (): Promise<void> => {
-            try {
-            	await this.plugin.settingsService.snippetService.deleteSnippet(
-            		this.snippetId
-            	);
-            	this.plugin.settingsService.notifications.snippet(
-            		`Deleted snippet: ${this.snippetId}`
-            	);
-            } catch (err) {
-            	Logger.error('Style Manager | Failed to delete snippet:', err);
-            	this.plugin.settingsService.notifications.error(
-            		err instanceof Error ? err.message : 'Error deleting snippet.'
-            	);
-            }
-            })(); }
+			(): void => {
+				void (async (): Promise<void> => {
+					try {
+						await this.plugin.settingsService.snippetService.deleteSnippet(
+							this.snippetId
+						);
+						this.plugin.settingsService.notifications.snippet(
+							`Deleted snippet: ${this.snippetId}`
+						);
+					} catch (err) {
+						Logger.error('Style Manager | Failed to delete snippet:', err);
+						this.plugin.settingsService.notifications.error(
+							err instanceof Error ? err.message : 'Error deleting snippet.'
+						);
+					}
+				})();
+			}
 		).open();
 	}
 }

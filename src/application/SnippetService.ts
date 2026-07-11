@@ -62,8 +62,8 @@ export class SnippetService {
 		if (modified) {
 			void this.options.bridge.forceLoadSnippets();
 			void this.options.plugin.settingsService.refreshService.trigger(
-            				RefreshLevel.PARSE_CSS
-            			);
+				RefreshLevel.PARSE_CSS
+			);
 		}
 	}
 
@@ -170,8 +170,8 @@ export class SnippetService {
 		await this.options.plugin.parseAllSnippetMetadata();
 
 		void this.options.plugin.settingsService.refreshService.trigger(
-        			RefreshLevel.PARSE_CSS
-        		);
+			RefreshLevel.PARSE_CSS
+		);
 		return newName;
 	}
 
@@ -197,8 +197,8 @@ export class SnippetService {
 		// Give file system time to sync on mobile
 		window.setTimeout(() => {
 			void this.options.plugin.settingsService.refreshService.trigger(
-            				RefreshLevel.PARSE_CSS
-            			);
+				RefreshLevel.PARSE_CSS
+			);
 		}, 300);
 	}
 
@@ -246,8 +246,8 @@ export class SnippetService {
 		void this.options.bridge.forceLoadSnippets();
 		await this.options.plugin.parseAllSnippetMetadata();
 		void this.options.plugin.settingsService.refreshService.trigger(
-        			RefreshLevel.PARSE_CSS
-        		);
+			RefreshLevel.PARSE_CSS
+		);
 	}
 
 	/**
@@ -260,7 +260,7 @@ export class SnippetService {
 		this.options.bridge.requestLoadSnippets();
 		await this.options.plugin.parseAllSnippetMetadata();
 		void this.options.plugin.settingsService.refreshService.trigger(
-        			RefreshLevel.PARSE_CSS
-        		);
+			RefreshLevel.PARSE_CSS
+		);
 	}
 }

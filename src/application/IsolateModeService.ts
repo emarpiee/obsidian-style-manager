@@ -81,8 +81,8 @@ export class IsolateModeService {
 		} else {
 			await this.delegate.plugin.settingsService.syncSnippetState();
 			void this.delegate.plugin.settingsService.refreshService.trigger(
-            				RefreshLevel.STYLES_ONLY
-            			);
+				RefreshLevel.STYLES_ONLY
+			);
 		}
 
 		this.delegate.triggerGlobal('isolate-mode-changed');
@@ -145,8 +145,8 @@ export class IsolateModeService {
 		await this.delegate.save();
 		this.delegate.updateMerged();
 		void this.delegate.plugin.settingsService.refreshService.trigger(
-        			RefreshLevel.FULL_VISUAL
-        		);
+			RefreshLevel.FULL_VISUAL
+		);
 
 		// Calling trigger to signify completion
 		this.delegate.triggerGlobal('isolate-mode-changed');

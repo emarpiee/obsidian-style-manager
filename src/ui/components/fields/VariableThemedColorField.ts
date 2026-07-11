@@ -18,9 +18,9 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
-import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { VariableThemedColor, resetTooltip } from '../../../types';
 import { getColorPickerConfig, isColorValid } from '../../../utils/ColorUtils';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
@@ -60,12 +60,16 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		this.settingEl.descEl.createDiv({}, (div) => {
 			div.createEl('small', {}, (sm) => {
 				sm.appendChild(createEl('strong', { text: 'Default (light): ' }));
-				sm.appendChild(activeDocument.createTextNode(this.setting['default-light']));
+				sm.appendChild(
+					activeDocument.createTextNode(this.setting['default-light'])
+				);
 			});
 			div.createEl('br');
 			div.createEl('small', {}, (sm) => {
 				sm.appendChild(createEl('strong', { text: 'Default (dark): ' }));
-				sm.appendChild(activeDocument.createTextNode(this.setting['default-dark']));
+				sm.appendChild(
+					activeDocument.createTextNode(this.setting['default-dark'])
+				);
 			});
 		});
 
@@ -188,8 +192,8 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			const resolvedDefaultValue = defaultColorRaw || '';
 
 			void this.settingsService.clearSetting(this.sectionId, idLight, {
-            				silentUI: true,
-            			});
+				silentUI: true,
+			});
 
 			if (isColorValid(resolvedDefaultValue)) {
 				pickerLight.setColor(resolvedDefaultValue, false);
@@ -250,8 +254,8 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			const resolvedDefaultValue = defaultColorRaw || '';
 
 			void this.settingsService.clearSetting(this.sectionId, idDark, {
-            				silentUI: true,
-            			});
+				silentUI: true,
+			});
 
 			if (isColorValid(resolvedDefaultValue)) {
 				pickerDark.setColor(resolvedDefaultValue, false);
@@ -272,7 +276,9 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		_instance: ColorPicker
 	): void {
 		if (!color) {
-			void this.settingsService.clearSetting(this.sectionId, id, { silentUI: true });
+			void this.settingsService.clearSetting(this.sectionId, id, {
+				silentUI: true,
+			});
 		} else {
 			const hexValue = color.string('hex').toUpperCase();
 			const normalizedHex = hexValue.toLowerCase();
@@ -285,12 +291,12 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 
 			if (normalizedHex === normalizedDefault) {
 				void this.settingsService.clearSetting(this.sectionId, id, {
-                					silentUI: true,
-                				});
+					silentUI: true,
+				});
 			} else {
 				void this.settingsService.setSetting(this.sectionId, id, hexValue, {
-                					silentUI: true,
-                				});
+					silentUI: true,
+				});
 			}
 		}
 

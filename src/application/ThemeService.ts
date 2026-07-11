@@ -53,7 +53,9 @@ export class ThemeService {
 			this.isApplyingVisualTheme = false;
 		}
 
-		const localTag = activeDocument.getElementById('style-manager-session-theme');
+		const localTag = activeDocument.getElementById(
+			'style-manager-session-theme'
+		);
 		if (localTag) localTag.remove();
 	}
 
@@ -110,7 +112,9 @@ export class ThemeService {
 		}
 
 		// Remove old style tag if it exists from previous version
-		const oldTag = activeDocument.getElementById('style-manager-accent-overrides');
+		const oldTag = activeDocument.getElementById(
+			'style-manager-accent-overrides'
+		);
 		if (oldTag) oldTag.remove();
 
 		const body = activeDocument.body;

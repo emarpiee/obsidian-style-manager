@@ -16,10 +16,14 @@ export class BoxOutlineTool {
 
 			if (!this.sheet) {
 				this.sheet = new CSSStyleSheet();
-				activeDocument.adoptedStyleSheets = [...activeDocument.adoptedStyleSheets, this.sheet];
+				activeDocument.adoptedStyleSheets = [
+					...activeDocument.adoptedStyleSheets,
+					this.sheet,
+				];
 				this.plugin.register(() => {
 					if (this.sheet) {
-						activeDocument.adoptedStyleSheets = activeDocument.adoptedStyleSheets.filter(s => s !== this.sheet);
+						activeDocument.adoptedStyleSheets =
+							activeDocument.adoptedStyleSheets.filter((s) => s !== this.sheet);
 					}
 				});
 			}

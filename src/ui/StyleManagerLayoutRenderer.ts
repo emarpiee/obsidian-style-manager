@@ -179,12 +179,12 @@ export class StyleManagerLayoutRenderer extends Component {
 
 		if (this.activeTab === 'theme') {
 			void new ThemeBuilderTab(
-            				masterContainer,
-            				this.app,
-            				this.plugin,
-            				() => this.rerender(),
-            				(child) => this.addChild(child)
-            			).render();
+				masterContainer,
+				this.app,
+				this.plugin,
+				() => this.rerender(),
+				(child) => this.addChild(child)
+			).render();
 			this.restoreScroll();
 			return;
 		}

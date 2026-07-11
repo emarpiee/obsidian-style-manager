@@ -182,9 +182,13 @@ export class SettingsHeaderComponent extends Component {
 		setTooltip(toggleBtn, label);
 		toggleBtn.onclick = async (): Promise<void> => {
 			const next = appearance === 'light' ? 'dark' : 'light';
-			void this.plugin.settingsService.setSetting(StorageKeys.APPEARANCE, next, {
-            				silentUI: true,
-            			});
+			void this.plugin.settingsService.setSetting(
+				StorageKeys.APPEARANCE,
+				next,
+				{
+					silentUI: true,
+				}
+			);
 			this.plugin.settingsService.applyAppearance(
 				next,
 				!this.plugin.settingsService.isIsolateMode()
@@ -279,8 +283,9 @@ export class SettingsHeaderComponent extends Component {
 							] !== false;
 						if (openModal) {
 							const useDefaultApp =
-								this.plugin.app.loadLocalStorage(PreferencesKeys.OPEN_IN_DEFAULT_APP) ===
-								'true';
+								this.plugin.app.loadLocalStorage(
+									PreferencesKeys.OPEN_IN_DEFAULT_APP
+								) === 'true';
 							if (useDefaultApp) {
 								const path =
 									this.plugin.settingsService.bridge.getSnippetPath(id);
@@ -318,9 +323,13 @@ export class SettingsHeaderComponent extends Component {
 							this.plugin,
 							sectionsWithData,
 							async (selectedIds) => {
-								void this.plugin.settingsService.clearSections(selectedIds, false, {
-                                									silentUI: true,
-                                								});
+								void this.plugin.settingsService.clearSections(
+									selectedIds,
+									false,
+									{
+										silentUI: true,
+									}
+								);
 								this.options.onRerender();
 							}
 						).open();
