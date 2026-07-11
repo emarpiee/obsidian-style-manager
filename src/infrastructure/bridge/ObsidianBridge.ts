@@ -16,10 +16,13 @@ import { Logger } from '../../utils/Logger';
  * providing a stable interface for the Core logic.
  */
 export class ObsidianBridge {
-	public originalConfigGet: ((key: string) => unknown) | null = null;
-	public originalConfigSet: ((key: string, value: unknown) => void) | null =
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	public originalConfigGet: ((...args: any[]) => unknown) | null = null;
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	public originalConfigSet: ((...args: any[]) => void) | null =
 		null;
-	public originalSetTheme: ((name: string, ...args: unknown[]) => void) | null =
+	// eslint-disable-next-line @typescript-eslint/no-explicit-any
+	public originalSetTheme: ((...args: any[]) => void) | null =
 		null;
 	public originalThemeDescriptor: PropertyDescriptor | undefined;
 	private _realThemeValue: string | undefined;
@@ -82,7 +85,7 @@ export class ObsidianBridge {
 		if (customCss && customCss.theme) {
 			return customCss.theme || '';
 		}
-		return (this.getNativeConfig('cssTheme')) || '';
+		return (this.getNativeConfig('cssTheme') as string) || '';
 	}
 
 	/**
@@ -459,7 +462,7 @@ export class ObsidianBridge {
 						'Style Manager | Bridge: Intercepted native appearance change:',
 						value
 					);
-					onAppearanceIntercept(value);
+					onAppearanceIntercept(value as string);
 					return;
 				}
 				if (key === 'accentColor') {
@@ -467,7 +470,7 @@ export class ObsidianBridge {
 						'Style Manager | Bridge: Intercepted native accent color change:',
 						value
 					);
-					onAccentColorIntercept(value);
+					onAccentColorIntercept(value as string);
 					return;
 				}
 			}

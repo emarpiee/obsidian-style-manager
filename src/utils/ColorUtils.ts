@@ -58,7 +58,7 @@ export function getColorPickerConfig(opts: {
 				'style-manager-color-picker-wrapper style-manager-plugin';
 			activeDocument.body.appendChild(sharedContainer);
 		}
-		targetContainer = sharedContainer;
+		targetContainer = sharedContainer as HTMLElement;
 	}
 
 	return {
