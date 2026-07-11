@@ -1,25 +1,33 @@
 import { Plugin } from 'obsidian';
 
 export class GarbledTextTool {
-	private styleEl: HTMLElement | undefined;
+	private sheet: CSSStyleSheet | undefined;
+	private active = false;
 
 	constructor(private plugin: Plugin) {}
 
 	toggle(): void {
-		const currentCSS = this.styleEl?.textContent;
-		let cssToApply = '';
-
-		if (!currentCSS) {
-			cssToApply =
+		if (!this.active) {
+			const cssToApply =
 				'body *:not(:hover) { font-family: Flow Circular !important; }';
-			this.styleEl = activeDocument.head.createEl('style', { attr: { id: 'style-manager-garbled-text', type: 'text/css' } });
-			this.plugin.register(() => this.styleEl?.detach());
-		} else {
-			cssToApply = '';
-		}
 
-		if (this.styleEl) {
-			this.styleEl.textContent = cssToApply;
+			if (!this.sheet) {
+				this.sheet = new CSSStyleSheet();
+				activeDocument.adoptedStyleSheets = [...activeDocument.adoptedStyleSheets, this.sheet];
+				this.plugin.register(() => {
+					if (this.sheet) {
+						activeDocument.adoptedStyleSheets = activeDocument.adoptedStyleSheets.filter(s => s !== this.sheet);
+					}
+				});
+			}
+
+			void this.sheet.replace(cssToApply);
+			this.active = true;
+		} else {
+			if (this.sheet) {
+				void this.sheet.replace('');
+			}
+			this.active = false;
 		}
 		this.plugin.app.workspace.trigger('css-change');
 	}
