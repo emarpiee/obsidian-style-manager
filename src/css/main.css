@@ -1,6 +1,6 @@
 /* TODO: vars for colors*/
 
-@import '../lib/colorpicker/colorpicker.min.css';
+@import '../../node_modules/colorpicker/dist/colorpicker.min.css';
 
 @container (max-width: 720px) {
 	.style-manager-plugin>* {
@@ -321,6 +321,7 @@ body.is-mobile .style-manager-wrapper {
 }
 
 .style-manager-style-item-group {
+	/* stylelint-disable-next-line plugin/no-unsupported-browser-features */
 	display: contents;
 }
 
@@ -766,12 +767,10 @@ body.is-mobile .style-manager-wrapper {
 .clickable-hex {
 	cursor: pointer;
 	text-decoration: underline;
-	text-decoration-style: dotted;
 	text-underline-offset: 3px;
 }
 
 .clickable-hex:hover {
-	text-decoration-style: solid;
 	color: var(--interactive-accent);
 }
 
@@ -2225,7 +2224,6 @@ body.is-mobile .style-manager-editor-title-container {
 	cursor: pointer;
 	color: var(--color-accent);
 	text-decoration: underline;
-	text-decoration-style: dotted;
 	border-radius: var(--radius-s);
 	transition:
 		color 100ms ease,
