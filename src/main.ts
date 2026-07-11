@@ -238,12 +238,12 @@ export default class StyleManagerPlugin extends Plugin {
 					this.app,
 					this,
 					sectionsWithData,
-					(selectedIds): void => { void (async (): Promise<void> => {
-                    void this.settingsService.clearSections(selectedIds, false, {
+					async (selectedIds): Promise<void> => {
+                    await this.settingsService.clearSections(selectedIds, false, {
                                             	silentUI: true,
                                             });
-                    void this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
-                    })(); }
+                    this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
+                    }
 				).open();
 			},
 		});
@@ -514,7 +514,52 @@ export default class StyleManagerPlugin extends Plugin {
 			}
 
 			this.presetScheduleService.start();
+			this.setupSwipePrevention();
 		});
+	}
+
+	private setupSwipePrevention(): void {
+		// @ts-ignore
+		if (!this.app.isMobile) return;
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const patchTrigger = (thing: any): void => {
+			if (!thing) return;
+			const proto = Object.getPrototypeOf(thing);
+			if (!proto || typeof proto.trigger !== 'function' || proto.trigger.__sm_swipe_patched) return;
+
+			const orig = proto.trigger;
+			const app = this.app;
+			// eslint-disable-next-line @typescript-eslint/no-explicit-any
+			proto.trigger = function (eventName: string, data: any): any {
+				try {
+					if (
+						eventName === 'swipe' &&
+						data &&
+						data.direction === 'x' &&
+						data.points === 1
+					) {
+						// Block swipe if any CSS editor leaf is visible
+						const cssEditorLeaves = app.workspace.getLeavesOfType(cssEditorViewType);
+						if (cssEditorLeaves.length > 0) return;
+					}
+				} catch (err) {
+					console.error(err);
+				}
+				// eslint-disable-next-line prefer-rest-params, @typescript-eslint/no-explicit-any
+				return orig.apply(this, arguments as any);
+			};
+
+			proto.trigger.__sm_swipe_patched = true;
+		};
+
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		const workspace = this.app.workspace as any;
+		// Patch the shared prototypes of workspace and rootSplit.
+		// These are sufficient — swipe events bubble through these objects.
+		// We do NOT patch activeLeaf (changes dynamically) or use instance-level hooks.
+		[workspace, workspace.rootSplit, workspace.leftSplit, workspace.rightSplit]
+			.forEach(patchTrigger);
 	}
 
 	parseCSS(): void {
