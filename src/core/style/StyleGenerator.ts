@@ -47,7 +47,7 @@ import { SettingType } from '../../ui/components/base/types';
  * state management and visual application.
  */
 export class StyleGenerator {
-	public styleTag: HTMLStyleElement;
+	private sheet: CSSStyleSheet;
 	public config: MappedSettings = {};
 	public gradients: Record<string, ColorGradient[]> = {};
 
@@ -56,18 +56,15 @@ export class StyleGenerator {
 		private bridge: ObsidianBridge,
 		private getSettings: () => StyleManagerSettings
 	) {
-		let styleTag = activeDocument.getElementById('style-manager-css') as HTMLStyleElement;
-		if (!styleTag) {
-			styleTag = activeDocument.head.createEl('style', { attr: { id: 'style-manager-css' } });
-		}
-		this.styleTag = styleTag;
+		this.sheet = new CSSStyleSheet();
+		activeDocument.adoptedStyleSheets = [...activeDocument.adoptedStyleSheets, this.sheet];
 	}
 
 	/**
 	 * Cleans up DOM elements and classes.
 	 */
 	public destroy(): void {
-		this.styleTag?.remove();
+		activeDocument.adoptedStyleSheets = activeDocument.adoptedStyleSheets.filter(s => s !== this.sheet);
 		this.removeClasses();
 	}
 	/**
@@ -90,61 +87,26 @@ export class StyleGenerator {
 			this.bridge
 		);
 
-		this.styleTag.textContent = `
+		const reduceVars = (arr: { key: string; value: string; important?: boolean }[]): string =>
+			arr.reduce(
+				(combined: string, current: { key: string; value: string; important?: boolean }) =>
+					combined + `--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `,
+				''
+			);
+
+		const css = `
 			body.css-settings-manager, body.style-manager-css {
-				${vars.reduce(
-					(
-						combined: string,
-						current: { key: string; value: string; important?: boolean }
-					) => {
-						return (
-							combined +
-							`--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `
-						);
-					},
-					''
-				)}
+				${reduceVars(vars)}
 			}
-
 			body.theme-light.css-settings-manager, body.theme-light.style-manager-css {
-				${themedLight.reduce(
-					(
-						combined: string,
-						current: { key: string; value: string; important?: boolean }
-					) => {
-						return (
-							combined +
-							`--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `
-						);
-					},
-					''
-				)}
+				${reduceVars(themedLight)}
 			}
-
 			body.theme-dark.css-settings-manager, body.theme-dark.style-manager-css {
-				${themedDark.reduce(
-					(
-						combined: string,
-						current: { key: string; value: string; important?: boolean }
-					) => {
-						return (
-							combined +
-							`--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `
-						);
-					},
-					''
-				)}
+				${reduceVars(themedDark)}
 			}
-			`;
+		`.trim().replace(/[\r\n\s]+/g, ' ');
 
-		this.styleTag.textContent = this.styleTag.textContent
-			.trim()
-			.replace(/[\r\n\s]+/g, ' ');
-
-		// Ensure our style tag is always at the end of the head for highest precedence
-		if (this.styleTag.parentElement) {
-			this.styleTag.parentElement.appendChild(this.styleTag);
-		}
+		void this.sheet.replace(css);
 
 		this.bridge.triggerEvent('css-change', {
 			source: 'style-manager',
