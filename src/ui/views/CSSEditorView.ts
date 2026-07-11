@@ -61,8 +61,7 @@ export class CSSEditorView extends ItemView {
 			});
 
 			// Force update the tab title directly
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const leafAny = this.leaf as any;
+			const leafAny = this.leaf as WorkspaceLeaf & { tabHeaderInnerTitleEl?: HTMLElement; tabHeaderTitleEl?: HTMLElement };
 			const newTitle = this.getDisplayText();
 
 			if (leafAny.tabHeaderInnerTitleEl) {

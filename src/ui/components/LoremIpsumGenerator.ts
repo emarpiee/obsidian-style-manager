@@ -108,7 +108,7 @@ export class LoremIpsumGenerator {
 		});
 
 		this.outputEl.value = text;
-		this.copyBtn.style.display = 'inline-block';
+		this.copyBtn.setCssStyles({ display: 'inline-block' });
 	}
 
 	private async copy(): Promise<void> {

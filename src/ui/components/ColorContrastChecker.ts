@@ -285,8 +285,7 @@ export class ColorContrastChecker {
 
 	private updateResults(): void {
 		this.updateLabels();
-		this.previewEl.style.backgroundColor = this.bgColor;
-		this.previewEl.style.color = this.fgColor;
+		this.previewEl.setCssStyles({ backgroundColor: this.bgColor, color: this.fgColor });
 
 		try {
 			const contrast = chroma.contrast(this.fgColor, this.bgColor);
@@ -306,10 +305,10 @@ export class ColorContrastChecker {
 				const badge = document.createElement('span');
 				badge.setText(text);
 				badge.addClass('style-manager-tool-contrast-badge');
-				badge.style.backgroundColor = pass
-					? 'var(--color-green)'
-					: 'var(--color-red)';
-				badge.style.color = 'var(--text-on-accent)';
+				badge.setCssStyles({
+					backgroundColor: pass ? 'var(--color-green)' : 'var(--color-red)',
+					color: 'var(--text-on-accent)'
+				});
 				return badge;
 			};
 
