@@ -80,7 +80,7 @@ export function addApplyOptionsToMenu(
 					} else {
 						plugin.presetService.confirmApply(
 							source.name,
-							perform,
+							(action): void => { void perform(action); },
 							'shared',
 							options?.applyActionKey
 						);
@@ -123,7 +123,7 @@ export function addApplyOptionsToMenu(
 					} else {
 						plugin.presetService.confirmApply(
 							source.name,
-							perform,
+							(action): void => { void perform(action); },
 							'isolate',
 							options?.applyActionKey
 						);
@@ -188,7 +188,7 @@ export function addApplyOptionsToMenu(
                         		plugin.settingsService.identity.getLockerName(deviceId);
                         	plugin.presetService.confirmApply(
                         		source.name,
-                        		perform,
+                        		(action): void => { void perform(action); },
                         		'remote',
                         		options?.applyActionKey,
                         		deviceName

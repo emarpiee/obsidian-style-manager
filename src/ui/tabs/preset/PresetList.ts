@@ -230,7 +230,7 @@ export class PresetList {
 					ExportKeys.EXPORT_EXTENSION
 				] as string) || '.json';
 
-			const performExport = async (includeSnippets = false): Promise<void> => {
+			const performExport = (includeSnippets = false): void => { void (async (): Promise<void> => {
 				try {
 					const extension: string = includeSnippets
 						? '.zip'
@@ -268,7 +268,7 @@ export class PresetList {
 						`Export failed: ${err instanceof Error ? err.message : String(err)}`
 					);
 				}
-			};
+			})(); };
 
 			const allSnippets = new Set<string>();
 			const allThemes = new Set<string>();
@@ -298,9 +298,9 @@ export class PresetList {
 					description,
 					'Include assets (ZIP)',
 					false,
-					() => performExport(true),
+					(): void => { void performExport(true); },
 					`Presets only (${preferredExtension})`,
-					() => performExport(false)
+					(): void => { void performExport(false); }
 				).open();
 			} else {
 				if (plugin.settingsService.settings[ConfirmKeys.SKIP_EXPORT_CONFIRM]) {
@@ -312,7 +312,7 @@ export class PresetList {
 						`Are you sure you want to export ${service.selectedPresets.size} selected presets to your vault?`,
 						`Export (${preferredExtension})`,
 						false,
-						() => performExport(false)
+						(): void => { void performExport(false); }
 					).open();
 				}
 			}
@@ -345,7 +345,7 @@ export class PresetList {
 						`Are you sure you want to delete ${service.selectedPresets.size} presets? This action cannot be undone.`,
 						'Delete selected',
 						true,
-						performDelete
+						(): void => { void performDelete(); }
 					).open();
 				}
 			});

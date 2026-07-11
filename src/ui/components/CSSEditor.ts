@@ -290,7 +290,7 @@ export class CSSEditor {
 
 			// 1. Save (furthest right)
 			if (!this.source.readOnly) {
-				options.addAction('save', 'Save', () => this.handleSave());
+				options.addAction('save', 'Save', (): void => { void this.handleSave(); });
 				options.addAction('search', 'Search', () => this.handleSearch());
 			}
 

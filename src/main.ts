@@ -141,8 +141,9 @@ export default class StyleManagerPlugin extends Plugin {
 			name: 'Save current styles as preset',
 			callback: () => {
 				const prefixesArr = this.presetService.getPrefixesMetadata();
-				new CreatePresetModal(this.app, this.presetService, prefixesArr, () => {
-					this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
+				new CreatePresetModal(this.app, this.presetService, prefixesArr, (): void => { {
+					void this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
+			}
 				}).open();
 			},
 		});
@@ -422,13 +423,15 @@ export default class StyleManagerPlugin extends Plugin {
 		);
 
 		this.registerEvent(
-			this.app.workspace.on('parse-style-manager', () =>
-				this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS)
+			this.app.workspace.on('parse-style-manager', (): void => {
+				void this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS)
+			}
 			)
 		);
 		this.registerEvent(
-			this.app.workspace.on('parse-style-settings', () =>
-				this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS)
+			this.app.workspace.on('parse-style-settings', (): void => {
+				void this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS)
+			}
 			)
 		);
 
@@ -438,7 +441,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.app.workspace.onLayoutReady(() => {
 			this.registerInterval(
 				window.setInterval(
-					() => this.settingsService.checkForExternalChanges(),
+					(): void => { void this.settingsService.checkForExternalChanges(); },
 					4000
 				)
 			);

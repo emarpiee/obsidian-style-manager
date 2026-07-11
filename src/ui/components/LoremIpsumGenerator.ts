@@ -20,7 +20,7 @@ export class LoremIpsumGenerator {
 	private copyBtn: HTMLButtonElement;
 
 	private generateHandler = (): void => this.generate();
-	private copyHandler = async (): Promise<void> => await this.copy();
+	private copyHandler = (): void => { void (async (): Promise<void> => { await this.copy(); })(); };
 	private enterHandler = (e: KeyboardEvent): void => {
 		if (e.key === 'Enter') this.generate();
 	};

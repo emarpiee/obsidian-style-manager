@@ -235,9 +235,9 @@ export class PresetItem {
 										description,
 										'Include assets (ZIP)',
 										false,
-										() => performExport(true),
+										(): void => { void performExport(true); },
 										`Preset only (${preferredExtension})`,
-										() => performExport(false)
+										(): void => { void performExport(false); }
 									).open();
 								} else {
 									if (
@@ -253,7 +253,7 @@ export class PresetItem {
 											`Are you sure you want to export the preset "${preset.name}" to your vault?`,
 											`Export (${preferredExtension})`,
 											false,
-											() => performExport(false)
+											(): void => { void performExport(false); }
 										).open();
 									}
 								}
@@ -269,7 +269,7 @@ export class PresetItem {
 							.setIcon('trash')
 							.setWarning(true)
 							.onClick(() => {
-								const performDelete = async (): Promise<void> => {
+								const performDelete = (): void => { void (async (): Promise<void> => {
 									await plugin.presetService.trashPresets([preset]);
 
 									const indexInPresets = plugin.presetService.presets.findIndex(
@@ -280,7 +280,7 @@ export class PresetItem {
 										await plugin.presetService.savePresets();
 										this.onRefresh();
 									}
-								};
+								})(); };
 
 								if (
 									plugin.settingsService.settings[
