@@ -177,7 +177,7 @@ export class PreferencesTab {
 					.setButtonText('Restore backup...')
 					.setIcon('download')
 					.onClick(() => {
-						const input = document.createElement('input');
+						const input = activeDocument.createElement('input');
 						input.type = 'file';
 						input.accept = '.json,.md,.txt,.zip';
 						input.onchange = async (e: Event): Promise<void> => {
@@ -597,10 +597,10 @@ export class PreferencesTab {
 			.addToggle((toggle) => {
 				toggle
 					.setValue(
-						localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true'
+						this.plugin.app.loadLocalStorage(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true'
 					)
 					.onChange(async (val) => {
-						localStorage.setItem(
+						this.plugin.app.saveLocalStorage(
 							PreferencesKeys.OPEN_IN_DEFAULT_APP,
 							String(val)
 						);

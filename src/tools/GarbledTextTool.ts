@@ -12,8 +12,7 @@ export class GarbledTextTool {
 		if (!currentCSS) {
 			cssToApply =
 				'body *:not(:hover) { font-family: Flow Circular !important; }';
-			document.head.insertAdjacentHTML('beforeend', '<style id="style-manager-garbled-text" type="text/css"></style>');
-			this.styleEl = document.getElementById('style-manager-garbled-text') as HTMLElement;
+			this.styleEl = activeDocument.head.createEl('style', { attr: { id: 'style-manager-garbled-text', type: 'text/css' } });
 			this.plugin.register(() => this.styleEl?.detach());
 		} else {
 			cssToApply = '';

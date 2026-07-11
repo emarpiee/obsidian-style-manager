@@ -487,7 +487,7 @@ export class PresetService {
 			appearanceMeta.value =
 				appearance && appearance !== 'system'
 					? appearance
-					: document.body.classList.contains('theme-dark')
+					: activeDocument.body.classList.contains('theme-dark')
 						? 'dark'
 						: 'light';
 		}
@@ -512,8 +512,8 @@ export class PresetService {
 			const vConfigAccent =
 				this.plugin.settingsService.bridge.getNativeConfig('accentColor');
 			const nativeAccent =
-				typeof document !== 'undefined'
-					? getComputedStyle(document.body)
+				typeof activeDocument !== 'undefined'
+					? getComputedStyle(activeDocument.body)
 							.getPropertyValue('--accent-color')
 							.trim()
 					: '';

@@ -123,7 +123,7 @@ export class ImportPresetModal extends Modal {
 			.setName('Import from files')
 			.setDesc('Select .json or .zip bundle files from device file explorer.')
 			.addButton((btn) => {
-				const input = document.createElement('input');
+				const input = activeDocument.createElement('input');
 				input.addClass('style-manager-modal-input-file');
 				input.addClass('style-manager-hidden');
 				input.type = 'file';

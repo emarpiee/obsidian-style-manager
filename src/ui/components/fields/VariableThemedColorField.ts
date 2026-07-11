@@ -53,19 +53,19 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		// Construct description
 		this.settingEl.descEl.createSpan({}, (span) => {
 			if (description) {
-				span.appendChild(document.createTextNode(description));
+				span.appendChild(activeDocument.createTextNode(description));
 			}
 		});
 
 		this.settingEl.descEl.createDiv({}, (div) => {
 			div.createEl('small', {}, (sm) => {
 				sm.appendChild(createEl('strong', { text: 'Default (light): ' }));
-				sm.appendChild(document.createTextNode(this.setting['default-light']));
+				sm.appendChild(activeDocument.createTextNode(this.setting['default-light']));
 			});
 			div.createEl('br');
 			div.createEl('small', {}, (sm) => {
 				sm.appendChild(createEl('strong', { text: 'Default (dark): ' }));
-				sm.appendChild(document.createTextNode(this.setting['default-dark']));
+				sm.appendChild(activeDocument.createTextNode(this.setting['default-dark']));
 			});
 		});
 

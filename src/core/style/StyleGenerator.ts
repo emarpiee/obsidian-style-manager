@@ -56,8 +56,11 @@ export class StyleGenerator {
 		private bridge: ObsidianBridge,
 		private getSettings: () => StyleManagerSettings
 	) {
-		document.head.insertAdjacentHTML('beforeend', '<style id="style-manager-css"></style>');
-		this.styleTag = document.getElementById('style-manager-css') as HTMLStyleElement;
+		let styleTag = activeDocument.getElementById('style-manager-css') as HTMLStyleElement;
+		if (!styleTag) {
+			styleTag = activeDocument.head.createEl('style', { attr: { id: 'style-manager-css' } });
+		}
+		this.styleTag = styleTag;
 	}
 
 	/**
@@ -149,7 +152,7 @@ export class StyleGenerator {
 	}
 
 	/**
-	 * Applies class-based settings to the document body.
+	 * Applies class-based settings to the activeDocument body.
 	 */
 	public initClasses(): void {
 		const settings = this.getSettings();
@@ -170,7 +173,7 @@ export class StyleGenerator {
 						value === true ||
 						(value === undefined && settingWithDefault.default === true)
 					) {
-						document.body.classList.add(setting.id);
+						activeDocument.body.classList.add(setting.id);
 					}
 				} else if (setting.type === SettingType.CLASS_SELECT) {
 					const multiToggle = setting as CSSSetting & {
@@ -188,7 +191,7 @@ export class StyleGenerator {
 					}
 
 					if (value !== 'none') {
-						document.body.classList.add(value);
+						activeDocument.body.classList.add(value);
 					}
 				}
 			});
@@ -196,7 +199,7 @@ export class StyleGenerator {
 	}
 
 	/**
-	 * Removes all Style Manager managed classes from the document body.
+	 * Removes all Style Manager managed classes from the activeDocument body.
 	 */
 	public removeClasses(): void {
 		Object.keys(this.config).forEach((section) => {
@@ -206,16 +209,16 @@ export class StyleGenerator {
 				const setting = sectionConfig[settingId];
 
 				if (setting.type === SettingType.CLASS_TOGGLE) {
-					document.body.classList.remove(setting.id);
+					activeDocument.body.classList.remove(setting.id);
 				} else if (setting.type === SettingType.CLASS_SELECT) {
 					const multiToggle = setting as CSSSetting & {
 						options?: Array<string | { value: string }>;
 					};
 					(multiToggle.options || []).forEach((v) => {
 						if (typeof v === 'string') {
-							document.body.classList.remove(v);
+							activeDocument.body.classList.remove(v);
 						} else {
-							document.body.classList.remove(v.value);
+							activeDocument.body.classList.remove(v.value);
 						}
 					});
 				}

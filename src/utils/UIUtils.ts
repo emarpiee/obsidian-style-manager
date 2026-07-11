@@ -11,13 +11,13 @@ export function createDescription(
 	const fragment = createFragment();
 
 	if (description) {
-		fragment.appendChild(document.createTextNode(description));
+		fragment.appendChild(activeDocument.createTextNode(description));
 	}
 
 	if (def) {
 		const small = createEl('small');
 		small.appendChild(createEl('strong', { text: `${t('Default:')} ` }));
-		small.appendChild(document.createTextNode(defLabel || def));
+		small.appendChild(activeDocument.createTextNode(defLabel || def));
 
 		const div = createEl('div');
 		div.appendChild(small);
@@ -34,12 +34,12 @@ export async function copyToClipboard(text: string): Promise<void> {
 	try {
 		await navigator.clipboard.writeText(text);
 	} catch (_e) {
-		const textArea = document.createElement('textarea');
+		const textArea = activeDocument.createElement('textarea');
 		textArea.value = text;
-		document.body.appendChild(textArea);
+		activeDocument.body.appendChild(textArea);
 		textArea.select();
-		document.execCommand('copy');
-		document.body.removeChild(textArea);
+		activeDocument.execCommand('copy');
+		activeDocument.body.removeChild(textArea);
 	}
 }
 
@@ -57,9 +57,9 @@ export function setupListKeybindings<T>(
 	options: ListSelectionOptions<T>
 ): () => void {
 	const handler = (e: KeyboardEvent): void => {
-		if (!document.contains(options.container)) {
+		if (!activeDocument.contains(options.container)) {
 			// Auto-cleanup if container is removed
-			document.removeEventListener('keydown', handler, true);
+			activeDocument.removeEventListener('keydown', handler, true);
 			return;
 		}
 
@@ -68,10 +68,10 @@ export function setupListKeybindings<T>(
 			return;
 		}
 
-		const activeEl = document.activeElement;
+		const activeEl = activeDocument.activeElement;
 		const isInput =
-			activeEl instanceof HTMLInputElement ||
-			activeEl instanceof HTMLTextAreaElement ||
+			activeEl.instanceOf(HTMLInputElement) ||
+			activeEl.instanceOf(HTMLTextAreaElement) ||
 			(activeEl as HTMLElement)?.isContentEditable;
 
 		if ((e.ctrlKey || e.metaKey) && e.key === 'a') {
@@ -83,8 +83,8 @@ export function setupListKeybindings<T>(
 			options.onSelectionChange();
 		}
 	};
-	document.addEventListener('keydown', handler, true);
-	return () => document.removeEventListener('keydown', handler, true);
+	activeDocument.addEventListener('keydown', handler, true);
+	return () => activeDocument.removeEventListener('keydown', handler, true);
 }
 
 export function handleItemSelection<T>(

@@ -48,15 +48,15 @@ export function getColorPickerConfig(opts: {
 	const safeColor = isColorValid(defaultColor) ? defaultColor : null;
 
 	let targetContainer = container;
-	if (isView && typeof document !== 'undefined') {
-		let sharedContainer = document.querySelector(
+	if (isView && typeof activeDocument !== 'undefined') {
+		let sharedContainer = activeDocument.querySelector(
 			'.style-manager-color-picker-wrapper'
 		) as HTMLElement;
 		if (!sharedContainer) {
-			sharedContainer = document.createElement('div');
+			sharedContainer = activeDocument.createElement('div');
 			sharedContainer.className =
 				'style-manager-color-picker-wrapper style-manager-plugin';
-			document.body.appendChild(sharedContainer);
+			activeDocument.body.appendChild(sharedContainer);
 		}
 		targetContainer = sharedContainer;
 	}

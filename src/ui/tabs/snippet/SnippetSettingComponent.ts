@@ -122,7 +122,7 @@ export class SnippetSettingComponent extends Component {
 			});
 		}
 
-		const selectIcon = document.createElement('div');
+		const selectIcon = activeDocument.createElement('div');
 		selectIcon.classList.add(
 			'clickable-icon',
 			'style-manager-item-select-icon'
@@ -279,7 +279,7 @@ export class SnippetSettingComponent extends Component {
 
 	private onEdit(): void {
 		const useDefaultApp =
-			localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
+			this.plugin.app.loadLocalStorage(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
 		if (useDefaultApp) {
 			const path = this.plugin.settingsService.bridge.getSnippetPath(
 				this.snippetId

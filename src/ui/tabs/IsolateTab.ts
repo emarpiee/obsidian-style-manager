@@ -121,7 +121,7 @@ export class IsolateTab {
 				});
 			});
 
-		const descFragment = document.createDocumentFragment();
+		const descFragment = activeDocument.createDocumentFragment();
 		descFragment.append('Unique ID: ');
 		descFragment.createEl('code', {
 			text: plugin.settingsService.deviceId,

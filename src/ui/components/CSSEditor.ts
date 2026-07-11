@@ -169,7 +169,7 @@ export class CSSEditor {
 
 				if (
 					this.addBlockMenuDom &&
-					document.body.contains(this.addBlockMenuDom)
+					activeDocument.body.contains(this.addBlockMenuDom)
 				) {
 					this.addBlockMenuDom.remove();
 					this.addBlockMenuDom = null;
@@ -276,7 +276,7 @@ export class CSSEditor {
 								borderRight: '1px solid var(--background-modifier-border)',
 							}
 						},
-						{ dark: document.body.classList.contains('theme-dark') }
+						{ dark: activeDocument.body.classList.contains('theme-dark') }
 					),
 				],
 			}),

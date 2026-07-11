@@ -302,7 +302,7 @@ export class ColorContrastChecker {
 				.setDesc(`Ratio: ${contrast.toFixed(2)}:1`);
 
 			const createBadge = (text: string, pass: boolean): HTMLElement => {
-				const badge = document.createElement('span');
+				const badge = activeDocument.createElement('span');
 				badge.setText(text);
 				badge.addClass('style-manager-tool-contrast-badge');
 				badge.setCssStyles({

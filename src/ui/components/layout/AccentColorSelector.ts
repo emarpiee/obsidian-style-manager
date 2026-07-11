@@ -20,7 +20,7 @@ export function renderAccentColorSelect(
 	const vConfigAccent = plugin.settingsService.bridge.getNativeConfig(
 		'accentColor'
 	) as string;
-	const nativeAccent = getComputedStyle(document.body)
+	const nativeAccent = getComputedStyle(activeDocument.body)
 		.getPropertyValue('--accent-color')
 		.trim();
 	const displayColor = (accentColor ||

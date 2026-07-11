@@ -232,7 +232,7 @@ export class ThemeManifestModal extends Modal {
 									] !== false;
 								if (openModal) {
 									const useDefaultApp =
-										localStorage.getItem(
+										this.plugin.app.loadLocalStorage(
 											PreferencesKeys.OPEN_IN_DEFAULT_APP
 										) === 'true';
 									if (useDefaultApp) {
@@ -334,7 +334,7 @@ export class ThemeManifestModal extends Modal {
 		this.contentEl.addEventListener(
 			'scroll',
 			() => {
-				const tooltips = document.querySelectorAll('.tooltip');
+				const tooltips = activeDocument.querySelectorAll('.tooltip');
 				tooltips.forEach((tooltip) => tooltip.remove());
 			},
 			{ passive: true }

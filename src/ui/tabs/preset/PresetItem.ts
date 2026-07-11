@@ -102,7 +102,7 @@ export class PresetItem {
 			});
 		}
 
-		const starIcon = document.createElement('div');
+		const starIcon = activeDocument.createElement('div');
 		starIcon.classList.add('clickable-icon', 'style-manager-preset-star-icon');
 		if (preset.isFavorite) starIcon.addClass('is-favorite');
 		setIcon(starIcon, preset.isFavorite ? 'star' : 'star');
@@ -306,7 +306,7 @@ export class PresetItem {
 				});
 		});
 
-		const selectIcon = document.createElement('div');
+		const selectIcon = activeDocument.createElement('div');
 		selectIcon.classList.add(
 			'clickable-icon',
 			'style-manager-item-select-icon'

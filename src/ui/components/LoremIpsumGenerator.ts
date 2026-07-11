@@ -121,7 +121,7 @@ export class LoremIpsumGenerator {
 			} else {
 				// Fallback
 				this.outputEl.select();
-				document.execCommand('copy');
+				activeDocument.execCommand('copy');
 			}
 			new Notice('Lorem ipsum copied to clipboard');
 		} catch (err) {
