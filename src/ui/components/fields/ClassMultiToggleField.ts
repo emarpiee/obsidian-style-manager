@@ -64,16 +64,16 @@ export class ClassMultiToggleField extends AbstractSettingComponent {
 
 			dropdown.onChange((value) => {
 				if (value === this.setting.default) {
-					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-						silentUI: true,
-					});
+					void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+                    						silentUI: true,
+                    					});
 				} else {
-					this.settingsService.setSetting(
-						this.sectionId,
-						this.setting.id,
-						value,
-						{ silentUI: true }
-					);
+					void this.settingsService.setSetting(
+                    						this.sectionId,
+                    						this.setting.id,
+                    						value,
+                    						{ silentUI: true }
+                    					);
 				}
 				prevValue = value;
 				this.updateModifiedClass();
@@ -86,9 +86,9 @@ export class ClassMultiToggleField extends AbstractSettingComponent {
 			b.setIcon('reset');
 			b.onClick(() => {
 				this.dropdownComponent.setValue(this.setting.default || 'none');
-				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-					silentUI: true,
-				});
+				void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+                					silentUI: true,
+                				});
 				this.updateModifiedClass();
 			});
 			b.setTooltip(resetTooltip);

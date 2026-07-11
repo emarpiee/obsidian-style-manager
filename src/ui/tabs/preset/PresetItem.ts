@@ -245,7 +245,7 @@ export class PresetItem {
 											ConfirmKeys.SKIP_EXPORT_CONFIRM
 										]
 									) {
-										performExport(false);
+										void performExport(false);
 									} else {
 										new ConfirmModal(
 											plugin.app,

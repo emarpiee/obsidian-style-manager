@@ -52,7 +52,7 @@ export class IsolateTab {
 				toggle
 					.setValue(plugin.settingsService.isIsolateMode())
 					.onChange((val): void => { void (async (): Promise<void> => {
-                    plugin.settingsService.setIsolateMode(val);
+                    void plugin.settingsService.setIsolateMode(val);
                     this.onRerender();
                     })(); });
 			});

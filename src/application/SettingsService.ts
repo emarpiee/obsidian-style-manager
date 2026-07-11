@@ -129,7 +129,7 @@ export class SettingsService extends Events {
 			reload: (): Promise<void> => this.reload(),
 			updateMerged: (): void => this.updateMerged(),
 			rerenderAll: (): void => {
-				this.refreshService.trigger(RefreshLevel.UI_ONLY);
+				void this.refreshService.trigger(RefreshLevel.UI_ONLY);
 			},
 			trigger: (event: string): void => {
 				this.trigger(event);
@@ -312,7 +312,7 @@ export class SettingsService extends Events {
 		if (theme) {
 			const shouldPersist =
 				!this.isolateModeService.isIsolateMode() && !wasAdopted;
-			this.applyTheme(theme as string, shouldPersist);
+			void this.applyTheme(theme as string, shouldPersist);
 		}
 
 		this.applyAppearance(this.settings[StorageKeys.APPEARANCE] as string);
@@ -324,7 +324,7 @@ export class SettingsService extends Events {
 		);
 
 		if (wasAdopted && this.isSafeToSave) {
-			this.save({ silent: true });
+			void this.save({ silent: true });
 		}
 	}
 
@@ -404,7 +404,7 @@ export class SettingsService extends Events {
 
 	async reload(): Promise<void> {
 		await this.load(true);
-		this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
+		void this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
 	}
 
 	public async checkForExternalChanges(): Promise<boolean | undefined> {
@@ -425,7 +425,7 @@ export class SettingsService extends Events {
 		settings: Record<string, unknown>,
 		isIsolate: boolean
 	): Promise<void> {
-		this.isolateModeService.setIsolateMode(isIsolate);
+		void this.isolateModeService.setIsolateMode(isIsolate);
 		await this.applySettingsUpdate(settings, {
 			persistNative: !isIsolate,
 			silentUI: true,
@@ -542,7 +542,7 @@ export class SettingsService extends Events {
 
 		this.updateMerged();
 		this.styleSheetManager.clearCache();
-		this.refreshService.trigger(RefreshLevel.FULL_VISUAL);
+		void this.refreshService.trigger(RefreshLevel.FULL_VISUAL);
 		this.trigger('refresh-status-bar');
 
 		await this.save();
@@ -725,11 +725,11 @@ export class SettingsService extends Events {
 
 		if (hasStyleChange && !isSnippetOnly) {
 			this.styleSheetManager.clearCache();
-			this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
+			void this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
 		}
 
 		if (!options?.silentUI && !isSnippetOnly) {
-			this.refreshService.trigger(RefreshLevel.UI_ONLY);
+			void this.refreshService.trigger(RefreshLevel.UI_ONLY);
 		}
 
 		if (hasStyleChange && !isSnippetOnly) {
@@ -793,13 +793,13 @@ export class SettingsService extends Events {
 
 		if (options?.silentUI) {
 			this.styleSheetManager.clearCache();
-			this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
+			void this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
 			if (this.isStyleSetting(key)) {
 				this.trigger('refresh-status-bar');
 			}
 		} else {
 			this.styleSheetManager.clearCache();
-			this.refreshService.trigger(RefreshLevel.FULL_VISUAL);
+			void this.refreshService.trigger(RefreshLevel.FULL_VISUAL);
 		}
 	}
 
@@ -862,10 +862,10 @@ export class SettingsService extends Events {
 				await this.applySnippets([], isIsolate);
 
 			if (options?.silentUI) {
-				this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
+				void this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
 				this.trigger('refresh-status-bar');
 			} else {
-				this.refreshService.trigger(RefreshLevel.FULL_VISUAL);
+				void this.refreshService.trigger(RefreshLevel.FULL_VISUAL);
 			}
 
 			const coreMapping: Record<string, string> = {
@@ -952,11 +952,11 @@ export class SettingsService extends Events {
 
 			if (options?.silentUI) {
 				this.styleSheetManager.clearCache();
-				this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
+				void this.refreshService.trigger(RefreshLevel.STYLES_ONLY);
 				this.trigger('refresh-status-bar');
 			} else {
 				this.styleSheetManager.clearCache();
-				this.refreshService.trigger(RefreshLevel.FULL_VISUAL);
+				void this.refreshService.trigger(RefreshLevel.FULL_VISUAL);
 			}
 		}
 	}

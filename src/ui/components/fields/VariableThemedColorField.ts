@@ -187,9 +187,9 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			const defaultColorRaw = this.setting['default-light'];
 			const resolvedDefaultValue = defaultColorRaw || '';
 
-			this.settingsService.clearSetting(this.sectionId, idLight, {
-				silentUI: true,
-			});
+			void this.settingsService.clearSetting(this.sectionId, idLight, {
+            				silentUI: true,
+            			});
 
 			if (isColorValid(resolvedDefaultValue)) {
 				pickerLight.setColor(resolvedDefaultValue, false);
@@ -249,9 +249,9 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			const defaultColorRaw = this.setting['default-dark'];
 			const resolvedDefaultValue = defaultColorRaw || '';
 
-			this.settingsService.clearSetting(this.sectionId, idDark, {
-				silentUI: true,
-			});
+			void this.settingsService.clearSetting(this.sectionId, idDark, {
+            				silentUI: true,
+            			});
 
 			if (isColorValid(resolvedDefaultValue)) {
 				pickerDark.setColor(resolvedDefaultValue, false);
@@ -272,7 +272,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		_instance: ColorPicker
 	): void {
 		if (!color) {
-			this.settingsService.clearSetting(this.sectionId, id, { silentUI: true });
+			void this.settingsService.clearSetting(this.sectionId, id, { silentUI: true });
 		} else {
 			const hexValue = color.string('hex').toUpperCase();
 			const normalizedHex = hexValue.toLowerCase();
@@ -284,13 +284,13 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			const normalizedDefault = (defaultColor || '').toLowerCase();
 
 			if (normalizedHex === normalizedDefault) {
-				this.settingsService.clearSetting(this.sectionId, id, {
-					silentUI: true,
-				});
+				void this.settingsService.clearSetting(this.sectionId, id, {
+                					silentUI: true,
+                				});
 			} else {
-				this.settingsService.setSetting(this.sectionId, id, hexValue, {
-					silentUI: true,
-				});
+				void this.settingsService.setSetting(this.sectionId, id, hexValue, {
+                					silentUI: true,
+                				});
 			}
 		}
 

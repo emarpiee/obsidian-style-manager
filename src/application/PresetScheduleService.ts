@@ -21,23 +21,23 @@ export class PresetScheduleService {
 	}
 
 	set schedules(val: PresetSchedule[]) {
-		this.plugin.settingsService.setSettings(
-			{ _manager_schedules: val },
-			{ silentUI: true, target: 'shared' }
-		);
+		void this.plugin.settingsService.setSettings(
+        			{ _manager_schedules: val },
+        			{ silentUI: true, target: 'shared' }
+        		);
 	}
 
 	public start(): void {
 		if (this.intervalId !== null) return;
 
-		this.cleanupOrphanedSchedules();
+		void this.cleanupOrphanedSchedules();
 
 		// Check immediately on start
-		this.checkSchedules();
+		void this.checkSchedules();
 
 		// Then check every 5 seconds for better accuracy
 		this.intervalId = window.setInterval(() => {
-			this.checkSchedules();
+			void this.checkSchedules();
 		}, 5 * 1000);
 	}
 

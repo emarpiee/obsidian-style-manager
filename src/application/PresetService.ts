@@ -64,10 +64,10 @@ export class PresetService {
 
 	set presets(val: Preset[]) {
 		const mode = this.getEffectiveViewMode();
-		this.plugin.settingsService.setSettings(
-			{ _manager_presets: val },
-			{ silentUI: true, target: mode }
-		);
+		void this.plugin.settingsService.setSettings(
+        			{ _manager_presets: val },
+        			{ silentUI: true, target: mode }
+        		);
 	}
 
 	async savePresets(): Promise<void> {

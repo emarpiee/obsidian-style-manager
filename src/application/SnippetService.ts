@@ -60,10 +60,10 @@ export class SnippetService {
 		}
 
 		if (modified) {
-			this.options.bridge.forceLoadSnippets();
-			this.options.plugin.settingsService.refreshService.trigger(
-				RefreshLevel.PARSE_CSS
-			);
+			void this.options.bridge.forceLoadSnippets();
+			void this.options.plugin.settingsService.refreshService.trigger(
+            				RefreshLevel.PARSE_CSS
+            			);
 		}
 	}
 
@@ -127,7 +127,7 @@ export class SnippetService {
 		}
 
 		await this.options.bridge.writeSnippet(name, '');
-		this.options.bridge.forceLoadSnippets();
+		void this.options.bridge.forceLoadSnippets();
 
 		// Trigger sync version increment
 		await this.options.plugin.settingsService.save({ force: true });
@@ -166,12 +166,12 @@ export class SnippetService {
 		}
 
 		await this.options.plugin.settingsService.save({ force: true });
-		this.options.bridge.forceLoadSnippets();
+		void this.options.bridge.forceLoadSnippets();
 		await this.options.plugin.parseAllSnippetMetadata();
 
-		this.options.plugin.settingsService.refreshService.trigger(
-			RefreshLevel.PARSE_CSS
-		);
+		void this.options.plugin.settingsService.refreshService.trigger(
+        			RefreshLevel.PARSE_CSS
+        		);
 		return newName;
 	}
 
@@ -191,14 +191,14 @@ export class SnippetService {
 		this.options.plugin.selectedSnippets.delete(id);
 		this.options.plugin.snippetMetadataMap.delete(id);
 
-		this.options.bridge.forceLoadSnippets();
+		void this.options.bridge.forceLoadSnippets();
 		await this.options.plugin.settingsService.save({ force: true });
 
 		// Give file system time to sync on mobile
 		window.setTimeout(() => {
-			this.options.plugin.settingsService.refreshService.trigger(
-				RefreshLevel.PARSE_CSS
-			);
+			void this.options.plugin.settingsService.refreshService.trigger(
+            				RefreshLevel.PARSE_CSS
+            			);
 		}, 300);
 	}
 
@@ -243,11 +243,11 @@ export class SnippetService {
 			this.options.bridge.setSnippetEnabledNative(newId, true);
 		}
 
-		this.options.bridge.forceLoadSnippets();
+		void this.options.bridge.forceLoadSnippets();
 		await this.options.plugin.parseAllSnippetMetadata();
-		this.options.plugin.settingsService.refreshService.trigger(
-			RefreshLevel.PARSE_CSS
-		);
+		void this.options.plugin.settingsService.refreshService.trigger(
+        			RefreshLevel.PARSE_CSS
+        		);
 	}
 
 	/**
@@ -259,8 +259,8 @@ export class SnippetService {
 
 		this.options.bridge.requestLoadSnippets();
 		await this.options.plugin.parseAllSnippetMetadata();
-		this.options.plugin.settingsService.refreshService.trigger(
-			RefreshLevel.PARSE_CSS
-		);
+		void this.options.plugin.settingsService.refreshService.trigger(
+        			RefreshLevel.PARSE_CSS
+        		);
 	}
 }

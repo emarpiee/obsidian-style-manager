@@ -192,7 +192,7 @@ export class CSSEditor {
 			{
 				key: 'Mod-s',
 				run: (): boolean => {
-					this.handleSave();
+					void this.handleSave();
 					return true;
 				},
 			},
@@ -323,7 +323,7 @@ export class CSSEditor {
 				options.addAction('copy', 'Copy to clipboard', () => {
 					if (this.view) {
 						const currentContent = this.view.state.doc.toString();
-						navigator.clipboard.writeText(currentContent);
+						void navigator.clipboard.writeText(currentContent);
 						this.plugin.settingsService.notifications.util(
 							'Copied to clipboard'
 						);
@@ -438,7 +438,7 @@ export class CSSEditor {
 					.onClick(() => {
 						if (this.view) {
 							const currentContent = this.view.state.doc.toString();
-							navigator.clipboard.writeText(currentContent);
+							void navigator.clipboard.writeText(currentContent);
 							this.plugin.settingsService.notifications.util(
 								'Copied to clipboard'
 							);
@@ -555,9 +555,9 @@ export class CSSEditor {
 				if (path) {
 					await this.plugin.app.vault.adapter.write(path, currentContent);
 					if (type === 'Theme') bridge.requestLoadTheme();
-					this.plugin.settingsService.refreshService.trigger(
-						RefreshLevel.PARSE_CSS
-					);
+					void this.plugin.settingsService.refreshService.trigger(
+                    						RefreshLevel.PARSE_CSS
+                    					);
 				}
 			}
 

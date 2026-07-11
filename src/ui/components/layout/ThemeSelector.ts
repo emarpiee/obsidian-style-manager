@@ -28,11 +28,11 @@ export function renderThemeSelect(
 		cls: 'style-manager-theme-current-name',
 	});
 
-	plugin.settingsService.themeBuilderService.getThemes().then((themes) => {
-		if (currentValue !== 'default' && themes[currentValue]) {
-			nameEl.setText(themes[currentValue].name);
-		}
-	});
+	void plugin.settingsService.themeBuilderService.getThemes().then((themes) => {
+    		if (currentValue !== 'default' && themes[currentValue]) {
+    			nameEl.setText(themes[currentValue].name);
+    		}
+    	});
 
 	triggerContainer.onclick = async (_e: MouseEvent): Promise<void> => {
 		const themes: ThemeOption[] = [{ id: 'default', name: 'Default' }];

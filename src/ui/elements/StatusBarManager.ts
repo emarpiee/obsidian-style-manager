@@ -189,7 +189,7 @@ export class StatusBarManager {
 				.setTitle(`${modifiedCount} customized settings`)
 				.setIcon('check-circle')
 				.onClick(() => {
-					this.plugin.activateView('styles');
+					void this.plugin.activateView('styles');
 				});
 			(item as unknown as { dom: HTMLElement }).dom.addClass(
 				'style-manager-menu-info'
@@ -202,7 +202,7 @@ export class StatusBarManager {
 				.setTitle(`${enabledSnippets.length} active snippets`)
 				.setIcon('file-code')
 				.onClick(() => {
-					this.plugin.activateView('snippets');
+					void this.plugin.activateView('snippets');
 				});
 			(item as unknown as { dom: HTMLElement }).dom.addClass(
 				'style-manager-menu-info'
@@ -229,7 +229,7 @@ export class StatusBarManager {
 				.setTitle('Open Style Manager')
 				.setIcon('external-link')
 				.onClick(() => {
-					this.plugin.activateView();
+					void this.plugin.activateView();
 				});
 		});
 

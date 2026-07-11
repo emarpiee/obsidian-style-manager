@@ -153,9 +153,9 @@ export class CSSEditorView extends ItemView {
 					},
 					'Save',
 					() => {
-						this.editor.handleSave().then(() => {
-							originalDetach();
-						});
+						void this.editor.handleSave().then(() => {
+                        							originalDetach();
+                        						});
 					}
 				).open();
 				return;

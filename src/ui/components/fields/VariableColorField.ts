@@ -93,25 +93,25 @@ export class VariableColorField extends AbstractSettingComponent {
 			color: InstanceType<typeof ColorPicker.Color> | null
 		): void => {
 			if (!color) {
-				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-					silentUI: true,
-				});
+				void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+                					silentUI: true,
+                				});
 			} else {
 				const hexValue = color.string('hex').toUpperCase();
 				const normalizedHex = hexValue.toLowerCase();
 				const normalizedDefault = (this.setting.default || '').toLowerCase();
 
 				if (normalizedHex === normalizedDefault) {
-					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-						silentUI: true,
-					});
+					void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+                    						silentUI: true,
+                    					});
 				} else {
-					this.settingsService.setSetting(
-						this.sectionId,
-						this.setting.id,
-						hexValue,
-						{ silentUI: true }
-					);
+					void this.settingsService.setSetting(
+                    						this.sectionId,
+                    						this.setting.id,
+                    						hexValue,
+                    						{ silentUI: true }
+                    					);
 				}
 			}
 
@@ -135,9 +135,9 @@ export class VariableColorField extends AbstractSettingComponent {
 			const defaultColorRaw = this.setting.default;
 			const resolvedDefaultValue = defaultColorRaw || '';
 
-			this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-				silentUI: true,
-			});
+			void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+            				silentUI: true,
+            			});
 
 			if (isColorValid(resolvedDefaultValue)) {
 				picker.setColor(resolvedDefaultValue, false);

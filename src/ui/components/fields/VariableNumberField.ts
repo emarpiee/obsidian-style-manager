@@ -64,16 +64,16 @@ export class VariableNumberField extends AbstractSettingComponent {
 				const numValue = Number(value);
 
 				if (numValue === this.setting.default) {
-					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-						silentUI: true,
-					});
+					void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+                    						silentUI: true,
+                    					});
 				} else {
-					this.settingsService.setSetting(
-						this.sectionId,
-						this.setting.id,
-						numValue,
-						{ silentUI: true }
-					);
+					void this.settingsService.setSetting(
+                    						this.sectionId,
+                    						this.setting.id,
+                    						numValue,
+                    						{ silentUI: true }
+                    					);
 				}
 				this.textComponent.setValue(numValue.toString());
 				this.updateModifiedClass();
@@ -100,9 +100,9 @@ export class VariableNumberField extends AbstractSettingComponent {
 			b.setIcon('reset');
 			b.onClick(() => {
 				this.textComponent.setValue(this.setting.default?.toString() ?? '');
-				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-					silentUI: true,
-				});
+				void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+                					silentUI: true,
+                				});
 				this.updateModifiedClass();
 			});
 			b.setTooltip(resetTooltip);

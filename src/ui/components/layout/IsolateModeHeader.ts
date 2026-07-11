@@ -52,7 +52,7 @@ export class IsolateModeHeader extends Component {
 		this.el.onclick = (_e: MouseEvent): void => {
 			if (!isIsolated) {
 				// Directly enable Isolate Mode when clicked while disabled
-				this.plugin.settingsService.setIsolateMode(true);
+				void this.plugin.settingsService.setIsolateMode(true);
 				return;
 			}
 
@@ -90,7 +90,7 @@ export class IsolateModeHeader extends Component {
 					.setTitle('Disable isolate mode')
 					.setIcon('lock-open')
 					.onClick(() => {
-						this.plugin.settingsService.setIsolateMode(false);
+						void this.plugin.settingsService.setIsolateMode(false);
 					})
 			);
 

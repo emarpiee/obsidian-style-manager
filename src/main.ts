@@ -195,10 +195,10 @@ export default class StyleManagerPlugin extends Plugin {
 					this,
 					sectionsWithData,
 					(selectedIds): void => { void (async (): Promise<void> => {
-                    this.settingsService.clearSections(selectedIds, false, {
-                    	silentUI: true,
-                    });
-                    this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
+                    void this.settingsService.clearSections(selectedIds, false, {
+                                            	silentUI: true,
+                                            });
+                    void this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
                     })(); }
 				).open();
 			},
@@ -218,7 +218,7 @@ export default class StyleManagerPlugin extends Plugin {
 			id: 'copy-accent-color',
 			name: 'Copy current accent color',
 			callback: (): void => { void (async (): Promise<void> => {
-            this.copyAccentColorTool.copy()
+            void this.copyAccentColorTool.copy()
             })(); },
 		});
 
@@ -260,13 +260,13 @@ export default class StyleManagerPlugin extends Plugin {
 				) ?? 'red') as string;
 				new BoxOutlineColorPromptModal(this.app, currentColor, (value) => {
 					if (value !== null) {
-						this.settingsService.setSetting(
-							ToolKeys.TOOL_BOX_OUTLINE_COLOR,
-							value,
-							{
-								silentUI: true,
-							}
-						);
+						void this.settingsService.setSetting(
+                        							ToolKeys.TOOL_BOX_OUTLINE_COLOR,
+                        							value,
+                        							{
+                        								silentUI: true,
+                        							}
+                        						);
 						this.boxOutlineTool.updateColor();
 						new Notice(` CSS Box outline color set to ${value}`);
 					}
@@ -292,9 +292,9 @@ export default class StyleManagerPlugin extends Plugin {
 			callback: () => {
 				new FreezeDelayPromptModal(this.app, (value) => {
 					if (value !== null) {
-						this.settingsService.setSetting(ToolKeys.TOOL_FREEZE_DELAY, value, {
-							silentUI: true,
-						});
+						void this.settingsService.setSetting(ToolKeys.TOOL_FREEZE_DELAY, value, {
+                        							silentUI: true,
+                        						});
 						new Notice(`Freeze Obsidian delay set to ${value}s`);
 					}
 				}).open();
@@ -359,14 +359,14 @@ export default class StyleManagerPlugin extends Plugin {
 			id: 'show-leaf',
 			name: 'Show panel',
 			callback: () => {
-				this.activateView();
+				void this.activateView();
 			},
 		});
 
 		this.registerEvent(
 			this.app.workspace.on('css-change', (data?: { source: string }) => {
 				if (data?.source !== 'style-manager') {
-					this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS);
+					void this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS);
 
 					if (!this.settingsService.isApplyingTheme) {
 						const isIsolate = this.settingsService.isIsolateMode();
@@ -384,14 +384,14 @@ export default class StyleManagerPlugin extends Plugin {
 							Logger.log(
 								`Style Manager | Snippets: Adopting native snippet change (${isIsolate ? 'isolate' : 'shared'}).`
 							);
-							this.settingsService.setSetting(
-								StorageKeys.SNIPPETS,
-								currentEnabled,
-								{
-									silentUI: false,
-									target: isIsolate ? 'isolate' : 'shared',
-								}
-							);
+							void this.settingsService.setSetting(
+                            								StorageKeys.SNIPPETS,
+                            								currentEnabled,
+                            								{
+                            									silentUI: false,
+                            									target: isIsolate ? 'isolate' : 'shared',
+                            								}
+                            							);
 						}
 					}
 
@@ -407,15 +407,15 @@ export default class StyleManagerPlugin extends Plugin {
 
 					if (isIsolate) {
 						if (currentTheme !== '') {
-							this.settingsService.applyTheme(desiredTheme as string, false);
+							void this.settingsService.applyTheme(desiredTheme as string, false);
 						}
 					}
 					if (!isIsolate) {
 						if (currentTheme !== desiredNormalized) {
-							(async (): Promise<void> => {
-								// Avoid enqueuing a load if we just performed one or are in the middle of a sync
-								await this.settingsService.load();
-							})();
+							void (async (): Promise<void> => {
+                            								// Avoid enqueuing a load if we just performed one or are in the middle of a sync
+                            								await this.settingsService.load();
+                            							})();
 						}
 					}
 				}
@@ -435,8 +435,8 @@ export default class StyleManagerPlugin extends Plugin {
 			)
 		);
 
-		this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS);
-		this.parseAllSnippetMetadata();
+		void this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS);
+		void this.parseAllSnippetMetadata();
 
 		this.app.workspace.onLayoutReady(() => {
 			this.registerInterval(
@@ -447,17 +447,17 @@ export default class StyleManagerPlugin extends Plugin {
 			);
 
 			this.registerDomEvent(window, 'focus', () => {
-				this.settingsService.checkForExternalChanges();
+				void this.settingsService.checkForExternalChanges();
 			});
 
 			this.registerEvent(
 				this.settingsService.on(
 					'shared-update-detected',
 					(data: { skipAdopt?: boolean }) => {
-						this.settingsService.refreshService.trigger(
-							RefreshLevel.SYSTEM_RELOAD,
-							{ skipLoad: true, skipAdopt: data?.skipAdopt }
-						);
+						void this.settingsService.refreshService.trigger(
+                        							RefreshLevel.SYSTEM_RELOAD,
+                        							{ skipLoad: true, skipAdopt: data?.skipAdopt }
+                        						);
 					}
 				)
 			);
@@ -499,7 +499,7 @@ export default class StyleManagerPlugin extends Plugin {
 
         this.settingsService.styleGenerator.setConfig(this.settingsList);
 
-        this.settingsService.refreshService.trigger(RefreshLevel.FULL_VISUAL);
+        void this.settingsService.refreshService.trigger(RefreshLevel.FULL_VISUAL);
 
         this.refreshSettingCommands();
         })(); }, 250);
@@ -585,7 +585,7 @@ export default class StyleManagerPlugin extends Plugin {
 		await this.settingsService.syncSnippetState({
 			skipAdopt: options?.skipAdopt,
 		});
-		this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS);
+		void this.settingsService.refreshService.trigger(RefreshLevel.PARSE_CSS);
 
 		if (!options?.skipLoad) {
 			this.settingsService.notifications.shared(
@@ -682,9 +682,9 @@ export default class StyleManagerPlugin extends Plugin {
 					) as boolean);
 					const defaultValue = setting.default ?? false;
 					if (value === defaultValue) {
-						this.settingsService.clearSetting(section.id, setting.id);
+						void this.settingsService.clearSetting(section.id, setting.id);
 					} else {
-						this.settingsService.setSetting(section.id, setting.id, value);
+						void this.settingsService.setSetting(section.id, setting.id, value);
 					}
 				},
 			})

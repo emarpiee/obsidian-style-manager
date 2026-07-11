@@ -540,9 +540,9 @@ export class HeadingField extends AbstractSettingComponent {
 					resetFn();
 				} else {
 					const ids = this.getAllChildrenIds();
-					this.settingsService.resetSettings(this.sectionId, ids, {
-						silentUI: true,
-					});
+					void this.settingsService.resetSettings(this.sectionId, ids, {
+                    						silentUI: true,
+                    					});
 				}
 				this.refreshChildren();
 				this.updateChildrenModifiedClass();

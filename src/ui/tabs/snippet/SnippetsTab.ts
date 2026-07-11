@@ -302,7 +302,7 @@ export class SnippetsTab {
 			.setButtonText('Toggle')
 			.setCta()
 			.onClick(() => {
-				this.toggleAllSelected();
+				void this.toggleAllSelected();
 			});
 
 		new ButtonComponent(actions)

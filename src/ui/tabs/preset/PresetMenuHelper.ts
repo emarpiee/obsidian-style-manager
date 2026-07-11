@@ -76,7 +76,7 @@ export function addApplyOptionsToMenu(
 							'merge'
 								? 'merge'
 								: 'overwrite';
-						perform(defaultAction);
+						void perform(defaultAction);
 					} else {
 						plugin.presetService.confirmApply(
 							source.name,
@@ -119,7 +119,7 @@ export function addApplyOptionsToMenu(
 							'merge'
 								? 'merge'
 								: 'overwrite';
-						perform(defaultAction);
+						void perform(defaultAction);
 					} else {
 						plugin.presetService.confirmApply(
 							source.name,
@@ -182,7 +182,7 @@ export function addApplyOptionsToMenu(
                         		] as string) === 'merge'
                         			? 'merge'
                         			: 'overwrite';
-                        	perform(defaultAction);
+                        	void perform(defaultAction);
                         } else {
                         	const deviceName =
                         		plugin.settingsService.identity.getLockerName(deviceId);

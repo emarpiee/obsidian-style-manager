@@ -4,6 +4,6 @@ export class ColorContrastCheckerTool {
 	constructor(private plugin: StyleManagerPlugin) {}
 
 	show(): void {
-		this.plugin.activateContrastView();
+		void this.plugin.activateContrastView();
 	}
 }

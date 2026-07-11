@@ -182,9 +182,9 @@ export class SettingsHeaderComponent extends Component {
 		setTooltip(toggleBtn, label);
 		toggleBtn.onclick = async (): Promise<void> => {
 			const next = appearance === 'light' ? 'dark' : 'light';
-			this.plugin.settingsService.setSetting(StorageKeys.APPEARANCE, next, {
-				silentUI: true,
-			});
+			void this.plugin.settingsService.setSetting(StorageKeys.APPEARANCE, next, {
+            				silentUI: true,
+            			});
 			this.plugin.settingsService.applyAppearance(
 				next,
 				!this.plugin.settingsService.isIsolateMode()
@@ -318,9 +318,9 @@ export class SettingsHeaderComponent extends Component {
 							this.plugin,
 							sectionsWithData,
 							async (selectedIds) => {
-								this.plugin.settingsService.clearSections(selectedIds, false, {
-									silentUI: true,
-								});
+								void this.plugin.settingsService.clearSections(selectedIds, false, {
+                                									silentUI: true,
+                                								});
 								this.options.onRerender();
 							}
 						).open();

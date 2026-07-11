@@ -337,7 +337,7 @@ export class PresetList {
 				};
 
 				if (plugin.settingsService.settings[ConfirmKeys.SKIP_DELETE_CONFIRM]) {
-					performDelete();
+					void performDelete();
 				} else {
 					new ConfirmModal(
 						plugin.app,
