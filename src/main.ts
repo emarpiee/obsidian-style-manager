@@ -354,7 +354,7 @@ export default class StyleManagerPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'show-leaf',
-			name: 'Show Style Manager',
+			name: 'Show panel',
 			callback: () => {
 				this.activateView();
 			},
