@@ -28,19 +28,10 @@ export function createDescription(
 }
 
 /**
- * Robustly copies text to the clipboard.
+ * Copies text to the clipboard.
  */
 export async function copyToClipboard(text: string): Promise<void> {
-	try {
-		await navigator.clipboard.writeText(text);
-	} catch (_e) {
-		const textArea = activeDocument.createElement('textarea');
-		textArea.value = text;
-		activeDocument.body.appendChild(textArea);
-		textArea.select();
-		activeDocument.execCommand('copy');
-		activeDocument.body.removeChild(textArea);
-	}
+	await navigator.clipboard.writeText(text);
 }
 
 export interface ListSelectionOptions<T> {

@@ -42,12 +42,16 @@ export class ReadmeComponent {
 			};
 		}
 
-		await MarkdownRenderer.renderMarkdown(
-			README_CONTENT,
-			renderEl,
-			plugin?.app.workspace.getActiveFile()?.path || '',
-			component || (plugin as unknown as Component) || new Component()
-		);
+		const app = plugin?.app;
+		if (app) {
+			await MarkdownRenderer.render(
+				app,
+				README_CONTENT,
+				renderEl,
+				app.workspace.getActiveFile()?.path || '',
+				component || (plugin as unknown as Component) || new Component()
+			);
+		}
 	}
 
 	destroy(): void {

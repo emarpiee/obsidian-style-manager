@@ -141,7 +141,7 @@ export class CSSEditor {
 		try {
 			const rawContent = await this.plugin.app.vault.adapter.read(path);
 			this.content = rawContent.replace(/\r\n/g, '\n');
-		} catch (_err) {
+		} catch {
 			this.plugin.settingsService.notifications.error(
 				`Failed to read ${this.source.type} file.`
 			);

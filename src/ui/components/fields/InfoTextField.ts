@@ -42,7 +42,8 @@ export class InfoTextField extends AbstractSettingComponent {
 		}
 		if (description) {
 			if (this.setting.markdown) {
-				MarkdownRenderer.renderMarkdown(
+				void MarkdownRenderer.render(
+					this.settingsService.plugin.app,
 					description,
 					this.settingEl.descEl,
 					'',

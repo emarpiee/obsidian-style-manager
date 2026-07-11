@@ -331,7 +331,7 @@ export class ColorContrastChecker {
 			largeDiv.appendChild(
 				createBadge(`AAA: ${largeAAA}`, largeAAA === 'Pass')
 			);
-		} catch (_e) {
+		} catch {
 			this.resultsEl.empty();
 			this.resultsEl.setText(
 				'Invalid color combination for contrast calculation.'

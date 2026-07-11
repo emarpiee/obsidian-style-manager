@@ -116,13 +116,7 @@ export class LoremIpsumGenerator {
 		if (!text) return;
 
 		try {
-			if (navigator.clipboard && navigator.clipboard.writeText) {
-				await navigator.clipboard.writeText(text);
-			} else {
-				// Fallback
-				this.outputEl.select();
-				activeDocument.execCommand('copy');
-			}
+			await navigator.clipboard.writeText(text);
 			new Notice('Lorem ipsum copied to clipboard');
 		} catch (err) {
 			new Notice('Failed to copy text to clipboard');
