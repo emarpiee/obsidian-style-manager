@@ -60,7 +60,7 @@ export class SnippetsTab {
 							] !== false;
 						if (openModal) {
 							const useDefaultApp =
-								localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) ===
+								this.plugin.app.loadLocalStorage(PreferencesKeys.OPEN_IN_DEFAULT_APP) ===
 								'true';
 							if (useDefaultApp) {
 								const path =

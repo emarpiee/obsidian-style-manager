@@ -29,6 +29,8 @@ export interface DeviceLocker {
 
 export interface IdentityStorageAdapter {
 	getDevices(): Record<string, DeviceLocker> | undefined;
+	loadLocalStorage(key: string): unknown;
+	saveLocalStorage(key: string, data: unknown): void;
 	setDevices(
 		devices: Record<
 			string,
