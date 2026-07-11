@@ -15,9 +15,8 @@ export class BoxOutlineTool {
 				this.plugin.settingsService.settings[ToolKeys.TOOL_BOX_OUTLINE_COLOR] ??
 				'red';
 			cssToApply = `* {outline: ${color} 1px solid !important}`;
-			this.styleEl = document.createElement('style');
-			this.styleEl.setAttribute('type', 'text/css');
-			document.head.appendChild(this.styleEl);
+			document.head.insertAdjacentHTML('beforeend', '<style id="style-manager-box-outline" type="text/css"></style>');
+			this.styleEl = document.getElementById('style-manager-box-outline') as HTMLElement;
 			this.plugin.register(() => this.styleEl?.detach());
 		} else {
 			cssToApply = '';

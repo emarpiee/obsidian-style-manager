@@ -56,9 +56,8 @@ export class StyleGenerator {
 		private bridge: ObsidianBridge,
 		private getSettings: () => StyleManagerSettings
 	) {
-		this.styleTag = document.createElement('style');
-		this.styleTag.id = 'style-manager-css';
-		document.head.appendChild(this.styleTag);
+		document.head.insertAdjacentHTML('beforeend', '<style id="style-manager-css"></style>');
+		this.styleTag = document.getElementById('style-manager-css') as HTMLStyleElement;
 	}
 
 	/**
