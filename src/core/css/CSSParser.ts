@@ -157,12 +157,33 @@ export class CSSParser {
 		const settings: ParsedCSSSettings = yaml.parse(
 			str.replace(/\t/g, indent.type === 'space' ? indent.indent : '    ')
 		) as ParsedCSSSettings;
-
+		
+		interface RawSetting {
+			id?: string;
+			type?: string;
+			level?: number;
+			default?: number | string | boolean;
+			allowEmpty?: boolean;
+			min?: number;
+			max?: number;
+			step?: number;
+			format?: string;
+			'alt-format'?: unknown;
+			opacity?: boolean;
+			'default-light'?: string;
+			'default-dark'?: string;
+			from?: string;
+			to?: string;
+			pad?: number;
+			quotes?: boolean;
+		}
+		
 		if (!settings || !Array.isArray(settings.settings)) return undefined;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any -- YAML parsed object requires loose typing before validation
-		settings.settings = settings.settings.filter((setting: any) => {
-			if (!setting || typeof setting !== 'object' || !setting.type)
-				return false;
+		
+		settings.settings = (settings.settings as unknown[]).filter((s: unknown) => {
+			if (!s || typeof s !== 'object') return false;
+			const setting = s as RawSetting;
+			if (!setting.type) return false;
 
 			switch (setting.type) {
 				case 'heading':
@@ -379,8 +400,8 @@ export class CSSParser {
 					if (
 						setting.default !== undefined &&
 						(!isNumeric(setting.default) ||
-						setting.default < setting.min ||
-						setting.default > setting.max)
+						(setting.default as number) < setting.min ||
+						(setting.default as number) > setting.max)
 					) {
 						const oldDefault = setting.default;
 						setting.default = Math.max(
@@ -559,7 +580,7 @@ export class CSSParser {
 					break;
 			}
 			return true;
-		});
+		}) as import('../../types').CSSSetting[];
 		return settings;
 	}
 
