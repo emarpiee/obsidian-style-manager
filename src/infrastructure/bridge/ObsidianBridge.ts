@@ -425,8 +425,8 @@ export class ObsidianBridge {
 		if (originalConfigGet) return;
 
 		// 1. Vault Config Patches
-		this.originalConfigGet = vault.getConfig;
-		this.originalConfigSet = vault.setConfig;
+		this.originalConfigGet = vault.getConfig.bind(vault);
+		this.originalConfigSet = vault.setConfig.bind(vault);
 		const capturedConfigGet = this.originalConfigGet;
 		const capturedConfigSet = this.originalConfigSet;
 
