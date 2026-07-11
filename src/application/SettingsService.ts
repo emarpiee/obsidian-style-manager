@@ -117,6 +117,8 @@ export class SettingsService extends Events {
 		this.identity = new IdentityService({
 			getDevices: (): typeof this.sharedSettings.__devices =>
 				this.sharedSettings.__devices,
+			loadLocalStorage: (key): unknown => this.plugin.app.loadLocalStorage(key),
+			saveLocalStorage: (key, data): void => this.plugin.app.saveLocalStorage(key, data),
 			setDevices: (devices): void => {
 				this.sharedSettings.__devices = devices;
 			},

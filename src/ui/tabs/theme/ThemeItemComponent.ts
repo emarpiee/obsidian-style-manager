@@ -201,7 +201,7 @@ export class ThemeItemComponent extends Component {
 
 	private onEdit(): void {
 		const useDefaultApp =
-			localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
+			this.plugin.app.loadLocalStorage(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true';
 		if (useDefaultApp) {
 			const path = this.plugin.settingsService.bridge.getThemePath(
 				this.themeId

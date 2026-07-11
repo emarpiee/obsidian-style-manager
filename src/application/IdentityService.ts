@@ -15,11 +15,11 @@ export class IdentityService {
 	}
 
 	public readOrCreateDeviceId(): string {
-		let id = localStorage.getItem(DEVICE_ID_KEY);
+		let id = this.adapter.loadLocalStorage(DEVICE_ID_KEY) as string | null;
 		if (!id) {
 			this.isNewIdentity = true;
 			id = generateUuid();
-			localStorage.setItem(DEVICE_ID_KEY, id);
+			this.adapter.saveLocalStorage(DEVICE_ID_KEY, id);
 		}
 		return id;
 	}
@@ -31,7 +31,7 @@ export class IdentityService {
 
 	public async regenerateDeviceId(): Promise<void> {
 		const newId = generateUuid();
-		localStorage.setItem(DEVICE_ID_KEY, newId);
+		this.adapter.saveLocalStorage(DEVICE_ID_KEY, newId);
 		this.deviceId = newId;
 		this.deviceName = newId;
 
@@ -120,11 +120,11 @@ export class IdentityService {
 			delete devices[id];
 
 			if (id === this.deviceId) {
-				localStorage.removeItem(DEVICE_ID_KEY);
+				this.adapter.saveLocalStorage(DEVICE_ID_KEY, null);
 				this.adapter.clearIsolateSettings();
 
 				const newId = generateUuid();
-				localStorage.setItem(DEVICE_ID_KEY, newId);
+				this.adapter.saveLocalStorage(DEVICE_ID_KEY, newId);
 				this.deviceId = newId;
 				this.deviceName = newId;
 
