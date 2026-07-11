@@ -28,7 +28,7 @@ export class StyleManagerSettingTab extends PluginSettingTab {
 	}
 
 	display(): void {
-		document.body.classList.add('is-style-manager-settings');
+		activeDocument.body.classList.add('is-style-manager-settings');
 		this.containerEl.classList.add('is-style-manager-tab');
 		if (this.settingsMarkup) {
 			this.plugin.removeChild(this.settingsMarkup);
@@ -42,7 +42,7 @@ export class StyleManagerSettingTab extends PluginSettingTab {
 	}
 
 	hide(): void {
-		document.body.classList.remove('is-style-manager-settings');
+		activeDocument.body.classList.remove('is-style-manager-settings');
 		this.containerEl.classList.remove('is-style-manager-tab');
 		if (this.settingsMarkup) {
 			this.plugin.removeChild(this.settingsMarkup);

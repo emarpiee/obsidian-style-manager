@@ -89,10 +89,10 @@ export default class StyleManagerPlugin extends Plugin {
 
 	setupMutationObserver(): void {
 		const observer = new MutationObserver((mutations) => {
-			if (document.body.querySelector('.style-settings-ref') && document.body.querySelector('.style-manager-ref')) {
-				document.body.classList.add('sm-conflict-warning');
+			if (activeDocument.body.querySelector('.style-settings-ref') && activeDocument.body.querySelector('.style-manager-ref')) {
+				activeDocument.body.classList.add('sm-conflict-warning');
 			} else {
-				document.body.classList.remove('sm-conflict-warning');
+				activeDocument.body.classList.remove('sm-conflict-warning');
 			}
 
 			mutations.forEach(mutation => {
@@ -100,16 +100,16 @@ export default class StyleManagerPlugin extends Plugin {
 					if (node.nodeType === Node.ELEMENT_NODE) {
 						const el = node as HTMLElement;
 						if (el.classList && el.classList.contains('style-manager-plugin')) {
-							const settings = el.querySelectorAll('.setting-item');
+							const settings = el.findAll('.setting-item');
 							settings.forEach(setting => {
 								if (setting.querySelector('input[type="text"], input[type="range"], select, textarea')) {
 									setting.classList.add('sm-has-input');
 								}
 							});
-						} else if (el.querySelectorAll) {
-							const plugins = el.querySelectorAll('.style-manager-plugin');
+						} else if (el.findAll) {
+							const plugins = el.findAll('.style-manager-plugin');
 							plugins.forEach(plugin => {
-								const settings = plugin.querySelectorAll('.setting-item');
+								const settings = plugin.findAll('.setting-item');
 								settings.forEach(setting => {
 									if (setting.querySelector('input[type="text"], input[type="range"], select, textarea')) {
 										setting.classList.add('sm-has-input');
@@ -127,7 +127,7 @@ export default class StyleManagerPlugin extends Plugin {
 				});
 			});
 		});
-		observer.observe(document.body, { childList: true, subtree: true });
+		observer.observe(activeDocument.body, { childList: true, subtree: true });
 	}
 
 	async onload(): Promise<void> {
