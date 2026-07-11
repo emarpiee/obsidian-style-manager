@@ -86,9 +86,9 @@ export class ImportPresetModal extends Modal {
 				new ConflictResolutionModal(
 					this.app,
 					allConflicts,
-					async (resolutions) => {
-						await performImport(resolutions);
-					}
+					(resolutions): void => { void (async (): Promise<void> => {
+                    await performImport(resolutions);
+                    })(); }
 				).open();
 			} else {
 				await performImport();
@@ -102,20 +102,20 @@ export class ImportPresetModal extends Modal {
 				'Automatically import your settings from the Style Settings plugin.'
 			)
 			.addButton((btn) => {
-				btn.setButtonText('Import').onClick(async () => {
-					const path = normalizePath(
-						`${this.app.vault.configDir}/plugins/obsidian-style-settings/data.json`
-					);
-					const exists = await this.app.vault.adapter.exists(path);
-					if (!exists) {
-						this.service.plugin.settingsService.notifications.error(
-							'Style Settings data.json not found. Is the plugin installed?'
-						);
-						return;
-					}
-					const content = await this.app.vault.adapter.read(path);
-					await processImports([{ content }]);
-				});
+				btn.setButtonText('Import').onClick((): void => { void (async (): Promise<void> => {
+                const path = normalizePath(
+                	`${this.app.vault.configDir}/plugins/obsidian-style-settings/data.json`
+                );
+                const exists = await this.app.vault.adapter.exists(path);
+                if (!exists) {
+                	this.service.plugin.settingsService.notifications.error(
+                		'Style Settings data.json not found. Is the plugin installed?'
+                	);
+                	return;
+                }
+                const content = await this.app.vault.adapter.read(path);
+                await processImports([{ content }]);
+                })(); });
 			});
 
 		new Setting(contentEl)
@@ -169,20 +169,20 @@ export class ImportPresetModal extends Modal {
 			.setDesc('Browse and select files already in your vault.')
 			.addButton((btn) => {
 				btn.setButtonText('Browse vault...').onClick(() => {
-					new VaultFileSelectModal(this.app, async (selectedFiles) => {
-						if (selectedFiles.length > 0) {
-							const imports = await Promise.all(
-								selectedFiles.map(async (f) => ({
-									content:
-										f.extension === 'zip'
-											? await this.app.vault.readBinary(f)
-											: await this.app.vault.read(f),
-									name: f.name.replace(/\.(json|md|txt|zip)$/, ''),
-								}))
-							);
-							await processImports(imports);
-						}
-					}).open();
+					new VaultFileSelectModal(this.app, (selectedFiles): void => { void (async (): Promise<void> => {
+                        if (selectedFiles.length > 0) {
+                        	const imports = await Promise.all(
+                        		selectedFiles.map(async (f) => ({
+                                	content:
+                                		f.extension === 'zip'
+                                			? await this.app.vault.readBinary(f)
+                                			: await this.app.vault.read(f),
+                                	name: f.name.replace(/\.(json|md|txt|zip)$/, ''),
+                                }))
+                        	);
+                        	await processImports(imports);
+                        }
+                        })(); }).open();
 				});
 			});
 
@@ -209,28 +209,28 @@ export class ImportPresetModal extends Modal {
 				btn
 					.setButtonText('Import from text')
 					.setCta()
-					.onClick(async () => {
-						const val = (
-							textArea.components[0] as TextAreaComponent
-						).getValue();
-						if (!val.trim()) {
-							this.service.plugin.settingsService.notifications.error(
-								'Invalid preset JSON data.',
-								1000
-							);
-							return;
-						}
+					.onClick((): void => { void (async (): Promise<void> => {
+                    const val = (
+                    	textArea.components[0] as TextAreaComponent
+                    ).getValue();
+                    if (!val.trim()) {
+                    	this.service.plugin.settingsService.notifications.error(
+                    		'Invalid preset JSON data.',
+                    		1000
+                    	);
+                    	return;
+                    }
 
-						try {
-							JSON.parse(val);
-							await processImports([{ content: val }]);
-						} catch {
-							this.service.plugin.settingsService.notifications.error(
-								'Invalid preset JSON data.',
-								1000
-							);
-						}
-					});
+                    try {
+                    	JSON.parse(val);
+                    	await processImports([{ content: val }]);
+                    } catch {
+                    	this.service.plugin.settingsService.notifications.error(
+                    		'Invalid preset JSON data.',
+                    		1000
+                    	);
+                    }
+                    })(); });
 			});
 	}
 

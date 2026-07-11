@@ -93,35 +93,35 @@ export class CSSEditorView extends ItemView {
 							}
 						});
 
-						newHeaderTitle.addEventListener('blur', async () => {
-							const newName = newHeaderTitle.textContent?.trim();
-							// Only attempt rename if it changed and is not empty
-							if (newName && newName !== this.source.id) {
-								try {
-									await this.plugin.settingsService.snippetService.renameSnippet(
-										this.source.id,
-										newName
-									);
-									this.source.id = newName;
-									
-									// Update internal and external titles
-									const updatedTitle = this.getDisplayText();
-									if (leafAny.tabHeaderInnerTitleEl) leafAny.tabHeaderInnerTitleEl.innerText = updatedTitle;
-									if (leafAny.tabHeaderTitleEl) leafAny.tabHeaderTitleEl.innerText = updatedTitle;
-									newHeaderTitle.textContent = updatedTitle;
-									
-								} catch (err) {
-									// Revert on failure
-									newHeaderTitle.textContent = this.getDisplayText();
-									this.plugin.settingsService.notifications.error(
-										'Failed to rename snippet: ' + (err as Error).message
-									);
-								}
-							} else {
-								// Revert to original if empty or unchanged
-								newHeaderTitle.textContent = this.getDisplayText();
-							}
-						});
+						newHeaderTitle.addEventListener('blur', (): void => { void (async (): Promise<void> => {
+                            const newName = newHeaderTitle.textContent?.trim();
+                            // Only attempt rename if it changed and is not empty
+                            if (newName && newName !== this.source.id) {
+                            	try {
+                            		await this.plugin.settingsService.snippetService.renameSnippet(
+                            			this.source.id,
+                            			newName
+                            		);
+                            		this.source.id = newName;
+                            		
+                            		// Update internal and external titles
+                            		const updatedTitle = this.getDisplayText();
+                            		if (leafAny.tabHeaderInnerTitleEl) leafAny.tabHeaderInnerTitleEl.innerText = updatedTitle;
+                            		if (leafAny.tabHeaderTitleEl) leafAny.tabHeaderTitleEl.innerText = updatedTitle;
+                            		newHeaderTitle.textContent = updatedTitle;
+                            		
+                            	} catch (err) {
+                            		// Revert on failure
+                            		newHeaderTitle.textContent = this.getDisplayText();
+                            		this.plugin.settingsService.notifications.error(
+                            			'Failed to rename snippet: ' + (err as Error).message
+                            		);
+                            	}
+                            } else {
+                            	// Revert to original if empty or unchanged
+                            	newHeaderTitle.textContent = this.getDisplayText();
+                            }
+                            })(); });
 					}
 				}
 			}

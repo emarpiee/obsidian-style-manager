@@ -376,21 +376,25 @@ export class PresetList {
 					{
 						skipConfirm: false,
 						applyActionKey: PreferencesKeys.BULK_PRESET_APPLY_ACTION,
-						onApplyShared: async (action) => await applyAll(false, action),
-						onApplyIsolate: async (action) => await applyAll(true, action),
-						onApplyRemote: async (deviceId: string, action) => {
-							const selectedIds = Array.from(service.selectedPresets);
-							await plugin.presetService.applyPresetsToLocker(
-								deviceId,
-								selectedIds,
-								action
-							);
-							service.selectedPresets.clear();
-							this.renderPresetListItems();
-							plugin.settingsService.notifications.isolate(
-								`Applied ${selectedIds.length} presets to device locker.`
-							);
-						},
+						onApplyShared: (action): void => { void (async (): Promise<void> => {
+                        await applyAll(false, action)
+                        })(); },
+						onApplyIsolate: (action): void => { void (async (): Promise<void> => {
+                        await applyAll(true, action)
+                        })(); },
+						onApplyRemote: (deviceId: string, action): void => { void (async (): Promise<void> => {
+                        const selectedIds = Array.from(service.selectedPresets);
+                        await plugin.presetService.applyPresetsToLocker(
+                        	deviceId,
+                        	selectedIds,
+                        	action
+                        );
+                        service.selectedPresets.clear();
+                        this.renderPresetListItems();
+                        plugin.settingsService.notifications.isolate(
+                        	`Applied ${selectedIds.length} presets to device locker.`
+                        );
+                        })(); },
 					}
 				);
 

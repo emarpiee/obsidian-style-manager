@@ -25,20 +25,20 @@ export class CommandApplyPresetModal extends PresetSuggestModal {
 			case 'shared':
 				this.presetService.confirmApply(
 					preset.name,
-					async (action) => {
-						await this.presetService.applyPreset(preset.id, false, action);
-						this.close();
-					},
+					(action): void => { void (async (): Promise<void> => {
+                    await this.presetService.applyPreset(preset.id, false, action);
+                    this.close();
+                    })(); },
 					'shared'
 				);
 				break;
 			case 'this-device':
 				this.presetService.confirmApply(
 					preset.name,
-					async (action) => {
-						await this.presetService.applyPreset(preset.id, true, action);
-						this.close();
-					},
+					(action): void => { void (async (): Promise<void> => {
+                    await this.presetService.applyPreset(preset.id, true, action);
+                    this.close();
+                    })(); },
 					'isolate'
 				);
 				break;
@@ -46,29 +46,29 @@ export class CommandApplyPresetModal extends PresetSuggestModal {
 				new DeviceSelectionModal(
 					this.app,
 					this.presetService.plugin.settingsService,
-					async (deviceId) => {
-						const deviceName =
-							this.presetService.plugin.settingsService.identity.getLockerName(
-								deviceId
-							);
-						this.presetService.confirmApply(
-							preset.name,
-							async (action) => {
-								await this.presetService.applyPresetsToLocker(
-									deviceId,
-									[preset.id],
-									action
-								);
-								this.presetService.plugin.settingsService.notifications.isolate(
-									`Settings for "${preset.name}" applied to isolate locker.`
-								);
-								this.close();
-							},
-							'remote',
-							undefined,
-							deviceName
-						);
-					}
+					(deviceId): void => { void (async (): Promise<void> => {
+                    const deviceName =
+                    	this.presetService.plugin.settingsService.identity.getLockerName(
+                    		deviceId
+                    	);
+                    this.presetService.confirmApply(
+                    	preset.name,
+                    	(action): void => { void (async (): Promise<void> => {
+                        await this.presetService.applyPresetsToLocker(
+                        	deviceId,
+                        	[preset.id],
+                        	action
+                        );
+                        this.presetService.plugin.settingsService.notifications.isolate(
+                        	`Settings for "${preset.name}" applied to isolate locker.`
+                        );
+                        this.close();
+                        })(); },
+                    	'remote',
+                    	undefined,
+                    	deviceName
+                    );
+                    })(); }
 				).open();
 				break;
 		}

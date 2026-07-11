@@ -84,12 +84,12 @@ export class PreferencesTab {
 					.setPlaceholder('Folder/Path (leave empty for vault root)')
 					.setValue(currentPath)
 					.onChange(
-						debounce(async (val) => {
-							await plugin.settingsService.setSettings(
-								{ [BackupKeys.BACKUP_PATH]: val.trim() },
-								{ silentUI: true, target: 'shared' }
-							);
-						}, 500)
+						debounce((val): void => { void (async (): Promise<void> => {
+                        await plugin.settingsService.setSettings(
+                        	{ [BackupKeys.BACKUP_PATH]: val.trim() },
+                        	{ silentUI: true, target: 'shared' }
+                        );
+                        })(); }, 500)
 					);
 				plugin.settingsService.bridge.createFolderSuggest(text.inputEl);
 			});
@@ -108,14 +108,14 @@ export class PreferencesTab {
 						] as string) ?? 'YYYYMMDDHHmmss'
 					)
 					.onChange(
-						debounce(async (val) => {
-							const sanitized =
-								val.replace(/[:/\\?%*|"<>]/g, '') || 'YYYYMMDDHHmmss';
-							await plugin.settingsService.setSettings(
-								{ [BackupKeys.BACKUP_DATE_FORMAT]: sanitized },
-								{ silentUI: true, target: 'shared' }
-							);
-						}, 500)
+						debounce((val): void => { void (async (): Promise<void> => {
+                        const sanitized =
+                        	val.replace(/[:/\\?%*|"<>]/g, '') || 'YYYYMMDDHHmmss';
+                        await plugin.settingsService.setSettings(
+                        	{ [BackupKeys.BACKUP_DATE_FORMAT]: sanitized },
+                        	{ silentUI: true, target: 'shared' }
+                        );
+                        })(); }, 500)
 					);
 			});
 
@@ -129,23 +129,23 @@ export class PreferencesTab {
 					.setButtonText('Export Universal Backup...')
 					.setCta()
 					.setIcon('package')
-					.onClick(async () => {
-						try {
-							const data = await plugin.backupService.createUniversalBackup();
-							const backupFormat =
-								(plugin.settingsService.sharedSettings[
-									BackupKeys.BACKUP_DATE_FORMAT
-								] as string) || 'YYYYMMDDHHmmss';
-							const timestamp = getFormattedTimestamp(backupFormat);
-							const filename = `full-backup-style-manager-${timestamp}.zip`;
-							await plugin.backupService.saveBackupToVault(filename, data);
-						} catch (e) {
-							Logger.error('Style Manager | Backup failed:', e);
-							plugin.settingsService.notifications.error(
-								'Backup failed. See console for details.'
-							);
-						}
-					});
+					.onClick((): void => { void (async (): Promise<void> => {
+                    try {
+                    	const data = await plugin.backupService.createUniversalBackup();
+                    	const backupFormat =
+                    		(plugin.settingsService.sharedSettings[
+                    			BackupKeys.BACKUP_DATE_FORMAT
+                    		] as string) || 'YYYYMMDDHHmmss';
+                    	const timestamp = getFormattedTimestamp(backupFormat);
+                    	const filename = `full-backup-style-manager-${timestamp}.zip`;
+                    	await plugin.backupService.saveBackupToVault(filename, data);
+                    } catch (e) {
+                    	Logger.error('Style Manager | Backup failed:', e);
+                    	plugin.settingsService.notifications.error(
+                    		'Backup failed. See console for details.'
+                    	);
+                    }
+                    })(); });
 			});
 
 		new Setting(backupContainer)
@@ -197,9 +197,9 @@ export class PreferencesTab {
 									'Importing a backup will overwrite your current settings, presets, snippets, and themes. A safety snapshot will be created automatically. Are you sure you want to proceed?',
 									'Restore',
 									true,
-									async () => {
-										await plugin.backupService.restoreBackup(content);
-									}
+									(): void => { void (async (): Promise<void> => {
+                                    await plugin.backupService.restoreBackup(content);
+                                    })(); }
 								).open();
 							};
 
@@ -230,27 +230,27 @@ export class PreferencesTab {
 							'Restore internal plugin configuration  from the last automatic safety snapshot (data.json.bak). This will overwrite your current plugin state. Snippets and themes are not affected.',
 							'Rollback',
 							true,
-							async () => {
-								const adapter = this.app.vault.adapter;
-								const baseDir =
-									(
-										this.plugin
-											.manifest as import('../../main').default['manifest'] & {
-											dir?: string;
-										}
-									).dir ||
-									`${this.app.vault.configDir}/plugins/${this.plugin.manifest.id}`;
-								const backupPath = `${baseDir}/data.json.bak`;
+							(): void => { void (async (): Promise<void> => {
+                            const adapter = this.app.vault.adapter;
+                            const baseDir =
+                            	(
+                            		this.plugin
+                            			.manifest as import('../../main').default['manifest'] & {
+                            			dir?: string;
+                            		}
+                            	).dir ||
+                            	`${this.app.vault.configDir}/plugins/${this.plugin.manifest.id}`;
+                            const backupPath = `${baseDir}/data.json.bak`;
 
-								if (await adapter.exists(backupPath)) {
-									const content = await adapter.read(backupPath);
-									await plugin.backupService.restoreBackup(content);
-								} else {
-									plugin.settingsService.notifications.util(
-										'No safety snapshot found.'
-									);
-								}
-							}
+                            if (await adapter.exists(backupPath)) {
+                            	const content = await adapter.read(backupPath);
+                            	await plugin.backupService.restoreBackup(content);
+                            } else {
+                            	plugin.settingsService.notifications.util(
+                            		'No safety snapshot found.'
+                            	);
+                            }
+                            })(); }
 						).open();
 					});
 			});
@@ -278,12 +278,12 @@ export class PreferencesTab {
 					.setPlaceholder('Folder/Path')
 					.setValue(currentPath)
 					.onChange(
-						debounce(async (val) => {
-							await plugin.settingsService.setSettings(
-								{ [ExportKeys.EXPORT_PATH]: val.trim() },
-								{ silentUI: true, target: 'shared' }
-							);
-						}, 500)
+						debounce((val): void => { void (async (): Promise<void> => {
+                        await plugin.settingsService.setSettings(
+                        	{ [ExportKeys.EXPORT_PATH]: val.trim() },
+                        	{ silentUI: true, target: 'shared' }
+                        );
+                        })(); }, 500)
 					);
 				plugin.settingsService.bridge.createFolderSuggest(text.inputEl);
 			});
@@ -303,12 +303,12 @@ export class PreferencesTab {
 							ExportKeys.EXPORT_EXTENSION
 						] as string) || '.json'
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [ExportKeys.EXPORT_EXTENSION]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [ExportKeys.EXPORT_EXTENSION]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 
 		new Setting(exportContainer)
@@ -325,13 +325,13 @@ export class PreferencesTab {
 						] as string) ?? 'YYYYMMDDHHmmss'
 					)
 					.onChange(
-						debounce(async (val) => {
-							const sanitized = val.replace(/[:/\\?%*|"<>]/g, '');
-							await plugin.settingsService.setSettings(
-								{ [ExportKeys.EXPORT_DATE_FORMAT]: sanitized },
-								{ silentUI: true, target: 'shared' }
-							);
-						}, 500)
+						debounce((val): void => { void (async (): Promise<void> => {
+                        const sanitized = val.replace(/[:/\\?%*|"<>]/g, '');
+                        await plugin.settingsService.setSettings(
+                        	{ [ExportKeys.EXPORT_DATE_FORMAT]: sanitized },
+                        	{ silentUI: true, target: 'shared' }
+                        );
+                        })(); }, 500)
 					);
 			});
 
@@ -347,12 +347,12 @@ export class PreferencesTab {
 							PreferencesKeys.SEPARATE_BULK_PRESETS
 						] as boolean) || false
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.SEPARATE_BULK_PRESETS]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.SEPARATE_BULK_PRESETS]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 	}
 
@@ -378,14 +378,14 @@ export class PreferencesTab {
 						] as string) || 'MMM. DD, YYYY'
 					)
 					.onChange(
-						debounce(async (val) => {
-							await plugin.settingsService.setSettings(
-								{
-									[ExportKeys.CREATED_DATE_FORMAT]: val || 'MMM. DD, YYYY',
-								},
-								{ silentUI: true, target: 'shared' }
-							);
-						}, 500)
+						debounce((val): void => { void (async (): Promise<void> => {
+                        await plugin.settingsService.setSettings(
+                        	{
+                        		[ExportKeys.CREATED_DATE_FORMAT]: val || 'MMM. DD, YYYY',
+                        	},
+                        	{ silentUI: true, target: 'shared' }
+                        );
+                        })(); }, 500)
 					);
 			});
 
@@ -401,12 +401,12 @@ export class PreferencesTab {
 							PreferencesKeys.SHOW_STATUS_BAR
 						] as boolean) === true
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.SHOW_STATUS_BAR]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.SHOW_STATUS_BAR]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 
 		new Setting(uiContainer)
@@ -421,12 +421,12 @@ export class PreferencesTab {
 							PreferencesKeys.SHOW_SNIPPET_METADATA
 						] as boolean) !== false
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.SHOW_SNIPPET_METADATA]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.SHOW_SNIPPET_METADATA]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 
 		new Setting(uiContainer)
@@ -441,12 +441,12 @@ export class PreferencesTab {
 							PreferencesKeys.STICKY_HEADING
 						] as boolean) !== false
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.STICKY_HEADING]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.STICKY_HEADING]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 	}
 
@@ -493,12 +493,12 @@ export class PreferencesTab {
 							PreferencesKeys.PRESET_APPLY_ACTION
 						] as string) || 'ask'
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.PRESET_APPLY_ACTION]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.PRESET_APPLY_ACTION]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 
 		new Setting(confirmContainer)
@@ -514,12 +514,12 @@ export class PreferencesTab {
 							PreferencesKeys.BULK_PRESET_APPLY_ACTION
 						] as string) || 'ask'
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.BULK_PRESET_APPLY_ACTION]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.BULK_PRESET_APPLY_ACTION]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 
 		new Setting(confirmContainer)
@@ -534,12 +534,12 @@ export class PreferencesTab {
 							PreferencesKeys.SCHEDULE_APPLY_ACTION
 						] as string) || 'overwrite'
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.SCHEDULE_APPLY_ACTION]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.SCHEDULE_APPLY_ACTION]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 
 		confirmationSettings.forEach(({ key, name, desc }) => {
@@ -551,12 +551,12 @@ export class PreferencesTab {
 						.setValue(
 							(plugin.settingsService.sharedSettings[key] as boolean) || false
 						)
-						.onChange(async (val) => {
-							await plugin.settingsService.setSettings(
-								{ [key]: val },
-								{ silentUI: true, target: 'shared' }
-							);
-						});
+						.onChange((val): void => { void (async (): Promise<void> => {
+                        await plugin.settingsService.setSettings(
+                        	{ [key]: val },
+                        	{ silentUI: true, target: 'shared' }
+                        );
+                        })(); });
 				});
 		});
 	}
@@ -581,12 +581,12 @@ export class PreferencesTab {
 							PreferencesKeys.OPEN_MODAL_ON_CREATE
 						] as boolean) !== false
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.OPEN_MODAL_ON_CREATE]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.OPEN_MODAL_ON_CREATE]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 
 		new Setting(editorContainer)
@@ -599,12 +599,12 @@ export class PreferencesTab {
 					.setValue(
 						this.plugin.app.loadLocalStorage(PreferencesKeys.OPEN_IN_DEFAULT_APP) === 'true'
 					)
-					.onChange(async (val) => {
-						this.plugin.app.saveLocalStorage(
-							PreferencesKeys.OPEN_IN_DEFAULT_APP,
-							String(val)
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    this.plugin.app.saveLocalStorage(
+                    	PreferencesKeys.OPEN_IN_DEFAULT_APP,
+                    	String(val)
+                    );
+                    })(); });
 			});
 
 		new Setting(editorContainer)
@@ -619,12 +619,12 @@ export class PreferencesTab {
 							PreferencesKeys.EDITOR_TAB_SIZE
 						] as number) || 4
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.EDITOR_TAB_SIZE]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.EDITOR_TAB_SIZE]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 
 				// Expose slider for reset button
 				(
@@ -637,20 +637,20 @@ export class PreferencesTab {
 				btn
 					.setIcon('rotate-ccw')
 					.setTooltip('Reset to default (4)')
-					.onClick(async () => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.EDITOR_TAB_SIZE]: 4 },
-							{ silentUI: true, target: 'shared' }
-						);
-						const slider = (
-							this as unknown as {
-								tabSizeSlider?: SliderComponent;
-							}
-						).tabSizeSlider;
-						if (slider !== undefined) {
-							slider.setValue(4);
-						}
-					});
+					.onClick((): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.EDITOR_TAB_SIZE]: 4 },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    const slider = (
+                    	this as unknown as {
+                    		tabSizeSlider?: SliderComponent;
+                    	}
+                    ).tabSizeSlider;
+                    if (slider !== undefined) {
+                    	slider.setValue(4);
+                    }
+                    })(); });
 			});
 
 		new Setting(editorContainer)
@@ -667,36 +667,36 @@ export class PreferencesTab {
 							PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
 						] as number) ?? 4
 					)
-					.onChange(async (val) => {
-						let compVal =
-							(plugin.settingsService.sharedSettings[
-								PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES
-							] as number) ?? 8;
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    let compVal =
+                    	(plugin.settingsService.sharedSettings[
+                    		PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES
+                    	] as number) ?? 8;
 
-						const updates: Record<string, number> = {
-							[PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES]: val,
-						};
+                    const updates: Record<string, number> = {
+                    	[PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES]: val,
+                    };
 
-						if (val >= compVal) {
-							compVal = val + 1;
-							updates[PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES] =
-								compVal;
-						}
+                    if (val >= compVal) {
+                    	compVal = val + 1;
+                    	updates[PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES] =
+                    		compVal;
+                    }
 
-						await plugin.settingsService.setSettings(updates, {
-							silentUI: true,
-							target: 'shared',
-						});
+                    await plugin.settingsService.setSettings(updates, {
+                    	silentUI: true,
+                    	target: 'shared',
+                    });
 
-						const compSlider = (
-							this as unknown as {
-								componentSpacesSlider?: SliderComponent;
-							}
-						).componentSpacesSlider;
-						if (compSlider) {
-							compSlider.setValue(compVal);
-						}
-					});
+                    const compSlider = (
+                    	this as unknown as {
+                    		componentSpacesSlider?: SliderComponent;
+                    	}
+                    ).componentSpacesSlider;
+                    if (compSlider) {
+                    	compSlider.setValue(compVal);
+                    }
+                    })(); });
 
 				// Expose slider for reset button
 				(
@@ -709,46 +709,46 @@ export class PreferencesTab {
 				btn
 					.setIcon('rotate-ccw')
 					.setTooltip('Reset to default (4)')
-					.onClick(async () => {
-						const dashDefault = 4;
-						let compVal =
-							(plugin.settingsService.sharedSettings[
-								PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES
-							] as number) ?? 8;
+					.onClick((): void => { void (async (): Promise<void> => {
+                    const dashDefault = 4;
+                    let compVal =
+                    	(plugin.settingsService.sharedSettings[
+                    		PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES
+                    	] as number) ?? 8;
 
-						const updates: Record<string, number> = {
-							[PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES]: dashDefault,
-						};
+                    const updates: Record<string, number> = {
+                    	[PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES]: dashDefault,
+                    };
 
-						if (dashDefault >= compVal) {
-							compVal = dashDefault + 1;
-							updates[PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES] =
-								compVal;
-						}
+                    if (dashDefault >= compVal) {
+                    	compVal = dashDefault + 1;
+                    	updates[PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES] =
+                    		compVal;
+                    }
 
-						await plugin.settingsService.setSettings(updates, {
-							silentUI: true,
-							target: 'shared',
-						});
+                    await plugin.settingsService.setSettings(updates, {
+                    	silentUI: true,
+                    	target: 'shared',
+                    });
 
-						const slider = (
-							this as unknown as {
-								dashSpacesSlider?: SliderComponent;
-							}
-						).dashSpacesSlider;
-						if (slider !== undefined) {
-							slider.setValue(dashDefault);
-						}
+                    const slider = (
+                    	this as unknown as {
+                    		dashSpacesSlider?: SliderComponent;
+                    	}
+                    ).dashSpacesSlider;
+                    if (slider !== undefined) {
+                    	slider.setValue(dashDefault);
+                    }
 
-						const compSlider = (
-							this as unknown as {
-								componentSpacesSlider?: SliderComponent;
-							}
-						).componentSpacesSlider;
-						if (compSlider) {
-							compSlider.setValue(compVal);
-						}
-					});
+                    const compSlider = (
+                    	this as unknown as {
+                    		componentSpacesSlider?: SliderComponent;
+                    	}
+                    ).componentSpacesSlider;
+                    if (compSlider) {
+                    	compSlider.setValue(compVal);
+                    }
+                    })(); });
 			});
 
 		new Setting(editorContainer)
@@ -765,26 +765,26 @@ export class PreferencesTab {
 							PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES
 						] as number) ?? 8
 					)
-					.onChange(async (val) => {
-						const dashVal =
-							(plugin.settingsService.sharedSettings[
-								PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
-							] as number) ?? 4;
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    const dashVal =
+                    	(plugin.settingsService.sharedSettings[
+                    		PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
+                    	] as number) ?? 4;
 
-						let finalVal = val;
-						if (val <= dashVal) {
-							finalVal = dashVal + 1;
-						}
+                    let finalVal = val;
+                    if (val <= dashVal) {
+                    	finalVal = dashVal + 1;
+                    }
 
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES]: finalVal },
-							{ silentUI: true, target: 'shared' }
-						);
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES]: finalVal },
+                    	{ silentUI: true, target: 'shared' }
+                    );
 
-						if (val !== finalVal) {
-							slider.setValue(finalVal);
-						}
-					});
+                    if (val !== finalVal) {
+                    	slider.setValue(finalVal);
+                    }
+                    })(); });
 
 				// Expose slider for reset button
 				(
@@ -797,32 +797,32 @@ export class PreferencesTab {
 				btn
 					.setIcon('rotate-ccw')
 					.setTooltip('Reset to default (8)')
-					.onClick(async () => {
-						const compDefault = 8;
-						const dashVal =
-							(plugin.settingsService.sharedSettings[
-								PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
-							] as number) ?? 4;
+					.onClick((): void => { void (async (): Promise<void> => {
+                    const compDefault = 8;
+                    const dashVal =
+                    	(plugin.settingsService.sharedSettings[
+                    		PreferencesKeys.SETTINGS_BLOCK_DASH_SPACES
+                    	] as number) ?? 4;
 
-						let finalVal = compDefault;
-						if (compDefault <= dashVal) {
-							finalVal = dashVal + 1;
-						}
+                    let finalVal = compDefault;
+                    if (compDefault <= dashVal) {
+                    	finalVal = dashVal + 1;
+                    }
 
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES]: finalVal },
-							{ silentUI: true, target: 'shared' }
-						);
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.SETTINGS_BLOCK_COMPONENT_SPACES]: finalVal },
+                    	{ silentUI: true, target: 'shared' }
+                    );
 
-						const slider = (
-							this as unknown as {
-								componentSpacesSlider?: SliderComponent;
-							}
-						).componentSpacesSlider;
-						if (slider !== undefined) {
-							slider.setValue(finalVal);
-						}
-					});
+                    const slider = (
+                    	this as unknown as {
+                    		componentSpacesSlider?: SliderComponent;
+                    	}
+                    ).componentSpacesSlider;
+                    if (slider !== undefined) {
+                    	slider.setValue(finalVal);
+                    }
+                    })(); });
 			});
 	}
 
@@ -844,12 +844,12 @@ export class PreferencesTab {
 							PreferencesKeys.SHOW_PARSE_LOGS_ICON
 						] as boolean) !== false
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.SHOW_PARSE_LOGS_ICON]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.SHOW_PARSE_LOGS_ICON]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 
 		const notificationSettings = [
@@ -891,12 +891,12 @@ export class PreferencesTab {
 								? plugin.settingsService.sharedSettings[key] === true
 								: plugin.settingsService.sharedSettings[key] !== false
 						)
-						.onChange(async (val) => {
-							await plugin.settingsService.setSettings(
-								{ [key]: val },
-								{ silentUI: true, target: 'shared' }
-							);
-						});
+						.onChange((val): void => { void (async (): Promise<void> => {
+                        await plugin.settingsService.setSettings(
+                        	{ [key]: val },
+                        	{ silentUI: true, target: 'shared' }
+                        );
+                        })(); });
 				});
 		});
 
@@ -912,12 +912,12 @@ export class PreferencesTab {
 							PreferencesKeys.ENABLE_CONSOLE_LOGGING
 						] as boolean) || false
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSettings(
-							{ [PreferencesKeys.ENABLE_CONSOLE_LOGGING]: val },
-							{ silentUI: true, target: 'shared' }
-						);
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSettings(
+                    	{ [PreferencesKeys.ENABLE_CONSOLE_LOGGING]: val },
+                    	{ silentUI: true, target: 'shared' }
+                    );
+                    })(); });
 			});
 
 		new Setting(developerContainer)

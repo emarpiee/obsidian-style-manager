@@ -51,10 +51,10 @@ export class IsolateTab {
 			.addToggle((toggle) => {
 				toggle
 					.setValue(plugin.settingsService.isIsolateMode())
-					.onChange(async (val) => {
-						plugin.settingsService.setIsolateMode(val);
-						this.onRerender();
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    plugin.settingsService.setIsolateMode(val);
+                    this.onRerender();
+                    })(); });
 			});
 
 		new Setting(isolateContainer)
@@ -69,13 +69,13 @@ export class IsolateTab {
 							PreferencesKeys.ALWAYS_SHARED_PRESETS
 						] as boolean) ?? true
 					)
-					.onChange(async (val) => {
-						await plugin.settingsService.setSetting(
-							PreferencesKeys.ALWAYS_SHARED_PRESETS,
-							val
-						);
-						plugin.presetService.targetView = 'auto';
-					});
+					.onChange((val): void => { void (async (): Promise<void> => {
+                    await plugin.settingsService.setSetting(
+                    	PreferencesKeys.ALWAYS_SHARED_PRESETS,
+                    	val
+                    );
+                    plugin.presetService.targetView = 'auto';
+                    })(); });
 			});
 	}
 
@@ -109,16 +109,16 @@ export class IsolateTab {
 					);
 				};
 
-				text.inputEl.addEventListener('keydown', async (e) => {
-					if (e.key === 'Enter') {
-						await saveName();
-						text.inputEl.blur();
-					}
-				});
+				text.inputEl.addEventListener('keydown', (e): void => { void (async (): Promise<void> => {
+                    if (e.key === 'Enter') {
+                    	await saveName();
+                    	text.inputEl.blur();
+                    }
+                    })(); });
 
-				text.inputEl.addEventListener('blur', async () => {
-					await saveName();
-				});
+				text.inputEl.addEventListener('blur', (): void => { void (async (): Promise<void> => {
+                    await saveName();
+                    })(); });
 			});
 
 		const descFragment = activeDocument.createDocumentFragment();
@@ -140,29 +140,29 @@ export class IsolateTab {
 				btn
 					.setIcon('copy')
 					.setTooltip('Copy ID to clipboard')
-					.onClick(async () => {
-						await copyToClipboard(plugin.settingsService.deviceId);
-						this.plugin.settingsService.notifications.util(
-							'Locker ID copied to clipboard'
-						);
-					});
+					.onClick((): void => { void (async (): Promise<void> => {
+                    await copyToClipboard(plugin.settingsService.deviceId);
+                    this.plugin.settingsService.notifications.util(
+                    	'Locker ID copied to clipboard'
+                    );
+                    })(); });
 			})
 			.addButton((btn) => {
 				btn
 					.setButtonText('Generate new ID')
 					.setWarning()
-					.onClick(async () => {
-						new ConfirmModal(
-							this.app,
-							'Generate new locker ID',
-							'Are you sure you want to generate a new locker ID? This device will lose access to its current isolated configurations.',
-							'Generate',
-							true,
-							async () => {
-								await plugin.settingsService.identity.regenerateDeviceId();
-							}
-						).open();
-					});
+					.onClick((): void => { void (async (): Promise<void> => {
+                    new ConfirmModal(
+                    	this.app,
+                    	'Generate new locker ID',
+                    	'Are you sure you want to generate a new locker ID? This device will lose access to its current isolated configurations.',
+                    	'Generate',
+                    	true,
+                    	(): void => { void (async (): Promise<void> => {
+                        await plugin.settingsService.identity.regenerateDeviceId();
+                        })(); }
+                    ).open();
+                    })(); });
 			});
 	}
 
@@ -214,12 +214,12 @@ export class IsolateTab {
 											app,
 											`Rename locker: ${id}`,
 											currentName || id,
-											async (newName: string) => {
-												if (newName !== null) {
-													await service.identity.setLockerName(id, newName);
-													this.onRerender();
-												}
-											}
+											(newName: string): void => { void (async (): Promise<void> => {
+                                            if (newName !== null) {
+                                            	await service.identity.setLockerName(id, newName);
+                                            	this.onRerender();
+                                            }
+                                            })(); }
 										).open();
 									})
 							);
@@ -231,24 +231,24 @@ export class IsolateTab {
 									.setTitle('Delete locker')
 									.setIcon('trash')
 									.setWarning(true)
-									.onClick(async () => {
-										const isThisDevice = id === service.deviceId;
-										const message = isThisDevice
-											? `Permanently delete settings and reset device ID for this device? \n\nYour current identity will be erased and a new one generated.`
-											: `Permanently delete settings for device ${id}?`;
+									.onClick((): void => { void (async (): Promise<void> => {
+                                    const isThisDevice = id === service.deviceId;
+                                    const message = isThisDevice
+                                    	? `Permanently delete settings and reset device ID for this device? \n\nYour current identity will be erased and a new one generated.`
+                                    	: `Permanently delete settings for device ${id}?`;
 
-										new ConfirmModal(
-											app,
-											'Delete locker',
-											message,
-											'Delete locker',
-											true,
-											async () => {
-												await service.identity.removeDeviceLocker(id);
-												this.onRerender();
-											}
-										).open();
-									})
+                                    new ConfirmModal(
+                                    	app,
+                                    	'Delete locker',
+                                    	message,
+                                    	'Delete locker',
+                                    	true,
+                                    	(): void => { void (async (): Promise<void> => {
+                                        await service.identity.removeDeviceLocker(id);
+                                        this.onRerender();
+                                        })(); }
+                                    ).open();
+                                    })(); })
 							);
 
 							const rect = btn.extraSettingsEl.getBoundingClientRect();

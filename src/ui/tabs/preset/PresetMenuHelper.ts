@@ -145,56 +145,56 @@ export function addApplyOptionsToMenu(
 					new DeviceSelectionModal(
 						plugin.app,
 						plugin.settingsService,
-						async (deviceId) => {
-							const perform = async (
-								action: 'overwrite' | 'merge' = 'overwrite'
-							): Promise<void> => {
-								if (onApplyRemote) {
-									await onApplyRemote(deviceId, action);
-								} else if (source.id) {
-									await plugin.presetService.applyPresetsToLocker(
-										deviceId,
-										[source.id],
-										action
-									);
-									plugin.settingsService.notifications.isolate(
-										`Preset "${source.name}" applied to isolate locker.`
-									);
-								} else {
-									await plugin.settingsService.identity.applyPresetToLocker(
-										deviceId,
-										source.data
-									);
-									plugin.settingsService.notifications.isolate(
-										`Settings for "${source.name}" applied to isolate locker.`
-									);
-								}
-								if (onApplied) onApplied();
-							};
+						(deviceId): void => { void (async (): Promise<void> => {
+                        const perform = async (
+                        	action: 'overwrite' | 'merge' = 'overwrite'
+                        ): Promise<void> => {
+                        	if (onApplyRemote) {
+                        		await onApplyRemote(deviceId, action);
+                        	} else if (source.id) {
+                        		await plugin.presetService.applyPresetsToLocker(
+                        			deviceId,
+                        			[source.id],
+                        			action
+                        		);
+                        		plugin.settingsService.notifications.isolate(
+                        			`Preset "${source.name}" applied to isolate locker.`
+                        		);
+                        	} else {
+                        		await plugin.settingsService.identity.applyPresetToLocker(
+                        			deviceId,
+                        			source.data
+                        		);
+                        		plugin.settingsService.notifications.isolate(
+                        			`Settings for "${source.name}" applied to isolate locker.`
+                        		);
+                        	}
+                        	if (onApplied) onApplied();
+                        };
 
-							if (skipConfirm) {
-								const actionKeyToUse =
-									options?.applyActionKey ||
-									PreferencesKeys.PRESET_APPLY_ACTION;
-								const defaultAction =
-									(plugin.settingsService.settings[
-										actionKeyToUse
-									] as string) === 'merge'
-										? 'merge'
-										: 'overwrite';
-								perform(defaultAction);
-							} else {
-								const deviceName =
-									plugin.settingsService.identity.getLockerName(deviceId);
-								plugin.presetService.confirmApply(
-									source.name,
-									perform,
-									'remote',
-									options?.applyActionKey,
-									deviceName
-								);
-							}
-						}
+                        if (skipConfirm) {
+                        	const actionKeyToUse =
+                        		options?.applyActionKey ||
+                        		PreferencesKeys.PRESET_APPLY_ACTION;
+                        	const defaultAction =
+                        		(plugin.settingsService.settings[
+                        			actionKeyToUse
+                        		] as string) === 'merge'
+                        			? 'merge'
+                        			: 'overwrite';
+                        	perform(defaultAction);
+                        } else {
+                        	const deviceName =
+                        		plugin.settingsService.identity.getLockerName(deviceId);
+                        	plugin.presetService.confirmApply(
+                        		source.name,
+                        		perform,
+                        		'remote',
+                        		options?.applyActionKey,
+                        		deviceName
+                        	);
+                        }
+                        })(); }
 					).open();
 				})
 		);

@@ -142,11 +142,11 @@ export class PresetItem {
 									plugin.app,
 									'Rename preset',
 									preset.name,
-									async (newName: string) => {
-										preset.name = newName.trim() || preset.name;
-										await plugin.presetService.savePresets();
-										this.onRefresh();
-									}
+									(newName: string): void => { void (async (): Promise<void> => {
+                                    preset.name = newName.trim() || preset.name;
+                                    await plugin.presetService.savePresets();
+                                    this.onRefresh();
+                                    })(); }
 								).open();
 							})
 					);

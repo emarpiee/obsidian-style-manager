@@ -50,19 +50,19 @@ export function renderAccentColorSelect(
 		})
 	);
 
-	pickr.on('pick', async (color) => {
-		const hexValue = color ? color.string('hex').toUpperCase() : '';
-		await plugin.settingsService.setSetting(
-			StorageKeys.ACCENT_COLOR,
-			hexValue,
-			{
-				silentUI: true,
-			}
-		);
-		// Visual application is handled by the setSetting -> applyAccentColor flow
-		plugin.settingsService.applyAccentColor(hexValue);
-		onRerender();
-	});
+	pickr.on('pick', (color): void => { void (async (): Promise<void> => {
+        const hexValue = color ? color.string('hex').toUpperCase() : '';
+        await plugin.settingsService.setSetting(
+        	StorageKeys.ACCENT_COLOR,
+        	hexValue,
+        	{
+        		silentUI: true,
+        	}
+        );
+        // Visual application is handled by the setSetting -> applyAccentColor flow
+        plugin.settingsService.applyAccentColor(hexValue);
+        onRerender();
+        })(); });
 
 	// Handle right-click for quick reset
 	triggerContainer.addEventListener('contextmenu', (e: MouseEvent) => {
@@ -72,18 +72,18 @@ export function renderAccentColorSelect(
 			item
 				.setTitle('Reset to Obsidian default')
 				.setIcon('rotate-ccw')
-				.onClick(async () => {
-					// Explicitly set to #8a5cf5 to ensure the setting persists for all UI components
-					await plugin.settingsService.setSetting(
-						StorageKeys.ACCENT_COLOR,
-						'#8a5cf5',
-						{
-							silentUI: true,
-						}
-					);
-					plugin.settingsService.applyAccentColor('#8a5cf5');
-					onRerender();
-				});
+				.onClick((): void => { void (async (): Promise<void> => {
+                // Explicitly set to #8a5cf5 to ensure the setting persists for all UI components
+                await plugin.settingsService.setSetting(
+                	StorageKeys.ACCENT_COLOR,
+                	'#8a5cf5',
+                	{
+                		silentUI: true,
+                	}
+                );
+                plugin.settingsService.applyAccentColor('#8a5cf5');
+                onRerender();
+                })(); });
 		});
 		menu.showAtMouseEvent(e);
 	});

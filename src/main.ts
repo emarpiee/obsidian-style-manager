@@ -193,12 +193,12 @@ export default class StyleManagerPlugin extends Plugin {
 					this.app,
 					this,
 					sectionsWithData,
-					async (selectedIds) => {
-						this.settingsService.clearSections(selectedIds, false, {
-							silentUI: true,
-						});
-						this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
-					}
+					(selectedIds): void => { void (async (): Promise<void> => {
+                    this.settingsService.clearSections(selectedIds, false, {
+                    	silentUI: true,
+                    });
+                    this.settingsService.refreshService.trigger(RefreshLevel.UI_ONLY);
+                    })(); }
 				).open();
 			},
 		});
@@ -206,17 +206,19 @@ export default class StyleManagerPlugin extends Plugin {
 		this.addCommand({
 			id: 'toggle-isolate-mode',
 			name: 'Toggle isolate mode',
-			callback: async () => {
-				const current = this.settingsService.isIsolateMode();
-				const next = !current;
-				await this.settingsService.setIsolateMode(next);
-			},
+			callback: (): void => { void (async (): Promise<void> => {
+            const current = this.settingsService.isIsolateMode();
+            const next = !current;
+            await this.settingsService.setIsolateMode(next);
+            })(); },
 		});
 
 		this.addCommand({
 			id: 'copy-accent-color',
 			name: 'Copy current accent color',
-			callback: async () => this.copyAccentColorTool.copy(),
+			callback: (): void => { void (async (): Promise<void> => {
+            this.copyAccentColorTool.copy()
+            })(); },
 		});
 
 		this.addCommand({
@@ -470,34 +472,34 @@ export default class StyleManagerPlugin extends Plugin {
 
 	parseCSS(): void {
 		window.clearTimeout(this.debounceTimer);
-		this.debounceTimer = window.setTimeout(async () => {
-			// Pre-fetch async metadata first
-			await this.parseAllSnippetMetadata();
+		this.debounceTimer = window.setTimeout((): void => { void (async (): Promise<void> => {
+        // Pre-fetch async metadata first
+        await this.parseAllSnippetMetadata();
 
-			this.styleSheetManager.clearCache();
-			await this.styleSheetManager.buildDiskMap();
+        this.styleSheetManager.clearCache();
+        await this.styleSheetManager.buildDiskMap();
 
-			Logger.time('StyleManager:Parsing');
-			const { settingsList, parseLogs } =
-				this.styleSheetManager.getSettingsFromStyles();
-			this.settingsList = settingsList;
-			this.parseLogs = parseLogs;
-			Logger.timeEnd('StyleManager:Parsing');
+        Logger.time('StyleManager:Parsing');
+        const { settingsList, parseLogs } =
+        	this.styleSheetManager.getSettingsFromStyles();
+        this.settingsList = settingsList;
+        this.parseLogs = parseLogs;
+        Logger.timeEnd('StyleManager:Parsing');
 
-			this.isInitialLoading = false;
+        this.isInitialLoading = false;
 
-			this.refreshSettingsSearchIntegration();
-			this.settingsService.viewManager.updateData(
-				this.settingsList,
-				this.parseLogs
-			);
+        this.refreshSettingsSearchIntegration();
+        this.settingsService.viewManager.updateData(
+        	this.settingsList,
+        	this.parseLogs
+        );
 
-			this.settingsService.styleGenerator.setConfig(this.settingsList);
+        this.settingsService.styleGenerator.setConfig(this.settingsList);
 
-			this.settingsService.refreshService.trigger(RefreshLevel.FULL_VISUAL);
+        this.settingsService.refreshService.trigger(RefreshLevel.FULL_VISUAL);
 
-			this.refreshSettingCommands();
-		}, 250);
+        this.refreshSettingCommands();
+        })(); }, 250);
 	}
 
 	async parseAllSnippetMetadata(): Promise<void> {

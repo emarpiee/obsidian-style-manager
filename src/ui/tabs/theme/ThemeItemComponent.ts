@@ -233,21 +233,21 @@ export class ThemeItemComponent extends Component {
 			this.app,
 			'Duplicate theme',
 			`${this.manifest.name} Copy`,
-			async (newName) => {
-				if (!newName) return;
-				try {
-					await this.plugin.settingsService.themeBuilderService.duplicateTheme(
-						this.themeId,
-						newName
-					);
-					this.onUpdate();
-				} catch (e) {
-					const message = e instanceof Error ? e.message : 'Unknown error';
-					this.plugin.settingsService.notifications.error(
-						`Failed to duplicate theme: ${message}`
-					);
-				}
-			}
+			(newName): void => { void (async (): Promise<void> => {
+            if (!newName) return;
+            try {
+            	await this.plugin.settingsService.themeBuilderService.duplicateTheme(
+            		this.themeId,
+            		newName
+            	);
+            	this.onUpdate();
+            } catch (e) {
+            	const message = e instanceof Error ? e.message : 'Unknown error';
+            	this.plugin.settingsService.notifications.error(
+            		`Failed to duplicate theme: ${message}`
+            	);
+            }
+            })(); }
 		).open();
 	}
 
@@ -258,19 +258,19 @@ export class ThemeItemComponent extends Component {
 			`Are you sure you want to delete the theme "${this.manifest.name}"? This action will permanently remove the theme folder.`,
 			'Delete',
 			true,
-			async () => {
-				try {
-					await this.plugin.settingsService.themeBuilderService.deleteTheme(
-						this.themeId
-					);
-					this.onUpdate();
-				} catch (e) {
-					const message = e instanceof Error ? e.message : 'Unknown error';
-					this.plugin.settingsService.notifications.error(
-						`Failed to delete theme: ${message}`
-					);
-				}
-			}
+			(): void => { void (async (): Promise<void> => {
+            try {
+            	await this.plugin.settingsService.themeBuilderService.deleteTheme(
+            		this.themeId
+            	);
+            	this.onUpdate();
+            } catch (e) {
+            	const message = e instanceof Error ? e.message : 'Unknown error';
+            	this.plugin.settingsService.notifications.error(
+            		`Failed to delete theme: ${message}`
+            	);
+            }
+            })(); }
 		).open();
 	}
 

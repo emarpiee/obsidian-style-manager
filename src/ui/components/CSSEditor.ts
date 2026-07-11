@@ -342,26 +342,26 @@ export class CSSEditor {
 				const toggleActionEl = options.addAction(
 					isEnabled ? 'check-circle' : 'circle',
 					isEnabled ? 'Disable snippet' : 'Enable snippet',
-					async () => {
-						const snippets = new Set(
-							(this.plugin.settingsService.settings[
-								StorageKeys.SNIPPETS
-							] as string[]) || []
-						);
-						isEnabled = !isEnabled;
-						if (isEnabled) snippets.add(this.source.id);
-						else snippets.delete(this.source.id);
+					(): void => { void (async (): Promise<void> => {
+                    const snippets = new Set(
+                    	(this.plugin.settingsService.settings[
+                    		StorageKeys.SNIPPETS
+                    	] as string[]) || []
+                    );
+                    isEnabled = !isEnabled;
+                    if (isEnabled) snippets.add(this.source.id);
+                    else snippets.delete(this.source.id);
 
-						const list = Array.from(snippets);
-						await this.plugin.settingsService.setSetting(
-							StorageKeys.SNIPPETS,
-							list,
-							{ silentUI: true }
-						);
-						
-						setIcon(toggleActionEl, isEnabled ? 'check-circle' : 'circle');
-						setTooltip(toggleActionEl, isEnabled ? 'Disable snippet' : 'Enable snippet');
-					}
+                    const list = Array.from(snippets);
+                    await this.plugin.settingsService.setSetting(
+                    	StorageKeys.SNIPPETS,
+                    	list,
+                    	{ silentUI: true }
+                    );
+
+                    setIcon(toggleActionEl, isEnabled ? 'check-circle' : 'circle');
+                    setTooltip(toggleActionEl, isEnabled ? 'Disable snippet' : 'Enable snippet');
+                    })(); }
 				);
 
 				this.settingsChangedHandler = (): void => {
@@ -416,12 +416,12 @@ export class CSSEditor {
 				new ButtonComponent(leftGroup)
 					.setIcon('external-link')
 					.setTooltip('Open this tool in a tab')
-					.onClick(async () => {
-						await this.plugin.activateCSSEditorView(this.source);
-						if (options.onOpenInTab) {
-							options.onOpenInTab();
-						}
-					});
+					.onClick((): void => { void (async (): Promise<void> => {
+                    await this.plugin.activateCSSEditorView(this.source);
+                    if (options.onOpenInTab) {
+                    	options.onOpenInTab();
+                    }
+                    })(); });
 			}
 
 			if (this.source.readOnly) {
@@ -460,24 +460,24 @@ export class CSSEditor {
 					
 					const toggle = new ToggleComponent(toggleContainer)
 						.setValue(isEnabled)
-						.onChange(async (value) => {
-							const snippets = new Set(
-								(this.plugin.settingsService.settings[
-									StorageKeys.SNIPPETS
-								] as string[]) || []
-							);
-							if (value) snippets.add(this.source.id);
-							else snippets.delete(this.source.id);
+						.onChange((value): void => { void (async (): Promise<void> => {
+                        const snippets = new Set(
+                        	(this.plugin.settingsService.settings[
+                        		StorageKeys.SNIPPETS
+                        	] as string[]) || []
+                        );
+                        if (value) snippets.add(this.source.id);
+                        else snippets.delete(this.source.id);
 
-							const list = Array.from(snippets);
-							await this.plugin.settingsService.setSetting(
-								StorageKeys.SNIPPETS,
-								list,
-								{
-									silentUI: true,
-								}
-							);
-						});
+                        const list = Array.from(snippets);
+                        await this.plugin.settingsService.setSetting(
+                        	StorageKeys.SNIPPETS,
+                        	list,
+                        	{
+                        		silentUI: true,
+                        	}
+                        );
+                        })(); });
 					
 					this.snippetToggle = toggle;
 					this.settingsChangedHandler = (): void => {
