@@ -141,7 +141,7 @@ export interface ThemeServiceDeps {
 	notifications: NotificationService;
 }
 
-export type AppearanceMode = 'light' | 'dark' | 'system' | string;
+export type AppearanceMode = string;
 
 export interface RefreshDelegates {
 	parseCSS?: () => void;

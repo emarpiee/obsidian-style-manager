@@ -110,7 +110,7 @@ export class PresetScheduleService {
 			}
 
 			return rule.toText();
-		} catch (_e) {
+		} catch {
 			return 'Unknown schedule';
 		}
 	}

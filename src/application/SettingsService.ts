@@ -88,8 +88,8 @@ export class SettingsService extends Events {
 		this.themeService = new ThemeService({
 			bridge: this.bridge,
 			isIsolateMode: (): boolean => this.isolateModeService.isIsolateMode(),
-			getSetting: (key): SettingValue | undefined => this.settings[key],
-			setSetting: (key, val): Promise<void> => this.setMetaSetting(key, val),
+			getSetting: (key): unknown => this.settings[key],
+			setSetting: (key, val): void => { void this.setMetaSetting(key, val); },
 			triggerEvent: (name): void => this.bridge.triggerEvent(name),
 			notifications: this.notifications,
 		});
