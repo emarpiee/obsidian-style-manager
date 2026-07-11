@@ -3,7 +3,7 @@
 	"name": "Style Manager",
 	"version": "0.1.13",
 	"minAppVersion": "1.10.0",
-	"description": "Provides advanced controls for managing themes, CSS snippets, and style settings. Transforms them into adjustable controls, enabling you to save, export or switch between aesthetic configurations as presets.",
+	"description": "Provides advanced controls for managing themes, CSS snippets, and style settings. Transforms them into adjustable controls, enabling you to save, export or switch between configurations as presets.",
 	"author": "emarpiee",
 	"authorUrl": "https://github.com/emarpiee",
 	"isDesktopOnly": false,
