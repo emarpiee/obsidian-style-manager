@@ -29,13 +29,11 @@
 	"devDependencies": {
 		"@trivago/prettier-plugin-sort-imports": "^6.0.2",
 		"@types/chroma-js": "^3.1.2",
-
 		"@types/node": "^25.6.0",
 		"@typescript-eslint/eslint-plugin": "^8.59.1",
 		"@typescript-eslint/parser": "^8.59.1",
 		"@vitest/coverage-v8": "^4.1.5",
 		"@vitest/ui": "^4.1.5",
-
 		"esbuild": "^0.28.0",
 		"eslint": "^8.57.0",
 		"jsdom": "^29.1.1",
@@ -54,12 +52,13 @@
 		"@codemirror/search": "6.5.6",
 		"@codemirror/state": "6.5.0",
 		"@codemirror/view": "6.38.1",
+		"@lezer/highlight": "^1.2.3",
 		"chroma-js": "^3.2.0",
 		"detect-indent": "^7.0.2",
 		"fuzzysort": "^3.1.0",
-		"yaml": "^2.4.5",
 		"jszip": "^3.10.1",
 		"lorem-ipsum": "^3.0.0",
-		"rrule": "^2.8.1"
+		"rrule": "^2.8.1",
+		"yaml": "^2.4.5"
 	}
 }
