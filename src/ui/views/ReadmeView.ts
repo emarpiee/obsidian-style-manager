@@ -12,8 +12,8 @@ export class ReadmeView extends ItemView {
 		this.component = new ReadmeComponent();
 	}
 
-	async onload(): Promise<void> {
-		await this.component.render(this.contentEl, {
+	onload(): void {
+		void this.component.render(this.contentEl, {
 			component: this,
 		});
 	}
