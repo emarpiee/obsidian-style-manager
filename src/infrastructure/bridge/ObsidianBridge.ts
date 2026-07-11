@@ -176,7 +176,7 @@ export class ObsidianBridge {
 	 * Updates a value in the Obsidian native configuration.
 	 */
 	public setNativeConfig(key: string, value: unknown): void {
-		this.app.vault.setConfig(key, value as string);
+		this.app.vault.setConfig(key, value);
 	}
 
 	/**
@@ -420,13 +420,15 @@ export class ObsidianBridge {
 	): void {
 		const vault = this.app.vault;
 		const customCss = this.app.customCss;
-		const bridge = this;
+		const originalConfigGet = this.originalConfigGet;
 
-		if (this.originalConfigGet) return;
+		if (originalConfigGet) return;
 
 		// 1. Vault Config Patches
 		this.originalConfigGet = vault.getConfig;
 		this.originalConfigSet = vault.setConfig;
+		const capturedConfigGet = this.originalConfigGet;
+		const capturedConfigSet = this.originalConfigSet;
 
 		vault.getConfig = function (
 			this: Record<string, unknown>,
@@ -439,7 +441,7 @@ export class ObsidianBridge {
 				if (key === 'accentColor') return getAccentColor();
 			}
 			return (
-				bridge.originalConfigGet as (
+				capturedConfigGet as (
 					this: unknown,
 					key: string,
 					...args: unknown[]
@@ -476,7 +478,7 @@ export class ObsidianBridge {
 				}
 			}
 			return (
-				bridge.originalConfigSet as (
+				capturedConfigSet as (
 					this: unknown,
 					key: string,
 					value: unknown,
@@ -488,6 +490,7 @@ export class ObsidianBridge {
 		// 2. CustomCSS Patches
 		if (customCss) {
 			this.originalSetTheme = customCss.setTheme;
+			const capturedSetTheme = this.originalSetTheme;
 			const internalCss = customCss as unknown as ObsidianCustomCss;
 
 			this.originalThemeDescriptor = Object.getOwnPropertyDescriptor(
@@ -521,7 +524,7 @@ export class ObsidianBridge {
 				// but our vault.setConfig patch will block the actual disk write.
 				if (isApplyingVisualTheme() || isApplyingPersistentTheme()) {
 					return (
-						bridge.originalSetTheme as (
+						capturedSetTheme as (
 							this: unknown,
 							themeName: string,
 							...args: unknown[]
@@ -551,13 +554,12 @@ export class ObsidianBridge {
 
 			if (await adapter.exists(appearancePath)) {
 				const content = await adapter.read(appearancePath);
-				const config = JSON.parse(content);
+				const config = JSON.parse(content) as Record<string, unknown>;
 
 				// Obsidian typically uses enabledCssSnippets, but we check enabledSnippets as fallback
-				const list = config.enabledCssSnippets || config.enabledSnippets || [];
-
+				const list = (config.enabledCssSnippets ?? config.enabledSnippets ?? []) as unknown[];
 				if (Array.isArray(list)) {
-					return list;
+					return list.filter((item): item is string => typeof item === 'string');
 				} else {
 					Logger.warn(
 						'Style Manager | appearance.json enabled snippets key is not an array:',
@@ -668,7 +670,7 @@ export class ObsidianBridge {
 					if (await adapter.exists(path)) {
 						throw new Error('File still exists after trashSystem');
 					}
-				} catch (_e) {
+				} catch {
 					Logger.log(
 						`Style Manager | System trash failed for ${name}, trying local trash.`
 					);

@@ -1,4 +1,6 @@
+import { getLanguage } from 'obsidian';
 import { Logger } from '../../utils/Logger';
+
 
 import { ar } from './locale/ar';
 import { cz } from './locale/cz';
@@ -25,7 +27,7 @@ import { uk } from './locale/uk';
 import { zh } from './locale/zh';
 import { zhTw } from './locale/zhTw';
 
-export const lang: string | null = window.localStorage.getItem('language');
+export const lang: string = getLanguage();
 
 const localeMap: { [k: string]: Partial<typeof en> } = {
 	ar,
@@ -54,7 +56,7 @@ const localeMap: { [k: string]: Partial<typeof en> } = {
 	zh,
 };
 
-const locale = localeMap[lang || 'en'];
+const locale = localeMap[lang] ?? localeMap['en'];
 
 export function t(str: keyof typeof en): string {
 	if (!locale) {
