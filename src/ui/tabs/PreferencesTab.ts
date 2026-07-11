@@ -693,7 +693,7 @@ export class PreferencesTab {
                     		componentSpacesSlider?: SliderComponent;
                     	}
                     ).componentSpacesSlider;
-                    if (compSlider) {
+                    if (compSlider !== undefined) {
                     	compSlider.setValue(compVal);
                     }
                     })(); });
@@ -745,7 +745,7 @@ export class PreferencesTab {
                     		componentSpacesSlider?: SliderComponent;
                     	}
                     ).componentSpacesSlider;
-                    if (compSlider) {
+                    if (compSlider !== undefined) {
                     	compSlider.setValue(compVal);
                     }
                     })(); });
