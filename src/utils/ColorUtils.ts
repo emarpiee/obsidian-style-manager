@@ -1,6 +1,6 @@
 import chroma from 'chroma-js';
 
-import ColorPicker from '../lib/colorpicker/colorpicker.min.js';
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 
 /**
  * Returns true when `color` is a recognised CSS colour prefix

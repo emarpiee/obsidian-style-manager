@@ -20,7 +20,7 @@
 */
 import { ButtonComponent, Setting } from 'obsidian';
 
-import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { VariableThemedColor, resetTooltip } from '../../../types';
 import { getColorPickerConfig, isColorValid } from '../../../utils/ColorUtils';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';

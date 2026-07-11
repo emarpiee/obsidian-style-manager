@@ -1,7 +1,7 @@
 import { Menu, setTooltip } from 'obsidian';
 
 import { StorageKeys } from '../../../constants';
-import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import StyleManagerPlugin from '../../../main';
 import { getColorPickerConfig } from '../../../utils/ColorUtils';
 
