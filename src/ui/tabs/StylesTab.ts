@@ -195,7 +195,7 @@ export class StylesTab {
 		}
 
 		if (this.currentRenderIdx < settings.length) {
-			this.renderFrameId = requestAnimationFrame(() =>
+			this.renderFrameId = window.requestAnimationFrame(() =>
 				this.renderNextChunk(settings)
 			);
 		} else {

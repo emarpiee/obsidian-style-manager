@@ -82,7 +82,7 @@ export class FreezeDelayPromptModal extends Modal {
 			return false;
 		});
 
-		setTimeout(() => input.focus(), 10);
+		window.setTimeout(() => input.focus(), 10);
 	}
 
 	onClose(): void {

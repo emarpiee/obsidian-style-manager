@@ -195,7 +195,7 @@ export class SnippetService {
 		await this.options.plugin.settingsService.save({ force: true });
 
 		// Give file system time to sync on mobile
-		setTimeout(() => {
+		window.setTimeout(() => {
 			this.options.plugin.settingsService.refreshService.trigger(
 				RefreshLevel.PARSE_CSS
 			);
