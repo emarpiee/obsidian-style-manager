@@ -30,7 +30,7 @@ export class FreezeObsidianTool {
 		}, 100);
 
 		setTimeout(() => {
-			// eslint-disable-next-line no-debugger
+			// eslint-disable-next-line no-debugger -- intentional debugger for freezing the application state
 			debugger;
 			clearInterval(timer);
 		}, finalDelay * 1000);
