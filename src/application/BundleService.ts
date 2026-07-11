@@ -125,10 +125,10 @@ export class BundleService {
 		);
 
 		if (singleFileKey) {
-			const content = await zip.file(singleFileKey)!.async('string');
+			const content = await zip.file(singleFileKey).async('string');
 			presets.push(JSON.parse(content));
 		} else if (bulkFileKey) {
-			const content = await zip.file(bulkFileKey)!.async('string');
+			const content = await zip.file(bulkFileKey).async('string');
 			presets = JSON.parse(content);
 		} else {
 			// Fallback: check presets/ folder

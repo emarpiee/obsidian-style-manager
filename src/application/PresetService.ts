@@ -39,22 +39,22 @@ export class PresetService {
 		if (mode === 'isolate') {
 			return (
 				(this.plugin.settingsService.isolateModeService.isolateSettings
-					._manager_presets as Preset[]) || []
+					._manager_presets) || []
 			);
 		}
 		return (
 			(this.plugin.settingsService.sharedSettings
-				._manager_presets as Preset[]) || []
+				._manager_presets) || []
 		);
 	}
 
 	public getPresetById(id: string): Preset | undefined {
 		const sharedPresets =
 			(this.plugin.settingsService.sharedSettings
-				._manager_presets as Preset[]) || [];
+				._manager_presets) || [];
 		const isolatePresets =
 			(this.plugin.settingsService.isolateModeService.isolateSettings
-				._manager_presets as Preset[]) || [];
+				._manager_presets) || [];
 
 		return (
 			sharedPresets.find((p) => p.id === id) ||

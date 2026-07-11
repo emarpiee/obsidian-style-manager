@@ -143,7 +143,7 @@ export class SnippetSettingComponent extends Component {
 
 		this.setting.settingEl.addEventListener('click', (e) => {
 			if (
-				(e.target as HTMLElement).closest(
+				(e.target ).closest(
 					'.setting-item-control, .style-manager-item-select-icon, .checkbox-container'
 				)
 			) {
@@ -157,7 +157,7 @@ export class SnippetSettingComponent extends Component {
 			}
 		});
 
-		this.setting.settingEl.prepend(toggleEl!);
+		this.setting.settingEl.prepend(toggleEl);
 		this.setting.controlEl.appendChild(selectIcon);
 
 		this.renderMetadata();

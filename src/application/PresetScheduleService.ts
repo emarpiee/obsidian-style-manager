@@ -16,7 +16,7 @@ export class PresetScheduleService {
 	get schedules(): PresetSchedule[] {
 		return (
 			(this.plugin.settingsService.sharedSettings
-				._manager_schedules as PresetSchedule[]) || []
+				._manager_schedules) || []
 		);
 	}
 

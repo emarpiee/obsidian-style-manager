@@ -210,7 +210,7 @@ export function addApplyOptionsToMenu(
 					new PresetScheduleModal(
 						plugin.app,
 						plugin,
-						source.id as string
+						source.id
 					).open();
 				})
 		);

@@ -51,7 +51,7 @@ export function getColorPickerConfig(opts: {
 	if (isView && typeof activeDocument !== 'undefined') {
 		let sharedContainer = activeDocument.querySelector(
 			'.style-manager-color-picker-wrapper'
-		) as HTMLElement;
+		);
 		if (!sharedContainer) {
 			sharedContainer = activeDocument.createElement('div');
 			sharedContainer.className =

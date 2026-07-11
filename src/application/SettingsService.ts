@@ -650,19 +650,12 @@ export class SettingsService extends Events {
 				!options)
 		) {
 			key = sectionOrKey;
-			val = keyOrValue as SettingValue;
-			opts = valueOrOptions as
-				| {
-						persistNative?: boolean;
-						silentUI?: boolean;
-						skipSave?: boolean;
-						target?: 'shared' | 'isolate';
-				  }
-				| undefined;
+			val = keyOrValue;
+			opts = valueOrOptions;
 		} else {
 			section = sectionOrKey;
 			key = keyOrValue as string;
-			val = valueOrOptions as SettingValue;
+			val = valueOrOptions;
 		}
 
 		if (section) {

@@ -406,9 +406,9 @@ export class StyleSheetManager {
 			};
 			settingsList.sort((a, b) => {
 				const priA =
-					SOURCE_PRIORITY[a.sourceType as keyof typeof SOURCE_PRIORITY] ?? 99;
+					SOURCE_PRIORITY[a.sourceType] ?? 99;
 				const priB =
-					SOURCE_PRIORITY[b.sourceType as keyof typeof SOURCE_PRIORITY] ?? 99;
+					SOURCE_PRIORITY[b.sourceType] ?? 99;
 				if (priA !== priB) return priA - priB;
 				return (a.sourceId || '').localeCompare(b.sourceId || '');
 			});

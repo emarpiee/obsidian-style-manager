@@ -31,11 +31,11 @@ export class SnippetService {
 			if (customCss && customCss.enabledSnippets) {
 				if (customCss.enabledSnippets instanceof Set) {
 					customCss.enabledSnippets.clear();
-					const enabledSet = customCss.enabledSnippets as Set<string>;
+					const enabledSet = customCss.enabledSnippets;
 					snippetList.forEach((s) => enabledSet.add(s));
 					modified = true;
 				} else if (Array.isArray(customCss.enabledSnippets)) {
-					const enabledArr = customCss.enabledSnippets as string[];
+					const enabledArr = customCss.enabledSnippets;
 					enabledArr.length = 0;
 					enabledArr.push(...snippetList);
 					modified = true;

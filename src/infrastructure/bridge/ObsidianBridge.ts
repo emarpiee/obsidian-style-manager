@@ -82,14 +82,14 @@ export class ObsidianBridge {
 		if (customCss && customCss.theme) {
 			return customCss.theme || '';
 		}
-		return (this.getNativeConfig('cssTheme') as string) || '';
+		return (this.getNativeConfig('cssTheme')) || '';
 	}
 
 	/**
 	 * Robustly retrieve the current appearance mode (dark/light), bypassing stale cache.
 	 */
 	public getActiveAppearance(): string {
-		const nativeAppearanceRaw = this.getNativeConfig('theme') as string; // 'obsidian' or 'moonstone'
+		const nativeAppearanceRaw = this.getNativeConfig('theme'); // 'obsidian' or 'moonstone'
 		return nativeAppearanceRaw === 'moonstone' ? 'light' : 'dark';
 	}
 
@@ -101,7 +101,7 @@ export class ObsidianBridge {
 			const customCss = (this.app as unknown as ObsidianInternalApp).customCss;
 			if (customCss && customCss.enabledSnippets) {
 				// Return a fresh array copy (Set or Array)
-				return Array.from(customCss.enabledSnippets) as string[];
+				return Array.from(customCss.enabledSnippets);
 			}
 		} catch (e) {
 			Logger.error('Style Manager | Error getting enabled snippets:', e);
@@ -440,13 +440,7 @@ export class ObsidianBridge {
 				if (key === 'theme') return getAppearance();
 				if (key === 'accentColor') return getAccentColor();
 			}
-			return (
-				capturedConfigGet as (
-					this: unknown,
-					key: string,
-					...args: unknown[]
-				) => unknown
-			).apply(this, [key, ...args]);
+			return capturedConfigGet.apply(this, [key, ...args]);
 		};
 
 		vault.setConfig = function (
@@ -465,7 +459,7 @@ export class ObsidianBridge {
 						'Style Manager | Bridge: Intercepted native appearance change:',
 						value
 					);
-					onAppearanceIntercept(value as string);
+					onAppearanceIntercept(value);
 					return;
 				}
 				if (key === 'accentColor') {
@@ -473,18 +467,11 @@ export class ObsidianBridge {
 						'Style Manager | Bridge: Intercepted native accent color change:',
 						value
 					);
-					onAccentColorIntercept(value as string);
+					onAccentColorIntercept(value);
 					return;
 				}
 			}
-			return (
-				capturedConfigSet as (
-					this: unknown,
-					key: string,
-					value: unknown,
-					...args: unknown[]
-				) => void
-			).apply(this, [key, value, ...args]);
+			return capturedConfigSet.apply(this, [key, value, ...args]);
 		};
 
 		// 2. CustomCSS Patches
@@ -523,13 +510,7 @@ export class ObsidianBridge {
 				// we allow the call to reach the original setTheme (for visual clearing)
 				// but our vault.setConfig patch will block the actual disk write.
 				if (isApplyingVisualTheme() || isApplyingPersistentTheme()) {
-					return (
-						capturedSetTheme as (
-							this: unknown,
-							themeName: string,
-							...args: unknown[]
-						) => void
-					).apply(this, [themeName, ...args]);
+					return capturedSetTheme.apply(this, [themeName, ...args]);
 				}
 
 				// If NOT an internal change, intercept and record locally

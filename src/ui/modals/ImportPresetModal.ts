@@ -132,7 +132,7 @@ export class ImportPresetModal extends Modal {
 				input.onchange = async (e: Event): Promise<void> => {
 					const files = Array.from(
 						(e.target as HTMLInputElement).files ?? []
-					) as File[];
+					);
 					if (files.length > 0) {
 						const promises = files.map((file) => {
 							return new Promise<{
@@ -142,7 +142,7 @@ export class ImportPresetModal extends Modal {
 								const reader = new FileReader();
 								reader.onload = (e): void => {
 									resolve({
-										content: e.target?.result as string | ArrayBuffer,
+										content: e.target?.result,
 										name: file.name.replace(/\.(json|md|txt|zip)$/, ''),
 									});
 								};

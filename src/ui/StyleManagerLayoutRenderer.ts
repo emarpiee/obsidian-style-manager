@@ -88,7 +88,7 @@ export class StyleManagerLayoutRenderer extends Component {
 
 	removeChildren(): void {
 		for (const tree of this.settingsComponentTrees) {
-			this.removeChild(tree as unknown as Component);
+			this.removeChild(tree);
 		}
 	}
 

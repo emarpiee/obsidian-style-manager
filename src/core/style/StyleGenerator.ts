@@ -308,10 +308,10 @@ export class StyleGenerator {
 						vars.push(
 							...this.generateColorVariables(
 								setting.id,
-								s.format as ColorFormat,
+								s.format,
 								resolvedColor,
 								s.opacity,
-								s['alt-format'] as AltFormatList,
+								s['alt-format'],
 								true
 							)
 						);
@@ -355,10 +355,10 @@ export class StyleGenerator {
 						(modifier === 'light' ? themedLight : themedDark).push(
 							...this.generateColorVariables(
 								setting.id,
-								s.format as ColorFormat,
+								s.format,
 								resolvedColor,
 								s.opacity,
-								s['alt-format'] as AltFormatList,
+								s['alt-format'],
 								true
 							)
 						);
@@ -453,10 +453,10 @@ export class StyleGenerator {
 							vars.push(
 								...this.generateColorVariables(
 									s.id,
-									s.format as ColorFormat,
+									s.format,
 									resolvedColor,
 									s.opacity,
-									s['alt-format'] as AltFormatList,
+									s['alt-format'],
 									false
 								)
 							);
@@ -494,10 +494,10 @@ export class StyleGenerator {
 							themedLight.push(
 								...this.generateColorVariables(
 									s.id,
-									s.format as ColorFormat,
+									s.format,
 									resolvedLight,
 									s.opacity,
-									s['alt-format'] as AltFormatList,
+									s['alt-format'],
 									false
 								)
 							);
@@ -531,10 +531,10 @@ export class StyleGenerator {
 							themedDark.push(
 								...this.generateColorVariables(
 									s.id,
-									s.format as ColorFormat,
+									s.format,
 									resolvedDark,
 									s.opacity,
-									s['alt-format'] as AltFormatList,
+									s['alt-format'],
 									false
 								)
 							);
@@ -591,7 +591,7 @@ export class StyleGenerator {
 								id,
 								fromColor,
 								toColor,
-								format as 'hsl' | 'rgb' | 'hex' | 'oklch',
+								format,
 								step,
 								pad,
 								important
@@ -624,7 +624,7 @@ export class StyleGenerator {
 								id,
 								fromColor,
 								toColor,
-								format as 'hsl' | 'rgb' | 'hex' | 'oklch',
+								format,
 								step,
 								pad,
 								important
@@ -657,7 +657,7 @@ export class StyleGenerator {
 								id,
 								fromColor,
 								toColor,
-								format as 'hsl' | 'rgb' | 'hex' | 'oklch',
+								format,
 								step,
 								pad,
 								important

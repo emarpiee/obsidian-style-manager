@@ -49,7 +49,7 @@ export class ReadmeComponent {
 				README_CONTENT,
 				renderEl,
 				app.workspace.getActiveFile()?.path || '',
-				component || (plugin as unknown as Component) || new Component()
+				component || (plugin) || new Component()
 			);
 		}
 	}

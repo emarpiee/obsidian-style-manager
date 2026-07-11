@@ -78,7 +78,7 @@ export class CSSEditorView extends ItemView {
 
 					if (this.source.type === 'Snippet' && !this.source.readOnly) {
 						// Clean up any old listeners by replacing the node
-						const newHeaderTitle = headerTitle.cloneNode(true) as HTMLElement;
+						const newHeaderTitle = headerTitle.cloneNode(true);
 						headerTitle.parentNode?.replaceChild(newHeaderTitle, headerTitle);
 
 						newHeaderTitle.setAttribute('contenteditable', 'true');
@@ -96,13 +96,13 @@ export class CSSEditorView extends ItemView {
 						newHeaderTitle.addEventListener('blur', async () => {
 							const newName = newHeaderTitle.textContent?.trim();
 							// Only attempt rename if it changed and is not empty
-							if (newName && newName !== this.source!.id) {
+							if (newName && newName !== this.source.id) {
 								try {
 									await this.plugin.settingsService.snippetService.renameSnippet(
-										this.source!.id,
+										this.source.id,
 										newName
 									);
-									this.source!.id = newName;
+									this.source.id = newName;
 									
 									// Update internal and external titles
 									const updatedTitle = this.getDisplayText();
@@ -129,7 +129,7 @@ export class CSSEditorView extends ItemView {
 	}
 
 	getState(): Record<string, unknown> {
-		const state = (super.getState() as Record<string, unknown>) || {};
+		const state = (super.getState()) || {};
 		if (this.source) {
 			state.source = this.source;
 		}

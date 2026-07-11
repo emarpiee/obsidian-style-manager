@@ -26,7 +26,7 @@ export function renderAccentColorSelect(
 	const displayColor = (accentColor ||
 		vConfigAccent ||
 		nativeAccent ||
-		'#8a5cf5') as string;
+		'#8a5cf5');
 
 	const triggerContainer = containerEl.createDiv({
 		cls: 'style-manager-accent-trigger-container',

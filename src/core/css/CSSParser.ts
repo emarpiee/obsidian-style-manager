@@ -63,7 +63,7 @@ export class CSSParser {
 		// This significantly speeds up re-parsing when only one snippet or theme changed.
 		if (this.parseCache.has(text)) {
 			// LRU refresh: Delete and re-insert to move to end of map (most recently used)
-			const cached = this.parseCache.get(text)!;
+			const cached = this.parseCache.get(text);
 			this.parseCache.delete(text);
 			this.parseCache.set(text, cached);
 

@@ -369,8 +369,8 @@ export class HeadingField extends AbstractSettingComponent {
 	destroy(): void {
 		this.removeChildren();
 		this.sectionEl?.remove();
-		this.settingEl = null as unknown as Setting;
-		this.childEl = null as unknown as HTMLElement;
+		this.settingEl = null;
+		this.childEl = null;
 	}
 
 	filter(
