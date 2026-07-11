@@ -140,7 +140,7 @@ export class CSSEditorView extends ItemView {
 	onload(): void {
 		// Monkey-patch leaf detach to warn about unsaved changes
 		const originalDetach = this.leaf.detach.bind(this.leaf);
-		this.leaf.detach = () => {
+		this.leaf.detach = (): void => {
 			if (this.editor && this.editor.isDirty()) {
 				new ConfirmModal(
 					this.plugin.app,

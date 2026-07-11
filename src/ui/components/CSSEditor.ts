@@ -37,7 +37,7 @@ import {
 	lineNumbers,
 	rectangularSelection,
 } from '@codemirror/view';
-import { Menu, Platform, Setting, setIcon, setTooltip, ButtonComponent, ToggleComponent } from 'obsidian';
+import { Menu, Platform, setIcon, setTooltip, ButtonComponent, ToggleComponent } from 'obsidian';
 
 import { PreferencesKeys, StorageKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
