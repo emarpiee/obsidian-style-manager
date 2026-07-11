@@ -1,5 +1,5 @@
-## Changelog for 0.1.12 (7/11/2026)
+## Changelog for 0.1.13 (7/11/2026)
 
-* 0.1.12 (868715f)
-* docs: update README (17012d9)
-* Added CHANGELOG.md (04923ed)
+* 0.1.13 (6124b96)
+* asset: update screenshot (0417c3d)
+* Added CHANGELOG.md (8160679)
