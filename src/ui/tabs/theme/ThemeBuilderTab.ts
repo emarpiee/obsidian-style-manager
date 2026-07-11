@@ -55,7 +55,7 @@ export class ThemeBuilderTab {
 					.onClick(() => {
 						(
 							this.app as unknown as { showInFolder?: (path: string) => void }
-						).showInFolder?.('.obsidian/themes');
+						).showInFolder?.(`${this.app.vault.configDir}/themes`);
 					});
 			});
 

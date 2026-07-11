@@ -97,7 +97,7 @@ export class SnippetsTab {
 							// Robust fallback: show the snippets folder by targeting its path
 							(
 								this.app as unknown as { showInFolder?: (path: string) => void }
-							).showInFolder?.('.obsidian/snippets');
+							).showInFolder?.(`${this.app.vault.configDir}/snippets`);
 						}
 					});
 			});

@@ -198,7 +198,7 @@ export class ThemeManifestModal extends Modal {
 					.setCta()
 					.onClick(async () => {
 						let hasError = false;
-						for (const [_, { el, validators }] of this.inputs) {
+						for (const [, { el, validators }] of this.inputs) {
 							const value = el.value;
 							for (const validator of validators) {
 								const error = validator(value);
