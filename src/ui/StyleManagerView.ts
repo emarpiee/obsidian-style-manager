@@ -30,6 +30,7 @@ export class StyleManagerView extends ItemView {
 	}
 
 	onload(): void {
+		this.contentEl.addClass('is-style-manager-view');
 		this.settingsMarkup = this.addChild(
 			new StyleManagerLayoutRenderer(
 				this.plugin.app,
@@ -45,18 +46,8 @@ export class StyleManagerView extends ItemView {
 
 	onunload(): void {
 		this.settingsMarkup = null;
-		this.contentEl.addClass('style-manager-plugin');
-		this.settingsMarkup = this.addChild(
-			new StyleManagerLayoutRenderer(
-				this.plugin.app,
-				this.plugin,
-				this.contentEl,
-				true
-			)
-		);
-		if (this.settings) {
-			this.settingsMarkup.setSettings(this.settings, this.parseLogs);
-		}
+		this.contentEl.removeClass('is-style-manager-view');
+		this.contentEl.empty();
 	}
 
 	getViewType(): string {

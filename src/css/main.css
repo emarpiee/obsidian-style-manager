@@ -235,18 +235,12 @@ body.is-mobile .style-manager-plugin input[type='range']::-webkit-slider-thumb {
 	pointer-events: auto;
 }
 
-.style-manager-plugin .setting-item:has(.setting-item-control input[type='text'],
-	.setting-item-control input[type='range'],
-	.setting-item-control select,
-	.setting-item-control textarea) {
+.style-manager-plugin .setting-item.sm-has-input {
 	flex-direction: column !important;
 	align-items: flex-start !important;
 }
 
-.style-manager-plugin .setting-item .setting-item-control:has(input[type='text'],
-	input[type='range'],
-	select,
-	textarea),
+.style-manager-plugin .setting-item.sm-has-input .setting-item-control,
 .style-manager-plugin .setting-item .setting-item-control input[type='text'],
 .style-manager-plugin .setting-item .setting-item-control input[type='range'],
 .style-manager-plugin .setting-item .setting-item-control select,
@@ -282,25 +276,25 @@ body.is-mobile .style-manager-style-settings-item {
 	color: var(--sm-icon-dynamic-color, var(--interactive-accent));
 }
 
-body .vertical-tab-content:has(.style-manager-plugin),
-body .view-content:has(.style-manager-plugin) {
+body .vertical-tab-content.is-style-manager-tab,
+body .view-content.is-style-manager-view {
 	padding: 0 !important;
 	padding-bottom: var(--view-bottom-spacing) !important;
 }
 
-body.is-phone .vertical-tab-content:has(.style-manager-plugin) {
+body.is-phone .vertical-tab-content.is-style-manager-tab {
 	padding-inline: 0 !important;
 }
 
-body.is-phone .modal:has(.style-manager-plugin).mod-settings .modal-header {
+body.is-phone.is-style-manager-settings .modal.mod-settings .modal-header {
 	background: var(--background-primary);
 }
 
-body.is-phone .modal:has(.style-manager-plugin) .vertical-tab-content {
+body.is-phone.is-style-manager-settings .modal .vertical-tab-content {
 	padding-top: var(--modal-header-height) !important;
 }
 
-body:not(.is-phone) .modal:has(.style-manager-plugin) .modal-close-button {
+body.is-style-manager-settings:not(.is-phone) .modal .modal-close-button {
 	display: none;
 }
 
@@ -2235,7 +2229,7 @@ body.is-mobile .style-manager-editor-title-container {
 	background: var(--background-modifier-hover);
 }
 
-body:has(.style-settings-ref):has(.style-manager-ref)::before {
+body.sm-conflict-warning::before {
 	position: fixed;
 	top: 5%;
 	left: 0;

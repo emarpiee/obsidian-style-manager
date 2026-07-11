@@ -87,6 +87,49 @@ export default class StyleManagerPlugin extends Plugin {
 	debounceTimer = 0;
 	public isInitialLoading = true;
 
+	setupMutationObserver(): void {
+		const observer = new MutationObserver((mutations) => {
+			if (document.body.querySelector('.style-settings-ref') && document.body.querySelector('.style-manager-ref')) {
+				document.body.classList.add('sm-conflict-warning');
+			} else {
+				document.body.classList.remove('sm-conflict-warning');
+			}
+
+			mutations.forEach(mutation => {
+				mutation.addedNodes.forEach(node => {
+					if (node.nodeType === Node.ELEMENT_NODE) {
+						const el = node as HTMLElement;
+						if (el.classList && el.classList.contains('style-manager-plugin')) {
+							const settings = el.querySelectorAll('.setting-item');
+							settings.forEach(setting => {
+								if (setting.querySelector('input[type="text"], input[type="range"], select, textarea')) {
+									setting.classList.add('sm-has-input');
+								}
+							});
+						} else if (el.querySelectorAll) {
+							const plugins = el.querySelectorAll('.style-manager-plugin');
+							plugins.forEach(plugin => {
+								const settings = plugin.querySelectorAll('.setting-item');
+								settings.forEach(setting => {
+									if (setting.querySelector('input[type="text"], input[type="range"], select, textarea')) {
+										setting.classList.add('sm-has-input');
+									}
+								});
+							});
+							
+							if (el.classList && el.classList.contains('setting-item') && el.closest('.style-manager-plugin')) {
+								if (el.querySelector('input[type="text"], input[type="range"], select, textarea')) {
+									el.classList.add('sm-has-input');
+								}
+							}
+						}
+					}
+				});
+			});
+		});
+		observer.observe(document.body, { childList: true, subtree: true });
+	}
+
 	async onload(): Promise<void> {
 		this.settingsService = new SettingsService(this);
 		this.presetService = new PresetService(this);
@@ -115,6 +158,7 @@ export default class StyleManagerPlugin extends Plugin {
 
 		await this.settingsService.load();
 		this.statusBarManager.init();
+		this.setupMutationObserver();
 
 		this.settingsService.viewManager.registerSettingsTab(
 			new StyleManagerSettingTab(this.app, this)
