@@ -126,10 +126,10 @@ export class BundleService {
 
 		if (singleFileKey) {
 			const content = await zip.file(singleFileKey).async('string');
-			presets.push(JSON.parse(content));
+			presets.push(JSON.parse(content) as Preset);
 		} else if (bulkFileKey) {
 			const content = await zip.file(bulkFileKey).async('string');
-			presets = JSON.parse(content);
+			presets = JSON.parse(content) as Preset[];
 		} else {
 			// Fallback: check presets/ folder
 			const presetsFolder = zip.folder('presets');
@@ -139,7 +139,7 @@ export class BundleService {
 				);
 				for (const file of files) {
 					const content = await file.async('string');
-					presets.push(JSON.parse(content));
+					presets.push(JSON.parse(content) as Preset);
 				}
 			}
 		}

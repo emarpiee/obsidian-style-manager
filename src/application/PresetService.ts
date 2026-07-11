@@ -289,7 +289,7 @@ export class PresetService {
 			for (const [key, value] of Object.entries(preset.data)) {
 				if (key === StorageKeys.SNIPPETS && Array.isArray(value)) {
 					snippetsEncountered = true;
-					value.forEach((s) => mergedSnippets.add(s));
+					value.forEach((s) => mergedSnippets.add(s as string));
 				} else {
 					mergedData[key] = value;
 				}

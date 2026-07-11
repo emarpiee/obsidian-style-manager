@@ -122,7 +122,7 @@ export class ThemeBuilderService {
 			try {
 				const manifestContent = await this.bridge.readThemeManifest(themeId);
 				if (manifestContent) {
-					themes[themeId] = JSON.parse(manifestContent);
+					themes[themeId] = JSON.parse(manifestContent) as ThemeManifest;
 				}
 			} catch (e) {
 				Logger.warn(`Style Manager | Failed to load manifest for theme ${themeId}:`, e);

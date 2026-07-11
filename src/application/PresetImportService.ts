@@ -74,17 +74,17 @@ export class PresetImportService {
 					}
 				} else {
 					// JSON Import
-					const parsed = JSON.parse(item.content);
+					const parsed = JSON.parse(item.content) as Record<string, unknown> | Array<Record<string, unknown>>;
 
 					if (Array.isArray(parsed)) {
 						// Bulk legacy array
 						parsed.forEach((p, idx) => {
 							analysis.presets.push({
 								id: crypto.randomUUID(),
-								name: p.name || `${item.name || 'Import'} ${idx + 1}`,
-								created: p.created || Date.now(),
-								data: p.data || p,
-								targetedPrefixes: p.targetedPrefixes,
+								name: (p.name as string) || `${item.name || 'Import'} ${idx + 1}`,
+								created: (p.created as number) || Date.now(),
+								data: (p.data || p) as Record<string, unknown>,
+								targetedPrefixes: p.targetedPrefixes as string[] | undefined,
 							});
 						});
 					} else if (parsed && typeof parsed === 'object') {
@@ -103,9 +103,9 @@ export class PresetImportService {
 						// Single preset
 						analysis.presets.push({
 							id: crypto.randomUUID(),
-							name: parsed.name || item.name || 'Imported Preset',
-							created: parsed.created || Date.now(),
-							data: 'data' in parsed ? parsed.data : parsed,
+							name: (parsed.name as string) || item.name || 'Imported Preset',
+							created: (parsed.created as number) || Date.now(),
+							data: ('data' in parsed ? parsed.data : parsed) as Record<string, unknown>,
 							targetedPrefixes: (parsed as { targetedPrefixes?: string[] })
 								.targetedPrefixes,
 						});
@@ -181,7 +181,7 @@ export class PresetImportService {
 					let content = file.content;
 					if (file.filename === 'manifest.json') {
 						try {
-							const manifestObj = JSON.parse(content);
+							const manifestObj = JSON.parse(content) as Record<string, unknown>;
 							manifestObj.name = resolution.newName;
 							content = JSON.stringify(manifestObj, null, 2);
 						} catch (e) {
