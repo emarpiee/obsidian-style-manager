@@ -275,7 +275,7 @@ export class ThemeItemComponent extends Component {
 	}
 
 	public setVisibility(visible: boolean): void {
-		if (this.setting) {
+		if (this.setting !== undefined) {
 			this.setting.settingEl.toggle(visible);
 		}
 	}

@@ -1,4 +1,4 @@
-import { App, Setting, debounce, setIcon } from 'obsidian';
+import { App, Setting, debounce, setIcon, SliderComponent } from 'obsidian';
 
 import {
 	BackupKeys,
@@ -629,7 +629,7 @@ export class PreferencesTab {
 				// Expose slider for reset button
 				(
 					this as unknown as {
-						tabSizeSlider: import('obsidian').SliderComponent;
+						tabSizeSlider: SliderComponent;
 					}
 				).tabSizeSlider = slider;
 			})
@@ -644,10 +644,10 @@ export class PreferencesTab {
 						);
 						const slider = (
 							this as unknown as {
-								tabSizeSlider?: import('obsidian').SliderComponent;
+								tabSizeSlider?: SliderComponent;
 							}
 						).tabSizeSlider;
-						if (slider) {
+						if (slider !== undefined) {
 							slider.setValue(4);
 						}
 					});
@@ -690,7 +690,7 @@ export class PreferencesTab {
 
 						const compSlider = (
 							this as unknown as {
-								componentSpacesSlider?: import('obsidian').SliderComponent;
+								componentSpacesSlider?: SliderComponent;
 							}
 						).componentSpacesSlider;
 						if (compSlider) {
@@ -701,7 +701,7 @@ export class PreferencesTab {
 				// Expose slider for reset button
 				(
 					this as unknown as {
-						dashSpacesSlider: import('obsidian').SliderComponent;
+						dashSpacesSlider: SliderComponent;
 					}
 				).dashSpacesSlider = slider;
 			})
@@ -733,16 +733,16 @@ export class PreferencesTab {
 
 						const slider = (
 							this as unknown as {
-								dashSpacesSlider?: import('obsidian').SliderComponent;
+								dashSpacesSlider?: SliderComponent;
 							}
 						).dashSpacesSlider;
-						if (slider) {
+						if (slider !== undefined) {
 							slider.setValue(dashDefault);
 						}
 
 						const compSlider = (
 							this as unknown as {
-								componentSpacesSlider?: import('obsidian').SliderComponent;
+								componentSpacesSlider?: SliderComponent;
 							}
 						).componentSpacesSlider;
 						if (compSlider) {
@@ -789,7 +789,7 @@ export class PreferencesTab {
 				// Expose slider for reset button
 				(
 					this as unknown as {
-						componentSpacesSlider: import('obsidian').SliderComponent;
+						componentSpacesSlider: SliderComponent;
 					}
 				).componentSpacesSlider = slider;
 			})
@@ -816,10 +816,10 @@ export class PreferencesTab {
 
 						const slider = (
 							this as unknown as {
-								componentSpacesSlider?: import('obsidian').SliderComponent;
+								componentSpacesSlider?: SliderComponent;
 							}
 						).componentSpacesSlider;
-						if (slider) {
+						if (slider !== undefined) {
 							slider.setValue(finalVal);
 						}
 					});

@@ -559,7 +559,7 @@ export class SettingsService extends Events {
 		);
 	}
 
-	getSetting(sectionId: string, settingId?: string): SettingValue | undefined {
+	getSetting(sectionId: string, settingId?: string): SettingValue {
 		if (settingId === undefined) {
 			return this.settings[sectionId];
 		}
@@ -621,15 +621,8 @@ export class SettingsService extends Events {
 
 	async setSetting(
 		sectionOrKey: string,
-		keyOrValue: SettingValue | string,
-		valueOrOptions?:
-			| SettingValue
-			| {
-					persistNative?: boolean;
-					silentUI?: boolean;
-					skipSave?: boolean;
-					target?: 'shared' | 'isolate';
-			  },
+		keyOrValue: SettingValue,
+		valueOrOptions?: SettingValue,
 		options?: {
 			persistNative?: boolean;
 			silentUI?: boolean;

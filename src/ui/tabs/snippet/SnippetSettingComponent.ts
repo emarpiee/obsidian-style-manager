@@ -143,7 +143,7 @@ export class SnippetSettingComponent extends Component {
 
 		this.setting.settingEl.addEventListener('click', (e) => {
 			if (
-				(e.target ).closest(
+				(e.target as HTMLElement).closest(
 					'.setting-item-control, .style-manager-item-select-icon, .checkbox-container'
 				)
 			) {
@@ -244,7 +244,7 @@ export class SnippetSettingComponent extends Component {
 	}
 
 	public setVisibility(visible: boolean): void {
-		if (this.setting) {
+		if (this.setting !== undefined) {
 			this.setting.settingEl.toggle(visible);
 		}
 	}

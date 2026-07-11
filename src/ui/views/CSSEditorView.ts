@@ -78,7 +78,7 @@ export class CSSEditorView extends ItemView {
 
 					if (this.source.type === 'Snippet' && !this.source.readOnly) {
 						// Clean up any old listeners by replacing the node
-						const newHeaderTitle = headerTitle.cloneNode(true);
+						const newHeaderTitle = headerTitle.cloneNode(true) as HTMLElement;
 						headerTitle.parentNode?.replaceChild(newHeaderTitle, headerTitle);
 
 						newHeaderTitle.setAttribute('contenteditable', 'true');
