@@ -19,7 +19,7 @@
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
 import detectIndent from 'detect-indent';
-import yaml from 'js-yaml';
+import * as yaml from 'yaml';
 
 import { ParseLogList, ParsedCSSSettings, SnippetMetadata } from '../../types';
 import { FALLBACK_COLOR } from '../../types';
@@ -154,15 +154,12 @@ export class CSSParser {
 	): ParsedCSSSettings | undefined {
 		const indent = detectIndent(str);
 
-		const settings: ParsedCSSSettings = yaml.load(
-			str.replace(/\t/g, indent.type === 'space' ? indent.indent : '    '),
-			{
-				filename: name,
-			}
+		const settings: ParsedCSSSettings = yaml.parse(
+			str.replace(/\t/g, indent.type === 'space' ? indent.indent : '    ')
 		) as ParsedCSSSettings;
 
 		if (!settings || !Array.isArray(settings.settings)) return undefined;
-		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any -- YAML parsed object requires loose typing before validation
 		settings.settings = settings.settings.filter((setting: any) => {
 			if (!setting || typeof setting !== 'object' || !setting.type)
 				return false;
@@ -580,7 +577,7 @@ export class CSSParser {
 		const indent = detectIndent(str);
 
 		try {
-			return yaml.load(
+			return yaml.parse(
 				str.replace(/\t/g, indent.type === 'space' ? indent.indent : '    ')
 			) as SnippetMetadata;
 		} catch (e) {
