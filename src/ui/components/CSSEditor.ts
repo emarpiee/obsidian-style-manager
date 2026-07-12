@@ -70,22 +70,22 @@ export interface CSSEditorRenderOptions {
 }
 
 const obsidianHighlightStyle = HighlightStyle.define([
-	{ tag: t.keyword, color: 'var(--code-keyword)' },
+	{ tag: t.keyword, color: 'var(--sm-cm-code-keyword)' },
 	{
 		tag: [t.name, t.deleted, t.character, t.propertyName, t.macroName],
-		color: 'var(--code-property)',
+		color: 'var(--sm-cm-code-property)',
 	},
 	{
 		tag: [t.function(t.variableName), t.labelName],
-		color: 'var(--code-function)',
+		color: 'var(--sm-cm-code-function)',
 	},
 	{
 		tag: [t.color, t.constant(t.name), t.standard(t.name)],
-		color: 'var(--code-value)',
+		color: 'var(--sm-cm-code-value)',
 	},
 	{
 		tag: [t.definition(t.name), t.separator],
-		color: 'var(--code-normal)',
+		color: 'var(--sm-cm-code-normal)',
 	},
 	{
 		tag: [
@@ -98,7 +98,7 @@ const obsidianHighlightStyle = HighlightStyle.define([
 			t.self,
 			t.namespace,
 		],
-		color: 'var(--code-value)',
+		color: 'var(--sm-cm-code-value)',
 	},
 	{
 		tag: [
@@ -110,23 +110,23 @@ const obsidianHighlightStyle = HighlightStyle.define([
 			t.link,
 			t.special(t.string),
 		],
-		color: 'var(--code-operator)',
+		color: 'var(--sm-cm-code-operator)',
 	},
-	{ tag: [t.meta, t.comment], color: 'var(--code-comment)' },
+	{ tag: [t.meta, t.comment], color: 'var(--sm-cm-code-comment)' },
 	{ tag: t.strong, fontWeight: 'bold' },
 	{ tag: t.emphasis, fontStyle: 'italic' },
 	{ tag: t.strikethrough, textDecoration: 'line-through' },
-	{ tag: t.link, color: 'var(--text-accent)', textDecoration: 'underline' },
-	{ tag: t.heading, fontWeight: 'bold', color: 'var(--text-title)' },
+	{ tag: t.link, color: 'var(--sm-cm-code-link)', textDecoration: 'underline' },
+	{ tag: t.heading, fontWeight: 'bold', color: 'var(--sm-cm-code-heading)' },
 	{
 		tag: [t.atom, t.bool, t.special(t.variableName)],
-		color: 'var(--code-value)',
+		color: 'var(--sm-cm-code-value)',
 	},
 	{
 		tag: [t.processingInstruction, t.string, t.inserted],
-		color: 'var(--code-string)',
+		color: 'var(--sm-cm-code-string)',
 	},
-	{ tag: t.invalid, color: 'var(--text-error)' },
+	{ tag: t.invalid, color: 'var(--sm-cm-code-invalid)' },
 ]);
 
 export class CSSEditor {
@@ -281,8 +281,8 @@ export class CSSEditor {
 								height: '100%',
 								minHeight: '0',
 								fontSize: 'var(--font-ui-small)',
-								backgroundColor: 'var(--background-primary)',
-								color: 'var(--text-normal)',
+								backgroundColor: 'var(--sm-cm-bg)',
+								color: 'var(--sm-cm-color)',
 							},
 							'.cm-scroller': {
 								fontFamily: 'var(--font-monospace)',
@@ -292,22 +292,19 @@ export class CSSEditor {
 								outline: 'none',
 							},
 							'.cm-activeLine': {
-								backgroundColor: 'var(--background-modifier-active-hover)',
+								backgroundColor: 'var(--sm-cm-active-line-bg)',
 							},
 							'.cm-activeLineGutter': {
-								backgroundColor: 'var(--background-modifier-active-hover)',
+								backgroundColor: 'var(--sm-cm-active-line-gutter-bg)',
 							},
-							'.cm-selectionBackground, .cm-focused .cm-selectionBackground, &::selection':
-								{
-									backgroundColor: 'var(--text-selection)',
-								},
+
 							'.cm-cursor, .cm-dropCursor': {
-								borderLeftColor: 'var(--text-normal)',
+								borderLeftColor: 'var(--sm-cm-cursor-color)',
 							},
 							'.cm-gutters': {
-								backgroundColor: 'var(--background-primary)',
-								color: 'var(--text-faint)',
-								borderRight: '1px solid var(--background-modifier-border)',
+								backgroundColor: 'var(--sm-cm-gutters-bg)',
+								color: 'var(--sm-cm-gutters-color)',
+								borderRight: '1px solid var(--sm-cm-gutters-border-color)',
 							},
 						},
 						{ dark: activeDocument.body.classList.contains('theme-dark') }

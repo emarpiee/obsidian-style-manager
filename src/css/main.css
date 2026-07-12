@@ -195,8 +195,47 @@ body {
 	--sm-bulk-actions-border-color: var(--background-modifier-border);
 
 	/* --- CSS Editor --- */
-	--sm-cm-gutters-color: var(--background-primary);
-	--sm-cm-active-line-gutter-color: unset;
+	--sm-cm-bg: var(--background-primary);
+	--sm-cm-color: var(--text-normal);
+	--sm-cm-active-line-bg: var(--background-modifier-active-hover);
+	--sm-cm-selection-bg: oklch(from var(--text-selection) l c h / 0.3);
+	--sm-cm-unfocused-selection-bg: oklch(from var(--sm-cm-selection-bg) l c h / calc(alpha + 0.2));
+	--sm-cm-cursor-color: var(--text-normal);
+	--sm-cm-gutters-bg: var(--background-primary);
+	--sm-cm-gutters-color: var(--text-faint);
+	--sm-cm-gutters-border-color: var(--background-modifier-border);
+	--sm-cm-active-line-gutter-bg: var(--background-modifier-active-hover);
+
+	/* --- CodeMirror Search Panel --- */
+	--sm-cm-search-bg: var(--background-primary);
+	--sm-cm-search-border-color: var(--background-modifier-border);
+	--sm-cm-search-color: var(--text-normal);
+	--sm-cm-search-input-bg: var(--background-modifier-form-field);
+	--sm-cm-search-input-border-color: var(--background-modifier-border);
+	--sm-cm-search-input-color: var(--text-normal);
+	--sm-cm-search-input-placeholder-color: var(--text-muted);
+	--sm-cm-search-input-border-color-focus: var(--background-modifier-border-focus);
+	--sm-cm-search-btn-bg: var(--interactive-normal);
+	--sm-cm-search-btn-border-color: var(--background-modifier-border);
+	--sm-cm-search-btn-color: var(--text-normal);
+	--sm-cm-search-btn-bg-hover: var(--interactive-hover);
+	--sm-cm-search-label-color: var(--text-muted);
+	--sm-cm-search-close-color: var(--text-muted);
+	--sm-cm-search-close-color-hover: var(--text-normal);
+	--sm-cm-search-close-bg-hover: var(--background-modifier-hover);
+
+	/* --- CodeMirror Syntax Highlighting --- */
+	--sm-cm-code-keyword: var(--code-keyword);
+	--sm-cm-code-property: var(--code-property);
+	--sm-cm-code-function: var(--code-function);
+	--sm-cm-code-value: var(--code-value);
+	--sm-cm-code-normal: var(--code-normal);
+	--sm-cm-code-operator: var(--code-operator);
+	--sm-cm-code-comment: var(--code-comment);
+	--sm-cm-code-string: var(--code-string);
+	--sm-cm-code-link: var(--text-accent);
+	--sm-cm-code-heading: var(--text-title);
+	--sm-cm-code-invalid: var(--text-error);
 
 	/* --- CSS Parser Logs --- */
 	--sm-log-warning-bg-color: oklch(from yellow l c h / 0.2);
@@ -1776,12 +1815,24 @@ body.is-mobile .style-manager-editor-modal {
 	height: 100%;
 }
 
+/* Unfocused selection */
+.style-manager-editor-container .cm-editor .cm-selectionLayer .cm-selectionBackground,
+.style-manager-editor-container .cm-editor ::selection {
+	background-color: var(--sm-cm-unfocused-selection-bg);
+}
+
+/* Focused selection */
+.style-manager-editor-container .cm-editor.cm-editor.cm-focused .cm-selectionLayer .cm-selectionBackground,
+.style-manager-editor-container .cm-editor.cm-editor.cm-focused ::selection {
+	background-color: var(--sm-cm-selection-bg);
+}
+
 .style-manager-editor-container .cm-gutters {
-	background: var(--sm-cm-gutters-color);
+	background: var(--sm-cm-gutters-bg);
 }
 
 .style-manager-editor-container .cm-activeLineGutter {
-	background: var(--sm-cm-active-line-gutter-color);
+	background: var(--sm-cm-active-line-gutter-bg);
 }
 
 .style-manager-editor-footer {
@@ -2255,12 +2306,12 @@ body.sm-conflict-warning::before {
 
 /* --- CodeMirror Search Panel Overrides --- */
 .cm-search {
-	background-color: var(--background-primary);
-	border-top: 1px solid var(--background-modifier-border);
+	background-color: var(--sm-cm-search-bg);
+	border-top: 1px solid var(--sm-cm-search-border-color);
 	border-bottom: none;
 	border-left: none;
 	border-right: none;
-	color: var(--text-normal);
+	color: var(--sm-cm-search-color);
 	padding: var(--size-4-2) var(--size-4-4);
 	display: flex;
 	align-items: center;
@@ -2270,24 +2321,28 @@ body.sm-conflict-warning::before {
 }
 
 .cm-search input.cm-textfield {
-	background-color: var(--background-modifier-form-field);
-	border: 1px solid var(--background-modifier-border);
-	color: var(--text-normal);
+	background-color: var(--sm-cm-search-input-bg);
+	border: 1px solid var(--sm-cm-search-input-border-color);
+	color: var(--sm-cm-search-input-color);
 	border-radius: var(--input-radius);
 	padding: var(--size-4-1) var(--size-4-2);
 	font-family: var(--font-interface);
 	font-size: var(--font-ui-small);
 }
 
+.cm-search input.cm-textfield::placeholder {
+	color: var(--sm-cm-search-input-placeholder-color);
+}
+
 .cm-search input.cm-textfield:focus {
-	border-color: var(--background-modifier-border-focus);
-	box-shadow: 0 0 0 2px var(--background-modifier-border-focus);
+	border-color: var(--sm-cm-search-input-border-color-focus);
+	box-shadow: 0 0 0 2px var(--sm-cm-search-input-border-color-focus);
 }
 
 .cm-search button.cm-button {
-	background-color: var(--interactive-normal);
-	border: 1px solid var(--background-modifier-border);
-	color: var(--text-normal);
+	background-color: var(--sm-cm-search-btn-bg);
+	border: 1px solid var(--sm-cm-search-btn-border-color);
+	color: var(--sm-cm-search-btn-color);
 	border-radius: var(--button-radius);
 	padding: var(--size-4-1) var(--size-4-2);
 	cursor: pointer;
@@ -2299,7 +2354,7 @@ body.sm-conflict-warning::before {
 }
 
 .cm-search button.cm-button:hover {
-	background-color: var(--interactive-hover);
+	background-color: var(--sm-cm-search-btn-bg-hover);
 }
 
 .cm-search label {
@@ -2307,7 +2362,7 @@ body.sm-conflict-warning::before {
 	align-items: center;
 	gap: var(--size-4-1);
 	font-size: var(--font-ui-small);
-	color: var(--text-muted);
+	color: var(--sm-cm-search-label-color);
 	text-transform: capitalize;
 }
 
@@ -2322,12 +2377,12 @@ body.sm-conflict-warning::before {
 	background: transparent;
 	border: none;
 	padding: var(--size-4-1);
-	color: var(--text-muted);
+	color: var(--sm-cm-search-close-color);
 	cursor: pointer;
 }
 
 .cm-search button[name="close"]:hover {
-	color: var(--text-normal);
-	background: var(--background-modifier-hover);
+	color: var(--sm-cm-search-close-color-hover);
+	background: var(--sm-cm-search-close-bg-hover);
 	border-radius: var(--radius-s);
 }
