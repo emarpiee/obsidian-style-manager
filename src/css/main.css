@@ -75,6 +75,11 @@
 		flex-wrap: wrap;
 		justify-content: center;
 	}
+
+	.style-manager-plugin .setting-item:not(.mod-toggle):not(.setting-item-heading) .setting-item-control .color-picker-reset  button:not(.clickable-icon ) {
+		width: var(--sm-color-picker-width);
+		height: var(--sm-color-picker-height);
+	}
 }
 
 body {
