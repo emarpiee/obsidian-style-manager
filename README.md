@@ -1,3 +1,4 @@
+# Obsidian Style Manager
 
 <img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/style_manager-gh-banner.webp" alt="Obsidian Style Manager GitHub Banner.webp" width="1000">
 
