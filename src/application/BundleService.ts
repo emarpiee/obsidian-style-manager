@@ -1,4 +1,4 @@
-import JSZip from 'jszip';
+import { ZipReader, ZipWriter } from '../utils/ZipHelper';
 
 import { StorageKeys } from '../constants';
 import { BundleData, Preset } from '../types';
@@ -20,7 +20,7 @@ export class BundleService {
 		preferredExtension: string = '.json',
 		separatePresets: boolean = false
 	): Promise<Uint8Array> {
-		const zip = new JSZip();
+		const zip = new ZipWriter();
 		const presets = Array.isArray(input) ? input : [input];
 
 		// 1. Add preset data
@@ -111,7 +111,7 @@ export class BundleService {
 	 * Supports single preset or bulk presets with various extensions.
 	 */
 	async extractBundle(data: ArrayBuffer): Promise<BundleData> {
-		const zip = await JSZip.loadAsync(data);
+		const zip = await ZipReader.loadAsync(data);
 		let presets: Preset[] = [];
 
 		// Flexible search for preset data (preset.json, preset.md, preset.txt, etc.)

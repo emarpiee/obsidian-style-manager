@@ -1,4 +1,4 @@
-import JSZip from 'jszip';
+import { ZipReader } from '../utils/ZipHelper';
 
 import { StorageKeys } from '../constants';
 import StyleManagerPlugin from '../main';
@@ -27,7 +27,7 @@ export class PresetImportService {
 			try {
 				if (item.content instanceof ArrayBuffer) {
 					// ZIP Bundle Analysis
-					const zip = await JSZip.loadAsync(item.content);
+					const zip = await ZipReader.loadAsync(item.content);
 
 					// VALIDATION: Reject Full Vault Backups
 					if (

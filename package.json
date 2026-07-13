@@ -57,8 +57,8 @@
 		"chroma-js": "^3.2.0",
 		"colorpicker": "github:emarpiee/jscolorpicker",
 		"detect-indent": "^7.0.2",
+		"fflate": "^0.8.3",
 		"fuzzysort": "^3.1.0",
-		"jszip": "^3.10.1",
 		"lorem-ipsum": "^3.0.0",
 		"rrule": "^2.8.1",
 		"yaml": "^2.4.5"
