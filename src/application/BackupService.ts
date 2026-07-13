@@ -1,4 +1,4 @@
-import JSZip from 'jszip';
+import { ZipReader, ZipWriter } from '../utils/ZipHelper';
 import { normalizePath } from 'obsidian';
 
 import { BackupKeys, ExportKeys } from '../constants';
@@ -46,7 +46,7 @@ export class BackupService {
 	 * and all installed theme CSS + manifest files.
 	 */
 	async createUniversalBackup(): Promise<Uint8Array> {
-		const zip = new JSZip();
+		const zip = new ZipWriter();
 		const settings = this.plugin.settingsService.sharedSettings;
 		const preferredExtension =
 			(this.plugin.settingsService.settings[
@@ -153,7 +153,7 @@ export class BackupService {
 
 			if (data instanceof ArrayBuffer) {
 				// ZIP Bundle Handling
-				const zip = await JSZip.loadAsync(data);
+				const zip = await ZipReader.loadAsync(data);
 
 				// VALIDATION: Check for shared locker signature
 				const manifestFile =
