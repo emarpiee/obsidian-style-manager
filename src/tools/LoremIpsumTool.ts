@@ -4,6 +4,6 @@ export class LoremIpsumTool {
 	constructor(private plugin: StyleManagerPlugin) {}
 
 	show(): void {
-		this.plugin.activateLoremIpsumView();
+		void this.plugin.activateLoremIpsumView();
 	}
 }

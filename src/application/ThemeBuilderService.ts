@@ -1,10 +1,10 @@
 import { App, normalizePath } from 'obsidian';
 
 import { ThemeManifest } from '../types';
-import { Logger } from '../utils/Logger';
 import { NotificationService } from './NotificationService';
 
 import { ObsidianBridge } from '../infrastructure/bridge/ObsidianBridge';
+import { Logger } from '../utils/Logger';
 
 export class ThemeBuilderService {
 	constructor(
@@ -122,10 +122,13 @@ export class ThemeBuilderService {
 			try {
 				const manifestContent = await this.bridge.readThemeManifest(themeId);
 				if (manifestContent) {
-					themes[themeId] = JSON.parse(manifestContent);
+					themes[themeId] = JSON.parse(manifestContent) as ThemeManifest;
 				}
 			} catch (e) {
-				Logger.warn(`Style Manager | Failed to load manifest for theme ${themeId}:`, e);
+				Logger.warn(
+					`Style Manager | Failed to load manifest for theme ${themeId}:`,
+					e
+				);
 			}
 		}
 

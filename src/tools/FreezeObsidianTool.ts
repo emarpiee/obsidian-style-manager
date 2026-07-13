@@ -23,16 +23,16 @@ export class FreezeObsidianTool {
 		electronWindow.openDevTools();
 
 		let passSecs = 0;
-		const timer = setInterval(() => {
+		const timer = window.setInterval(() => {
 			const timePassed = (finalDelay - passSecs).toFixed(1);
 			freezeNotice.setMessage(`⚠ Will freeze Obsidian in ${timePassed}s`);
 			passSecs += 0.1;
 		}, 100);
 
-		setTimeout(() => {
-			// eslint-disable-next-line no-debugger
+		window.setTimeout(() => {
+			// eslint-disable-next-line no-debugger -- intentional debugger for freezing the application state
 			debugger;
-			clearInterval(timer);
+			window.clearInterval(timer);
 		}, finalDelay * 1000);
 	}
 }

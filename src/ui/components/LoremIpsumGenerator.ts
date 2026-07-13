@@ -20,7 +20,11 @@ export class LoremIpsumGenerator {
 	private copyBtn: HTMLButtonElement;
 
 	private generateHandler = (): void => this.generate();
-	private copyHandler = async (): Promise<void> => await this.copy();
+	private copyHandler = (): void => {
+		void (async (): Promise<void> => {
+			await this.copy();
+		})();
+	};
 	private enterHandler = (e: KeyboardEvent): void => {
 		if (e.key === 'Enter') this.generate();
 	};
@@ -108,7 +112,7 @@ export class LoremIpsumGenerator {
 		});
 
 		this.outputEl.value = text;
-		this.copyBtn.style.display = 'inline-block';
+		this.copyBtn.setCssStyles({ display: 'inline-block' });
 	}
 
 	private async copy(): Promise<void> {
@@ -116,13 +120,7 @@ export class LoremIpsumGenerator {
 		if (!text) return;
 
 		try {
-			if (navigator.clipboard && navigator.clipboard.writeText) {
-				await navigator.clipboard.writeText(text);
-			} else {
-				// Fallback
-				this.outputEl.select();
-				document.execCommand('copy');
-			}
+			await navigator.clipboard.writeText(text);
 			new Notice('Lorem ipsum copied to clipboard');
 		} catch (err) {
 			new Notice('Failed to copy text to clipboard');

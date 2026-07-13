@@ -1,6 +1,6 @@
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { App, Modal } from 'obsidian';
 
-import ColorPicker from '../../lib/colorpicker/colorpicker.min.js';
 import { getColorPickerConfig } from '../../utils/ColorUtils';
 
 export class BoxOutlineColorPromptModal extends Modal {

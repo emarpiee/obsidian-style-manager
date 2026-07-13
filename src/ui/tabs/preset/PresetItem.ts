@@ -5,8 +5,8 @@ import { addApplyOptionsToMenu } from './PresetMenuHelper';
 import { ConfirmKeys, ExportKeys, StorageKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
 import { Preset } from '../../../types';
-import { Logger } from '../../../utils/Logger';
 import { formatPresetDate } from '../../../utils/CommonUtils';
+import { Logger } from '../../../utils/Logger';
 import {
 	renderAppearanceBadge,
 	renderCountBadge,
@@ -102,7 +102,7 @@ export class PresetItem {
 			});
 		}
 
-		const starIcon = document.createElement('div');
+		const starIcon = activeDocument.createElement('div');
 		starIcon.classList.add('clickable-icon', 'style-manager-preset-star-icon');
 		if (preset.isFavorite) starIcon.addClass('is-favorite');
 		setIcon(starIcon, preset.isFavorite ? 'star' : 'star');
@@ -142,10 +142,12 @@ export class PresetItem {
 									plugin.app,
 									'Rename preset',
 									preset.name,
-									async (newName: string) => {
-										preset.name = newName.trim() || preset.name;
-										await plugin.presetService.savePresets();
-										this.onRefresh();
+									(newName: string): void => {
+										void (async (): Promise<void> => {
+											preset.name = newName.trim() || preset.name;
+											await plugin.presetService.savePresets();
+											this.onRefresh();
+										})();
 									}
 								).open();
 							})
@@ -235,9 +237,13 @@ export class PresetItem {
 										description,
 										'Include assets (ZIP)',
 										false,
-										() => performExport(true),
+										(): void => {
+											void performExport(true);
+										},
 										`Preset only (${preferredExtension})`,
-										() => performExport(false)
+										(): void => {
+											void performExport(false);
+										}
 									).open();
 								} else {
 									if (
@@ -245,7 +251,7 @@ export class PresetItem {
 											ConfirmKeys.SKIP_EXPORT_CONFIRM
 										]
 									) {
-										performExport(false);
+										void performExport(false);
 									} else {
 										new ConfirmModal(
 											plugin.app,
@@ -253,7 +259,9 @@ export class PresetItem {
 											`Are you sure you want to export the preset "${preset.name}" to your vault?`,
 											`Export (${preferredExtension})`,
 											false,
-											() => performExport(false)
+											(): void => {
+												void performExport(false);
+											}
 										).open();
 									}
 								}
@@ -269,17 +277,20 @@ export class PresetItem {
 							.setIcon('trash')
 							.setWarning(true)
 							.onClick(() => {
-								const performDelete = async (): Promise<void> => {
-									await plugin.presetService.trashPresets([preset]);
+								const performDelete = (): void => {
+									void (async (): Promise<void> => {
+										await plugin.presetService.trashPresets([preset]);
 
-									const indexInPresets = plugin.presetService.presets.findIndex(
-										(p) => p.id === preset.id
-									);
-									if (indexInPresets !== -1) {
-										plugin.presetService.presets.splice(indexInPresets, 1);
-										await plugin.presetService.savePresets();
-										this.onRefresh();
-									}
+										const indexInPresets =
+											plugin.presetService.presets.findIndex(
+												(p) => p.id === preset.id
+											);
+										if (indexInPresets !== -1) {
+											plugin.presetService.presets.splice(indexInPresets, 1);
+											await plugin.presetService.savePresets();
+											this.onRefresh();
+										}
+									})();
 								};
 
 								if (
@@ -306,7 +317,7 @@ export class PresetItem {
 				});
 		});
 
-		const selectIcon = document.createElement('div');
+		const selectIcon = activeDocument.createElement('div');
 		selectIcon.classList.add(
 			'clickable-icon',
 			'style-manager-item-select-icon'

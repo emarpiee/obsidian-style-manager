@@ -47,7 +47,7 @@ import { SettingType } from '../../ui/components/base/types';
  * state management and visual application.
  */
 export class StyleGenerator {
-	public styleTag: HTMLStyleElement;
+	private sheet: CSSStyleSheet;
 	public config: MappedSettings = {};
 	public gradients: Record<string, ColorGradient[]> = {};
 
@@ -56,16 +56,19 @@ export class StyleGenerator {
 		private bridge: ObsidianBridge,
 		private getSettings: () => StyleManagerSettings
 	) {
-		this.styleTag = document.createElement('style');
-		this.styleTag.id = 'style-manager-css';
-		document.head.appendChild(this.styleTag);
+		this.sheet = new CSSStyleSheet();
+		activeDocument.adoptedStyleSheets = [
+			...activeDocument.adoptedStyleSheets,
+			this.sheet,
+		];
 	}
 
 	/**
 	 * Cleans up DOM elements and classes.
 	 */
 	public destroy(): void {
-		this.styleTag?.remove();
+		activeDocument.adoptedStyleSheets =
+			activeDocument.adoptedStyleSheets.filter((s) => s !== this.sheet);
 		this.removeClasses();
 	}
 	/**
@@ -88,61 +91,34 @@ export class StyleGenerator {
 			this.bridge
 		);
 
-		this.styleTag.textContent = `
+		const reduceVars = (
+			arr: { key: string; value: string; important?: boolean }[]
+		): string =>
+			arr.reduce(
+				(
+					combined: string,
+					current: { key: string; value: string; important?: boolean }
+				) =>
+					combined +
+					`--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `,
+				''
+			);
+
+		const css = `
 			body.css-settings-manager, body.style-manager-css {
-				${vars.reduce(
-					(
-						combined: string,
-						current: { key: string; value: string; important?: boolean }
-					) => {
-						return (
-							combined +
-							`--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `
-						);
-					},
-					''
-				)}
+				${reduceVars(vars)}
 			}
-
 			body.theme-light.css-settings-manager, body.theme-light.style-manager-css {
-				${themedLight.reduce(
-					(
-						combined: string,
-						current: { key: string; value: string; important?: boolean }
-					) => {
-						return (
-							combined +
-							`--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `
-						);
-					},
-					''
-				)}
+				${reduceVars(themedLight)}
 			}
-
 			body.theme-dark.css-settings-manager, body.theme-dark.style-manager-css {
-				${themedDark.reduce(
-					(
-						combined: string,
-						current: { key: string; value: string; important?: boolean }
-					) => {
-						return (
-							combined +
-							`--${current.key}: ${current.value}${current.important ? ' !important' : ''}; `
-						);
-					},
-					''
-				)}
+				${reduceVars(themedDark)}
 			}
-			`;
-
-		this.styleTag.textContent = this.styleTag.textContent
+		`
 			.trim()
 			.replace(/[\r\n\s]+/g, ' ');
 
-		// Ensure our style tag is always at the end of the head for highest precedence
-		if (this.styleTag.parentElement) {
-			this.styleTag.parentElement.appendChild(this.styleTag);
-		}
+		void this.sheet.replace(css);
 
 		this.bridge.triggerEvent('css-change', {
 			source: 'style-manager',
@@ -150,7 +126,7 @@ export class StyleGenerator {
 	}
 
 	/**
-	 * Applies class-based settings to the document body.
+	 * Applies class-based settings to the activeDocument body.
 	 */
 	public initClasses(): void {
 		const settings = this.getSettings();
@@ -171,7 +147,7 @@ export class StyleGenerator {
 						value === true ||
 						(value === undefined && settingWithDefault.default === true)
 					) {
-						document.body.classList.add(setting.id);
+						activeDocument.body.classList.add(setting.id);
 					}
 				} else if (setting.type === SettingType.CLASS_SELECT) {
 					const multiToggle = setting as CSSSetting & {
@@ -189,7 +165,7 @@ export class StyleGenerator {
 					}
 
 					if (value !== 'none') {
-						document.body.classList.add(value);
+						activeDocument.body.classList.add(value);
 					}
 				}
 			});
@@ -197,7 +173,7 @@ export class StyleGenerator {
 	}
 
 	/**
-	 * Removes all Style Manager managed classes from the document body.
+	 * Removes all Style Manager managed classes from the activeDocument body.
 	 */
 	public removeClasses(): void {
 		Object.keys(this.config).forEach((section) => {
@@ -207,16 +183,16 @@ export class StyleGenerator {
 				const setting = sectionConfig[settingId];
 
 				if (setting.type === SettingType.CLASS_TOGGLE) {
-					document.body.classList.remove(setting.id);
+					activeDocument.body.classList.remove(setting.id);
 				} else if (setting.type === SettingType.CLASS_SELECT) {
 					const multiToggle = setting as CSSSetting & {
 						options?: Array<string | { value: string }>;
 					};
 					(multiToggle.options || []).forEach((v) => {
 						if (typeof v === 'string') {
-							document.body.classList.remove(v);
+							activeDocument.body.classList.remove(v);
 						} else {
-							document.body.classList.remove(v.value);
+							activeDocument.body.classList.remove(v.value);
 						}
 					});
 				}
@@ -344,10 +320,10 @@ export class StyleGenerator {
 						vars.push(
 							...this.generateColorVariables(
 								setting.id,
-								s.format as ColorFormat,
+								s.format,
 								resolvedColor,
 								s.opacity,
-								s['alt-format'] as AltFormatList,
+								s['alt-format'],
 								true
 							)
 						);
@@ -391,10 +367,10 @@ export class StyleGenerator {
 						(modifier === 'light' ? themedLight : themedDark).push(
 							...this.generateColorVariables(
 								setting.id,
-								s.format as ColorFormat,
+								s.format,
 								resolvedColor,
 								s.opacity,
-								s['alt-format'] as AltFormatList,
+								s['alt-format'],
 								true
 							)
 						);
@@ -489,10 +465,10 @@ export class StyleGenerator {
 							vars.push(
 								...this.generateColorVariables(
 									s.id,
-									s.format as ColorFormat,
+									s.format,
 									resolvedColor,
 									s.opacity,
-									s['alt-format'] as AltFormatList,
+									s['alt-format'],
 									false
 								)
 							);
@@ -530,10 +506,10 @@ export class StyleGenerator {
 							themedLight.push(
 								...this.generateColorVariables(
 									s.id,
-									s.format as ColorFormat,
+									s.format,
 									resolvedLight,
 									s.opacity,
-									s['alt-format'] as AltFormatList,
+									s['alt-format'],
 									false
 								)
 							);
@@ -567,10 +543,10 @@ export class StyleGenerator {
 							themedDark.push(
 								...this.generateColorVariables(
 									s.id,
-									s.format as ColorFormat,
+									s.format,
 									resolvedDark,
 									s.opacity,
-									s['alt-format'] as AltFormatList,
+									s['alt-format'],
 									false
 								)
 							);
@@ -627,7 +603,7 @@ export class StyleGenerator {
 								id,
 								fromColor,
 								toColor,
-								format as 'hsl' | 'rgb' | 'hex' | 'oklch',
+								format,
 								step,
 								pad,
 								important
@@ -660,7 +636,7 @@ export class StyleGenerator {
 								id,
 								fromColor,
 								toColor,
-								format as 'hsl' | 'rgb' | 'hex' | 'oklch',
+								format,
 								step,
 								pad,
 								important
@@ -693,7 +669,7 @@ export class StyleGenerator {
 								id,
 								fromColor,
 								toColor,
-								format as 'hsl' | 'rgb' | 'hex' | 'oklch',
+								format,
 								step,
 								pad,
 								important

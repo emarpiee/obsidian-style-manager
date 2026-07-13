@@ -12,17 +12,20 @@ import {
 } from '@codemirror/commands';
 import { css } from '@codemirror/lang-css';
 import {
+	HighlightStyle,
 	bracketMatching,
 	foldGutter,
 	foldKeymap,
 	indentOnInput,
 	indentUnit,
 	syntaxHighlighting,
-	HighlightStyle
 } from '@codemirror/language';
-import { tags as t } from '@lezer/highlight';
 import { lintKeymap } from '@codemirror/lint';
-import { highlightSelectionMatches, searchKeymap, openSearchPanel } from '@codemirror/search';
+import {
+	highlightSelectionMatches,
+	openSearchPanel,
+	searchKeymap,
+} from '@codemirror/search';
 import { Compartment, EditorState } from '@codemirror/state';
 import {
 	EditorView,
@@ -37,7 +40,15 @@ import {
 	lineNumbers,
 	rectangularSelection,
 } from '@codemirror/view';
-import { Menu, Platform, setIcon, setTooltip, ButtonComponent, ToggleComponent } from 'obsidian';
+import { tags as t } from '@lezer/highlight';
+import {
+	ButtonComponent,
+	Menu,
+	Platform,
+	ToggleComponent,
+	setIcon,
+	setTooltip,
+} from 'obsidian';
 
 import { PreferencesKeys, StorageKeys } from '../../constants';
 import StyleManagerPlugin from '../../main';
@@ -51,47 +62,71 @@ export interface CSSEditorRenderOptions {
 	onOpenInTab?: () => void;
 	onClose?: () => void;
 	onSaveSuccess?: (newName: string) => void;
-	addAction?: (icon: string, title: string, callback: (evt: MouseEvent) => void) => HTMLElement;
+	addAction?: (
+		icon: string,
+		title: string,
+		callback: (evt: MouseEvent) => void
+	) => HTMLElement;
 }
 
 const obsidianHighlightStyle = HighlightStyle.define([
-	{ tag: t.keyword, color: 'var(--code-keyword)' },
+	{ tag: t.keyword, color: 'var(--sm-cm-code-keyword)' },
 	{
 		tag: [t.name, t.deleted, t.character, t.propertyName, t.macroName],
-		color: 'var(--code-property)',
+		color: 'var(--sm-cm-code-property)',
 	},
 	{
 		tag: [t.function(t.variableName), t.labelName],
-		color: 'var(--code-function)',
+		color: 'var(--sm-cm-code-function)',
 	},
 	{
 		tag: [t.color, t.constant(t.name), t.standard(t.name)],
-		color: 'var(--code-value)',
+		color: 'var(--sm-cm-code-value)',
 	},
 	{
 		tag: [t.definition(t.name), t.separator],
-		color: 'var(--code-normal)',
+		color: 'var(--sm-cm-code-normal)',
 	},
 	{
-		tag: [t.typeName, t.className, t.number, t.changed, t.annotation, t.modifier, t.self, t.namespace],
-		color: 'var(--code-value)',
+		tag: [
+			t.typeName,
+			t.className,
+			t.number,
+			t.changed,
+			t.annotation,
+			t.modifier,
+			t.self,
+			t.namespace,
+		],
+		color: 'var(--sm-cm-code-value)',
 	},
 	{
-		tag: [t.operator, t.operatorKeyword, t.url, t.escape, t.regexp, t.link, t.special(t.string)],
-		color: 'var(--code-operator)',
+		tag: [
+			t.operator,
+			t.operatorKeyword,
+			t.url,
+			t.escape,
+			t.regexp,
+			t.link,
+			t.special(t.string),
+		],
+		color: 'var(--sm-cm-code-operator)',
 	},
-	{ tag: [t.meta, t.comment], color: 'var(--code-comment)' },
+	{ tag: [t.meta, t.comment], color: 'var(--sm-cm-code-comment)' },
 	{ tag: t.strong, fontWeight: 'bold' },
 	{ tag: t.emphasis, fontStyle: 'italic' },
 	{ tag: t.strikethrough, textDecoration: 'line-through' },
-	{ tag: t.link, color: 'var(--text-accent)', textDecoration: 'underline' },
-	{ tag: t.heading, fontWeight: 'bold', color: 'var(--text-title)' },
+	{ tag: t.link, color: 'var(--sm-cm-code-link)', textDecoration: 'underline' },
+	{ tag: t.heading, fontWeight: 'bold', color: 'var(--sm-cm-code-heading)' },
 	{
 		tag: [t.atom, t.bool, t.special(t.variableName)],
-		color: 'var(--code-value)',
+		color: 'var(--sm-cm-code-value)',
 	},
-	{ tag: [t.processingInstruction, t.string, t.inserted], color: 'var(--code-string)' },
-	{ tag: t.invalid, color: 'var(--text-error)' },
+	{
+		tag: [t.processingInstruction, t.string, t.inserted],
+		color: 'var(--sm-cm-code-string)',
+	},
+	{ tag: t.invalid, color: 'var(--sm-cm-code-invalid)' },
 ]);
 
 export class CSSEditor {
@@ -141,7 +176,7 @@ export class CSSEditor {
 		try {
 			const rawContent = await this.plugin.app.vault.adapter.read(path);
 			this.content = rawContent.replace(/\r\n/g, '\n');
-		} catch (_err) {
+		} catch {
 			this.plugin.settingsService.notifications.error(
 				`Failed to read ${this.source.type} file.`
 			);
@@ -169,7 +204,7 @@ export class CSSEditor {
 
 				if (
 					this.addBlockMenuDom &&
-					document.body.contains(this.addBlockMenuDom)
+					activeDocument.body.contains(this.addBlockMenuDom)
 				) {
 					this.addBlockMenuDom.remove();
 					this.addBlockMenuDom = null;
@@ -185,14 +220,12 @@ export class CSSEditor {
 			}
 		});
 
-
-
 		// Define save command
 		const saveKeymap: KeyBinding[] = [
 			{
 				key: 'Mod-s',
 				run: (): boolean => {
-					this.handleSave();
+					void this.handleSave();
 					return true;
 				},
 			},
@@ -248,8 +281,8 @@ export class CSSEditor {
 								height: '100%',
 								minHeight: '0',
 								fontSize: 'var(--font-ui-small)',
-								backgroundColor: 'var(--background-primary)',
-								color: 'var(--text-normal)'
+								backgroundColor: 'var(--sm-cm-bg)',
+								color: 'var(--sm-cm-color)',
 							},
 							'.cm-scroller': {
 								fontFamily: 'var(--font-monospace)',
@@ -259,24 +292,22 @@ export class CSSEditor {
 								outline: 'none',
 							},
 							'.cm-activeLine': {
-								backgroundColor: 'var(--background-modifier-active-hover)',
+								backgroundColor: 'var(--sm-cm-active-line-bg)',
 							},
 							'.cm-activeLineGutter': {
-								backgroundColor: 'var(--background-modifier-active-hover)',
+								backgroundColor: 'var(--sm-cm-active-line-gutter-bg)',
 							},
-							'.cm-selectionBackground, .cm-focused .cm-selectionBackground, &::selection': {
-								backgroundColor: 'var(--text-selection)',
-							},
+
 							'.cm-cursor, .cm-dropCursor': {
-								borderLeftColor: 'var(--text-normal)',
+								borderLeftColor: 'var(--sm-cm-cursor-color)',
 							},
 							'.cm-gutters': {
-								backgroundColor: 'var(--background-primary)',
-								color: 'var(--text-faint)',
-								borderRight: '1px solid var(--background-modifier-border)',
-							}
+								backgroundColor: 'var(--sm-cm-gutters-bg)',
+								color: 'var(--sm-cm-gutters-color)',
+								borderRight: '1px solid var(--sm-cm-gutters-border-color)',
+							},
 						},
-						{ dark: document.body.classList.contains('theme-dark') }
+						{ dark: activeDocument.body.classList.contains('theme-dark') }
 					),
 				],
 			}),
@@ -290,7 +321,9 @@ export class CSSEditor {
 
 			// 1. Save (furthest right)
 			if (!this.source.readOnly) {
-				options.addAction('save', 'Save', () => this.handleSave());
+				options.addAction('save', 'Save', (): void => {
+					void this.handleSave();
+				});
 				options.addAction('search', 'Search', () => this.handleSearch());
 			}
 
@@ -323,7 +356,7 @@ export class CSSEditor {
 				options.addAction('copy', 'Copy to clipboard', () => {
 					if (this.view) {
 						const currentContent = this.view.state.doc.toString();
-						navigator.clipboard.writeText(currentContent);
+						void navigator.clipboard.writeText(currentContent);
 						this.plugin.settingsService.notifications.util(
 							'Copied to clipboard'
 						);
@@ -338,29 +371,34 @@ export class CSSEditor {
 						StorageKeys.SNIPPETS
 					] as string[]) || [];
 				let isEnabled = currentEnabled.includes(this.source.id);
-				
+
 				const toggleActionEl = options.addAction(
 					isEnabled ? 'check-circle' : 'circle',
 					isEnabled ? 'Disable snippet' : 'Enable snippet',
-					async () => {
-						const snippets = new Set(
-							(this.plugin.settingsService.settings[
-								StorageKeys.SNIPPETS
-							] as string[]) || []
-						);
-						isEnabled = !isEnabled;
-						if (isEnabled) snippets.add(this.source.id);
-						else snippets.delete(this.source.id);
+					(): void => {
+						void (async (): Promise<void> => {
+							const snippets = new Set(
+								(this.plugin.settingsService.settings[
+									StorageKeys.SNIPPETS
+								] as string[]) || []
+							);
+							isEnabled = !isEnabled;
+							if (isEnabled) snippets.add(this.source.id);
+							else snippets.delete(this.source.id);
 
-						const list = Array.from(snippets);
-						await this.plugin.settingsService.setSetting(
-							StorageKeys.SNIPPETS,
-							list,
-							{ silentUI: true }
-						);
-						
-						setIcon(toggleActionEl, isEnabled ? 'check-circle' : 'circle');
-						setTooltip(toggleActionEl, isEnabled ? 'Disable snippet' : 'Enable snippet');
+							const list = Array.from(snippets);
+							await this.plugin.settingsService.setSetting(
+								StorageKeys.SNIPPETS,
+								list,
+								{ silentUI: true }
+							);
+
+							setIcon(toggleActionEl, isEnabled ? 'check-circle' : 'circle');
+							setTooltip(
+								toggleActionEl,
+								isEnabled ? 'Disable snippet' : 'Enable snippet'
+							);
+						})();
 					}
 				);
 
@@ -371,9 +409,15 @@ export class CSSEditor {
 						] as string[]) || [];
 					isEnabled = currentEnabled.includes(this.source.id);
 					setIcon(toggleActionEl, isEnabled ? 'check-circle' : 'circle');
-					setTooltip(toggleActionEl, isEnabled ? 'Disable snippet' : 'Enable snippet');
+					setTooltip(
+						toggleActionEl,
+						isEnabled ? 'Disable snippet' : 'Enable snippet'
+					);
 				};
-				this.plugin.settingsService.on('settings-changed', this.settingsChangedHandler);
+				this.plugin.settingsService.on(
+					'settings-changed',
+					this.settingsChangedHandler
+				);
 			}
 		} else {
 			// Modal / Non-Tab View - Custom Footer
@@ -416,21 +460,21 @@ export class CSSEditor {
 				new ButtonComponent(leftGroup)
 					.setIcon('external-link')
 					.setTooltip('Open this tool in a tab')
-					.onClick(async () => {
-						await this.plugin.activateCSSEditorView(this.source);
-						if (options.onOpenInTab) {
-							options.onOpenInTab();
-						}
+					.onClick((): void => {
+						void (async (): Promise<void> => {
+							await this.plugin.activateCSSEditorView(this.source);
+							if (options.onOpenInTab) {
+								options.onOpenInTab();
+							}
+						})();
 					});
 			}
 
 			if (this.source.readOnly) {
 				if (!this.isViewMode) {
-					new ButtonComponent(rightGroup)
-						.setButtonText('Close')
-						.onClick(() => {
-							if (options.onClose) options.onClose();
-						});
+					new ButtonComponent(rightGroup).setButtonText('Close').onClick(() => {
+						if (options.onClose) options.onClose();
+					});
 				}
 				new ButtonComponent(rightGroup)
 					.setButtonText('Copy to clipboard')
@@ -438,7 +482,7 @@ export class CSSEditor {
 					.onClick(() => {
 						if (this.view) {
 							const currentContent = this.view.state.doc.toString();
-							navigator.clipboard.writeText(currentContent);
+							void navigator.clipboard.writeText(currentContent);
 							this.plugin.settingsService.notifications.util(
 								'Copied to clipboard'
 							);
@@ -447,38 +491,44 @@ export class CSSEditor {
 					});
 			} else {
 				if (this.source.type === 'Snippet') {
-					const toggleContainer = leftGroup.createDiv('style-manager-editor-toggle-container');
-					
-					const toggleLabel = toggleContainer.createSpan('style-manager-editor-toggle-label');
+					const toggleContainer = leftGroup.createDiv(
+						'style-manager-editor-toggle-container'
+					);
+
+					const toggleLabel = toggleContainer.createSpan(
+						'style-manager-editor-toggle-label'
+					);
 					toggleLabel.setText('Enable snippet');
-					
+
 					const currentEnabled =
 						(this.plugin.settingsService.settings[
 							StorageKeys.SNIPPETS
 						] as string[]) || [];
 					const isEnabled = currentEnabled.includes(this.source.id);
-					
+
 					const toggle = new ToggleComponent(toggleContainer)
 						.setValue(isEnabled)
-						.onChange(async (value) => {
-							const snippets = new Set(
-								(this.plugin.settingsService.settings[
-									StorageKeys.SNIPPETS
-								] as string[]) || []
-							);
-							if (value) snippets.add(this.source.id);
-							else snippets.delete(this.source.id);
+						.onChange((value): void => {
+							void (async (): Promise<void> => {
+								const snippets = new Set(
+									(this.plugin.settingsService.settings[
+										StorageKeys.SNIPPETS
+									] as string[]) || []
+								);
+								if (value) snippets.add(this.source.id);
+								else snippets.delete(this.source.id);
 
-							const list = Array.from(snippets);
-							await this.plugin.settingsService.setSetting(
-								StorageKeys.SNIPPETS,
-								list,
-								{
-									silentUI: true,
-								}
-							);
+								const list = Array.from(snippets);
+								await this.plugin.settingsService.setSetting(
+									StorageKeys.SNIPPETS,
+									list,
+									{
+										silentUI: true,
+									}
+								);
+							})();
 						});
-					
+
 					this.snippetToggle = toggle;
 					this.settingsChangedHandler = (): void => {
 						const currentEnabled =
@@ -490,7 +540,10 @@ export class CSSEditor {
 							this.snippetToggle.setValue(isEnabled);
 						}
 					};
-					this.plugin.settingsService.on('settings-changed', this.settingsChangedHandler);
+					this.plugin.settingsService.on(
+						'settings-changed',
+						this.settingsChangedHandler
+					);
 				}
 
 				new ButtonComponent(rightGroup)
@@ -555,7 +608,7 @@ export class CSSEditor {
 				if (path) {
 					await this.plugin.app.vault.adapter.write(path, currentContent);
 					if (type === 'Theme') bridge.requestLoadTheme();
-					this.plugin.settingsService.refreshService.trigger(
+					void this.plugin.settingsService.refreshService.trigger(
 						RefreshLevel.PARSE_CSS
 					);
 				}
@@ -578,7 +631,10 @@ export class CSSEditor {
 
 	public destroy(): void {
 		if (this.settingsChangedHandler) {
-			this.plugin.settingsService.off('settings-changed', this.settingsChangedHandler);
+			this.plugin.settingsService.off(
+				'settings-changed',
+				this.settingsChangedHandler
+			);
 			this.settingsChangedHandler = null;
 		}
 		if (this.view) {

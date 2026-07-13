@@ -76,7 +76,7 @@ export function renderThemeBadge(
 		badge.onclick = (e: MouseEvent): void => {
 			e.preventDefault();
 			e.stopPropagation();
-			copyToClipboard(accentColor);
+			void copyToClipboard(accentColor);
 			displayTooltip(badge, accentColor);
 			plugin.settingsService.notifications.util(
 				`Accent color ${accentColor} copied to clipboard`

@@ -19,6 +19,7 @@ import {
 import StyleManagerPlugin from '../../../main';
 import { Preset } from '../../../types';
 import { getFormattedTimestamp } from '../../../utils/CommonUtils';
+import { Logger } from '../../../utils/Logger';
 import {
 	handleItemSelection,
 	setupListKeybindings,
@@ -27,7 +28,6 @@ import { ActiveSchedulesModal } from '../../modals/ActiveSchedulesModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
 import { CreatePresetModal } from '../../modals/CreatePresetModal';
 import { ImportPresetModal } from '../../modals/ImportPresetModal';
-import { Logger } from '../../../utils/Logger';
 
 export class PresetList {
 	private listContainer: HTMLElement;
@@ -230,44 +230,46 @@ export class PresetList {
 					ExportKeys.EXPORT_EXTENSION
 				] as string) || '.json';
 
-			const performExport = async (includeSnippets = false): Promise<void> => {
-				try {
-					const extension: string = includeSnippets
-						? '.zip'
-						: preferredExtension;
+			const performExport = (includeSnippets = false): void => {
+				void (async (): Promise<void> => {
+					try {
+						const extension: string = includeSnippets
+							? '.zip'
+							: preferredExtension;
 
-					const timestamp = getFormattedTimestamp(
-						plugin.settingsService.settings[
-							ExportKeys.EXPORT_DATE_FORMAT
-						] as string
-					);
-					const timestampPart = timestamp ? `-${timestamp}` : '';
-					const filename = `bulk-export-style-manager${timestampPart}${extension}`;
-
-					if (includeSnippets) {
-						const separatePresets =
-							(plugin.settingsService.settings[
-								PreferencesKeys.SEPARATE_BULK_PRESETS
-							] as boolean) || false;
-						const data = await plugin.bundleService.createBundle(
-							presetsToExport,
-							preferredExtension,
-							separatePresets
+						const timestamp = getFormattedTimestamp(
+							plugin.settingsService.settings[
+								ExportKeys.EXPORT_DATE_FORMAT
+							] as string
 						);
-						await service.saveFileToVault(filename, data);
-					} else {
-						const content = JSON.stringify(presetsToExport, null, 2);
-						await service.saveFileToVault(filename, content);
-					}
+						const timestampPart = timestamp ? `-${timestamp}` : '';
+						const filename = `bulk-export-style-manager${timestampPart}${extension}`;
 
-					service.selectedPresets.clear();
-					this.renderPresetListItems();
-				} catch (err) {
-					Logger.error('Style Manager | Bulk export failed:', err);
-					plugin.settingsService.notifications.error(
-						`Export failed: ${err instanceof Error ? err.message : String(err)}`
-					);
-				}
+						if (includeSnippets) {
+							const separatePresets =
+								(plugin.settingsService.settings[
+									PreferencesKeys.SEPARATE_BULK_PRESETS
+								] as boolean) || false;
+							const data = await plugin.bundleService.createBundle(
+								presetsToExport,
+								preferredExtension,
+								separatePresets
+							);
+							await service.saveFileToVault(filename, data);
+						} else {
+							const content = JSON.stringify(presetsToExport, null, 2);
+							await service.saveFileToVault(filename, content);
+						}
+
+						service.selectedPresets.clear();
+						this.renderPresetListItems();
+					} catch (err) {
+						Logger.error('Style Manager | Bulk export failed:', err);
+						plugin.settingsService.notifications.error(
+							`Export failed: ${err instanceof Error ? err.message : String(err)}`
+						);
+					}
+				})();
 			};
 
 			const allSnippets = new Set<string>();
@@ -298,9 +300,13 @@ export class PresetList {
 					description,
 					'Include assets (ZIP)',
 					false,
-					() => performExport(true),
+					(): void => {
+						void performExport(true);
+					},
 					`Presets only (${preferredExtension})`,
-					() => performExport(false)
+					(): void => {
+						void performExport(false);
+					}
 				).open();
 			} else {
 				if (plugin.settingsService.settings[ConfirmKeys.SKIP_EXPORT_CONFIRM]) {
@@ -312,7 +318,9 @@ export class PresetList {
 						`Are you sure you want to export ${service.selectedPresets.size} selected presets to your vault?`,
 						`Export (${preferredExtension})`,
 						false,
-						() => performExport(false)
+						(): void => {
+							void performExport(false);
+						}
 					).open();
 				}
 			}
@@ -337,7 +345,7 @@ export class PresetList {
 				};
 
 				if (plugin.settingsService.settings[ConfirmKeys.SKIP_DELETE_CONFIRM]) {
-					performDelete();
+					void performDelete();
 				} else {
 					new ConfirmModal(
 						plugin.app,
@@ -345,7 +353,9 @@ export class PresetList {
 						`Are you sure you want to delete ${service.selectedPresets.size} presets? This action cannot be undone.`,
 						'Delete selected',
 						true,
-						performDelete
+						(): void => {
+							void performDelete();
+						}
 					).open();
 				}
 			});
@@ -376,9 +386,13 @@ export class PresetList {
 					{
 						skipConfirm: false,
 						applyActionKey: PreferencesKeys.BULK_PRESET_APPLY_ACTION,
-						onApplyShared: async (action) => await applyAll(false, action),
-						onApplyIsolate: async (action) => await applyAll(true, action),
-						onApplyRemote: async (deviceId: string, action) => {
+						onApplyShared: async (action): Promise<void> => {
+							await applyAll(false, action);
+						},
+						onApplyIsolate: async (action): Promise<void> => {
+							await applyAll(true, action);
+						},
+						onApplyRemote: async (deviceId: string, action): Promise<void> => {
 							const selectedIds = Array.from(service.selectedPresets);
 							await plugin.presetService.applyPresetsToLocker(
 								deviceId,

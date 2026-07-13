@@ -88,7 +88,7 @@ export class StyleManagerLayoutRenderer extends Component {
 
 	removeChildren(): void {
 		for (const tree of this.settingsComponentTrees) {
-			this.removeChild(tree as unknown as Component);
+			this.removeChild(tree);
 		}
 	}
 
@@ -178,7 +178,7 @@ export class StyleManagerLayoutRenderer extends Component {
 		}
 
 		if (this.activeTab === 'theme') {
-			new ThemeBuilderTab(
+			void new ThemeBuilderTab(
 				masterContainer,
 				this.app,
 				this.plugin,

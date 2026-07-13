@@ -125,7 +125,7 @@ export class VaultFileSelectModal extends Modal {
 			};
 
 			const iconContainer = item.createDiv('style-manager-suggestion-icon');
-			if (file.extension === 'md') setIcon(iconContainer, 'document');
+			if (file.extension === 'md') setIcon(iconContainer, 'activeDocument');
 			else if (file.extension === 'json') setIcon(iconContainer, 'code');
 			else if (file.extension === 'zip') setIcon(iconContainer, 'package');
 			else setIcon(iconContainer, 'file-text');

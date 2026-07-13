@@ -3,6 +3,7 @@ import { RRule } from 'rrule';
 import { PreferencesKeys } from '../constants';
 import StyleManagerPlugin from '../main';
 import { PresetSchedule } from '../types';
+
 import { Logger } from '../utils/Logger';
 
 export class PresetScheduleService {
@@ -14,14 +15,11 @@ export class PresetScheduleService {
 	}
 
 	get schedules(): PresetSchedule[] {
-		return (
-			(this.plugin.settingsService.sharedSettings
-				._manager_schedules as PresetSchedule[]) || []
-		);
+		return this.plugin.settingsService.sharedSettings._manager_schedules || [];
 	}
 
 	set schedules(val: PresetSchedule[]) {
-		this.plugin.settingsService.setSettings(
+		void this.plugin.settingsService.setSettings(
 			{ _manager_schedules: val },
 			{ silentUI: true, target: 'shared' }
 		);
@@ -30,14 +28,14 @@ export class PresetScheduleService {
 	public start(): void {
 		if (this.intervalId !== null) return;
 
-		this.cleanupOrphanedSchedules();
+		void this.cleanupOrphanedSchedules();
 
 		// Check immediately on start
-		this.checkSchedules();
+		void this.checkSchedules();
 
 		// Then check every 5 seconds for better accuracy
 		this.intervalId = window.setInterval(() => {
-			this.checkSchedules();
+			void this.checkSchedules();
 		}, 5 * 1000);
 	}
 
@@ -110,7 +108,7 @@ export class PresetScheduleService {
 			}
 
 			return rule.toText();
-		} catch (_e) {
+		} catch {
 			return 'Unknown schedule';
 		}
 	}

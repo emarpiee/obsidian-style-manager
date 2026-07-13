@@ -52,9 +52,9 @@ export class CSSParserLogsModal extends Modal {
 
 			const iconEl = headerEl.createSpan('style-manager-log-icon');
 			if (log.type === 'error') {
-				iconEl.innerHTML = `❌`;
+				iconEl.setText('❌');
 			} else {
-				iconEl.innerHTML = `⚠️`;
+				iconEl.setText('⚠️');
 			}
 
 			headerEl.createSpan({ cls: 'style-manager-log-name', text: log.name });

@@ -110,7 +110,7 @@ Use this method if you prefer to install files directly without third-party tool
 
 ### 3. Community Plugin Store
 
-> *Coming Soon.*
+> Not yet available on the Community Plugin Store. Use the manual or BRAT installation method above.
 
 ## Style Settings Migration Guide
 
@@ -159,7 +159,7 @@ Style Manager interface is structured into six functional tabs.
 - **Modification Indicators:** Customized settings are visually highlighted with a colored border on the left (modified border), allowing you to quickly identify modified values at a glance.
 - **Setting Count Badges:** Displays the number of modified settings within a section. Root sections show the total count, while sub-sections show local counts and a downward arrow (↓) if nested settings are also modified. Clicking a badge opens a focused view of all modified styles in that section.
 - **Modified-Only Filter:** A quick switch to hide unchanged settings and view only the settings you have specifically changed.
-- **Navigation:** Search bar for instant filtering (supports \`@id [id]\`, \`@type [known-type]\`, \`@title [text]\`, and \`@heading [text]\` prefixes), and a "Collapse/Expand All" toggle to manage large sets of style settings.
+- **Navigation:** Search bar for instant filtering (supports \`@id <id>\`, \`@type <known-type>\`, \`@title <text>\`, and \`@heading <text>\` prefixes), and a "Collapse/Expand All" toggle to manage large sets of style settings.
 - **Parse Logs:** An info button that opens a modal listing all warnings and errors found during the parsing of \`@settings\` blocks, allowing for quick debugging of CSS configurations.
 
 ### 2. Snippets Tab
@@ -171,7 +171,7 @@ Style Manager interface is structured into six functional tabs.
 - **Style Settings Indicator:** Visual indicator showing if a snippet supports configurable style settings.
 - **Advanced Filter Search:** Filter snippets using specialized search attributes:
     - \`@name\`, \`@description\`, \`@license\` – Match against snippet metadata.
-    - \`@settings [true/false]\` – Filter for snippets that do or do not support style settings.
+    - \`@settings <true/false>\` – Filter for snippets that do or do not support style settings.
 - **Vault Integration:** Quick-access buttons to open your system's file explorer directly to your vault's snippets folder.
 - **Bulk Selection:** Choose multiple snippets simultaneously for coordinated actions.
 
@@ -183,9 +183,9 @@ Style Manager interface is structured into six functional tabs.
 - **Theme Manifest Creation:** Create new custom themes by defining their metadata (Name, Author, etc.) via a dedicated manifest modal.
 - **Style Settings Indicator:** Visual indicator showing if a theme supports configurable style settings.
 - **Advanced Filter Search:** Filter themes using specialized search attributes:
-    - \`@author [name]\` – Find themes made by a specific creator.
-    - \`@name [name]\` – Find themes matching a specific title.
-    - \`@settings [true/false]\` – Filter for themes that do or do not support style settings.
+    - \`@author <name>\` – Find themes made by a specific creator. (e.g. \`@author emarpiee\`)
+    - \`@name <name>\` – Find themes matching a specific title. (e.g. \`@name Retroma\`)
+    - \`@settings <true/false>\` – Filter for themes that do or do not support style settings.
 - **Folder Shortcut:** One-click button to open your local \`.obsidian/themes\` directory.
 
 ### 4. Presets Tab
@@ -899,7 +899,7 @@ The Style Manager includes a suite of built-in tools designed to streamline the 
 | Tool                       | Type               | Description                                                                                                 |
 | :------------------------- | :----------------- | :---------------------------------------------------------------------------------------------------------- |
 | **Color Contrast Checker** | Accessibility      | Opens a contrast checker modal to ensure color accessibility WCAG standards. Can be expanded to a full tab. |
-| **Lorem Ipsum**            | Content Generation | Opens a lorem ipsum generator modal for layout and content testing. Can be expanded to a full tab.          |
+| **\`Lorem Ipsum\`**          | Content Generation | Opens a lorem ipsum generator modal for layout and content testing. Can be expanded to a full tab.          |
 | **Copy Accent Color**      | Utility            | Quickly copies the vault's current accent color to the clipboard.                                           |
 | **CSS Compatibility** (+)  | Information        | Displays the current Chrome, Node, and Electron versions for CSS feature support verification.              |
 | **Box Outline** (+)        | UI Debugger        | Toggles a global outline on all elements to help visualize the box model.                                   |

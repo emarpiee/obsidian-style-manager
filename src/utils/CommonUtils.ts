@@ -116,7 +116,7 @@ export class DataUtils {
 		if (data === null || typeof data !== 'object' || Array.isArray(data)) {
 			return data;
 		}
-		return Object.keys(data as object)
+		return Object.keys(data)
 			.sort()
 			.reduce<Record<string, unknown>>((acc, key) => {
 				acc[key] = DataUtils.canonicalize(

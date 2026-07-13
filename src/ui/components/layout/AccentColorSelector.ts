@@ -1,7 +1,7 @@
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { Menu, setTooltip } from 'obsidian';
 
 import { StorageKeys } from '../../../constants';
-import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
 import StyleManagerPlugin from '../../../main';
 import { getColorPickerConfig } from '../../../utils/ColorUtils';
 
@@ -20,13 +20,11 @@ export function renderAccentColorSelect(
 	const vConfigAccent = plugin.settingsService.bridge.getNativeConfig(
 		'accentColor'
 	) as string;
-	const nativeAccent = getComputedStyle(document.body)
+	const nativeAccent = getComputedStyle(activeDocument.body)
 		.getPropertyValue('--accent-color')
 		.trim();
-	const displayColor = (accentColor ||
-		vConfigAccent ||
-		nativeAccent ||
-		'#8a5cf5') as string;
+	const displayColor =
+		accentColor || vConfigAccent || nativeAccent || '#8a5cf5';
 
 	const triggerContainer = containerEl.createDiv({
 		cls: 'style-manager-accent-trigger-container',
@@ -50,18 +48,20 @@ export function renderAccentColorSelect(
 		})
 	);
 
-	pickr.on('pick', async (color) => {
-		const hexValue = color ? color.string('hex').toUpperCase() : '';
-		await plugin.settingsService.setSetting(
-			StorageKeys.ACCENT_COLOR,
-			hexValue,
-			{
-				silentUI: true,
-			}
-		);
-		// Visual application is handled by the setSetting -> applyAccentColor flow
-		plugin.settingsService.applyAccentColor(hexValue);
-		onRerender();
+	pickr.on('pick', (color): void => {
+		void (async (): Promise<void> => {
+			const hexValue = color ? color.string('hex').toUpperCase() : '';
+			await plugin.settingsService.setSetting(
+				StorageKeys.ACCENT_COLOR,
+				hexValue,
+				{
+					silentUI: true,
+				}
+			);
+			// Visual application is handled by the setSetting -> applyAccentColor flow
+			plugin.settingsService.applyAccentColor(hexValue);
+			onRerender();
+		})();
 	});
 
 	// Handle right-click for quick reset
@@ -72,17 +72,19 @@ export function renderAccentColorSelect(
 			item
 				.setTitle('Reset to Obsidian default')
 				.setIcon('rotate-ccw')
-				.onClick(async () => {
-					// Explicitly set to #8a5cf5 to ensure the setting persists for all UI components
-					await plugin.settingsService.setSetting(
-						StorageKeys.ACCENT_COLOR,
-						'#8a5cf5',
-						{
-							silentUI: true,
-						}
-					);
-					plugin.settingsService.applyAccentColor('#8a5cf5');
-					onRerender();
+				.onClick((): void => {
+					void (async (): Promise<void> => {
+						// Explicitly set to #8a5cf5 to ensure the setting persists for all UI components
+						await plugin.settingsService.setSetting(
+							StorageKeys.ACCENT_COLOR,
+							'#8a5cf5',
+							{
+								silentUI: true,
+							}
+						);
+						plugin.settingsService.applyAccentColor('#8a5cf5');
+						onRerender();
+					})();
 				});
 		});
 		menu.showAtMouseEvent(e);

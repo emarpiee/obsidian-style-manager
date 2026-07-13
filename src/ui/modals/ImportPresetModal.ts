@@ -86,8 +86,10 @@ export class ImportPresetModal extends Modal {
 				new ConflictResolutionModal(
 					this.app,
 					allConflicts,
-					async (resolutions) => {
-						await performImport(resolutions);
+					(resolutions): void => {
+						void (async (): Promise<void> => {
+							await performImport(resolutions);
+						})();
 					}
 				).open();
 			} else {
@@ -102,19 +104,21 @@ export class ImportPresetModal extends Modal {
 				'Automatically import your settings from the Style Settings plugin.'
 			)
 			.addButton((btn) => {
-				btn.setButtonText('Import').onClick(async () => {
-					const path = normalizePath(
-						`${this.app.vault.configDir}/plugins/obsidian-style-settings/data.json`
-					);
-					const exists = await this.app.vault.adapter.exists(path);
-					if (!exists) {
-						this.service.plugin.settingsService.notifications.error(
-							'Style Settings data.json not found. Is the plugin installed?'
+				btn.setButtonText('Import').onClick((): void => {
+					void (async (): Promise<void> => {
+						const path = normalizePath(
+							`${this.app.vault.configDir}/plugins/obsidian-style-settings/data.json`
 						);
-						return;
-					}
-					const content = await this.app.vault.adapter.read(path);
-					await processImports([{ content }]);
+						const exists = await this.app.vault.adapter.exists(path);
+						if (!exists) {
+							this.service.plugin.settingsService.notifications.error(
+								'Style Settings data.json not found. Is the plugin installed?'
+							);
+							return;
+						}
+						const content = await this.app.vault.adapter.read(path);
+						await processImports([{ content }]);
+					})();
 				});
 			});
 
@@ -123,16 +127,14 @@ export class ImportPresetModal extends Modal {
 			.setName('Import from files')
 			.setDesc('Select .json or .zip bundle files from device file explorer.')
 			.addButton((btn) => {
-				const input = document.createElement('input');
+				const input = activeDocument.createElement('input');
 				input.addClass('style-manager-modal-input-file');
 				input.addClass('style-manager-hidden');
 				input.type = 'file';
 				input.accept = '.json,.md,.txt,.zip';
 				input.multiple = true;
 				input.onchange = async (e: Event): Promise<void> => {
-					const files = Array.from(
-						(e.target as HTMLInputElement).files ?? []
-					) as File[];
+					const files = Array.from((e.target as HTMLInputElement).files ?? []);
 					if (files.length > 0) {
 						const promises = files.map((file) => {
 							return new Promise<{
@@ -142,7 +144,7 @@ export class ImportPresetModal extends Modal {
 								const reader = new FileReader();
 								reader.onload = (e): void => {
 									resolve({
-										content: e.target?.result as string | ArrayBuffer,
+										content: e.target?.result,
 										name: file.name.replace(/\.(json|md|txt|zip)$/, ''),
 									});
 								};
@@ -169,19 +171,21 @@ export class ImportPresetModal extends Modal {
 			.setDesc('Browse and select files already in your vault.')
 			.addButton((btn) => {
 				btn.setButtonText('Browse vault...').onClick(() => {
-					new VaultFileSelectModal(this.app, async (selectedFiles) => {
-						if (selectedFiles.length > 0) {
-							const imports = await Promise.all(
-								selectedFiles.map(async (f) => ({
-									content:
-										f.extension === 'zip'
-											? await this.app.vault.readBinary(f)
-											: await this.app.vault.read(f),
-									name: f.name.replace(/\.(json|md|txt|zip)$/, ''),
-								}))
-							);
-							await processImports(imports);
-						}
+					new VaultFileSelectModal(this.app, (selectedFiles): void => {
+						void (async (): Promise<void> => {
+							if (selectedFiles.length > 0) {
+								const imports = await Promise.all(
+									selectedFiles.map(async (f) => ({
+										content:
+											f.extension === 'zip'
+												? await this.app.vault.readBinary(f)
+												: await this.app.vault.read(f),
+										name: f.name.replace(/\.(json|md|txt|zip)$/, ''),
+									}))
+								);
+								await processImports(imports);
+							}
+						})();
 					}).open();
 				});
 			});
@@ -209,27 +213,29 @@ export class ImportPresetModal extends Modal {
 				btn
 					.setButtonText('Import from text')
 					.setCta()
-					.onClick(async () => {
-						const val = (
-							textArea.components[0] as TextAreaComponent
-						).getValue();
-						if (!val.trim()) {
-							this.service.plugin.settingsService.notifications.error(
-								'Invalid preset JSON data.',
-								1000
-							);
-							return;
-						}
+					.onClick((): void => {
+						void (async (): Promise<void> => {
+							const val = (
+								textArea.components[0] as TextAreaComponent
+							).getValue();
+							if (!val.trim()) {
+								this.service.plugin.settingsService.notifications.error(
+									'Invalid preset JSON data.',
+									1000
+								);
+								return;
+							}
 
-						try {
-							JSON.parse(val);
-							await processImports([{ content: val }]);
-						} catch {
-							this.service.plugin.settingsService.notifications.error(
-								'Invalid preset JSON data.',
-								1000
-							);
-						}
+							try {
+								JSON.parse(val);
+								await processImports([{ content: val }]);
+							} catch {
+								this.service.plugin.settingsService.notifications.error(
+									'Invalid preset JSON data.',
+									1000
+								);
+							}
+						})();
 					});
 			});
 	}

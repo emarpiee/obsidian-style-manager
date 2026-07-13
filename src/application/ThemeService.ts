@@ -53,7 +53,9 @@ export class ThemeService {
 			this.isApplyingVisualTheme = false;
 		}
 
-		const localTag = document.getElementById('style-manager-session-theme');
+		const localTag = activeDocument.getElementById(
+			'style-manager-session-theme'
+		);
 		if (localTag) localTag.remove();
 	}
 
@@ -74,7 +76,7 @@ export class ThemeService {
 			}
 		}
 
-		const body = document.body;
+		const body = activeDocument.body;
 		let targetMode = mode;
 		const isFollowSync = mode === 'system' || !mode;
 
@@ -110,10 +112,12 @@ export class ThemeService {
 		}
 
 		// Remove old style tag if it exists from previous version
-		const oldTag = document.getElementById('style-manager-accent-overrides');
+		const oldTag = activeDocument.getElementById(
+			'style-manager-accent-overrides'
+		);
 		if (oldTag) oldTag.remove();
 
-		const body = document.body;
+		const body = activeDocument.body;
 		const vars = [
 			'--accent-color',
 			'--accent-h',
@@ -304,7 +308,7 @@ export class ThemeService {
 	/** Full cleanup: uninstall patches, remove session overrides. */
 	cleanup(): void {
 		this.uninstallPatches();
-		document.getElementById('style-manager-session-theme')?.remove();
+		activeDocument.getElementById('style-manager-session-theme')?.remove();
 
 		// After uninstalling patches, getNativeConfig returns the TRUE shared theme from disk.
 		// We re-apply it so that Obsidian's visuals are restored from Isolate Mode.

@@ -38,23 +38,19 @@ export class PresetService {
 		const mode = this.getEffectiveViewMode();
 		if (mode === 'isolate') {
 			return (
-				(this.plugin.settingsService.isolateModeService.isolateSettings
-					._manager_presets as Preset[]) || []
+				this.plugin.settingsService.isolateModeService.isolateSettings
+					._manager_presets || []
 			);
 		}
-		return (
-			(this.plugin.settingsService.sharedSettings
-				._manager_presets as Preset[]) || []
-		);
+		return this.plugin.settingsService.sharedSettings._manager_presets || [];
 	}
 
 	public getPresetById(id: string): Preset | undefined {
 		const sharedPresets =
-			(this.plugin.settingsService.sharedSettings
-				._manager_presets as Preset[]) || [];
+			this.plugin.settingsService.sharedSettings._manager_presets || [];
 		const isolatePresets =
-			(this.plugin.settingsService.isolateModeService.isolateSettings
-				._manager_presets as Preset[]) || [];
+			this.plugin.settingsService.isolateModeService.isolateSettings
+				._manager_presets || [];
 
 		return (
 			sharedPresets.find((p) => p.id === id) ||
@@ -64,7 +60,7 @@ export class PresetService {
 
 	set presets(val: Preset[]) {
 		const mode = this.getEffectiveViewMode();
-		this.plugin.settingsService.setSettings(
+		void this.plugin.settingsService.setSettings(
 			{ _manager_presets: val },
 			{ silentUI: true, target: mode }
 		);
@@ -289,7 +285,7 @@ export class PresetService {
 			for (const [key, value] of Object.entries(preset.data)) {
 				if (key === StorageKeys.SNIPPETS && Array.isArray(value)) {
 					snippetsEncountered = true;
-					value.forEach((s) => mergedSnippets.add(s));
+					value.forEach((s) => mergedSnippets.add(s as string));
 				} else {
 					mergedData[key] = value;
 				}
@@ -487,7 +483,7 @@ export class PresetService {
 			appearanceMeta.value =
 				appearance && appearance !== 'system'
 					? appearance
-					: document.body.classList.contains('theme-dark')
+					: activeDocument.body.classList.contains('theme-dark')
 						? 'dark'
 						: 'light';
 		}
@@ -512,8 +508,8 @@ export class PresetService {
 			const vConfigAccent =
 				this.plugin.settingsService.bridge.getNativeConfig('accentColor');
 			const nativeAccent =
-				typeof document !== 'undefined'
-					? getComputedStyle(document.body)
+				typeof activeDocument !== 'undefined'
+					? getComputedStyle(activeDocument.body)
 							.getPropertyValue('--accent-color')
 							.trim()
 					: '';

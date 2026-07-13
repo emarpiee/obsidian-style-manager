@@ -37,13 +37,13 @@ export interface PrefixMetadata {
 	value?: string | number | string[];
 }
 
-export type SettingValue = number | string | boolean | unknown;
+export type SettingValue = unknown;
 
 export interface PresetSchedule {
 	id: string;
 	presetId: string;
 	rruleString: string;
-	targetLocker: 'shared' | 'isolate' | string;
+	targetLocker: string;
 	lastExecuted: number;
 	deviceId?: string;
 	isPaused?: boolean;

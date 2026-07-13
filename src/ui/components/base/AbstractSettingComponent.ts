@@ -41,7 +41,7 @@ export abstract class AbstractSettingComponent extends Component {
 	get containerEl(): HTMLElement {
 		return this.parent instanceof HTMLElement
 			? this.parent
-			: (this.parent.childEl as HTMLElement);
+			: this.parent.childEl;
 	}
 
 	onload(): void {

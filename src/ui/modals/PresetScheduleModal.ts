@@ -175,7 +175,7 @@ export class PresetScheduleModal extends Modal {
 				.setName('Date & time')
 				.setDesc('When should this preset be applied?');
 
-			const inputEl = document.createElement('input');
+			const inputEl = activeDocument.createElement('input');
 			inputEl.type = 'datetime-local';
 			inputEl.value = this.datetimeValue;
 			inputEl.onchange = (e): void => {
@@ -203,7 +203,7 @@ export class PresetScheduleModal extends Modal {
 				.setName('Time')
 				.setDesc('What time should this preset run?');
 
-			const inputEl = document.createElement('input');
+			const inputEl = activeDocument.createElement('input');
 			inputEl.type = 'time';
 			inputEl.value = this.timeValue;
 			inputEl.onchange = (e): void => {

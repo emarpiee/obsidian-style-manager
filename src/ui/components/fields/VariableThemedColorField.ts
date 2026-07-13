@@ -18,9 +18,9 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
-import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
 import { VariableThemedColor, resetTooltip } from '../../../types';
 import { getColorPickerConfig, isColorValid } from '../../../utils/ColorUtils';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
@@ -53,19 +53,23 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		// Construct description
 		this.settingEl.descEl.createSpan({}, (span) => {
 			if (description) {
-				span.appendChild(document.createTextNode(description));
+				span.appendChild(activeDocument.createTextNode(description));
 			}
 		});
 
 		this.settingEl.descEl.createDiv({}, (div) => {
 			div.createEl('small', {}, (sm) => {
 				sm.appendChild(createEl('strong', { text: 'Default (light): ' }));
-				sm.appendChild(document.createTextNode(this.setting['default-light']));
+				sm.appendChild(
+					activeDocument.createTextNode(this.setting['default-light'])
+				);
 			});
 			div.createEl('br');
 			div.createEl('small', {}, (sm) => {
 				sm.appendChild(createEl('strong', { text: 'Default (dark): ' }));
-				sm.appendChild(document.createTextNode(this.setting['default-dark']));
+				sm.appendChild(
+					activeDocument.createTextNode(this.setting['default-dark'])
+				);
 			});
 		});
 
@@ -187,7 +191,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			const defaultColorRaw = this.setting['default-light'];
 			const resolvedDefaultValue = defaultColorRaw || '';
 
-			this.settingsService.clearSetting(this.sectionId, idLight, {
+			void this.settingsService.clearSetting(this.sectionId, idLight, {
 				silentUI: true,
 			});
 
@@ -249,7 +253,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			const defaultColorRaw = this.setting['default-dark'];
 			const resolvedDefaultValue = defaultColorRaw || '';
 
-			this.settingsService.clearSetting(this.sectionId, idDark, {
+			void this.settingsService.clearSetting(this.sectionId, idDark, {
 				silentUI: true,
 			});
 
@@ -272,7 +276,9 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 		_instance: ColorPicker
 	): void {
 		if (!color) {
-			this.settingsService.clearSetting(this.sectionId, id, { silentUI: true });
+			void this.settingsService.clearSetting(this.sectionId, id, {
+				silentUI: true,
+			});
 		} else {
 			const hexValue = color.string('hex').toUpperCase();
 			const normalizedHex = hexValue.toLowerCase();
@@ -284,11 +290,11 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 			const normalizedDefault = (defaultColor || '').toLowerCase();
 
 			if (normalizedHex === normalizedDefault) {
-				this.settingsService.clearSetting(this.sectionId, id, {
+				void this.settingsService.clearSetting(this.sectionId, id, {
 					silentUI: true,
 				});
 			} else {
-				this.settingsService.setSetting(this.sectionId, id, hexValue, {
+				void this.settingsService.setSetting(this.sectionId, id, hexValue, {
 					silentUI: true,
 				});
 			}

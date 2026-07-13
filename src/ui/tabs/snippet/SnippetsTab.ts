@@ -50,35 +50,38 @@ export class SnippetsTab {
 				btn
 					.setIcon('plus')
 					.setTooltip('Create snippet')
-					.onClick(async () => {
-						const id =
-							await this.plugin.settingsService.snippetService.createSnippet();
+					.onClick((): void => {
+						void (async (): Promise<void> => {
+							const id =
+								await this.plugin.settingsService.snippetService.createSnippet();
 
-						const openModal =
-							this.plugin.settingsService.settings[
-								PreferencesKeys.OPEN_MODAL_ON_CREATE
-							] !== false;
-						if (openModal) {
-							const useDefaultApp =
-								localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) ===
-								'true';
-							if (useDefaultApp) {
-								const path =
-									this.plugin.settingsService.bridge.getSnippetPath(id);
-								(
-									this.app as unknown as {
-										openWithDefaultApp: (path: string) => void;
-									}
-								).openWithDefaultApp(path);
-							} else {
-								new CSSEditorModal(this.app, this.plugin, {
-									type: 'Snippet',
-									id,
-								}).open();
+							const openModal =
+								this.plugin.settingsService.settings[
+									PreferencesKeys.OPEN_MODAL_ON_CREATE
+								] !== false;
+							if (openModal) {
+								const useDefaultApp =
+									this.plugin.app.loadLocalStorage(
+										PreferencesKeys.OPEN_IN_DEFAULT_APP
+									) === 'true';
+								if (useDefaultApp) {
+									const path =
+										this.plugin.settingsService.bridge.getSnippetPath(id);
+									(
+										this.app as unknown as {
+											openWithDefaultApp: (path: string) => void;
+										}
+									).openWithDefaultApp(path);
+								} else {
+									new CSSEditorModal(this.app, this.plugin, {
+										type: 'Snippet',
+										id,
+									}).open();
+								}
 							}
-						}
 
-						this.onRerender();
+							this.onRerender();
+						})();
 					});
 			})
 			.addExtraButton((btn) => {
@@ -97,7 +100,7 @@ export class SnippetsTab {
 							// Robust fallback: show the snippets folder by targeting its path
 							(
 								this.app as unknown as { showInFolder?: (path: string) => void }
-							).showInFolder?.('.obsidian/snippets');
+							).showInFolder?.(`${this.app.vault.configDir}/snippets`);
 						}
 					});
 			});
@@ -302,7 +305,7 @@ export class SnippetsTab {
 			.setButtonText('Toggle')
 			.setCta()
 			.onClick(() => {
-				this.toggleAllSelected();
+				void this.toggleAllSelected();
 			});
 
 		new ButtonComponent(actions)
@@ -355,23 +358,25 @@ export class SnippetsTab {
 			`Are you sure you want to delete ${count} selected snippets? This action cannot be undone.`,
 			'Delete all',
 			true,
-			async () => {
-				const selectedIds = Array.from(this.plugin.selectedSnippets);
-				for (const snippetId of selectedIds) {
-					try {
-						await this.plugin.settingsService.snippetService.deleteSnippet(
-							snippetId
-						);
-					} catch (err) {
-						Logger.error(`Failed to delete snippet ${snippetId}:`, err);
+			(): void => {
+				void (async (): Promise<void> => {
+					const selectedIds = Array.from(this.plugin.selectedSnippets);
+					for (const snippetId of selectedIds) {
+						try {
+							await this.plugin.settingsService.snippetService.deleteSnippet(
+								snippetId
+							);
+						} catch (err) {
+							Logger.error(`Failed to delete snippet ${snippetId}:`, err);
+						}
 					}
-				}
 
-				this.plugin.selectedSnippets.clear();
-				this.plugin.settingsService.notifications.snippet(
-					`Deleted ${count} snippets`
-				);
-				this.onRerender();
+					this.plugin.selectedSnippets.clear();
+					this.plugin.settingsService.notifications.snippet(
+						`Deleted ${count} snippets`
+					);
+					this.onRerender();
+				})();
 			}
 		).open();
 	}

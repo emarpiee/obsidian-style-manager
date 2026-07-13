@@ -78,7 +78,7 @@ export class PresetNamePromptModal extends Modal {
 		});
 
 		// Focus the input after a short delay to ensure it catches focus
-		setTimeout(() => input.focus(), 10);
+		window.setTimeout(() => input.focus(), 10);
 	}
 
 	onClose(): void {

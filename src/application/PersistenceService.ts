@@ -61,7 +61,7 @@ export class PersistenceService {
 		let sharedSettings = this.options.getSharedSettings();
 
 		if (!options?.skipMerge && rawOnDisk !== null) {
-			const diskData = JSON.parse(rawOnDisk);
+			const diskData = JSON.parse(rawOnDisk) as StyleManagerSettings;
 			if (this.options.sharedStateService.hasContentChanged(diskData)) {
 				Logger.log(
 					'Style Manager | Conflict detected during save! Merging with external disk state.'
@@ -107,7 +107,7 @@ export class PersistenceService {
 
 		await this.options.sharedStore.save(dataToSave);
 		const writtenRaw = (await this.options.sharedStore.readRaw()) || '{}';
-		const finalData = JSON.parse(writtenRaw);
+		const finalData = JSON.parse(writtenRaw) as StyleManagerSettings;
 
 		this.options.sharedStateService.setSyncState(finalData);
 		this.lastLoadedData = finalData;
@@ -154,7 +154,7 @@ export class PersistenceService {
 		} else {
 			this.isSafeToSave = true;
 			const loadedRaw = (await this.options.sharedStore.readRaw()) || '{}';
-			const finalData = JSON.parse(loadedRaw);
+			const finalData = JSON.parse(loadedRaw) as StyleManagerSettings;
 			this.options.sharedStateService.setSyncState(finalData);
 			this.lastLoadedData = finalData;
 		}
@@ -199,7 +199,7 @@ export class PersistenceService {
 		const raw = await this.options.sharedStore.readRaw();
 		if (raw === null) return;
 
-		const diskData = JSON.parse(raw);
+		const diskData = JSON.parse(raw) as StyleManagerSettings;
 		if (this.options.sharedStateService.hasContentChanged(diskData)) {
 			Logger.log(
 				'Style Manager | External content change detected. Syncing...'

@@ -58,7 +58,7 @@ export class SectionStyleModal extends Modal {
 				btn.setButtonText('Export').onClick(() => {
 					const blob = new Blob([output], { type: 'application/json' });
 					const url = URL.createObjectURL(blob);
-					const a = document.createElement('a');
+					const a = activeDocument.createElement('a');
 					a.href = url;
 					const timestamp = getFormattedTimestamp(
 						this.plugin.settingsService.settings[

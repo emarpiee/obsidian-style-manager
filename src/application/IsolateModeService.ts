@@ -53,7 +53,7 @@ export class IsolateModeService {
 		const currentTheme =
 			this.delegate.plugin.settingsService.settings[StorageKeys.THEME];
 		if (currentTheme)
-			this.delegate.applyTheme(currentTheme as string, !enabled);
+			void this.delegate.applyTheme(currentTheme as string, !enabled);
 
 		const currentApp =
 			this.delegate.plugin.settingsService.settings[StorageKeys.APPEARANCE];
@@ -80,7 +80,7 @@ export class IsolateModeService {
 			);
 		} else {
 			await this.delegate.plugin.settingsService.syncSnippetState();
-			this.delegate.plugin.settingsService.refreshService.trigger(
+			void this.delegate.plugin.settingsService.refreshService.trigger(
 				RefreshLevel.STYLES_ONLY
 			);
 		}
@@ -144,7 +144,7 @@ export class IsolateModeService {
 		this._isolateSettings = this.snapshotSharedToIsolate();
 		await this.delegate.save();
 		this.delegate.updateMerged();
-		this.delegate.plugin.settingsService.refreshService.trigger(
+		void this.delegate.plugin.settingsService.refreshService.trigger(
 			RefreshLevel.FULL_VISUAL
 		);
 

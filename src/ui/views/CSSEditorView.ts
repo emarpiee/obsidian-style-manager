@@ -57,12 +57,14 @@ export class CSSEditorView extends ItemView {
 					const el = this.addAction(icon, title, callback);
 					this.actionElements.push(el);
 					return el;
-				}
+				},
 			});
 
 			// Force update the tab title directly
-			// eslint-disable-next-line @typescript-eslint/no-explicit-any
-			const leafAny = this.leaf as any;
+			const leafAny = this.leaf as WorkspaceLeaf & {
+				tabHeaderInnerTitleEl?: HTMLElement;
+				tabHeaderTitleEl?: HTMLElement;
+			};
 			const newTitle = this.getDisplayText();
 
 			if (leafAny.tabHeaderInnerTitleEl) {
@@ -73,7 +75,8 @@ export class CSSEditorView extends ItemView {
 			}
 			// Update the header inside the view
 			if (this.containerEl) {
-				const headerTitle = this.containerEl.querySelector('.view-header-title');
+				const headerTitle =
+					this.containerEl.querySelector('.view-header-title');
 				if (headerTitle) {
 					headerTitle.textContent = newTitle;
 
@@ -83,8 +86,10 @@ export class CSSEditorView extends ItemView {
 						headerTitle.parentNode?.replaceChild(newHeaderTitle, headerTitle);
 
 						newHeaderTitle.setAttribute('contenteditable', 'true');
-						newHeaderTitle.classList.add('style-manager-editor-title-input-tab-view');
-						// Obsidian native titles usually have these styles applied dynamically or are inputs, 
+						newHeaderTitle.classList.add(
+							'style-manager-editor-title-input-tab-view'
+						);
+						// Obsidian native titles usually have these styles applied dynamically or are inputs,
 						// but contenteditable on .view-header-title works great natively.
 
 						newHeaderTitle.addEventListener('keydown', (e) => {
@@ -94,34 +99,37 @@ export class CSSEditorView extends ItemView {
 							}
 						});
 
-						newHeaderTitle.addEventListener('blur', async () => {
-							const newName = newHeaderTitle.textContent?.trim();
-							// Only attempt rename if it changed and is not empty
-							if (newName && newName !== this.source!.id) {
-								try {
-									await this.plugin.settingsService.snippetService.renameSnippet(
-										this.source!.id,
-										newName
-									);
-									this.source!.id = newName;
-									
-									// Update internal and external titles
-									const updatedTitle = this.getDisplayText();
-									if (leafAny.tabHeaderInnerTitleEl) leafAny.tabHeaderInnerTitleEl.innerText = updatedTitle;
-									if (leafAny.tabHeaderTitleEl) leafAny.tabHeaderTitleEl.innerText = updatedTitle;
-									newHeaderTitle.textContent = updatedTitle;
-									
-								} catch (err) {
-									// Revert on failure
+						newHeaderTitle.addEventListener('blur', (): void => {
+							void (async (): Promise<void> => {
+								const newName = newHeaderTitle.textContent?.trim();
+								// Only attempt rename if it changed and is not empty
+								if (newName && newName !== this.source.id) {
+									try {
+										await this.plugin.settingsService.snippetService.renameSnippet(
+											this.source.id,
+											newName
+										);
+										this.source.id = newName;
+
+										// Update internal and external titles
+										const updatedTitle = this.getDisplayText();
+										if (leafAny.tabHeaderInnerTitleEl)
+											leafAny.tabHeaderInnerTitleEl.innerText = updatedTitle;
+										if (leafAny.tabHeaderTitleEl)
+											leafAny.tabHeaderTitleEl.innerText = updatedTitle;
+										newHeaderTitle.textContent = updatedTitle;
+									} catch (err) {
+										// Revert on failure
+										newHeaderTitle.textContent = this.getDisplayText();
+										this.plugin.settingsService.notifications.error(
+											'Failed to rename snippet: ' + (err as Error).message
+										);
+									}
+								} else {
+									// Revert to original if empty or unchanged
 									newHeaderTitle.textContent = this.getDisplayText();
-									this.plugin.settingsService.notifications.error(
-										'Failed to rename snippet: ' + (err as Error).message
-									);
 								}
-							} else {
-								// Revert to original if empty or unchanged
-								newHeaderTitle.textContent = this.getDisplayText();
-							}
+							})();
 						});
 					}
 				}
@@ -130,7 +138,7 @@ export class CSSEditorView extends ItemView {
 	}
 
 	getState(): Record<string, unknown> {
-		const state = (super.getState() as Record<string, unknown>) || {};
+		const state = super.getState() || {};
 		if (this.source) {
 			state.source = this.source;
 		}
@@ -154,7 +162,7 @@ export class CSSEditorView extends ItemView {
 					},
 					'Save',
 					() => {
-						this.editor.handleSave().then(() => {
+						void this.editor.handleSave().then(() => {
 							originalDetach();
 						});
 					}

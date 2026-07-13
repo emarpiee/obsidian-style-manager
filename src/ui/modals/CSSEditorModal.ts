@@ -1,9 +1,9 @@
 import { App, Modal, TextComponent } from 'obsidian';
 
+import { ConfirmModal } from './ConfirmModal';
+
 import StyleManagerPlugin from '../../main';
 import { CSSEditor } from '../components/CSSEditor';
-
-import { ConfirmModal } from './ConfirmModal';
 
 export class CSSEditorModal extends Modal {
 	private editor: CSSEditor;
@@ -58,7 +58,7 @@ export class CSSEditorModal extends Modal {
 		nameInput.inputEl.addEventListener('keydown', (e) => {
 			if ((e.ctrlKey || e.metaKey) && e.key === 's') {
 				e.preventDefault();
-				this.editor.handleSave();
+				void this.editor.handleSave();
 			}
 		});
 
@@ -86,7 +86,7 @@ export class CSSEditorModal extends Modal {
 				},
 				'Save',
 				() => {
-					this.editor.handleSave().then(() => {
+					void this.editor.handleSave().then(() => {
 						this.forceClose = true;
 						this.close();
 					});

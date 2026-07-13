@@ -1,6 +1,5 @@
 import chroma from 'chroma-js';
-
-import ColorPicker from '../lib/colorpicker/colorpicker.min.js';
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 
 /**
  * Returns true when `color` is a recognised CSS colour prefix
@@ -48,17 +47,17 @@ export function getColorPickerConfig(opts: {
 	const safeColor = isColorValid(defaultColor) ? defaultColor : null;
 
 	let targetContainer = container;
-	if (isView && typeof document !== 'undefined') {
-		let sharedContainer = document.querySelector(
+	if (isView && typeof activeDocument !== 'undefined') {
+		let sharedContainer = activeDocument.querySelector(
 			'.style-manager-color-picker-wrapper'
-		) as HTMLElement;
+		);
 		if (!sharedContainer) {
-			sharedContainer = document.createElement('div');
+			sharedContainer = activeDocument.createElement('div');
 			sharedContainer.className =
 				'style-manager-color-picker-wrapper style-manager-plugin';
-			document.body.appendChild(sharedContainer);
+			activeDocument.body.appendChild(sharedContainer);
 		}
-		targetContainer = sharedContainer;
+		targetContainer = sharedContainer as HTMLElement;
 	}
 
 	return {

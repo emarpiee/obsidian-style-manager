@@ -29,6 +29,8 @@ export interface DeviceLocker {
 
 export interface IdentityStorageAdapter {
 	getDevices(): Record<string, DeviceLocker> | undefined;
+	loadLocalStorage(key: string): unknown;
+	saveLocalStorage(key: string, data: unknown): void;
 	setDevices(
 		devices: Record<
 			string,
@@ -139,7 +141,7 @@ export interface ThemeServiceDeps {
 	notifications: NotificationService;
 }
 
-export type AppearanceMode = 'light' | 'dark' | 'system' | string;
+export type AppearanceMode = string;
 
 export interface RefreshDelegates {
 	parseCSS?: () => void;

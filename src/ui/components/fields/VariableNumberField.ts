@@ -56,7 +56,9 @@ export class VariableNumberField extends AbstractSettingComponent {
 						this.setting.id
 					);
 					this.textComponent.setValue(
-						stored != null ? stored.toString() : (this.setting.default?.toString() ?? '')
+						stored != null
+							? stored.toString()
+							: (this.setting.default?.toString() ?? '')
 					);
 					return;
 				}
@@ -64,11 +66,15 @@ export class VariableNumberField extends AbstractSettingComponent {
 				const numValue = Number(value);
 
 				if (numValue === this.setting.default) {
-					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-						silentUI: true,
-					});
+					void this.settingsService.clearSetting(
+						this.sectionId,
+						this.setting.id,
+						{
+							silentUI: true,
+						}
+					);
 				} else {
-					this.settingsService.setSetting(
+					void this.settingsService.setSetting(
 						this.sectionId,
 						this.setting.id,
 						numValue,
@@ -80,7 +86,9 @@ export class VariableNumberField extends AbstractSettingComponent {
 			};
 
 			text.setValue(
-				value != null ? value.toString() : (this.setting.default?.toString() ?? '')
+				value != null
+					? value.toString()
+					: (this.setting.default?.toString() ?? '')
 			);
 
 			text.inputEl.addEventListener('blur', () => {
@@ -100,9 +108,13 @@ export class VariableNumberField extends AbstractSettingComponent {
 			b.setIcon('reset');
 			b.onClick(() => {
 				this.textComponent.setValue(this.setting.default?.toString() ?? '');
-				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-					silentUI: true,
-				});
+				void this.settingsService.clearSetting(
+					this.sectionId,
+					this.setting.id,
+					{
+						silentUI: true,
+					}
+				);
 				this.updateModifiedClass();
 			});
 			b.setTooltip(resetTooltip);

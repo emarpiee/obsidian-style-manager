@@ -1,7 +1,7 @@
 import chroma from 'chroma-js';
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { Notice, Setting, setIcon, setTooltip } from 'obsidian';
 
-import ColorPicker from '../../lib/colorpicker/colorpicker.min.js';
 import StyleManagerPlugin from '../../main';
 import { getColorPickerConfig } from '../../utils/ColorUtils';
 
@@ -285,8 +285,10 @@ export class ColorContrastChecker {
 
 	private updateResults(): void {
 		this.updateLabels();
-		this.previewEl.style.backgroundColor = this.bgColor;
-		this.previewEl.style.color = this.fgColor;
+		this.previewEl.setCssStyles({
+			backgroundColor: this.bgColor,
+			color: this.fgColor,
+		});
 
 		try {
 			const contrast = chroma.contrast(this.fgColor, this.bgColor);
@@ -303,13 +305,13 @@ export class ColorContrastChecker {
 				.setDesc(`Ratio: ${contrast.toFixed(2)}:1`);
 
 			const createBadge = (text: string, pass: boolean): HTMLElement => {
-				const badge = document.createElement('span');
+				const badge = activeDocument.createElement('span');
 				badge.setText(text);
 				badge.addClass('style-manager-tool-contrast-badge');
-				badge.style.backgroundColor = pass
-					? 'var(--color-green)'
-					: 'var(--color-red)';
-				badge.style.color = 'var(--text-on-accent)';
+				badge.setCssStyles({
+					backgroundColor: pass ? 'var(--color-green)' : 'var(--color-red)',
+					color: 'var(--text-on-accent)',
+				});
 				return badge;
 			};
 
@@ -332,7 +334,7 @@ export class ColorContrastChecker {
 			largeDiv.appendChild(
 				createBadge(`AAA: ${largeAAA}`, largeAAA === 'Pass')
 			);
-		} catch (_e) {
+		} catch {
 			this.resultsEl.empty();
 			this.resultsEl.setText(
 				'Invalid color combination for contrast calculation.'

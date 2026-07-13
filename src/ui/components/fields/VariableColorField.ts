@@ -18,9 +18,9 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
+import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
-import ColorPicker from '../../../lib/colorpicker/colorpicker.min.js';
 import { VariableColor, resetTooltip } from '../../../types';
 import {
 	getColorPickerConfig,
@@ -93,20 +93,28 @@ export class VariableColorField extends AbstractSettingComponent {
 			color: InstanceType<typeof ColorPicker.Color> | null
 		): void => {
 			if (!color) {
-				this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-					silentUI: true,
-				});
+				void this.settingsService.clearSetting(
+					this.sectionId,
+					this.setting.id,
+					{
+						silentUI: true,
+					}
+				);
 			} else {
 				const hexValue = color.string('hex').toUpperCase();
 				const normalizedHex = hexValue.toLowerCase();
 				const normalizedDefault = (this.setting.default || '').toLowerCase();
 
 				if (normalizedHex === normalizedDefault) {
-					this.settingsService.clearSetting(this.sectionId, this.setting.id, {
-						silentUI: true,
-					});
+					void this.settingsService.clearSetting(
+						this.sectionId,
+						this.setting.id,
+						{
+							silentUI: true,
+						}
+					);
 				} else {
-					this.settingsService.setSetting(
+					void this.settingsService.setSetting(
 						this.sectionId,
 						this.setting.id,
 						hexValue,
@@ -135,7 +143,7 @@ export class VariableColorField extends AbstractSettingComponent {
 			const defaultColorRaw = this.setting.default;
 			const resolvedDefaultValue = defaultColorRaw || '';
 
-			this.settingsService.clearSetting(this.sectionId, this.setting.id, {
+			void this.settingsService.clearSetting(this.sectionId, this.setting.id, {
 				silentUI: true,
 			});
 

@@ -1,9 +1,8 @@
 import { setIcon, setTooltip } from 'obsidian';
 
-import { Logger } from '../../../utils/Logger';
-
 import { StorageKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
+import { Logger } from '../../../utils/Logger';
 import { ThemeOption, ThemeSuggestModal } from '../../modals/ThemeSuggestModal';
 
 export function renderThemeSelect(
@@ -28,7 +27,7 @@ export function renderThemeSelect(
 		cls: 'style-manager-theme-current-name',
 	});
 
-	plugin.settingsService.themeBuilderService.getThemes().then((themes) => {
+	void plugin.settingsService.themeBuilderService.getThemes().then((themes) => {
 		if (currentValue !== 'default' && themes[currentValue]) {
 			nameEl.setText(themes[currentValue].name);
 		}

@@ -4,6 +4,7 @@ import { normalizePath } from 'obsidian';
 import { BackupKeys, ExportKeys } from '../constants';
 import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
+
 import { Logger } from '../utils/Logger';
 
 /**
@@ -180,7 +181,7 @@ export class BackupService {
 					zip.file(/settings\.(json|md|txt)$/i)[0];
 				if (settingsFile) {
 					const content = await settingsFile.async('string');
-					newSettings = JSON.parse(content.trim());
+					newSettings = JSON.parse(content.trim()) as Record<string, unknown>;
 				}
 
 				// Find snippets
@@ -229,14 +230,17 @@ export class BackupService {
 				// Raw String Handling (JSON, MD, TXT)
 				const sanitized = data.trim();
 				try {
-					newSettings = JSON.parse(sanitized);
+					newSettings = JSON.parse(sanitized) as Record<string, unknown>;
 				} catch (e) {
 					// Try to extract JSON from a markdown code block if present
 					const codeBlockMatch = sanitized.match(
 						/```(?:json)?\n([\s\S]*?)\n```/
 					);
 					if (codeBlockMatch) {
-						newSettings = JSON.parse(codeBlockMatch[1].trim());
+						newSettings = JSON.parse(codeBlockMatch[1].trim()) as Record<
+							string,
+							unknown
+						>;
 					} else {
 						throw e;
 					}

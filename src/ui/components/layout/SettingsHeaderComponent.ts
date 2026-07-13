@@ -63,7 +63,7 @@ export class SettingsHeaderComponent extends Component {
 			scrollWrap.toggleClass('has-end-fade', scrollRight > 5);
 		};
 		this.registerDomEvent(scrollWrap, 'scroll', () => updateFades());
-		setTimeout(updateFades, 50);
+		window.setTimeout(updateFades, 50);
 
 		tabContainer.createDiv('style-manager-tab-spacer');
 
@@ -149,7 +149,7 @@ export class SettingsHeaderComponent extends Component {
 
 	private scrollActiveTabIntoView(activeTabEl: HTMLElement): void {
 		// We use a small timeout to ensure the DOM is fully painted and dimensions are accurate
-		setTimeout(() => {
+		window.setTimeout(() => {
 			activeTabEl.scrollIntoView({
 				behavior: 'auto',
 				block: 'nearest',
@@ -182,9 +182,13 @@ export class SettingsHeaderComponent extends Component {
 		setTooltip(toggleBtn, label);
 		toggleBtn.onclick = async (): Promise<void> => {
 			const next = appearance === 'light' ? 'dark' : 'light';
-			this.plugin.settingsService.setSetting(StorageKeys.APPEARANCE, next, {
-				silentUI: true,
-			});
+			void this.plugin.settingsService.setSetting(
+				StorageKeys.APPEARANCE,
+				next,
+				{
+					silentUI: true,
+				}
+			);
 			this.plugin.settingsService.applyAppearance(
 				next,
 				!this.plugin.settingsService.isIsolateMode()
@@ -206,7 +210,7 @@ export class SettingsHeaderComponent extends Component {
 				await this.plugin.settingsService.bridge.forceLoadSnippets();
 
 				// Obsidian processes this asynchronously; wait a moment before re-rendering the UI
-				await new Promise((resolve) => setTimeout(resolve, 200));
+				await new Promise((resolve) => window.setTimeout(resolve, 200));
 
 				await this.plugin.settingsService.refreshService.trigger(
 					RefreshLevel.SYSTEM_RELOAD
@@ -279,8 +283,9 @@ export class SettingsHeaderComponent extends Component {
 							] !== false;
 						if (openModal) {
 							const useDefaultApp =
-								localStorage.getItem(PreferencesKeys.OPEN_IN_DEFAULT_APP) ===
-								'true';
+								this.plugin.app.loadLocalStorage(
+									PreferencesKeys.OPEN_IN_DEFAULT_APP
+								) === 'true';
 							if (useDefaultApp) {
 								const path =
 									this.plugin.settingsService.bridge.getSnippetPath(id);
@@ -318,9 +323,13 @@ export class SettingsHeaderComponent extends Component {
 							this.plugin,
 							sectionsWithData,
 							async (selectedIds) => {
-								this.plugin.settingsService.clearSections(selectedIds, false, {
-									silentUI: true,
-								});
+								void this.plugin.settingsService.clearSections(
+									selectedIds,
+									false,
+									{
+										silentUI: true,
+									}
+								);
 								this.options.onRerender();
 							}
 						).open();
