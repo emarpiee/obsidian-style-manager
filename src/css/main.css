@@ -2379,7 +2379,7 @@ body.sm-conflict-warning::before {
 }
 
 /* --- CodeMirror Search Panel Overrides --- */
-.style-manager-plugin .cm-search {
+.style-manager-editor-container .cm-search {
 	background-color: var(--sm-cm-search-bg);
 	border-top: 1px solid var(--sm-cm-search-border-color);
 	border-bottom: none;
@@ -2394,7 +2394,7 @@ body.sm-conflict-warning::before {
 	font-family: var(--font-interface);
 }
 
-.style-manager-plugin .cm-search input.cm-textfield {
+.style-manager-editor-container .cm-search input.cm-textfield {
 	background-color: var(--sm-cm-search-input-bg);
 	border: 1px solid var(--sm-cm-search-input-border-color);
 	color: var(--sm-cm-search-input-color);
@@ -2404,16 +2404,16 @@ body.sm-conflict-warning::before {
 	font-size: var(--font-ui-small);
 }
 
-.style-manager-plugin .cm-search input.cm-textfield::placeholder {
+.style-manager-editor-container .cm-search input.cm-textfield::placeholder {
 	color: var(--sm-cm-search-input-placeholder-color);
 }
 
-.style-manager-plugin .cm-search input.cm-textfield:focus {
+.style-manager-editor-container .cm-search input.cm-textfield:focus {
 	border-color: var(--sm-cm-search-input-border-color-focus);
 	box-shadow: 0 0 0 2px var(--sm-cm-search-input-border-color-focus);
 }
 
-.style-manager-plugin .cm-search button.cm-button {
+.style-manager-editor-container .cm-search button.cm-button {
 	background-color: var(--sm-cm-search-btn-bg);
 	border: 1px solid var(--sm-cm-search-btn-border-color);
 	color: var(--sm-cm-search-btn-color);
@@ -2427,11 +2427,11 @@ body.sm-conflict-warning::before {
 	text-transform: capitalize;
 }
 
-.style-manager-plugin .cm-search button.cm-button:hover {
+.style-manager-editor-container .cm-search button.cm-button:hover {
 	background-color: var(--sm-cm-search-btn-bg-hover);
 }
 
-.style-manager-plugin .cm-search label {
+.style-manager-editor-container .cm-search label {
 	display: flex;
 	align-items: center;
 	gap: var(--size-4-1);
@@ -2440,11 +2440,11 @@ body.sm-conflict-warning::before {
 	text-transform: capitalize;
 }
 
-.style-manager-plugin .cm-search input[type="checkbox"] {
+.style-manager-editor-container .cm-search input[type="checkbox"] {
 	margin: 0;
 }
 
-.style-manager-plugin .cm-search button[name="close"] {
+.style-manager-editor-container .cm-search button[name="close"] {
 	position: absolute;
 	right: var(--size-4-2);
 	top: 50%;
@@ -2455,7 +2455,7 @@ body.sm-conflict-warning::before {
 	cursor: pointer;
 }
 
-.style-manager-plugin .cm-search button[name="close"]:hover {
+.style-manager-editor-container .cm-search button[name="close"]:hover {
 	color: var(--sm-cm-search-close-color-hover);
 	background: var(--sm-cm-search-close-bg-hover);
 	border-radius: var(--radius-s);
