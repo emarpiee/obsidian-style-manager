@@ -1,4 +1,4 @@
-import { App, Setting, SliderComponent, debounce, setIcon } from 'obsidian';
+import { App, Setting, SliderComponent, debounce, sanitizeHTMLToDom, setIcon } from 'obsidian';
 
 import { STYLE_MANAGER_LOGO } from '../StyleManagerIcons';
 
@@ -48,7 +48,7 @@ export class PreferencesTab {
 		this.renderDeveloperSettings();
 
 		const logoContainer = this.containerEl.createDiv('style-manager-logo');
-		logoContainer.innerHTML = STYLE_MANAGER_LOGO;
+		logoContainer.appendChild(sanitizeHTMLToDom(STYLE_MANAGER_LOGO));
 
 		const infoContainer = this.containerEl.createDiv('style-manager-logo-info');
 
@@ -67,7 +67,7 @@ export class PreferencesTab {
 			parent: HTMLElement,
 			text: string,
 			href: string
-		) => {
+		): HTMLAnchorElement => {
 			const link = parent.createEl('a', { href: href, text: text });
 			link.setAttr('target', '_blank');
 			link.setAttr('rel', 'noopener noreferrer');
