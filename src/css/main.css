@@ -76,7 +76,7 @@
 		justify-content: center;
 	}
 
-	.style-manager-plugin .setting-item:not(.mod-toggle):not(.setting-item-heading) .setting-item-control .color-picker-reset  button:not(.clickable-icon ) {
+	.style-manager-plugin .setting-item:not(.mod-toggle):not(.setting-item-heading) .setting-item-control .color-picker-reset button:not(.clickable-icon) {
 		width: var(--sm-color-picker-width);
 		height: var(--sm-color-picker-height);
 	}
@@ -118,25 +118,25 @@ body {
 }
 
 .style-manager-logo-links {
-    display: flex;
-    gap: 4px;
-    align-items: center;
-    font-size: 0.9em;
+	display: flex;
+	gap: 4px;
+	align-items: center;
+	font-size: 0.9em;
 }
 
 .style-manager-logo-credit {
-    font-size: 0.8em;
-    color: var(--text-muted);
-    margin-top: 2px;
+	font-size: 0.8em;
+	color: var(--text-muted);
+	margin-top: 2px;
 }
 
 .style-manager-license-link {
-    color: var(--text-muted);
-    text-decoration: underline;
+	color: var(--text-muted);
+	text-decoration: underline;
 }
 
 .style-manager-link-sep {
-    color: var(--text-muted);
+	color: var(--text-muted);
 }
 
 .style-manager-logo-version {
@@ -311,10 +311,10 @@ body {
 }
 
 /* body.theme-light { */
-	/* --sm-logo-color: oklch(from var(--interactive-accent) calc(l - 0.1) c h / 0.5); */
+/* --sm-logo-color: oklch(from var(--interactive-accent) calc(l - 0.1) c h / 0.5); */
 /* } */
 /* body.theme-dark { */
-	/* --sm-logo-color: oklch(from var(--interactive-accent) calc(l +  0.1) c h / 0.5); */
+/* --sm-logo-color: oklch(from var(--interactive-accent) calc(l +  0.1) c h / 0.5); */
 /* } */
 
 .style-manager-plugin {
@@ -832,12 +832,15 @@ body.is-mobile .style-manager-wrapper {
 
 /* Color Contrast Checker */
 
+body.is-phone .modal-style-manager .setting-item:not(:is(.mod-toggle, .setting-item-heading)).style-manager-tool-contrast-color-row,
 .style-manager-tool-contrast-color-row {
 	flex-direction: row;
 }
 
+body.is-phone .modal-style-manager .setting-item:not(:is(.mod-toggle, .setting-item-heading)).style-manager-tool-contrast-color-row .setting-item-control,
 .style-manager-tool-contrast-color-row .setting-item-control {
 	width: auto;
+	justify-content: flex-end;
 }
 
 .style-manager-tool-contrast-preview {
@@ -930,6 +933,7 @@ body.is-mobile .style-manager-wrapper {
 	display: flex;
 	flex-direction: column;
 	gap: 8px;
+	justify-content: flex-end;
 }
 
 /* Input Validation */
