@@ -1,5 +1,7 @@
 import { App, Setting, SliderComponent, debounce, setIcon } from 'obsidian';
 
+import { STYLE_MANAGER_LOGO } from '../StyleManagerIcons';
+
 import {
 	BackupKeys,
 	ConfirmKeys,
@@ -44,6 +46,88 @@ export class PreferencesTab {
 		this.renderExportSettings();
 		this.renderCSSEditorSettings();
 		this.renderDeveloperSettings();
+
+		const logoContainer = this.containerEl.createDiv('style-manager-logo');
+		logoContainer.innerHTML = STYLE_MANAGER_LOGO;
+
+		const infoContainer = this.containerEl.createDiv('style-manager-logo-info');
+
+		const versionEl = infoContainer.createEl('div', {
+			cls: 'style-manager-logo-version',
+		});
+		versionEl.setText(
+			`Obsidian Style Manager v${this.plugin.manifest.version}`
+		);
+
+		const linksContainer = infoContainer.createEl('div', {
+			cls: 'style-manager-logo-links',
+		});
+
+		const createFooterLink = (
+			parent: HTMLElement,
+			text: string,
+			href: string
+		) => {
+			const link = parent.createEl('a', { href: href, text: text });
+			link.setAttr('target', '_blank');
+			link.setAttr('rel', 'noopener noreferrer');
+			return link;
+		};
+
+		createFooterLink(
+			linksContainer,
+			'GitHub',
+			'https://github.com/emarpiee/obsidian-style-manager'
+		);
+
+		linksContainer.createEl('span', {
+			text: ' • ',
+			cls: 'style-manager-link-sep',
+		});
+		createFooterLink(
+			linksContainer,
+			'Documentation',
+			'https://github.com/emarpiee/obsidian-style-manager#readme'
+		);
+
+		linksContainer.createEl('span', {
+			text: ' • ',
+			cls: 'style-manager-link-sep',
+		});
+		createFooterLink(
+			linksContainer,
+			'Report a Bug',
+			'https://github.com/emarpiee/obsidian-style-manager/issues'
+		);
+
+		linksContainer.createEl('span', {
+			text: ' • ',
+			cls: 'style-manager-link-sep',
+		});
+		createFooterLink(
+			linksContainer,
+			'Support',
+			'https://github.com/sponsors/emarpiee'
+		);
+
+		const creditContainer = infoContainer.createEl('div', {
+			cls: 'style-manager-logo-credit',
+		});
+
+		const authorEl = creditContainer.createEl('span');
+		authorEl.setText('@emarpiee');
+
+		creditContainer.createEl('span', {
+			text: ' | ',
+			cls: 'style-manager-link-sep',
+		});
+
+		const licenseLink = createFooterLink(
+			creditContainer,
+			'GNU GPLv3',
+			'https://github.com/emarpiee/obsidian-style-manager/blob/main/LICENSE.md'
+		);
+		licenseLink.addClass('style-manager-license-link');
 	}
 
 	private renderHeader(
