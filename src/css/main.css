@@ -83,10 +83,73 @@
 }
 
 body {
-	/* Sun and Moon color */
 	--sm-icon-sun-color: #ccaa00;
 	--sm-icon-moon-color: #a883ff;
+	/* --sm-logo-color: oklch(from var(--interactive-accent) l c h / 0.5); */
+	--sm-icon-color: var(--icon-color);
+	--sm-logo-color: var(--text-faint);
+	--sm-logo-width: 60px;
+	--sm-logo-height: 60px;
+	--sm-icon-stroke-width: var(--icon-stroke);
+}
 
+/* --- Preferences Tab: Logo & Info --- */
+.style-manager-logo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	margin-top: 77px;
+	margin-bottom: 20px;
+	place-self: center;
+}
+
+.style-manager-logo {
+	--sm-icon-stroke-width: 1px;
+	width: var(--sm-logo-width);
+	height: var(--sm-logo-height);
+}
+
+.style-manager-logo-info {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 4px;
+	margin-bottom: 40px;
+}
+
+.style-manager-logo-links {
+    display: flex;
+    gap: 4px;
+    align-items: center;
+    font-size: 0.9em;
+}
+
+.style-manager-logo-credit {
+    font-size: 0.8em;
+    color: var(--text-muted);
+    margin-top: 2px;
+}
+
+.style-manager-license-link {
+    color: var(--text-muted);
+    text-decoration: underline;
+}
+
+.style-manager-link-sep {
+    color: var(--text-muted);
+}
+
+.style-manager-logo-version {
+	font-size: var(--font-smaller);
+	color: var(--text-muted);
+}
+
+.style-manager-logo-github {
+	font-size: var(--font-smaller);
+	color: var(--text-muted);
+}
+
+body {
 	/* Style Manager Main Wrapper */
 	--sm-wrapper-bg: var(--background-primary);
 
@@ -246,6 +309,13 @@ body {
 	--cp-border-radius-sm: var(--radius-s);
 	--cp-border-radius-lg: var(--radius-l);
 }
+
+/* body.theme-light { */
+	/* --sm-logo-color: oklch(from var(--interactive-accent) calc(l - 0.1) c h / 0.5); */
+/* } */
+/* body.theme-dark { */
+	/* --sm-logo-color: oklch(from var(--interactive-accent) calc(l +  0.1) c h / 0.5); */
+/* } */
 
 .style-manager-plugin {
 	--sm-sticky-tabs-height: 48px;
@@ -2305,7 +2375,7 @@ body.sm-conflict-warning::before {
 }
 
 /* --- CodeMirror Search Panel Overrides --- */
-.cm-search {
+.style-manager-plugin .cm-search {
 	background-color: var(--sm-cm-search-bg);
 	border-top: 1px solid var(--sm-cm-search-border-color);
 	border-bottom: none;
@@ -2320,7 +2390,7 @@ body.sm-conflict-warning::before {
 	font-family: var(--font-interface);
 }
 
-.cm-search input.cm-textfield {
+.style-manager-plugin .cm-search input.cm-textfield {
 	background-color: var(--sm-cm-search-input-bg);
 	border: 1px solid var(--sm-cm-search-input-border-color);
 	color: var(--sm-cm-search-input-color);
@@ -2330,16 +2400,16 @@ body.sm-conflict-warning::before {
 	font-size: var(--font-ui-small);
 }
 
-.cm-search input.cm-textfield::placeholder {
+.style-manager-plugin .cm-search input.cm-textfield::placeholder {
 	color: var(--sm-cm-search-input-placeholder-color);
 }
 
-.cm-search input.cm-textfield:focus {
+.style-manager-plugin .cm-search input.cm-textfield:focus {
 	border-color: var(--sm-cm-search-input-border-color-focus);
 	box-shadow: 0 0 0 2px var(--sm-cm-search-input-border-color-focus);
 }
 
-.cm-search button.cm-button {
+.style-manager-plugin .cm-search button.cm-button {
 	background-color: var(--sm-cm-search-btn-bg);
 	border: 1px solid var(--sm-cm-search-btn-border-color);
 	color: var(--sm-cm-search-btn-color);
@@ -2353,11 +2423,11 @@ body.sm-conflict-warning::before {
 	text-transform: capitalize;
 }
 
-.cm-search button.cm-button:hover {
+.style-manager-plugin .cm-search button.cm-button:hover {
 	background-color: var(--sm-cm-search-btn-bg-hover);
 }
 
-.cm-search label {
+.style-manager-plugin .cm-search label {
 	display: flex;
 	align-items: center;
 	gap: var(--size-4-1);
@@ -2366,11 +2436,11 @@ body.sm-conflict-warning::before {
 	text-transform: capitalize;
 }
 
-.cm-search input[type="checkbox"] {
+.style-manager-plugin .cm-search input[type="checkbox"] {
 	margin: 0;
 }
 
-.cm-search button[name="close"] {
+.style-manager-plugin .cm-search button[name="close"] {
 	position: absolute;
 	right: var(--size-4-2);
 	top: 50%;
@@ -2381,7 +2451,7 @@ body.sm-conflict-warning::before {
 	cursor: pointer;
 }
 
-.cm-search button[name="close"]:hover {
+.style-manager-plugin .cm-search button[name="close"]:hover {
 	color: var(--sm-cm-search-close-color-hover);
 	background: var(--sm-cm-search-close-bg-hover);
 	border-radius: var(--radius-s);
