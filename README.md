@@ -1,5 +1,5 @@
 
-# Obsidian Style Manager
+<img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/style_manager-gh-banner.webp" alt="Obsidian Style Manager GitHub Banner.webp" width="1000">
 
 > This plugin wouldn't have been possible without the inspiration and foundational logic provided by [Style Settings](https://github.com/mgmeyers/obsidian-style-settings), an Obsidian plugin originally created by [mgmeyers](https://github.com/mgmeyers). I've adapted several key parts of their codebase to jumpstart the development of this plugin.
 
