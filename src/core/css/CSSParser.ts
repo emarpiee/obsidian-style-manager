@@ -291,19 +291,20 @@ export class CSSParser {
 						break;
 					case 'variable-text':
 						if (setting.default === undefined) {
+							setting.default = '#';
 							parseLogs?.push({
 								name,
-								message: `MISSING_DEFAULT: Variable text '${setting.id}' missing default, no variable will be generated`,
+								message: `MISSING_DEFAULT: Variable text '${setting.id}' missing default, falling back to '#'`,
 								type: 'warning',
 								timestamp: Date.now(),
 								settingId: setting.id,
 							});
-						} else if (typeof setting.default !== 'string') {
+						} else if (typeof setting.default !== 'string' && setting.default !== '#') {
 							const oldDefault = setting.default;
-							setting.default = undefined;
+							setting.default = '#';
 							parseLogs?.push({
 								name,
-								message: `INVALID_DEFAULT: Variable text '${setting.id}' default (${oldDefault}) is not a string, no variable will be generated`,
+								message: `INVALID_DEFAULT: Variable text '${setting.id}' default (${oldDefault}) is not a string, falling back to '#'`,
 								type: 'warning',
 								timestamp: Date.now(),
 								settingId: setting.id,
@@ -312,19 +313,20 @@ export class CSSParser {
 						break;
 					case 'variable-number':
 						if (setting.default === undefined) {
+							setting.default = '#';
 							parseLogs?.push({
 								name,
-								message: `MISSING_DEFAULT: Variable number '${setting.id}' missing default, no variable will be generated`,
+								message: `MISSING_DEFAULT: Variable number '${setting.id}' missing default, falling back to '#'`,
 								type: 'warning',
 								timestamp: Date.now(),
 								settingId: setting.id,
 							});
-						} else if (!isNumeric(setting.default)) {
+						} else if (!isNumeric(setting.default) && setting.default !== '#') {
 							const oldDefault = setting.default;
-							setting.default = undefined;
+							setting.default = '#';
 							parseLogs?.push({
 								name,
-								message: `INVALID_DEFAULT: Variable number '${setting.id}' default (${oldDefault}) is invalid, no variable will be generated`,
+								message: `INVALID_DEFAULT: Variable number '${setting.id}' default (${oldDefault}) is invalid, falling back to '#'`,
 								type: 'warning',
 								timestamp: Date.now(),
 								settingId: setting.id,
@@ -407,29 +409,48 @@ export class CSSParser {
 								settingId: setting.id,
 							});
 						}
-						if (
-							setting.default !== undefined &&
+						
+						if (setting.default === undefined) {
+							setting.default = '#';
+							parseLogs?.push({
+								name,
+								message: `MISSING_DEFAULT: Slider '${setting.id}' missing default, falling back to '#'`,
+								type: 'warning',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						} else if (
+							setting.default !== '#' &&
 							(!isNumeric(setting.default) ||
 								(setting.default as number) < setting.min ||
 								(setting.default as number) > setting.max)
 						) {
 							const oldDefault = setting.default;
-							setting.default = Math.max(
-								setting.min,
-								Math.min(
-									setting.max,
-									typeof setting.default === 'number' && !isNaN(setting.default)
-										? setting.default
-										: setting.min
-								)
-							);
-							parseLogs?.push({
-								name,
-								message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) ${!isNumeric(setting.default) ? 'is invalid' : 'out of bounds'}, clamped to ${setting.default}`,
-								type: 'warning',
-								timestamp: Date.now(),
-								settingId: setting.id,
-							});
+							if (!isNumeric(setting.default)) {
+								setting.default = '#';
+								parseLogs?.push({
+									name,
+									message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) is invalid, falling back to '#'`,
+									type: 'warning',
+									timestamp: Date.now(),
+									settingId: setting.id,
+								});
+							} else {
+								setting.default = Math.max(
+									setting.min,
+									Math.min(
+										setting.max,
+										setting.default as number
+									)
+								);
+								parseLogs?.push({
+									name,
+									message: `INVALID_SLIDER_DEFAULT: Slider '${setting.id}' default (${oldDefault}) out of bounds, clamped to ${setting.default}`,
+									type: 'warning',
+									timestamp: Date.now(),
+									settingId: setting.id,
+								});
+							}
 						}
 						break;
 					}
@@ -615,19 +636,20 @@ export class CSSParser {
 					}
 					case 'variable-select':
 						if (setting.default === undefined) {
+							setting.default = '#';
 							parseLogs?.push({
 								name,
-								message: `MISSING_DEFAULT: Variable select '${setting.id}' missing default, no variable will be generated`,
+								message: `MISSING_DEFAULT: Variable select '${setting.id}' missing default, falling back to '#'`,
 								type: 'warning',
 								timestamp: Date.now(),
 								settingId: setting.id,
 							});
-						} else if (typeof setting.default !== 'string') {
+						} else if (typeof setting.default !== 'string' && setting.default !== '#') {
 							const oldDefault = setting.default;
-							setting.default = undefined;
+							setting.default = '#';
 							parseLogs?.push({
 								name,
-								message: `INVALID_DEFAULT: Variable select '${setting.id}' default (${oldDefault}) is not a string, no variable will be generated`,
+								message: `INVALID_DEFAULT: Variable select '${setting.id}' default (${oldDefault}) is not a string, falling back to '#'`,
 								type: 'warning',
 								timestamp: Date.now(),
 								settingId: setting.id,
