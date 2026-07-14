@@ -101,7 +101,7 @@ export class PresetScheduleModal extends Modal {
 	}
 
 	buildRRuleString(): string {
-		let ruleOpts: Partial<Options> = {};
+		let ruleOpts: Partial<Options>;
 
 		if (this.scheduleType === 'one-time') {
 			const d = new Date(this.datetimeValue); // Parses local time
@@ -175,7 +175,7 @@ export class PresetScheduleModal extends Modal {
 				.setName('Date & time')
 				.setDesc('When should this preset be applied?');
 
-			const inputEl = activeDocument.createElement('input');
+			const inputEl = activeWindow.createEl('input');
 			inputEl.type = 'datetime-local';
 			inputEl.value = this.datetimeValue;
 			inputEl.onchange = (e): void => {
@@ -184,7 +184,7 @@ export class PresetScheduleModal extends Modal {
 			setting.controlEl.appendChild(inputEl);
 		} else {
 			if (this.scheduleType === 'weekly') {
-				new Setting(contentEl).setName('Day of Week').addDropdown((dd) => {
+				new Setting(contentEl).setName('Day of week').addDropdown((dd) => {
 					dd.addOption('MO', 'Monday');
 					dd.addOption('TU', 'Tuesday');
 					dd.addOption('WE', 'Wednesday');
@@ -203,7 +203,7 @@ export class PresetScheduleModal extends Modal {
 				.setName('Time')
 				.setDesc('What time should this preset run?');
 
-			const inputEl = activeDocument.createElement('input');
+			const inputEl = activeWindow.createEl('input');
 			inputEl.type = 'time';
 			inputEl.value = this.timeValue;
 			inputEl.onchange = (e): void => {

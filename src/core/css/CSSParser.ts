@@ -101,7 +101,12 @@ export class CSSParser {
 				} catch (e) {
 					parseLogs.push({
 						name,
-						message: `${e}`,
+						message:
+							e instanceof Error
+								? e.message
+								: typeof e === 'string'
+									? e
+									: JSON.stringify(e),
 						type: 'error',
 						timestamp: Date.now(),
 					});

@@ -77,7 +77,11 @@ export class VariableTextField extends AbstractSettingComponent {
 				value = ``;
 			}
 
-			text.setValue(value != null ? value.toString() : this.setting.default);
+			text.setValue(
+				value != null
+					? (value as string | number).toString()
+					: this.setting.default
+			);
 
 			text.inputEl.addEventListener('blur', () => {
 				onCommit(text.getValue());

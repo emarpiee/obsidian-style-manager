@@ -13,9 +13,9 @@ export abstract class AbstractSettingComponent extends Component {
 	setting: CSSSetting;
 	settingsService: SettingsService;
 	isView: boolean;
-	preparedTitle: Fuzzysort.Prepared;
-	preparedDescription: Fuzzysort.Prepared;
-	preparedSection: Fuzzysort.Prepared;
+	preparedTitle: ReturnType<typeof fuzzysort.prepare>;
+	preparedDescription: ReturnType<typeof fuzzysort.prepare>;
+	preparedSection: ReturnType<typeof fuzzysort.prepare>;
 
 	constructor(
 		parent: AbstractSettingComponent | HTMLElement,

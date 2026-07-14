@@ -12,7 +12,7 @@ export class BoxOutlineTool {
 			const color =
 				this.plugin.settingsService.settings[ToolKeys.TOOL_BOX_OUTLINE_COLOR] ??
 				'red';
-			const cssToApply = `* {outline: ${color} 1px solid !important}`;
+			const cssToApply = `* {outline: ${color as string} 1px solid !important}`;
 
 			if (!this.sheet) {
 				this.sheet = new CSSStyleSheet();
@@ -44,7 +44,9 @@ export class BoxOutlineTool {
 			const color =
 				this.plugin.settingsService.settings[ToolKeys.TOOL_BOX_OUTLINE_COLOR] ??
 				'red';
-			void this.sheet.replace(`* {outline: ${color} 1px solid !important}`);
+			void this.sheet.replace(
+				`* {outline: ${color as string} 1px solid !important}`
+			);
 			this.plugin.app.workspace.trigger('css-change');
 		}
 	}

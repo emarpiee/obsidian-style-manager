@@ -57,7 +57,7 @@ export class VariableNumberField extends AbstractSettingComponent {
 					);
 					this.textComponent.setValue(
 						stored != null
-							? stored.toString()
+							? (stored as string | number).toString()
 							: (this.setting.default?.toString() ?? '')
 					);
 					return;
@@ -87,7 +87,7 @@ export class VariableNumberField extends AbstractSettingComponent {
 
 			text.setValue(
 				value != null
-					? value.toString()
+					? (value as string | number).toString()
 					: (this.setting.default?.toString() ?? '')
 			);
 

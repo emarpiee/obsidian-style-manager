@@ -285,7 +285,10 @@ export class StyleGenerator {
 				case SettingType.VARIABLE_NUMBER:
 				case SettingType.VARIABLE_NUMBER_SLIDER: {
 					const s = setting as VariableNumber | VariableNumberSlider;
-					const val = value !== undefined ? value : s.default;
+					const val = (value !== undefined ? value : s.default) as
+						| number
+						| undefined
+						| null;
 					if (val !== undefined && val !== null) {
 						vars.push({
 							key: setting.id,
@@ -299,7 +302,9 @@ export class StyleGenerator {
 				case SettingType.VARIABLE_SELECT: {
 					const s = setting as VariableText | VariableSelect;
 					let text =
-						value !== undefined ? value.toString() : s.default.toString();
+						value !== undefined
+							? (value as string | number).toString()
+							: s.default.toString();
 					if (s.quotes) {
 						text = text !== `""` ? `'${text}'` : ``;
 					}
@@ -310,7 +315,10 @@ export class StyleGenerator {
 				}
 				case SettingType.VARIABLE_COLOR: {
 					const s = setting as VariableColor;
-					const color = value !== undefined ? value.toString() : s.default;
+					const color =
+						value !== undefined
+							? (value as string | number).toString()
+							: s.default;
 					const { value: resolvedColor } = resolveColor(
 						color,
 						'current',
@@ -351,7 +359,7 @@ export class StyleGenerator {
 						modifier === 'light' ? 'default-light' : 'default-dark';
 					const color =
 						value !== undefined
-							? value.toString()
+							? (value as string | number).toString()
 							: (s as VariableThemedColor & Record<string, string>)[colorKey];
 					const mode = modifier === 'light' ? 'light' : 'dark';
 					const candidates =
