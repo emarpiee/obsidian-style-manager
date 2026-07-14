@@ -52,7 +52,9 @@ export function getColorPickerConfig(opts: {
 			'.style-manager-color-picker-wrapper'
 		);
 		if (!sharedContainer) {
-			sharedContainer = activeDocument.createElement('div');
+			sharedContainer = (
+				activeWindow as unknown as { createDiv: () => HTMLDivElement }
+			).createDiv();
 			sharedContainer.className =
 				'style-manager-color-picker-wrapper style-manager-plugin';
 			activeDocument.body.appendChild(sharedContainer);

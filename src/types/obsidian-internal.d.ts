@@ -31,6 +31,8 @@ declare module 'obsidian' {
 		};
 	}
 
+	/* eslint-disable no-undef -- Safe for global augmentations */
+
 	interface DataAdapter {
 		exists(path: string): Promise<boolean>;
 		read(path: string): Promise<string>;
@@ -85,6 +87,20 @@ declare global {
 			addResources: (...resources: unknown[]) => void;
 			removeTabResources: (tabId: string) => void;
 		};
+		createEl<K extends keyof HTMLElementTagNameMap>(
+			tag: K,
+			o?: string | Record<string, unknown>,
+			callback?: (el: HTMLElementTagNameMap[K]) => void
+		): HTMLElementTagNameMap[K];
+		createDiv(
+			o?: string | Record<string, unknown>,
+			callback?: (el: HTMLDivElement) => void
+		): HTMLDivElement;
+		createSpan(
+			o?: string | Record<string, unknown>,
+			callback?: (el: HTMLSpanElement) => void
+		): HTMLSpanElement;
+		createFragment(callback?: (el: DocumentFragment) => void): DocumentFragment;
 	}
 }
 
@@ -92,3 +108,4 @@ declare global {
 interface Crypto {
 	randomUUID(): string;
 }
+/* eslint-enable no-undef -- Safe for global augmentations */

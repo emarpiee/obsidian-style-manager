@@ -30,6 +30,6 @@ export abstract class PresetSuggestModal extends SuggestModal<Preset> {
 	}
 
 	renderSuggestion(preset: Preset, el: HTMLElement): void {
-		el.createEl('div', { text: preset.name });
+		el.createDiv({ text: preset.name });
 	}
 }

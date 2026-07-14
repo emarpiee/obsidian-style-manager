@@ -59,6 +59,6 @@ export class StyleManagerView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'Style Manager';
+		return 'Style manager';
 	}
 }

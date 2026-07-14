@@ -102,7 +102,7 @@ export class PresetItem {
 			});
 		}
 
-		const starIcon = activeDocument.createElement('div');
+		const starIcon = activeWindow.createDiv();
 		starIcon.classList.add('clickable-icon', 'style-manager-preset-star-icon');
 		if (preset.isFavorite) starIcon.addClass('is-favorite');
 		setIcon(starIcon, preset.isFavorite ? 'star' : 'star');
@@ -202,7 +202,7 @@ export class PresetItem {
 									} catch (err) {
 										Logger.error('Style Manager | Export failed:', err);
 										plugin.settingsService.notifications.error(
-											`Export failed: ${err instanceof Error ? err.message : String(err)}`
+											`Export failed: ${err instanceof Error ? err.message : 'Unknown error'}`
 										);
 									}
 								};
@@ -317,7 +317,7 @@ export class PresetItem {
 				});
 		});
 
-		const selectIcon = activeDocument.createElement('div');
+		const selectIcon = activeWindow.createDiv();
 		selectIcon.classList.add(
 			'clickable-icon',
 			'style-manager-item-select-icon'

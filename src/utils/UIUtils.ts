@@ -19,7 +19,7 @@ export function createDescription(
 		small.appendChild(createEl('strong', { text: `${t('Default:')} ` }));
 		small.appendChild(activeDocument.createTextNode(defLabel || def));
 
-		const div = createEl('div');
+		const div = createDiv();
 		div.appendChild(small);
 		fragment.appendChild(div);
 	}

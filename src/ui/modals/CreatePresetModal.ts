@@ -209,23 +209,23 @@ export class CreatePresetModal extends Modal {
 			});
 
 			if (isTheme) {
-				const iconContainer = activeDocument.createElement('span');
+				const iconContainer = activeWindow.createSpan();
 				iconContainer.className = 'style-manager-theme-icon';
 				setIcon(iconContainer, 'palette');
 				nameEl.prepend(iconContainer);
 			} else if (isAppearance) {
-				const iconContainer = activeDocument.createElement('span');
+				const iconContainer = activeWindow.createSpan();
 				iconContainer.className = 'style-manager-appearance-icon';
 				const appearance = prefix.value;
 				setIcon(iconContainer, appearance === 'dark' ? 'moon' : 'sun');
 				nameEl.prepend(iconContainer);
 			} else if (isSnippets) {
-				const iconContainer = activeDocument.createElement('span');
+				const iconContainer = activeWindow.createSpan();
 				iconContainer.className = 'style-manager-snippets-icon';
 				setIcon(iconContainer, 'file-code');
 				nameEl.prepend(iconContainer);
 			} else if (isAccent) {
-				const iconContainer = activeDocument.createElement('span');
+				const iconContainer = activeWindow.createSpan();
 				iconContainer.className = 'style-manager-accent-icon';
 				// Make the bucket icon match the actual accent color
 				iconContainer.style.setProperty(

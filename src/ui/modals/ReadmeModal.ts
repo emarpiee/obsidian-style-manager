@@ -17,7 +17,7 @@ export class ReadmeModal extends Modal {
 	async onOpen(): Promise<void> {
 		this.modalEl.addClass('modal-style-manager');
 		this.modalEl.addClass('style-manager-readme-modal');
-		this.titleEl.setText('Style Manager README');
+		this.titleEl.setText('Style manager readme');
 		await this.component.render(this.contentEl, {
 			plugin: this.plugin,
 			onOpenInTab: () => this.close(),

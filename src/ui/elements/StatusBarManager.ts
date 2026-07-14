@@ -226,7 +226,7 @@ export class StatusBarManager {
 		// Action
 		menu.addItem((item) => {
 			item
-				.setTitle('Open Style Manager')
+				.setTitle('Open style manager')
 				.setIcon('external-link')
 				.onClick(() => {
 					void this.plugin.activateView();

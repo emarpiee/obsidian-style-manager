@@ -99,9 +99,9 @@ export class ImportPresetModal extends Modal {
 
 		new Setting(contentEl)
 			.setClass('style-manager-modal-setting')
-			.setName('Import from Style Settings')
+			.setName('Import from style settings')
 			.setDesc(
-				'Automatically import your settings from the Style Settings plugin.'
+				'Automatically import your settings from the style settings plugin.'
 			)
 			.addButton((btn) => {
 				btn.setButtonText('Import').onClick((): void => {
@@ -127,7 +127,7 @@ export class ImportPresetModal extends Modal {
 			.setName('Import from files')
 			.setDesc('Select .json or .zip bundle files from device file explorer.')
 			.addButton((btn) => {
-				const input = activeDocument.createElement('input');
+				const input = activeWindow.createEl('input');
 				input.addClass('style-manager-modal-input-file');
 				input.addClass('style-manager-hidden');
 				input.type = 'file';

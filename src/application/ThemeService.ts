@@ -245,7 +245,7 @@ export class ThemeService {
 
 		if (ourAppearance !== nativeAppearance) {
 			Logger.log(
-				`Style Manager | Adopting native appearance: ${nativeAppearance} (was ${ourAppearance})`
+				`Style Manager | Adopting native appearance: ${nativeAppearance} (was ${ourAppearance as string})`
 			);
 			setSettingValue(StorageKeys.APPEARANCE, nativeAppearance);
 			modified = true;

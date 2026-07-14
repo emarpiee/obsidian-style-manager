@@ -43,13 +43,13 @@ export class ThemeSuggestModal extends SuggestModal<ThemeOption> {
 
 	renderSuggestion(theme: ThemeOption, el: HTMLElement): void {
 		const row = el.createDiv('style-manager-theme-suggestion-row');
-		row.createEl('div', { text: theme.name });
+		row.createDiv({ text: theme.name });
 
 		const activeThemeId = this.plugin.settingsService.getSetting(
 			StorageKeys.THEME
 		) as string;
 		if (theme.id === activeThemeId) {
-			row.createEl('span', {
+			row.createSpan({
 				text: 'ACTIVE',
 				cls: 'style-manager-theme-active-badge',
 			});

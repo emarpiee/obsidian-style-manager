@@ -1,4 +1,3 @@
-import { ZipReader, ZipWriter } from '../utils/ZipHelper';
 import { normalizePath } from 'obsidian';
 
 import { BackupKeys, ExportKeys } from '../constants';
@@ -6,6 +5,7 @@ import type StyleManagerPlugin from '../main';
 import { RefreshLevel, StyleManagerSettings } from '../types';
 
 import { Logger } from '../utils/Logger';
+import { ZipReader, ZipWriter } from '../utils/ZipHelper';
 
 /**
  * Service for managing full plugin backups, safety snapshots, and loop-free restores.
@@ -323,7 +323,7 @@ export class BackupService {
 		} catch (e) {
 			Logger.error('BackupService | Restore failed:', e);
 			this.plugin.settingsService.notifications.error(
-				`Restore failed: ${e instanceof Error ? e.message : String(e)}`
+				`Restore failed: ${e instanceof Error ? e.message : 'Unknown error'}`
 			);
 			return false;
 		}

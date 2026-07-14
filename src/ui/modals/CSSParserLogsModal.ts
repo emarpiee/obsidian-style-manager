@@ -26,7 +26,7 @@ export class CSSParserLogsModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-logs-modal');
 
-		this.setTitle('CSS Parser Logs');
+		this.setTitle('CSS parser logs');
 
 		contentEl.empty();
 
@@ -76,7 +76,7 @@ export class CSSParserLogsModal extends Modal {
 
 				if (idx !== -1) {
 					messageEl.appendText(msgText.substring(0, idx));
-					const link = messageEl.createEl('span', {
+					const link = messageEl.createSpan({
 						cls: 'style-manager-log-setting-id-link',
 						text: quotedId,
 					});

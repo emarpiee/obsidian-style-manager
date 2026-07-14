@@ -1,10 +1,9 @@
-import { ZipReader } from '../utils/ZipHelper';
-
 import { StorageKeys } from '../constants';
 import StyleManagerPlugin from '../main';
 import { ImportAnalysis } from '../types';
 
 import { Logger } from '../utils/Logger';
+import { ZipReader } from '../utils/ZipHelper';
 
 export class PresetImportService {
 	constructor(private plugin: StyleManagerPlugin) {}
@@ -124,7 +123,7 @@ export class PresetImportService {
 				}
 			} catch (e) {
 				this.plugin.settingsService.notifications.error(
-					`Error analyzing ${item.name || 'import'}. ${e}`
+					`Error analyzing ${item.name || 'import'}. ${e instanceof Error ? e.message : typeof e === 'string' ? e : JSON.stringify(e)}`
 				);
 			}
 		}

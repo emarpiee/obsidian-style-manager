@@ -99,7 +99,7 @@ export class StylesTab {
 			.addExtraButton((btn) => {
 				btn
 					.setIcon('chevrons-up-down')
-					.setTooltip('Collapse/Expand all')
+					.setTooltip('Collapse/expand all')
 					.onClick(() => {
 						const trees = this.deps.getSettingsComponentTrees();
 						const anyExpanded = trees.some((t) => !t.setting.collapsed);

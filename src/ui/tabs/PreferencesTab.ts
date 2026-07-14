@@ -1,4 +1,11 @@
-import { App, Setting, SliderComponent, debounce, sanitizeHTMLToDom, setIcon } from 'obsidian';
+import {
+	App,
+	Setting,
+	SliderComponent,
+	debounce,
+	sanitizeHTMLToDom,
+	setIcon,
+} from 'obsidian';
 
 import { STYLE_MANAGER_LOGO } from '../StyleManagerIcons';
 
@@ -52,14 +59,14 @@ export class PreferencesTab {
 
 		const infoContainer = this.containerEl.createDiv('style-manager-logo-info');
 
-		const versionEl = infoContainer.createEl('div', {
+		const versionEl = infoContainer.createDiv({
 			cls: 'style-manager-logo-version',
 		});
 		versionEl.setText(
 			`Obsidian Style Manager v${this.plugin.manifest.version}`
 		);
 
-		const linksContainer = infoContainer.createEl('div', {
+		const linksContainer = infoContainer.createDiv({
 			cls: 'style-manager-logo-links',
 		});
 
@@ -80,7 +87,7 @@ export class PreferencesTab {
 			'https://github.com/emarpiee/obsidian-style-manager'
 		);
 
-		linksContainer.createEl('span', {
+		linksContainer.createSpan({
 			text: ' • ',
 			cls: 'style-manager-link-sep',
 		});
@@ -90,7 +97,7 @@ export class PreferencesTab {
 			'https://github.com/emarpiee/obsidian-style-manager#readme'
 		);
 
-		linksContainer.createEl('span', {
+		linksContainer.createSpan({
 			text: ' • ',
 			cls: 'style-manager-link-sep',
 		});
@@ -100,7 +107,7 @@ export class PreferencesTab {
 			'https://github.com/emarpiee/obsidian-style-manager/issues'
 		);
 
-		linksContainer.createEl('span', {
+		linksContainer.createSpan({
 			text: ' • ',
 			cls: 'style-manager-link-sep',
 		});
@@ -110,14 +117,14 @@ export class PreferencesTab {
 			'https://github.com/sponsors/emarpiee'
 		);
 
-		const creditContainer = infoContainer.createEl('div', {
+		const creditContainer = infoContainer.createDiv({
 			cls: 'style-manager-logo-credit',
 		});
 
-		const authorEl = creditContainer.createEl('span');
+		const authorEl = creditContainer.createSpan();
 		authorEl.setText('@emarpiee');
 
-		creditContainer.createEl('span', {
+		creditContainer.createSpan({
 			text: ' | ',
 			cls: 'style-manager-link-sep',
 		});
@@ -157,7 +164,7 @@ export class PreferencesTab {
 		new Setting(backupContainer)
 			.setName('Backup location')
 			.setDesc(
-				'Choose the folder where full vault backup ZIPs will be saved (e.g. "Backups"). Leave empty to save to the vault root.'
+				'Choose the folder where full vault backup zips will be saved (e.g. "backups"). Leave empty to save to the vault root.'
 			)
 			.addText((text) => {
 				const currentPath =
@@ -165,7 +172,7 @@ export class PreferencesTab {
 						BackupKeys.BACKUP_PATH
 					] as string) ?? '';
 				text
-					.setPlaceholder('Folder/Path (leave empty for vault root)')
+					.setPlaceholder('Folder/path (leave empty for vault root)')
 					.setValue(currentPath)
 					.onChange(
 						debounce((val): void => {
@@ -187,7 +194,7 @@ export class PreferencesTab {
 			)
 			.addText((text) => {
 				text
-					.setPlaceholder('YYYYMMDDHHmmss')
+					.setPlaceholder('Yyyymmddhhmmss')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
 							BackupKeys.BACKUP_DATE_FORMAT
@@ -208,13 +215,13 @@ export class PreferencesTab {
 			});
 
 		new Setting(backupContainer)
-			.setName('Full backup (ZIP)')
+			.setName('Full backup (zip)')
 			.setDesc(
-				'Creates a complete backup containing your preferences, presets, snippets and themes in a single ZIP file.'
+				'Creates a complete backup containing your preferences, presets, snippets and themes in a single zip file.'
 			)
 			.addButton((btn) => {
 				btn
-					.setButtonText('Export Universal Backup...')
+					.setButtonText('Export universal backup...')
 					.setCta()
 					.setIcon('package')
 					.onClick((): void => {
@@ -267,7 +274,7 @@ export class PreferencesTab {
 					.setButtonText('Restore backup...')
 					.setIcon('download')
 					.onClick(() => {
-						const input = activeDocument.createElement('input');
+						const input = activeWindow.createEl('input');
 						input.type = 'file';
 						input.accept = '.json,.md,.txt,.zip';
 						input.onchange = async (e: Event): Promise<void> => {
@@ -361,7 +368,7 @@ export class PreferencesTab {
 		new Setting(exportContainer)
 			.setName('Preset export location')
 			.setDesc(
-				'Choose the folder where presets will be saved in your vault (e.g. "Presets"). Leave empty for vault root.'
+				'Choose the folder where presets will be saved in your vault (e.g. "presets"). Leave empty for vault root.'
 			)
 			.addText((text) => {
 				const currentPath =
@@ -369,7 +376,7 @@ export class PreferencesTab {
 						ExportKeys.EXPORT_PATH
 					] as string) || '';
 				text
-					.setPlaceholder('Folder/Path')
+					.setPlaceholder('Folder/path')
 					.setValue(currentPath)
 					.onChange(
 						debounce((val): void => {
@@ -416,7 +423,7 @@ export class PreferencesTab {
 			)
 			.addText((text) => {
 				text
-					.setPlaceholder('YYYYMMDDHHmmss')
+					.setPlaceholder('Yyyymmddhhmmss')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
 							ExportKeys.EXPORT_DATE_FORMAT
@@ -438,7 +445,7 @@ export class PreferencesTab {
 		new Setting(exportContainer)
 			.setName('Separate bulk presets')
 			.setDesc(
-				'When exporting multiple presets in a ZIP bundle, save each preset in its own file instead of a single bulk file.'
+				'When exporting multiple presets in a zip bundle, save each preset in its own file instead of a single bulk file.'
 			)
 			.addToggle((toggle) => {
 				toggle
@@ -473,7 +480,7 @@ export class PreferencesTab {
 			)
 			.addText((text) => {
 				text
-					.setPlaceholder('MMM. DD, YYYY')
+					.setPlaceholder('Mmm. Dd, yyyy')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
 							ExportKeys.CREATED_DATE_FORMAT
@@ -496,7 +503,7 @@ export class PreferencesTab {
 		new Setting(uiContainer)
 			.setName('Show status bar icon')
 			.setDesc(
-				'Show an icon in the Obsidian status bar for quick access to Style Manager status and actions. (Desktop only)'
+				'Show an icon in the Obsidian status bar for quick access to style manager status and actions. (Desktop only)'
 			)
 			.addToggle((toggle) => {
 				toggle
@@ -518,7 +525,7 @@ export class PreferencesTab {
 		new Setting(uiContainer)
 			.setName('Show snippet metadata')
 			.setDesc(
-				'Display metadata (Author, Version, etc.) for CSS snippets if provided in a /* @metadata */ block.'
+				'Display metadata (author, version, etc.) for CSS snippets if provided in a /* @metadata */ block.'
 			)
 			.addToggle((toggle) => {
 				toggle
@@ -595,9 +602,9 @@ export class PreferencesTab {
 			.setDesc('Action to take when applying a single preset manually.')
 			.addDropdown((dropdown) => {
 				dropdown
-					.addOption('ask', 'Ask (Show Modal)')
+					.addOption('ask', 'Ask (show modal)')
 					.addOption('overwrite', 'Overwrite (reset and apply)')
-					.addOption('merge', 'Merge (Apply without resetting)')
+					.addOption('merge', 'Merge (apply without resetting)')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
 							PreferencesKeys.PRESET_APPLY_ACTION
@@ -618,9 +625,9 @@ export class PreferencesTab {
 			.setDesc('Action to take when applying multiple presets manually.')
 			.addDropdown((dropdown) => {
 				dropdown
-					.addOption('ask', 'Ask (Show Modal)')
+					.addOption('ask', 'Ask (show modal)')
 					.addOption('overwrite', 'Overwrite (reset and apply)')
-					.addOption('merge', 'Merge (Apply without resetting)')
+					.addOption('merge', 'Merge (apply without resetting)')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
 							PreferencesKeys.BULK_PRESET_APPLY_ACTION
@@ -642,7 +649,7 @@ export class PreferencesTab {
 			.addDropdown((dropdown) => {
 				dropdown
 					.addOption('overwrite', 'Overwrite (reset and apply)')
-					.addOption('merge', 'Merge (Apply without resetting)')
+					.addOption('merge', 'Merge (apply without resetting)')
 					.setValue(
 						(plugin.settingsService.sharedSettings[
 							PreferencesKeys.SCHEDULE_APPLY_ACTION
@@ -886,7 +893,7 @@ export class PreferencesTab {
 		new Setting(editorContainer)
 			.setName('@settings spaces before components')
 			.setDesc(
-				'Set the number of spaces before the setting components (id, type, etc.) in generated @settings blocks. Maximum 12 spaces.'
+				'Set the number of spaces before the setting components (ID, type, etc.) in generated @settings blocks. Maximum 12 spaces.'
 			)
 			.addSlider((slider) => {
 				slider
@@ -972,7 +979,7 @@ export class PreferencesTab {
 
 		new Setting(developerContainer)
 			.setName('Show CSS parser logs icon')
-			.setDesc('Show the "CSS parser logs" icon in the Styles tab.')
+			.setDesc('Show the "CSS parser logs" icon in the styles tab.')
 			.addToggle((toggle) => {
 				toggle
 					.setValue(

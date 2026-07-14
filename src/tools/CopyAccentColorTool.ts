@@ -17,7 +17,7 @@ export class CopyAccentColorTool {
 		if (color) {
 			await navigator.clipboard.writeText(color as string);
 			settingsService.notifications.util(
-				`Accent color ${color} copied to clipboard`
+				`Accent color ${color as string} copied to clipboard`
 			);
 		} else {
 			settingsService.notifications.error('No accent color set');

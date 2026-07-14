@@ -160,7 +160,7 @@ export class CSSEditor {
 		this.container.addClass('style-manager-editor-component');
 
 		// Load content
-		let path = '';
+		let path: string;
 		const bridge = this.plugin.settingsService.bridge;
 
 		if (this.source.type === 'Snippet') {
