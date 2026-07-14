@@ -52,7 +52,7 @@ export class ConflictResolutionModal extends Modal {
 		modalEl.addClass('modal-style-manager');
 		modalEl.addClass('style-manager-conflict-modal');
 
-		this.setTitle('Import Conflicts');
+		this.setTitle('Import conflicts');
 		contentEl.createEl('p', {
 			text: 'The following snippets or themes already exist in your vault. Choose how to handle each one.',
 			cls: 'style-manager-modal-description',
@@ -114,7 +114,7 @@ export class ConflictResolutionModal extends Modal {
 				});
 
 			const renameInputRow = new Setting(container)
-				.setName('New Name')
+				.setName('New name')
 				.setClass('style-manager-conflict-rename-row')
 				.addText((text) => {
 					text
@@ -144,12 +144,12 @@ export class ConflictResolutionModal extends Modal {
 		);
 
 		buttonSetting.addButton((btn) =>
-			btn.setButtonText('Cancel Import').onClick(() => this.close())
+			btn.setButtonText('Cancel import').onClick(() => this.close())
 		);
 
 		buttonSetting.addButton((btn) => {
 			btn
-				.setButtonText('Finish Import')
+				.setButtonText('Finish import')
 				.setCta()
 				.onClick(() => {
 					this.onComplete(Object.values(this.resolutions));

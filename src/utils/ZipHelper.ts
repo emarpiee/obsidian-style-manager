@@ -2,7 +2,6 @@
  * fflate works on a flat `{ "path/file": Uint8Array }` map. The folder classes
  * here add prefix-scoping on top of that to support folder-based access patterns.
  */
-
 import { strFromU8, strToU8, unzipSync, zipSync } from 'fflate';
 
 // ---------------------------------------------------------------------------
@@ -58,13 +57,10 @@ export class ZipFolderReader {
 }
 
 export class ZipReader {
-	private constructor(
-		private readonly rawFiles: Record<string, Uint8Array>
-	) {}
+	private constructor(private readonly rawFiles: Record<string, Uint8Array>) {}
 
 	static async loadAsync(data: ArrayBuffer | Uint8Array): Promise<ZipReader> {
-		const bytes =
-			data instanceof ArrayBuffer ? new Uint8Array(data) : data;
+		const bytes = data instanceof ArrayBuffer ? new Uint8Array(data) : data;
 		return new ZipReader(unzipSync(bytes));
 	}
 
@@ -81,9 +77,7 @@ export class ZipReader {
 	file(pathOrPattern: string | RegExp): ZipFile | null | ZipFile[] {
 		if (typeof pathOrPattern === 'string') {
 			const data = this.rawFiles[pathOrPattern];
-			return data !== undefined
-				? new ZipFile(pathOrPattern, data)
-				: null;
+			return data !== undefined ? new ZipFile(pathOrPattern, data) : null;
 		}
 		return Object.entries(this.rawFiles)
 			.filter(([path]) => !path.endsWith('/') && pathOrPattern.test(path))
@@ -116,10 +110,7 @@ export class ZipFolderWriter {
 	}
 
 	folder(name: string): ZipFolderWriter {
-		return new ZipFolderWriter(
-			`${this.prefix}${name}/`,
-			this.accumulator
-		);
+		return new ZipFolderWriter(`${this.prefix}${name}/`, this.accumulator);
 	}
 }
 
@@ -141,8 +132,21 @@ export class ZipWriter {
 		compression?: string;
 		compressionOptions?: { level?: number };
 	}): Promise<Uint8Array> {
-		const level = (_opts?.compressionOptions?.level ?? 6) as 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9;
-		const entries: Record<string, [Uint8Array, { level: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 }]> = {};
+		const level = (_opts?.compressionOptions?.level ?? 6) as
+			| 0
+			| 1
+			| 2
+			| 3
+			| 4
+			| 5
+			| 6
+			| 7
+			| 8
+			| 9;
+		const entries: Record<
+			string,
+			[Uint8Array, { level: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 }]
+		> = {};
 		for (const [path, data] of Object.entries(this.accumulator)) {
 			entries[path] = [data, { level }];
 		}

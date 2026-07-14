@@ -124,7 +124,7 @@ export class SnippetSettingComponent extends Component {
 			});
 		}
 
-		const selectIcon = activeDocument.createElement('div');
+		const selectIcon = activeWindow.createDiv();
 		selectIcon.classList.add(
 			'clickable-icon',
 			'style-manager-item-select-icon'

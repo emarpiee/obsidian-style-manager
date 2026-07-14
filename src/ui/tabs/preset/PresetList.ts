@@ -208,7 +208,7 @@ export class PresetList {
 		containerEl.querySelector('.style-manager-bulk-actions')?.remove();
 		const bulkActionRow = containerEl.createDiv('style-manager-bulk-actions');
 
-		bulkActionRow.createEl('span', {
+		bulkActionRow.createSpan({
 			text: `${service.selectedPresets.size} selected`,
 			cls: 'style-manager-bulk-count',
 		});
@@ -266,7 +266,7 @@ export class PresetList {
 					} catch (err) {
 						Logger.error('Style Manager | Bulk export failed:', err);
 						plugin.settingsService.notifications.error(
-							`Export failed: ${err instanceof Error ? err.message : String(err)}`
+							`Export failed: ${err instanceof Error ? err.message : 'Unknown error'}`
 						);
 					}
 				})();

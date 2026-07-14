@@ -91,7 +91,7 @@ export class ColorContrastChecker {
 		});
 		smallTextPreviewEl.contentEditable = 'true';
 		smallTextPreviewEl.spellcheck = false;
-		smallTextPreviewEl.setText('from Wikipedia, the free encyclopedia');
+		smallTextPreviewEl.setText('From wikipedia, the free encyclopedia');
 
 		this.fgSetting = new Setting(contentEl)
 			.setClass('style-manager-tool-contrast-color-row')
@@ -305,7 +305,7 @@ export class ColorContrastChecker {
 				.setDesc(`Ratio: ${contrast.toFixed(2)}:1`);
 
 			const createBadge = (text: string, pass: boolean): HTMLElement => {
-				const badge = activeDocument.createElement('span');
+				const badge = activeWindow.createSpan();
 				badge.setText(text);
 				badge.addClass('style-manager-tool-contrast-badge');
 				badge.setCssStyles({

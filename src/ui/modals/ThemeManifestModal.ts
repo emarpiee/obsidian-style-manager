@@ -48,7 +48,7 @@ export class ThemeManifestModal extends Modal {
 
 		this.setTitle(this.themeId ? 'Edit theme manifest' : 'Create new theme');
 		contentEl.createEl('p', {
-			text: '⚠️ Modifying a community theme’s manifest may break its connection to the gallery.',
+			text: '⚠️ modifying a community theme’s manifest may break its connection to the gallery.',
 			cls: 'style-manager-theme-manifest-warning',
 		});
 		// Insert warning before the first setting
@@ -75,7 +75,7 @@ export class ThemeManifestModal extends Modal {
 			.setDesc('The display name of your theme.')
 			.addText((text) => {
 				text
-					.setPlaceholder('My Awesome Theme')
+					.setPlaceholder('My awesome theme')
 					.setValue(this.manifest.name)
 					.onChange((val) => {
 						this.manifest.name = val.trim();
@@ -93,7 +93,7 @@ export class ThemeManifestModal extends Modal {
 			.setDesc("The author's name.")
 			.addText((text) => {
 				text
-					.setPlaceholder('kepano')
+					.setPlaceholder('Kepano')
 					.setValue(this.manifest.author)
 					.onChange((val) => {
 						this.manifest.author = val.trim();
@@ -163,12 +163,12 @@ export class ThemeManifestModal extends Modal {
 		new Setting(contentEl)
 			.setName('Funding URL')
 			.setDesc(
-				'A single URL, or multiple links (one per line, e.g. "Patreon: https://...")'
+				'A single URL, or multiple links (one per line, e.g. "patreon: https://...")'
 			)
 			.addTextArea((text) => {
 				text
 					.setPlaceholder(
-						'https://buymeacoffee.com/\nOR\nPatreon: https://patreon.com/...\nBuy Me a Coffee: https://buymeacoffee.com/...'
+						'HTTPS://buymeacoffee.com/\nor\npatreon: https://patreon.com/...\nBuy me a coffee: https://buymeacoffee.com/...'
 					)
 					.setValue(this.getFundingString())
 					.onChange((val) => {

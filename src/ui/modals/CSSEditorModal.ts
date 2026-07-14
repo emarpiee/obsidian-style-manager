@@ -37,7 +37,7 @@ export class CSSEditorModal extends Modal {
 
 		const nameInput = new TextComponent(this.titleEl)
 			.setValue(this.newName)
-			.setPlaceholder('name')
+			.setPlaceholder('Name')
 			.onChange((val) => {
 				this.newName = val.trim();
 				this.editor.newName = this.newName;

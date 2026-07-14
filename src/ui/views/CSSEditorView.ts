@@ -190,6 +190,6 @@ export class CSSEditorView extends ItemView {
 		if (this.source) {
 			return this.source.id;
 		}
-		return 'CSS Editor';
+		return 'CSS editor';
 	}
 }

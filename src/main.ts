@@ -407,7 +407,7 @@ export default class StyleManagerPlugin extends Plugin {
 
 		this.addCommand({
 			id: 'show-readme',
-			name: 'Show README',
+			name: 'Show readme',
 			callback: () => {
 				if (this.isReadmeViewActive()) {
 					return;

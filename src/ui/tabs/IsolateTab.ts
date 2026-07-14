@@ -46,7 +46,7 @@ export class IsolateTab {
 		new Setting(isolateContainer)
 			.setName('Enable isolate mode')
 			.setDesc(
-				"Isolate style, theme modifications, enabled snippets to a private Locker for this device. When enabled, your local adjustments won't overwrite the shared configuration."
+				"Isolate style, theme modifications, enabled snippets to a private locker for this device. When enabled, your local adjustments won't overwrite the shared configuration."
 			)
 			.addToggle((toggle) => {
 				toggle
@@ -98,11 +98,11 @@ export class IsolateTab {
 		new Setting(deviceContainer)
 			.setName('Locker name')
 			.setDesc(
-				'A name for this private Locker. This helps identify your device across others.'
+				'A name for this private locker. This helps identify your device across others.'
 			)
 			.addText((text) => {
 				text
-					.setPlaceholder('e.g., Office Mac')
+					.setPlaceholder('E.g., office mac')
 					.setValue(plugin.settingsService.deviceName || '');
 
 				const saveName = async (): Promise<void> => {
@@ -129,7 +129,7 @@ export class IsolateTab {
 				});
 			});
 
-		const descFragment = activeDocument.createDocumentFragment();
+		const descFragment = activeWindow.createFragment();
 		descFragment.append('Unique ID: ');
 		descFragment.createEl('code', {
 			text: plugin.settingsService.deviceId,
@@ -214,7 +214,7 @@ export class IsolateTab {
 				.addExtraButton((btn) => {
 					btn
 						.setIcon('more-vertical')
-						.setTooltip('More Options')
+						.setTooltip('More options')
 						.onClick(() => {
 							const menu = new Menu();
 

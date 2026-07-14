@@ -151,18 +151,18 @@ export class ResetSettingsModal extends Modal {
 
 			// Icons
 			if (isTheme) {
-				const iconContainer = activeDocument.createElement('span');
+				const iconContainer = activeWindow.createSpan();
 				iconContainer.className = 'style-manager-theme-icon';
 				setIcon(iconContainer, 'palette');
 				nameEl.prepend(iconContainer);
 			} else if (isAppearance) {
-				const iconContainer = activeDocument.createElement('span');
+				const iconContainer = activeWindow.createSpan();
 				iconContainer.className = 'style-manager-appearance-icon';
 				const appearance = section.value;
 				setIcon(iconContainer, appearance === 'dark' ? 'moon' : 'sun');
 				nameEl.prepend(iconContainer);
 			} else if (isAccent) {
-				const iconContainer = activeDocument.createElement('span');
+				const iconContainer = activeWindow.createSpan();
 				iconContainer.className = 'style-manager-accent-icon';
 				iconContainer.style.setProperty(
 					'--sm-icon-dynamic-color',
@@ -171,7 +171,7 @@ export class ResetSettingsModal extends Modal {
 				setIcon(iconContainer, 'paint-bucket');
 				nameEl.prepend(iconContainer);
 			} else if (isSnippets) {
-				const iconContainer = activeDocument.createElement('span');
+				const iconContainer = activeWindow.createSpan();
 				iconContainer.className = 'style-manager-snippets-icon';
 				setIcon(iconContainer, 'file-code');
 				nameEl.prepend(iconContainer);

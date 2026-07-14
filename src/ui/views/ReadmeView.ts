@@ -32,6 +32,6 @@ export class ReadmeView extends ItemView {
 	}
 
 	getDisplayText(): string {
-		return 'Style Manager README';
+		return 'Style manager readme';
 	}
 }
