@@ -460,6 +460,36 @@ export class CSSParser {
 								settingId: setting.id,
 							});
 						}
+						if (Array.isArray(setting['alt-format'])) {
+							setting['alt-format'].forEach((alt: any) => {
+								if (
+									!alt.format ||
+									![
+										'hsl',
+										'hsl-values',
+										'hsl-split',
+										'hsl-split-decimal',
+										'rgb',
+										'rgb-values',
+										'rgb-split',
+										'hex',
+										'oklch',
+									].includes(alt.format)
+								) {
+									const issue = !alt.format
+										? 'MISSING_ALT_COLOR_FORMAT'
+										: 'UNSUPPORTED_ALT_COLOR_FORMAT';
+									alt.format = 'hex';
+									parseLogs?.push({
+										name,
+										message: `${issue}: Alt color format invalid for '${setting.id}', falling back to 'hex'`,
+										type: 'warning',
+										timestamp: Date.now(),
+										settingId: setting.id,
+									});
+								}
+							});
+						}
 						if (setting.default === undefined) {
 							setting.default = FALLBACK_COLOR;
 							parseLogs?.push({
@@ -491,6 +521,63 @@ export class CSSParser {
 						}
 						break;
 					case 'variable-themed-color': {
+						if (
+							!setting.format ||
+							![
+								'hsl',
+								'hsl-values',
+								'hsl-split',
+								'hsl-split-decimal',
+								'rgb',
+								'rgb-values',
+								'rgb-split',
+								'hex',
+								'oklch',
+							].includes(setting.format)
+						) {
+							const issue = !setting.format
+								? 'MISSING_COLOR_FORMAT'
+								: 'UNSUPPORTED_COLOR_FORMAT';
+							setting.format = 'hex';
+							parseLogs?.push({
+								name,
+								message: `${issue}: Themed color '${setting.id}' format invalid, falling back to 'hex'`,
+								type: 'error',
+								timestamp: Date.now(),
+								settingId: setting.id,
+							});
+						}
+						if (Array.isArray(setting['alt-format'])) {
+							setting['alt-format'].forEach((alt: any) => {
+								if (
+									!alt.format ||
+									![
+										'hsl',
+										'hsl-values',
+										'hsl-split',
+										'hsl-split-decimal',
+										'rgb',
+										'rgb-values',
+										'rgb-split',
+										'hex',
+										'oklch',
+									].includes(alt.format)
+								) {
+									const issue = !alt.format
+										? 'MISSING_ALT_COLOR_FORMAT'
+										: 'UNSUPPORTED_ALT_COLOR_FORMAT';
+									alt.format = 'hex';
+									parseLogs?.push({
+										name,
+										message: `${issue}: Alt color format invalid for '${setting.id}', falling back to 'hex'`,
+										type: 'error',
+										timestamp: Date.now(),
+										settingId: setting.id,
+									});
+								}
+							});
+						}
+
 						const themedFields = ['default-light', 'default-dark'] as const;
 						for (const field of themedFields) {
 							const value = setting[field];

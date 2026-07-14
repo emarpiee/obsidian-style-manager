@@ -302,6 +302,7 @@ body {
 
 	/* --- CSS Parser Logs --- */
 	--sm-log-warning-bg-color: oklch(from yellow l c h / 0.2);
+	--sm-log-error-bg-color: oklch(from red l c h / 0.2);
 
 	/* -- Color Picker --- */
 	--cp-body-bg: var(--background-primary);
@@ -309,13 +310,6 @@ body {
 	--cp-border-radius-sm: var(--radius-s);
 	--cp-border-radius-lg: var(--radius-l);
 }
-
-/* body.theme-light { */
-/* --sm-logo-color: oklch(from var(--interactive-accent) calc(l - 0.1) c h / 0.5); */
-/* } */
-/* body.theme-dark { */
-/* --sm-logo-color: oklch(from var(--interactive-accent) calc(l +  0.1) c h / 0.5); */
-/* } */
 
 .style-manager-plugin {
 	--sm-sticky-tabs-height: 48px;
@@ -2333,12 +2327,19 @@ body.is-mobile .style-manager-plugin .style-manager-wrapper .setting-item-contro
 }
 
 /* --- CSS Parser Logs --- */
-.style-manager-log-item.style-manager-log-warning {
+.style-manager-log-item.style-manager-log-warning, .style-manager-log-item.style-manager-log-error {
 	margin-block: var(--size-4-4);
-	background: var(--sm-log-warning-bg-color);
 	padding: var(--size-4-2);
 	border-radius: var(--radius-m);
 	border: 1px solid var(--text-muted);
+}
+
+.style-manager-log-item.style-manager-log-warning {
+	background: var(--sm-log-warning-bg-color);
+}
+
+.style-manager-log-item.style-manager-log-error {
+	background: var(--sm-log-error-bg-color);
 }
 
 .style-manager-log-header {
