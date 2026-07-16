@@ -862,6 +862,12 @@ export default class StyleManagerPlugin extends Plugin {
 			this.statusBarManager.cleanup();
 			this.unregisterSettingsFromSettingsSearch();
 
+			// Clean up shared color picker wrapper div injected into the document body.
+			// Matches how it was created in ColorUtils.getColorPickerConfig.
+			activeDocument
+				.querySelectorAll('.style-manager-color-picker-wrapper')
+				.forEach((el) => el.remove());
+
 			this.selectedSnippets.clear();
 			this.snippetMetadataMap.clear();
 			this.commandList = [];
