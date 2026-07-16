@@ -299,7 +299,7 @@ export class CSSParser {
 								timestamp: Date.now(),
 								settingId: setting.id,
 							});
-						} else if (typeof setting.default !== 'string' && setting.default !== '#') {
+						} else if (typeof setting.default !== 'string') {
 							const oldDefault = setting.default;
 							setting.default = '#';
 							parseLogs?.push({
@@ -482,7 +482,7 @@ export class CSSParser {
 							});
 						}
 						if (Array.isArray(setting['alt-format'])) {
-							setting['alt-format'].forEach((alt: any) => {
+							setting['alt-format'].forEach((alt: { format?: string }) => {
 								if (
 									!alt.format ||
 									![
@@ -569,7 +569,7 @@ export class CSSParser {
 							});
 						}
 						if (Array.isArray(setting['alt-format'])) {
-							setting['alt-format'].forEach((alt: any) => {
+							setting['alt-format'].forEach((alt: { format?: string }) => {
 								if (
 									!alt.format ||
 									![
@@ -644,7 +644,7 @@ export class CSSParser {
 								timestamp: Date.now(),
 								settingId: setting.id,
 							});
-						} else if (typeof setting.default !== 'string' && setting.default !== '#') {
+						} else if (typeof setting.default !== 'string') {
 							const oldDefault = setting.default;
 							setting.default = '#';
 							parseLogs?.push({

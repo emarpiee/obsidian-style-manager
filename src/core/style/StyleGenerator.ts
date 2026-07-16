@@ -441,7 +441,7 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_NUMBER_SLIDER: {
 						if (emittedIds.has(compositeKey)) break;
 						const s = setting as VariableNumber | VariableNumberSlider;
-						if (s.default !== undefined && s.default !== null && s.default !== '#') {
+						if (s.default !== undefined && s.default !== null && (s.default as unknown) !== '#') {
 							vars.push({
 								key: s.id,
 								value: `${s.default}${s.format || ''}`,
