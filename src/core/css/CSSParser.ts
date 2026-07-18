@@ -409,7 +409,7 @@ export class CSSParser {
 								settingId: setting.id,
 							});
 						}
-						
+
 						if (setting.default === undefined) {
 							setting.default = '#';
 							parseLogs?.push({
@@ -438,10 +438,7 @@ export class CSSParser {
 							} else {
 								setting.default = Math.max(
 									setting.min,
-									Math.min(
-										setting.max,
-										setting.default as number
-									)
+									Math.min(setting.max, setting.default as number)
 								);
 								parseLogs?.push({
 									name,

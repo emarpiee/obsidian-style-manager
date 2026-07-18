@@ -364,7 +364,6 @@ version: 1.2.0
 authorUrl: https://github.com/emarpiee
 license: MIT
 */
-}
 \`\`\`
 
 ### Supported Metadata Fields
