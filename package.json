@@ -34,7 +34,7 @@
 		"@vitest/coverage-v8": "^4.1.5",
 		"@vitest/ui": "^4.1.5",
 		"esbuild": "^0.28.0",
-		"eslint": "^9.39.5",
+		"eslint": "^10.7.0",
 		"eslint-plugin-obsidianmd": "^0.4.1",
 		"globals": "^17.7.0",
 		"jsdom": "^29.1.1",
