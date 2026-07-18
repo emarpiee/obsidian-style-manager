@@ -557,78 +557,7 @@ export default class StyleManagerPlugin extends Plugin {
 			}
 
 			this.presetScheduleService.start();
-			this.setupSwipePrevention();
 		});
-	}
-
-	private setupSwipePrevention(): void {
-		// @ts-ignore
-		if (!this.app.isMobile) return;
-
-		type TriggerFn = (
-			eventName: string,
-			data: unknown,
-			...rest: unknown[]
-		) => unknown;
-		type PatchableProto = {
-			trigger: TriggerFn & { __sm_swipe_patched?: boolean };
-		};
-
-		const isPatchableProto = (proto: unknown): proto is PatchableProto =>
-			!!proto && typeof (proto as PatchableProto).trigger === 'function';
-
-		const patchTrigger = (thing: unknown): void => {
-			if (!thing) return;
-			const proto: unknown = Object.getPrototypeOf(thing);
-			if (!isPatchableProto(proto) || proto.trigger.__sm_swipe_patched) return;
-
-			const orig: TriggerFn = proto.trigger;
-			const app = this.app;
-
-			const patched: TriggerFn & { __sm_swipe_patched?: boolean } = function (
-				this: unknown,
-				eventName: string,
-				data: unknown,
-				...rest: unknown[]
-			): unknown {
-				try {
-					if (
-						eventName === 'swipe' &&
-						data !== null &&
-						typeof data === 'object' &&
-						(data as Record<string, unknown>).direction === 'x' &&
-						(data as Record<string, unknown>).points === 1
-					) {
-						// Block swipe if any CSS editor leaf is visible
-						const cssEditorLeaves =
-							app.workspace.getLeavesOfType(cssEditorViewType);
-						if (cssEditorLeaves.length > 0) return undefined;
-					}
-				} catch (err) {
-					console.error(err);
-				}
-				return orig.call(this, eventName, data, ...rest);
-			};
-
-			patched.__sm_swipe_patched = true;
-			proto.trigger = patched;
-		};
-
-		type WorkspaceWithSplits = {
-			rootSplit: unknown;
-			leftSplit: unknown;
-			rightSplit: unknown;
-		};
-		const workspace = this.app.workspace as unknown as WorkspaceWithSplits;
-		// Patch the shared prototypes of workspace and rootSplit.
-		// These are sufficient — swipe events bubble through these objects.
-		// We do NOT patch activeLeaf (changes dynamically) or use instance-level hooks.
-		[
-			this.app.workspace,
-			workspace.rootSplit,
-			workspace.leftSplit,
-			workspace.rightSplit,
-		].forEach(patchTrigger);
 	}
 
 	parseCSS(): void {
@@ -861,6 +790,12 @@ export default class StyleManagerPlugin extends Plugin {
 			this.settingsService.cleanup();
 			this.statusBarManager.cleanup();
 			this.unregisterSettingsFromSettingsSearch();
+
+			// Clean up shared color picker wrapper div injected into the document body.
+			// Matches how it was created in ColorUtils.getColorPickerConfig.
+			activeDocument
+				.querySelectorAll('.style-manager-color-picker-wrapper')
+				.forEach((el) => el.remove());
 
 			this.selectedSnippets.clear();
 			this.snippetMetadataMap.clear();

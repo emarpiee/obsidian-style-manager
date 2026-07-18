@@ -124,7 +124,7 @@ settings:
         title: 
         description: 
         type: variable-text
-        default: 
+        default: '#'
         quotes: true`,
 		},
 		{
@@ -139,7 +139,7 @@ settings:
         title: 
         description: 
         type: variable-number
-        default: 0
+        default: '#'
         format: px`,
 		},
 		{
@@ -154,7 +154,7 @@ settings:
         title: 
         description: 
         type: variable-number-slider
-        default: 0
+        default: '#'
         min: 0
         max: 100
         step: 1
@@ -172,7 +172,7 @@ settings:
         title: 
         description: 
         type: variable-select
-        default: 
+        default: '#'
         options:
             - 
                 label: 

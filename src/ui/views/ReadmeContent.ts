@@ -468,6 +468,30 @@ All settings definitions (regardless of type) must include the following core pa
 - \`type\`: The layout component style.
 - \`description\` *(optional)*: Informational text displayed next to the setting.
 
+### Bypassing Variable Generation
+
+If you want to allow the plugin to show the setting but **not** override the theme's native default variable, you can bypass variable generation by setting the default value to \`'#'\`. 
+
+> [!WARNING]
+> Because settings are parsed as YAML, a bare \`#\` character will be treated as a comment. You **must** wrap the \`#\` in quotes to bypass generation properly without throwing a warning.
+
+- For standard variable types (\`variable-text\`, \`variable-number\`, \`variable-number-slider\`, and \`variable-select\`), set \`default: '#'\`.
+- For color types (\`variable-color\` and \`variable-themed-color\`), use \`'#'\` (e.g., \`default: '#'\` or \`default-light: '#'\`).
+
+\`\`\`css
+    - 
+        id: my-setting
+        title: My Setting
+        type: variable-number
+        default: '#'
+    - 
+        id: my-color
+        title: My Color
+        type: variable-color
+        format: hex
+        default: '#'
+\`\`\`
+
 ### Detailed Setting Examples
 
 #### 1. \`heading\`

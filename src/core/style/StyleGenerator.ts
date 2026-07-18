@@ -287,9 +287,10 @@ export class StyleGenerator {
 					const s = setting as VariableNumber | VariableNumberSlider;
 					const val = (value !== undefined ? value : s.default) as
 						| number
+						| string
 						| undefined
 						| null;
-					if (val !== undefined && val !== null) {
+					if (val !== undefined && val !== null && val !== '#') {
 						vars.push({
 							key: setting.id,
 							value: `${val}${s.format || ''}`,
@@ -304,7 +305,8 @@ export class StyleGenerator {
 					let text =
 						value !== undefined
 							? (value as string | number).toString()
-							: s.default.toString();
+							: s.default?.toString() || '';
+					if (text === '#') continue;
 					if (s.quotes) {
 						text = text !== `""` ? `'${text}'` : ``;
 					}
@@ -439,7 +441,7 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_NUMBER_SLIDER: {
 						if (emittedIds.has(compositeKey)) break;
 						const s = setting as VariableNumber | VariableNumberSlider;
-						if (s.default !== undefined && s.default !== null) {
+						if (s.default !== undefined && s.default !== null && (s.default as unknown) !== '#') {
 							vars.push({
 								key: s.id,
 								value: `${s.default}${s.format || ''}`,
@@ -452,7 +454,7 @@ export class StyleGenerator {
 					case SettingType.VARIABLE_SELECT: {
 						if (emittedIds.has(compositeKey)) break;
 						const s = setting as VariableText | VariableSelect;
-						if (s.default != null) {
+						if (s.default != null && s.default !== '#') {
 							let text = s.default.toString();
 							if (s.quotes) text = text !== `""` ? `'${text}'` : ``;
 							if (text !== '') {
