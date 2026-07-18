@@ -261,8 +261,8 @@ body {
 	--sm-cm-bg: var(--background-primary);
 	--sm-cm-color: var(--text-normal);
 	--sm-cm-active-line-bg: var(--background-modifier-active-hover);
-	--sm-cm-selection-bg: oklch(from var(--text-selection) l c h / 0.3);
-	--sm-cm-unfocused-selection-bg: oklch(from var(--sm-cm-selection-bg) l c h / calc(alpha + 0.2));
+	--sm-cm-selection-bg: oklch(from var(--text-selection) 0.75 c h / 0.3);
+	--sm-cm-unfocused-selection-bg: oklch(from var(--sm-cm-selection-bg) l c h / calc(alpha + 0.05));
 	--sm-cm-cursor-color: var(--text-normal);
 	--sm-cm-gutters-bg: var(--background-primary);
 	--sm-cm-gutters-color: var(--text-faint);
