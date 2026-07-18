@@ -392,7 +392,6 @@ body.is-mobile .style-manager-plugin input[type='range']::-webkit-slider-thumb {
 .vertical-tab-content.is-style-manager-tab,
 .view-content.is-style-manager-view {
 	padding: 0;
-	padding-bottom: var(--view-bottom-spacing);
 }
 
 body.is-mobile .vertical-tab-content.is-style-manager-tab {
@@ -2022,6 +2021,35 @@ body.is-mobile .style-manager-editor-title-container {
 .style-manager-editor-toggle-label {
 	font-size: var(--font-ui-smaller);
 	color: var(--text-muted);
+}
+
+body.is-mobile .view-content.style-manager-editor-view .cm-scroller .cm-content {
+	margin-bottom: var(--view-bottom-spacing);
+}
+
+body.is-mobile .style-manager-editor-modal .modal-button-container {
+	padding-top: var(--size-4-2);
+}
+
+body.is-mobile .style-manager-editor-modal {
+	padding-top: 24px;
+	--modal-width: 100vw;
+	--modal-max-width: 100vw;
+	--modal-height: 100vh;
+	--modal-max-height: 100vh;
+	border-radius: 0;
+}
+
+body.is-mobile .style-manager-editor-modal .modal-content {
+	padding: 0;
+}
+
+body.is-phone .style-manager-editor-toggle-label {
+	display: none;
+}
+
+body.is-phone .style-manager-editor-toggle-container {
+	margin: unset;
 }
 
 .style-manager-confirm-modal .style-manager-modal-buttons .setting-item-control {
