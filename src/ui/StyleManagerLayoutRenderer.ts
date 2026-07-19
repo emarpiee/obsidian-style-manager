@@ -237,10 +237,19 @@ export class StyleManagerLayoutRenderer extends Component {
 	}
 
 	private restoreScroll(): void {
-		// Restore scroll position after all chunks are done
+		// Restore scroll position after all chunks are done.
+		// We use a double-RAF to ensure color picker components have fully
+		// settled their layout (they initialize asynchronously and can trigger
+		// a reflow in the frame after rendering), which would otherwise cause
+		// scrollTop to drift toward the bottom on each re-render.
 		if (this.savedScrollTop > 0) {
-			this.containerEl.scrollTop = this.savedScrollTop;
+			const target = this.savedScrollTop;
 			this.savedScrollTop = 0;
+			window.requestAnimationFrame(() => {
+				window.requestAnimationFrame(() => {
+					this.containerEl.scrollTop = target;
+				});
+			});
 		}
 	}
 
