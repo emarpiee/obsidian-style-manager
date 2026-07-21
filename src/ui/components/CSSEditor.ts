@@ -57,7 +57,7 @@ import { Logger } from '../../utils/Logger';
 
 export interface CSSEditorRenderOptions {
 	plugin: StyleManagerPlugin;
-	source: { type: string; id: string; readOnly?: boolean };
+	source: { type: string; id: string; readOnly?: boolean; startLine?: number; searchStr?: string };
 	isView?: boolean;
 	onOpenInTab?: () => void;
 	onClose?: () => void;
@@ -551,6 +551,36 @@ export class CSSEditor {
 					.setCta()
 					.onClick(() => this.handleSave());
 			}
+		}
+
+		let targetLine = 0;
+		if (options.source.startLine && options.source.startLine > 0) {
+			targetLine = options.source.startLine;
+		} else if (options.source.searchStr && this.view) {
+			const docText = this.view.state.doc.toString();
+			const lines = docText.split('\n');
+			for (let i = 0; i < lines.length; i++) {
+				if (lines[i].includes(options.source.searchStr)) {
+					targetLine = i + 1;
+					break;
+				}
+			}
+		}
+
+		if (targetLine > 0) {
+			window.requestAnimationFrame(() => {
+				if (this.view) {
+					const docLines = this.view.state.doc.lines;
+					targetLine = Math.min(targetLine, docLines);
+					if (targetLine > 0) {
+						const pos = this.view.state.doc.line(targetLine).from;
+						this.view.dispatch({
+							selection: { anchor: pos },
+							effects: EditorView.scrollIntoView(pos, { y: 'center' }),
+						});
+					}
+				}
+			});
 		}
 	}
 
