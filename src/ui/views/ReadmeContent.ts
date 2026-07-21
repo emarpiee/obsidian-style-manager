@@ -161,7 +161,7 @@ Style Manager interface is structured into six functional tabs.
 - **Setting Count Badges:** Displays the number of modified settings within a section. Root sections show the total count, while sub-sections show local counts and a downward arrow (↓) if nested settings are also modified. Clicking a badge opens a focused view of all modified styles in that section.
 - **Modified-Only Filter:** A quick switch to hide unchanged settings and view only the settings you have specifically changed.
 - **Navigation:** Search bar for instant filtering (supports \`@id <id>\`, \`@type <known-type>\`, \`@title <text>\`, and \`@heading <text>\` prefixes), and a "Collapse/Expand All" toggle to manage large sets of style settings.
-- **Parse Logs:** An info button that opens a modal listing all warnings and errors found during the parsing of \`@settings\` blocks, allowing for quick debugging of CSS configurations.
+- **Parse Logs:** An info button that opens a modal listing all warnings and errors found during the parsing of \`@settings\` blocks, allowing for quick debugging of CSS configurations. Errors are persistently tracked across theme and snippet changes. Clicking an error's line number or setting ID will instantly open the CSS editor and jump directly to the exact location of the issue.
 
 ### 2. Snippets Tab
 
@@ -296,6 +296,7 @@ Style Manager features an integrated CodeMirror 6 editor that works in both a mo
 - **Reusable editor component:** The same CodeMirror 6 editor powers both the modal and tab view.
 - **Direct editing:** Modify CSS files without leaving Obsidian.
 - **Open in tab:** From the modal, use the external-link icon to open the current CSS source in a dedicated workspace tab and close the modal.
+- **Jump-to-line navigation:** When opened from a parse log error, the editor automatically scrolls and places the cursor on the specific line or setting block that caused the issue.
 - **Smart block injection:** Quickly add blocks and setting components using the **Add Block** button.
 - **Developer-friendly tools:** Includes line wrapping toggles, automatic bracket closing, and \`Mod-s\` (Ctrl/Cmd+S) support for quick saving.
 - **Flexible management:** Rename snippets, toggle snippet activation, save changes, or copy read-only content directly from the footer.
