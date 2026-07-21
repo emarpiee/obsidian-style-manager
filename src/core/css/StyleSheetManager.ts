@@ -58,6 +58,8 @@ export class StyleSheetManager {
 		this.cssVarCache.clear();
 		this.fileCache.clear();
 		this.diskMapCache.clear();
+		this.textContentToSourceMap.clear();
+		this.diskParseLogs = [];
 	}
 
 	public clearCache(): void {
@@ -114,12 +116,17 @@ export class StyleSheetManager {
 				sourceId: string;
 				name: string;
 			}[];
+			errors: ParseLogList;
 		}
 	> = new Map();
 	private diskMapCache: Map<
 		string,
 		{ sourceType: string; sourceId: string; sectionName: string }[]
 	> = new Map();
+
+	private textContentToSourceMap: Map<string, { sourceType: string; sourceId: string }> = new Map();
+
+	private diskParseLogs: ParseLogList = [];
 
 	private getStableActiveTheme(): string {
 		const customCss = (this.bridge as unknown as BridgeInternals).app.customCss;
@@ -129,6 +136,9 @@ export class StyleSheetManager {
 
 	public async buildDiskMap(): Promise<void> {
 		this.diskMapCache.clear();
+		this.textContentToSourceMap.clear();
+		this.diskParseLogs = [];
+
 		const adapter = (this.bridge as unknown as BridgeInternals).app.vault
 			.adapter;
 		const promises: Promise<void>[] = [];
@@ -155,11 +165,20 @@ export class StyleSheetManager {
 					existingId.push(data);
 					this.diskMapCache.set(section.id, existingId);
 				}
+				// Replay cached errors
+				if (cached.errors) {
+					this.diskParseLogs.push(...cached.errors);
+				}
 				return;
 			}
 
 			// Not in cache or modified, read and parse
 			const content = await adapter.read(path);
+
+			if (content) {
+				this.textContentToSourceMap.set(content.trim(), { sourceType, sourceId });
+			}
+
 			const newSections: {
 				id: string;
 				sourceType: string;
@@ -167,8 +186,11 @@ export class StyleSheetManager {
 				name: string;
 			}[] = [];
 
-			if (content && /\/\*!?\s*@settings/.test(content)) {
-				const { settingsList } = CSSParser.parseCSSText(content);
+			let fileErrors: ParseLogList = [];
+
+		if (content && /\/\*!?\s*@settings/.test(content)) {
+				const { settingsList, parseLogs: parsedErrors } = CSSParser.parseCSSText(content);
+				fileErrors = parsedErrors;
 				for (const s of settingsList) {
 					const data = { sourceType, sourceId, sectionName: s.name };
 
@@ -197,9 +219,16 @@ export class StyleSheetManager {
 
 					newSections.push({ id: s.id, sourceType, sourceId, name: s.name });
 				}
+
+				// Collect parse errors from this file, tagged with the correct source
+				for (const err of fileErrors) {
+					err.sourceType = sourceType as 'Plugin' | 'Theme' | 'Snippet' | 'Unknown' | 'Style';
+					err.sourceId = sourceId;
+				}
+				this.diskParseLogs.push(...fileErrors);
 			}
 
-			this.fileCache.set(path, { mtime: stat.mtime, sections: newSections });
+			this.fileCache.set(path, { mtime: stat.mtime, sections: newSections, errors: fileErrors });
 		};
 
 		// 1. Theme
@@ -210,15 +239,15 @@ export class StyleSheetManager {
 			);
 		}
 
-		// 2. Plugins
-		const plugins = this.bridge.getInstalledPlugins();
-		for (const p of plugins) {
+		// 2. Plugins — only enabled ones (have a styles.css loaded in DOM)
+		const enabledPlugins = this.bridge.getEnabledPlugins();
+		for (const p of enabledPlugins) {
 			promises.push(processFile(this.bridge.getPluginPath(p), 'Plugin', p));
 		}
 
-		// 3. Snippets
+		// 3. Snippets — only enabled ones
 		const snippets = this.bridge
-			.getAllSnippets()
+			.getEnabledSnippets()
 			.map((s) => s.replace(/\.css$/, '').trim());
 		for (const s of snippets) {
 			promises.push(processFile(this.bridge.getSnippetPath(s), 'Snippet', s));
@@ -236,7 +265,19 @@ export class StyleSheetManager {
 	} {
 		try {
 			const settingsMap = new Map<string, ParsedCSSSettings>();
+			// Start with errors already collected from disk parsing (e.g. snippets loaded via <link>)
+			// Deduplicate by name+message key
+			const seenErrorKeys = new Set<string>();
 			const parseLogs: ParseLogList = [];
+			const diskSourceIds = new Set<string>();
+			for (const err of this.diskParseLogs) {
+				const key = `${err.name}|${err.message}`;
+				if (!seenErrorKeys.has(key)) {
+					seenErrorKeys.add(key);
+					parseLogs.push(err);
+				}
+				if (err.sourceId) diskSourceIds.add(err.sourceId);
+			}
 			const styleSheets = activeDocument.styleSheets;
 			const processedContent = new Set<string>();
 			const activeTheme = this.getStableActiveTheme();
@@ -395,11 +436,36 @@ export class StyleSheetManager {
 						sourceId: section.sourceId,
 					};
 
-					// Deduplicate sections from the same source to prevent duplicates when theme/plugin is updated
 					const dedupKey = `${sectionClone.id}|${sectionClone.sourceType}|${sectionClone.sourceId}`;
 					settingsMap.set(dedupKey, sectionClone);
 				}
-				parseLogs.push(...errors);
+				for (const err of errors) {
+					// Always use this stylesheet's source info — the error came from this file
+					let errSourceType: string = sourceType;
+					let errSourceId: string | undefined = sourceId;
+
+					// If this stylesheet has Unknown/missing source, look up via text content map
+					if ((sourceType === 'Unknown' || !sourceId) && sheet.ownerNode) {
+						const el = sheet.ownerNode as Element;
+						const nodeText = el.textContent?.trim() || '';
+						const mapped = nodeText ? this.textContentToSourceMap.get(nodeText) : undefined;
+						if (mapped) {
+							errSourceType = mapped.sourceType;
+							errSourceId = mapped.sourceId;
+						}
+					}
+
+						err.sourceType = (errSourceType === 'Unknown' ? 'Snippet' : errSourceType) as 'Plugin' | 'Theme' | 'Snippet' | 'Unknown' | 'Style';
+					err.sourceId = errSourceId || err.name;
+				}
+				// Only add DOM-scan errors not already captured from disk parsing
+				for (const err of errors) {
+					const key = `${err.name}|${err.message}`;
+					if (!seenErrorKeys.has(key)) {
+						seenErrorKeys.add(key);
+						parseLogs.push(err);
+					}
+				}
 			}
 
 			const settingsList = Array.from(settingsMap.values());

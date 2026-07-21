@@ -2377,6 +2377,30 @@ body.is-mobile .style-manager-plugin .style-manager-wrapper .setting-item-contro
 .style-manager-log-header {
 	display: flex;
 	gap: var(--size-4-2);
+	align-items: center;
+}
+
+.style-manager-log-name a {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--size-4-1);
+	color: var(--text-normal);
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.style-manager-log-name a:hover {
+	text-decoration: underline;
+	color: var(--color-accent);
+}
+
+.style-manager-log-name a .style-manager-log-time {
+	font-size: var(--font-ui-smaller);
+	font-weight: 500;
+	color: var(--text-muted);
+	background: var(--background-modifier-hover);
+	padding: 1px 5px;
+	border-radius: var(--radius-s);
 }
 
 .style-manager-log-setting-id-link {
@@ -2492,4 +2516,9 @@ body.sm-conflict-warning::before {
 	color: var(--sm-cm-search-close-color-hover);
 	background: var(--sm-cm-search-close-bg-hover);
 	border-radius: var(--radius-s);
+}
+
+.style-manager-parser-error-icon svg {
+	fill: currentColor;
+	stroke: var(--background-primary);
 }

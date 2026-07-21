@@ -174,6 +174,23 @@ export class ObsidianBridge {
 	}
 
 	/**
+	 * Retrieves the IDs of all currently enabled (loaded) plugins.
+	 */
+	public getEnabledPlugins(): string[] {
+		try {
+			const plugins = (this.app as unknown as ObsidianInternalApp).plugins;
+			if (plugins && plugins.plugins) {
+				return Object.keys(plugins.plugins);
+			}
+			// Fallback: return all installed
+			return this.getInstalledPlugins();
+		} catch (e) {
+			Logger.error('Style Manager | Error getting enabled plugins:', e);
+		}
+		return [];
+	}
+
+	/**
 	 * Updates a value in the Obsidian native configuration.
 	 */
 	public setNativeConfig(key: string, value: unknown): void {
