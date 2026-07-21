@@ -13,6 +13,12 @@ export class ColorContrastCheckerView extends ItemView {
 	}
 
 	onload(): void {
+		const leaves = this.app.workspace.getLeavesOfType(colorContrastViewType);
+		for (const leaf of leaves) {
+			if (leaf !== this.leaf) {
+				leaf.detach();
+			}
+		}
 		this.checker.render(this.contentEl);
 	}
 

@@ -30,6 +30,14 @@ export class StyleManagerView extends ItemView {
 	}
 
 	onload(): void {
+		// Ensure only one instance of the style manager view exists
+		const leaves = this.plugin.app.workspace.getLeavesOfType(viewType);
+		for (const leaf of leaves) {
+			if (leaf !== this.leaf) {
+				leaf.detach();
+			}
+		}
+
 		this.contentEl.addClass('is-style-manager-view');
 		this.settingsMarkup = this.addChild(
 			new StyleManagerLayoutRenderer(

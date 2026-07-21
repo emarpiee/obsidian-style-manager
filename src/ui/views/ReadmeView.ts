@@ -13,6 +13,12 @@ export class ReadmeView extends ItemView {
 	}
 
 	onload(): void {
+		const leaves = this.app.workspace.getLeavesOfType(readmeViewType);
+		for (const leaf of leaves) {
+			if (leaf !== this.leaf) {
+				leaf.detach();
+			}
+		}
 		void this.component.render(this.contentEl, {
 			component: this,
 		});

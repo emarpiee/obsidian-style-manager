@@ -13,6 +13,12 @@ export class LoremIpsumView extends ItemView {
 	}
 
 	onload(): void {
+		const leaves = this.app.workspace.getLeavesOfType(loremIpsumViewType);
+		for (const leaf of leaves) {
+			if (leaf !== this.leaf) {
+				leaf.detach();
+			}
+		}
 		this.generator.render(this.contentEl);
 	}
 
