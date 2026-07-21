@@ -1,3 +1,4 @@
+
 # Obsidian Style Manager
 
 <img src="https://github.com/emarpiee/obsidian-style-manager/blob/main/style_manager-gh-banner.webp" alt="Obsidian Style Manager GitHub Banner.webp" width="1000">
@@ -25,6 +26,9 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 	- [2. Snippets Tab](#2-snippets-tab)
 	- [3. Themes (Theme Builder) Tab](#3-themes-theme-builder-tab)
 	- [4. Presets Tab](#4-presets-tab)
+		- [A. How to Save Your Own Preset](#a-how-to-save-your-own-preset)
+		- [B. How to Import Presets](#b-how-to-import-presets)
+		- [C. How to Apply a Preset](#c-how-to-apply-a-preset)
 	- [5. Isolate Tab](#5-isolate-tab)
 	- [6. Preferences Tab](#6-preferences-tab)
 - [Global Toolbar & Status Badges](#global-toolbar--status-badges)
@@ -45,6 +49,7 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 	- [Basic Structure Example](#basic-structure-example)
 	- [Setting Types Overview](#setting-types-overview)
 	- [Global Parameters](#global-parameters)
+	- [Bypassing Variable Generation](#bypassing-variable-generation)
 	- [Detailed Setting Examples](#detailed-setting-examples)
 		- [1. `heading`](#1-heading)
 		- [2. `info-text`](#2-info-text)
@@ -111,7 +116,13 @@ Use this method if you prefer to install files directly without third-party tool
 
 ### 3. Community Plugin Store
 
-> Not yet available on the Community Plugin Store. Use the manual or BRAT installation method above.
+This is the easiest way to install the plugin.
+
+1. Open Obsidian **Settings**.
+2. Go to **Community plugins** and ensure **Restricted mode** is turned off.
+3. Click **Browse** and search for **Style Manager**.
+4. Click **Install**.
+5. Once installed, click **Enable**.
 
 ## Style Settings Migration Guide
 
@@ -204,6 +215,37 @@ Style Manager interface is structured into six functional tabs.
     - **Isolate:** Applies changes only to the current device's local locker.
     - **Remote:** Pushes a preset to a specific remote device's locker.
 - **Scheduling Automation:** Access the Active Schedules modal to set presets to trigger automatically at specific times (e.g., switching to a dark, high-contrast style at 6:00 PM).
+
+#### A. How to Save Your Own Preset
+
+1. After customizing your vault's look in Style Manager, go to the **Presets** tab (or select **Create preset…** from the **More Actions** menu in the top toolbar).
+2. Click **Create preset**.
+3. Select which elements to include in your snapshot (such as *Active theme*, *Appearance*, *Accent color*, *Snippets*, or specific theme/snippet configurations).
+   *Tip: Use the **Select modified** button to automatically check only the settings you have explicitly changed.*
+4. Click **Save preset** and enter a **Name** to store your custom design state for quick access later.
+
+#### B. How to Import Presets
+
+1. Open **Style Manager** in Obsidian.
+2. Click the **More Actions** menu (three vertical dots) in the global toolbar.
+3. Select **Import preset…**.
+4. Choose one of the available import methods:
+   - **Import from style settings**: Automatically migrate your configurations from the style settings plugin.
+   - **Import from files**: Click **Choose files** to select a `.json` or `.zip` bundle from your device.
+   - **Import from vault**: Browse and select `.json` or `.zip` files already stored within your Obsidian vault.
+   - **Paste JSON data**: Paste raw JSON text directly into the provided text box and click **Import from text**.
+5. After resolving any conflicts, your new presets will appear under the **Presets** tab.
+
+#### C. How to Apply a Preset
+
+1. Navigate to the **Presets** tab in Style Manager.
+2. Click on the preset you want to use from the list, or select multiple presets to apply them in bulk.
+3. Click the **Apply** button.
+4. Choose the target environment:
+   - **Apply to shared locker**: Updates the configuration for all synced devices.
+   - **Apply to isolated locker**: Loads the style only on your current device (requires Isolate Mode).
+   - **Apply to remote locker**: Pushes the preset to a specific connected device.
+5. Choose how to merge the styles (e.g., **Overwrite** to replace current settings, or **Merge** to combine). The preset will immediately load onto your workspace.
 
 ### 5. Isolate Tab
 
@@ -470,7 +512,7 @@ All settings definitions (regardless of type) must include the following core pa
 
 ### Bypassing Variable Generation
 
-If you want to allow the plugin to show the setting but **not** override the theme's native default variable, you can bypass variable generation by setting the default value to `'#'`. 
+If you want to allow the plugin to show the setting but **not** override the theme's native default variable, you can bypass variable generation by setting the default value to `'#'`.
 
 > [!WARNING]
 > Because settings are parsed as YAML, a bare `#` character will be treated as a comment. You **must** wrap the `#` in quotes to bypass generation properly without throwing a warning.
@@ -949,4 +991,3 @@ Donations are greatly appreciated and will be used to fund my sanity, and my cat
 <a href='https://ko-fi.com/emarpiee' target='_blank'>
 <img height='50' width='150' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 </a>
-
