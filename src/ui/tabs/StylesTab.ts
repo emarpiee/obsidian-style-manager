@@ -46,12 +46,8 @@ export class StylesTab {
 	}
 
 	render(settings: ParsedCSSSettings[]): void {
-		if (settings.length === 0) {
-			if (this.deps.plugin.isInitialLoading) {
-				this.displayLoading();
-			} else {
-				this.displayEmpty();
-			}
+		if (settings.length === 0 && this.deps.plugin.isInitialLoading) {
+			this.displayLoading();
 			return;
 		}
 
@@ -126,7 +122,17 @@ export class StylesTab {
 							}
 						).open();
 					});
+				
+				if (this.deps.parseLogs.some(log => log.type === 'error')) {
+					btn.extraSettingsEl.addClass('mod-warning');
+					btn.extraSettingsEl.addClass('style-manager-parser-error-icon');
+				}
 			});
+		}
+
+		if (settings.length === 0) {
+			this.displayEmpty();
+			return;
 		}
 
 		this.settingsContainerEl = this.containerEl.createDiv(
