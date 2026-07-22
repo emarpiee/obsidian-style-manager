@@ -35,7 +35,7 @@
 	}
 }
 
-@container (max-width: 500px) {
+@container (max-width: 700px) {
 	.style-manager-plugin .style-manager-preset-item .setting-item-name {
 		gap: var(--size-4-1);
 		flex-direction: column;
