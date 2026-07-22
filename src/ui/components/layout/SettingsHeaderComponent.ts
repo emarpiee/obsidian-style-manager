@@ -232,7 +232,7 @@ export class SettingsHeaderComponent extends Component {
 			cls: 'style-manager-icon-button style-manager-tab-more-actions',
 		});
 		setIcon(moreBtn, 'more-vertical');
-		setTooltip(moreBtn, 'More options');
+		setTooltip(moreBtn, 'More actions');
 
 		moreBtn.onclick = (_e: MouseEvent): void => {
 			const menu = new Menu();

@@ -13,7 +13,7 @@ export class CSSEditorModal extends Modal {
 	constructor(
 		app: App,
 		private plugin: StyleManagerPlugin,
-		private source: { type: string; id: string; readOnly?: boolean },
+		private source: { type: string; id: string; readOnly?: boolean; startLine?: number; searchStr?: string },
 		private onSaveSuccess?: (newName: string) => void
 	) {
 		super(app);

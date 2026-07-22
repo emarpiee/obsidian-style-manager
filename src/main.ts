@@ -42,6 +42,7 @@ import { CommandApplyPresetModal } from './ui/modals/CommandApplyPresetModal';
 import { CommandSchedulePresetModal } from './ui/modals/CommandSchedulePresetModal';
 import { CreatePresetModal } from './ui/modals/CreatePresetModal';
 import { FreezeDelayPromptModal } from './ui/modals/FreezeDelayPromptModal';
+import { ImportPresetModal } from './ui/modals/ImportPresetModal';
 import { LoremIpsumModal } from './ui/modals/LoremIpsumModal';
 import { ReadmeModal } from './ui/modals/ReadmeModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
@@ -413,6 +414,22 @@ export default class StyleManagerPlugin extends Plugin {
 					return;
 				}
 				new ReadmeModal(this.app, this).open();
+			},
+		});
+
+		this.addCommand({
+			id: 'import-preset',
+			name: 'Import preset',
+			callback: () => {
+				new ImportPresetModal(
+					this.app,
+					this.presetService,
+					(): void => {
+						void this.settingsService.refreshService.trigger(
+							RefreshLevel.UI_ONLY
+						);
+					}
+				).open();
 			},
 		});
 

@@ -29,7 +29,7 @@ export interface ObsidianCustomCss {
 
 export interface ObsidianInternalApp {
 	customCss: ObsidianCustomCss;
-	plugins: { manifests: Record<string, unknown> };
+	plugins: { manifests: Record<string, unknown>; plugins: Record<string, unknown> };
 }
 
 export interface DeviceBucket {

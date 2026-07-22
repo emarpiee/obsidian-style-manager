@@ -1,4 +1,5 @@
-export const README_CONTENT = `# Obsidian Style Manager
+export const README_CONTENT = `
+# Obsidian Style Manager
 
 [Obsidian Style Manager GitHub Banner.webp](https://github.com/emarpiee/obsidian-style-manager/blob/main/style_manager-gh-banner.webp)
 
@@ -25,6 +26,9 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 	- [2. Snippets Tab](#2-snippets-tab)
 	- [3. Themes (Theme Builder) Tab](#3-themes-theme-builder-tab)
 	- [4. Presets Tab](#4-presets-tab)
+		- [A. How to Save Your Own Preset](#a-how-to-save-your-own-preset)
+		- [B. How to Import Presets](#b-how-to-import-presets)
+		- [C. How to Apply a Preset](#c-how-to-apply-a-preset)
 	- [5. Isolate Tab](#5-isolate-tab)
 	- [6. Preferences Tab](#6-preferences-tab)
 - [Global Toolbar & Status Badges](#global-toolbar--status-badges)
@@ -45,6 +49,7 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 	- [Basic Structure Example](#basic-structure-example)
 	- [Setting Types Overview](#setting-types-overview)
 	- [Global Parameters](#global-parameters)
+	- [Bypassing Variable Generation](#bypassing-variable-generation)
 	- [Detailed Setting Examples](#detailed-setting-examples)
 		- [1. \`heading\`](#1-heading)
 		- [2. \`info-text\`](#2-info-text)
@@ -78,6 +83,7 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 		- [Examples & Logic](#examples--logic)
 		- [Purpose](#purpose)
 - [Developer and Testing Utilities](#developer-and-testing-utilities)
+- [Command Palette Commands](#command-palette-commands)
 - [Transparency](#transparency)
 - [☕️ Buy Me A Coffee](#-buy-me-a-coffee)
 
@@ -111,7 +117,13 @@ Use this method if you prefer to install files directly without third-party tool
 
 ### 3. Community Plugin Store
 
-> Not yet available on the Community Plugin Store. Use the manual or BRAT installation method above.
+This is the easiest way to install the plugin.
+
+1. Open Obsidian **Settings**.
+2. Go to **Community plugins** and ensure **Restricted mode** is turned off.
+3. Click **Browse** and search for **Style Manager**.
+4. Click **Install**.
+5. Once installed, click **Enable**.
 
 ## Style Settings Migration Guide
 
@@ -161,7 +173,7 @@ Style Manager interface is structured into six functional tabs.
 - **Setting Count Badges:** Displays the number of modified settings within a section. Root sections show the total count, while sub-sections show local counts and a downward arrow (↓) if nested settings are also modified. Clicking a badge opens a focused view of all modified styles in that section.
 - **Modified-Only Filter:** A quick switch to hide unchanged settings and view only the settings you have specifically changed.
 - **Navigation:** Search bar for instant filtering (supports \`@id <id>\`, \`@type <known-type>\`, \`@title <text>\`, and \`@heading <text>\` prefixes), and a "Collapse/Expand All" toggle to manage large sets of style settings.
-- **Parse Logs:** An info button that opens a modal listing all warnings and errors found during the parsing of \`@settings\` blocks, allowing for quick debugging of CSS configurations.
+- **Parse Logs:** An info button that opens a modal listing all warnings and errors found during the parsing of \`@settings\` blocks, allowing for quick debugging of CSS configurations. Errors are persistently tracked across theme and snippet changes. Clicking an error's line number or setting ID will instantly open the CSS editor and jump directly to the exact location of the issue.
 
 ### 2. Snippets Tab
 
@@ -204,6 +216,39 @@ Style Manager interface is structured into six functional tabs.
     - **Isolate:** Applies changes only to the current device's local locker.
     - **Remote:** Pushes a preset to a specific remote device's locker.
 - **Scheduling Automation:** Access the Active Schedules modal to set presets to trigger automatically at specific times (e.g., switching to a dark, high-contrast style at 6:00 PM).
+
+#### A. How to Save Your Own Preset
+
+1. After customizing your vault's look in Style Manager, go to the **Presets** tab (or select **Create preset…** from the **More Actions** menu in the top toolbar).
+2. Click **Create preset**.
+3. Select which elements to include in your snapshot (such as *Active theme*, *Appearance*, *Accent color*, *Snippets*, or specific theme/snippet configurations).
+   *Tip: Use the **Select modified** button to automatically check only the settings you have explicitly changed.*
+4. Click **Save preset** and enter a **Name** to store your custom design state for quick access later.
+
+#### B. How to Import Presets
+
+1. Open **Style Manager** in Obsidian.
+2. Click the **More Actions** menu (three vertical dots) in the global toolbar.
+3. Select **Import preset…**.
+4. Choose one of the available import methods:
+   - **Import from style settings**: Automatically migrate your configurations from the style settings plugin.
+   - **Import from files**: Click **Choose files** to select a \`.json\` or \`.zip\` bundle from your device.
+   - **Import from vault**: Browse and select \`.json\` or \`.zip\` files already stored within your Obsidian vault.
+   - **Paste JSON data**: Paste raw JSON text directly into the provided text box, then choose:
+     - **Save preset**: Imports the JSON and saves it as a preset without applying it.
+     - **Save & apply**: Imports the JSON and immediately applies the preset to your current settings.
+5. After resolving any conflicts, your new presets will appear under the **Presets** tab.
+
+#### C. How to Apply a Preset
+
+1. Navigate to the **Presets** tab in Style Manager.
+2. Click on the preset you want to use from the list, or select multiple presets to apply them in bulk.
+3. Click the **Apply** button.
+4. Choose the target environment:
+   - **Apply to shared locker**: Updates the configuration for all synced devices.
+   - **Apply to isolated locker**: Loads the style only on your current device (requires Isolate Mode).
+   - **Apply to remote locker**: Pushes the preset to a specific connected device.
+5. Choose how to merge the styles (e.g., **Overwrite** to replace current settings, or **Merge** to combine). The preset will immediately load onto your workspace.
 
 ### 5. Isolate Tab
 
@@ -296,6 +341,7 @@ Style Manager features an integrated CodeMirror 6 editor that works in both a mo
 - **Reusable editor component:** The same CodeMirror 6 editor powers both the modal and tab view.
 - **Direct editing:** Modify CSS files without leaving Obsidian.
 - **Open in tab:** From the modal, use the external-link icon to open the current CSS source in a dedicated workspace tab and close the modal.
+- **Jump-to-line navigation:** When opened from a parse log error, the editor automatically scrolls and places the cursor on the specific line or setting block that caused the issue.
 - **Smart block injection:** Quickly add blocks and setting components using the **Add Block** button.
 - **Developer-friendly tools:** Includes line wrapping toggles, automatic bracket closing, and \`Mod-s\` (Ctrl/Cmd+S) support for quick saving.
 - **Flexible management:** Rename snippets, toggle snippet activation, save changes, or copy read-only content directly from the footer.
@@ -469,7 +515,7 @@ All settings definitions (regardless of type) must include the following core pa
 
 ### Bypassing Variable Generation
 
-If you want to allow the plugin to show the setting but **not** override the theme's native default variable, you can bypass variable generation by setting the default value to \`'#'\`. 
+If you want to allow the plugin to show the setting but **not** override the theme's native default variable, you can bypass variable generation by setting the default value to \`'#'\`.
 
 > [!WARNING]
 > Because settings are parsed as YAML, a bare \`#\` character will be treated as a comment. You **must** wrap the \`#\` in quotes to bypass generation properly without throwing a warning.
@@ -935,6 +981,39 @@ The Style Manager includes a suite of built-in tools designed to streamline the 
 
 ---
 
+## Command Palette Commands
+
+Style Manager registers several commands in the Obsidian command palette for quick access to various features and utilities.
+
+| Command | Description |
+| :--- | :--- |
+| **Apply preset to other device (isolate)** | Pushes a preset specifically to a remote device's isolated locker. |
+| **Apply preset to shared locker** | Applies a preset globally across all synchronized devices. |
+| **Apply preset to this device (isolate)** | Applies a preset to only your current device's isolated locker. |
+| **Change CSS box outline color** | Customizes the color of the CSS box outlines tool. |
+| **Change freeze Obsidian delay** | Adjusts the countdown delay before freezing Obsidian. |
+| **Color contrast checker** | Opens the accessibility contrast checker tool. |
+| **Copy current accent color** | Quickly copies the current accent color hex to the clipboard. |
+| **Freeze Obsidian** | Pauses the application state after a set delay for DOM inspection. |
+| **Import preset** | Opens a modal to import presets from files, vaults, or raw JSON data. |
+| **Lorem ipsum generator** | Generates dummy text for layout testing. |
+| **Obsidian tech stack versions** | Displays versions of underlying technologies (Chrome, Node, Electron). |
+| **Reset current styles** | Clears modified settings and returns them to their default values. |
+| **Save current styles as preset** | Saves your currently active layout and styles into a new preset. |
+| **Set schedule for a preset** | Sets up an automated schedule for a chosen preset. |
+| **Show panel** | Opens the main Style Manager view in a workspace leaf. |
+| **Show readme** | Opens the plugin documentation modal. |
+| **Show test notice** | Displays a sample notification for testing purposes. |
+| **Toggle [Setting Name]** | Any \`class-toggle\` setting with \`addCommand: true\` will create a dynamic command to toggle that specific style setting on/off. |
+| **Toggle CSS box outlines for debugging** | Draws outlines around HTML elements for visualizing the box model. |
+| **Toggle devtools** | Opens or closes the Obsidian developer tools panel. |
+| **Toggle garbled text** | Randomizes text characters for layout testing. |
+| **Toggle isolate mode** | Toggles whether your current device uses isolated or shared settings. |
+| **Toggle mobile emulation** | Switches Obsidian into a simulated mobile view. |
+| **View active schedules** | Opens a modal to manage and view active preset schedules. |
+
+---
+
 ## Transparency
 
 I want to be open about my workflow for this project. I personally directed and designed every aspect of the UI and UX. To give myself more time to focus on that creative side, I used Gemma to help speed up the technical groundwork, specifically implementing complex logic, catching syntax errors, and generating my commit messages.
@@ -948,5 +1027,4 @@ Donations are greatly appreciated and will be used to fund my sanity, and my cat
 <a href='https://ko-fi.com/emarpiee' target='_blank'>
 [Buy Me a Coffee at ko-fi.com](https://storage.ko-fi.com/cdn/kofi6.png?v=6)
 </a>
-
 `;

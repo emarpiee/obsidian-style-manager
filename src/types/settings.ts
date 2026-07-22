@@ -76,6 +76,8 @@ export interface ParseLogEntry {
 	type: 'error' | 'warning';
 	timestamp: number;
 	settingId?: string;
+	sourceType?: 'Plugin' | 'Theme' | 'Snippet' | 'Unknown' | 'Style';
+	sourceId?: string;
 }
 
 export type ParseLogList = Array<ParseLogEntry>;

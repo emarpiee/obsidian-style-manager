@@ -35,7 +35,7 @@
 	}
 }
 
-@container (max-width: 500px) {
+@container (max-width: 700px) {
 	.style-manager-plugin .style-manager-preset-item .setting-item-name {
 		gap: var(--size-4-1);
 		flex-direction: column;
@@ -261,8 +261,8 @@ body {
 	--sm-cm-bg: var(--background-primary);
 	--sm-cm-color: var(--text-normal);
 	--sm-cm-active-line-bg: var(--background-modifier-active-hover);
-	--sm-cm-selection-bg: oklch(from var(--text-selection) l c h / 0.3);
-	--sm-cm-unfocused-selection-bg: oklch(from var(--sm-cm-selection-bg) l c h / calc(alpha + 0.2));
+	--sm-cm-selection-bg: oklch(from var(--text-selection) 0.75 c h / 0.3);
+	--sm-cm-unfocused-selection-bg: oklch(from var(--sm-cm-selection-bg) l c h / calc(alpha + 0.05));
 	--sm-cm-cursor-color: var(--text-normal);
 	--sm-cm-gutters-bg: var(--background-primary);
 	--sm-cm-gutters-color: var(--text-faint);
@@ -1480,6 +1480,25 @@ body.is-mobile .style-manager-plugin .setting-item.style-manager-item-row .setti
 	white-space: nowrap;
 }
 
+/* Preset suggest modal — rich item layout */
+.style-manager-suggest-title-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+
+.style-manager-suggest-name {
+	font-weight: var(--font-medium);
+	color: var(--text-normal);
+}
+
+.style-manager-suggest-subtitle {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+	margin-top: 2px;
+}
+
 .style-manager-badge-primary.dynamic {
 	background-color: oklch(from var(--sm-badge-dynamic-color) l c h / 0.1);
 	color: oklch(from var(--sm-badge-dynamic-color) 0.5 c h);
@@ -2377,6 +2396,30 @@ body.is-mobile .style-manager-plugin .style-manager-wrapper .setting-item-contro
 .style-manager-log-header {
 	display: flex;
 	gap: var(--size-4-2);
+	align-items: center;
+}
+
+.style-manager-log-name a {
+	display: inline-flex;
+	align-items: center;
+	gap: var(--size-4-1);
+	color: var(--text-normal);
+	text-decoration: none;
+	font-weight: 600;
+}
+
+.style-manager-log-name a:hover {
+	text-decoration: underline;
+	color: var(--color-accent);
+}
+
+.style-manager-log-name a .style-manager-log-time {
+	font-size: var(--font-ui-smaller);
+	font-weight: 500;
+	color: var(--text-muted);
+	background: var(--background-modifier-hover);
+	padding: 1px 5px;
+	border-radius: var(--radius-s);
 }
 
 .style-manager-log-setting-id-link {
@@ -2492,4 +2535,9 @@ body.sm-conflict-warning::before {
 	color: var(--sm-cm-search-close-color-hover);
 	background: var(--sm-cm-search-close-bg-hover);
 	border-radius: var(--radius-s);
+}
+
+.style-manager-parser-error-icon svg {
+	fill: currentColor;
+	stroke: var(--background-primary);
 }

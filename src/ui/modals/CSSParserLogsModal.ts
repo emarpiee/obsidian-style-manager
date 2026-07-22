@@ -1,4 +1,5 @@
-import { App, Modal } from 'obsidian';
+import { App, Modal, setIcon } from 'obsidian';
+import { CSSEditorModal } from './CSSEditorModal';
 
 import StyleManagerPlugin from '../../main';
 import { ParseLogList } from '../../types';
@@ -40,7 +41,13 @@ export class CSSParserLogsModal extends Modal {
 
 		const listEl = contentEl.createDiv('style-manager-logs-list');
 
-		this.parseLogs.forEach((log) => {
+		const sortedLogs = [...this.parseLogs].sort((a, b) => {
+			if (a.type === 'error' && b.type !== 'error') return -1;
+			if (a.type !== 'error' && b.type === 'error') return 1;
+			return 0;
+		});
+
+		sortedLogs.forEach((log) => {
 			const itemEl = listEl.createDiv('style-manager-log-item');
 			itemEl.addClass(
 				log.type === 'error'
@@ -52,15 +59,51 @@ export class CSSParserLogsModal extends Modal {
 
 			const iconEl = headerEl.createSpan('style-manager-log-icon');
 			if (log.type === 'error') {
-				iconEl.setText('❌');
+				setIcon(iconEl, 'x-circle');
 			} else {
-				iconEl.setText('⚠️');
+				setIcon(iconEl, 'alert-triangle');
 			}
 
-			headerEl.createSpan({ cls: 'style-manager-log-name', text: log.name });
+			const nameEl = headerEl.createSpan({ cls: 'style-manager-log-name' });
+			const sType = log.sourceType || 'Snippet';
+			const sId = log.sourceId || log.name;
 
-			const time = new Date(log.timestamp).toLocaleTimeString();
-			headerEl.createSpan({ cls: 'style-manager-log-time', text: time });
+			// Compute line number or fallback label
+			const lineMatch = log.message.match(/at line (\d+)/);
+			let startLine: number | undefined;
+			let searchStr: string | undefined;
+			let lineLabel = '';
+
+			if (lineMatch) {
+				startLine = parseInt(lineMatch[1]);
+				lineLabel = `Line ${lineMatch[1]}`;
+			} else {
+				const quotedMatch = log.message.match(/'([^']+)'/);
+				if (quotedMatch) {
+					searchStr = quotedMatch[1];
+					lineLabel = `@${quotedMatch[1]}`;
+				} else if (log.settingId) {
+					searchStr = log.settingId;
+					lineLabel = `@${log.settingId}`;
+				}
+			}
+
+			const linkEl = nameEl.createEl('a', { href: '#' });
+			linkEl.createSpan({ text: log.name });
+			if (lineLabel) {
+				linkEl.createSpan({ cls: 'style-manager-log-time', text: lineLabel });
+			}
+
+			linkEl.addEventListener('click', (e) => {
+				e.preventDefault();
+				new CSSEditorModal(
+					this.app,
+					this.plugin,
+					{ type: sType, id: sId, startLine, searchStr }
+				).open();
+				this.close();
+			});
+
 
 			const messageEl = itemEl.createDiv({ cls: 'style-manager-log-message' });
 

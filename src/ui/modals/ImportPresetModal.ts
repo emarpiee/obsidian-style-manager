@@ -38,7 +38,8 @@ export class ImportPresetModal extends Modal {
 		});
 
 		const processImports = async (
-			items: { content: string | ArrayBuffer; name?: string }[]
+			items: { content: string | ArrayBuffer; name?: string }[],
+			applyAfter: boolean = false
 		): Promise<void> => {
 			const analysis =
 				await this.service.plugin.presetImportService.analyzePresetImports(
@@ -68,6 +69,23 @@ export class ImportPresetModal extends Modal {
 						`Imported ${total} preset${total !== 1 ? 's' : ''}.`
 					);
 					this.close();
+					if (applyAfter && analysis.presets.length > 0) {
+						const importedIds = analysis.presets.map((p) => p.id);
+						const firstName = analysis.presets[0].name;
+						this.service.confirmApply(
+							firstName,
+							(action): void => {
+								void (async (): Promise<void> => {
+									await this.service.applyPresets(
+										importedIds,
+										false,
+										action
+									);
+								})();
+							},
+							'shared'
+						);
+					}
 				}
 			};
 
@@ -204,6 +222,28 @@ export class ImportPresetModal extends Modal {
 				return text;
 			});
 
+		const importFromText = async (applyAfter: boolean): Promise<void> => {
+			const val = (
+				textArea.components[0] as TextAreaComponent
+			).getValue();
+			if (!val.trim()) {
+				this.service.plugin.settingsService.notifications.error(
+					'Invalid preset JSON data.',
+					1000
+				);
+				return;
+			}
+			try {
+				JSON.parse(val);
+				await processImports([{ content: val }], applyAfter);
+			} catch {
+				this.service.plugin.settingsService.notifications.error(
+					'Invalid preset JSON data.',
+					1000
+				);
+			}
+		};
+
 		new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
@@ -211,31 +251,17 @@ export class ImportPresetModal extends Modal {
 			)
 			.addButton((btn) => {
 				btn
-					.setButtonText('Import from text')
+					.setButtonText('Save preset')
+					.onClick((): void => {
+						void importFromText(false);
+					});
+			})
+			.addButton((btn) => {
+				btn
+					.setButtonText('Save & apply')
 					.setCta()
 					.onClick((): void => {
-						void (async (): Promise<void> => {
-							const val = (
-								textArea.components[0] as TextAreaComponent
-							).getValue();
-							if (!val.trim()) {
-								this.service.plugin.settingsService.notifications.error(
-									'Invalid preset JSON data.',
-									1000
-								);
-								return;
-							}
-
-							try {
-								JSON.parse(val);
-								await processImports([{ content: val }]);
-							} catch {
-								this.service.plugin.settingsService.notifications.error(
-									'Invalid preset JSON data.',
-									1000
-								);
-							}
-						})();
+						void importFromText(true);
 					});
 			});
 	}
