@@ -1,4 +1,4 @@
-import { App, SuggestModal } from 'obsidian';
+import { App, SuggestModal, setIcon } from 'obsidian';
 
 import { ExportKeys, StorageKeys } from '../../constants';
 import { PresetService } from '../../application/PresetService';
@@ -42,6 +42,13 @@ export abstract class PresetSuggestModal extends SuggestModal<Preset> {
 
 		// — Title row: name + badges —
 		const titleRow = el.createDiv({ cls: 'style-manager-suggest-title-row' });
+
+		if (preset.isFavorite) {
+			const starIcon = titleRow.createDiv({
+				cls: 'style-manager-preset-star-icon is-favorite',
+			});
+			setIcon(starIcon, 'star');
+		}
 
 		titleRow.createSpan({
 			cls: 'style-manager-suggest-name',
