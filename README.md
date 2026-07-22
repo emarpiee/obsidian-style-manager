@@ -83,6 +83,7 @@ This plugin allows Obsidian snippet, theme, and plugin CSS files to define confi
 		- [Examples & Logic](#examples--logic)
 		- [Purpose](#purpose)
 - [Developer and Testing Utilities](#developer-and-testing-utilities)
+- [Command Palette Commands](#command-palette-commands)
 - [Transparency](#transparency)
 - [☕️ Buy Me A Coffee](#-buy-me-a-coffee)
 
@@ -977,6 +978,39 @@ The Style Manager includes a suite of built-in tools designed to streamline the 
 | **Mobile Emulation** (+)   | UI Testing         | Toggles Obsidian's built-in mobile emulation mode to test responsive designs.                               |
 | **Test Notice** (+)        | Testing            | Displays a persistent test notice to verify notification behavior and styling.                              |
 | **Toggle DevTools** (+)    | Debugger           | Quickly opens or closes the Electron developer tools.                                                       |
+
+---
+
+## Command Palette Commands
+
+Style Manager registers several commands in the Obsidian command palette for quick access to various features and utilities.
+
+| Command | Description |
+| :--- | :--- |
+| **Apply preset to other device (isolate)** | Pushes a preset specifically to a remote device's isolated locker. |
+| **Apply preset to shared locker** | Applies a preset globally across all synchronized devices. |
+| **Apply preset to this device (isolate)** | Applies a preset to only your current device's isolated locker. |
+| **Change CSS box outline color** | Customizes the color of the CSS box outlines tool. |
+| **Change freeze Obsidian delay** | Adjusts the countdown delay before freezing Obsidian. |
+| **Color contrast checker** | Opens the accessibility contrast checker tool. |
+| **Copy current accent color** | Quickly copies the current accent color hex to the clipboard. |
+| **Freeze Obsidian** | Pauses the application state after a set delay for DOM inspection. |
+| **Import preset** | Opens a modal to import presets from files, vaults, or raw JSON data. |
+| **Lorem ipsum generator** | Generates dummy text for layout testing. |
+| **Obsidian tech stack versions** | Displays versions of underlying technologies (Chrome, Node, Electron). |
+| **Reset current styles** | Clears modified settings and returns them to their default values. |
+| **Save current styles as preset** | Saves your currently active layout and styles into a new preset. |
+| **Set schedule for a preset** | Sets up an automated schedule for a chosen preset. |
+| **Show panel** | Opens the main Style Manager view in a workspace leaf. |
+| **Show readme** | Opens the plugin documentation modal. |
+| **Show test notice** | Displays a sample notification for testing purposes. |
+| **Toggle [Setting Name]** | Any `class-toggle` setting with `addCommand: true` will create a dynamic command to toggle that specific style setting on/off. |
+| **Toggle CSS box outlines for debugging** | Draws outlines around HTML elements for visualizing the box model. |
+| **Toggle devtools** | Opens or closes the Obsidian developer tools panel. |
+| **Toggle garbled text** | Randomizes text characters for layout testing. |
+| **Toggle isolate mode** | Toggles whether your current device uses isolated or shared settings. |
+| **Toggle mobile emulation** | Switches Obsidian into a simulated mobile view. |
+| **View active schedules** | Opens a modal to manage and view active preset schedules. |
 
 ---
 
