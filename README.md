@@ -233,7 +233,9 @@ Style Manager interface is structured into six functional tabs.
    - **Import from style settings**: Automatically migrate your configurations from the style settings plugin.
    - **Import from files**: Click **Choose files** to select a `.json` or `.zip` bundle from your device.
    - **Import from vault**: Browse and select `.json` or `.zip` files already stored within your Obsidian vault.
-   - **Paste JSON data**: Paste raw JSON text directly into the provided text box and click **Import from text**.
+   - **Paste JSON data**: Paste raw JSON text directly into the provided text box, then choose:
+     - **Save preset**: Imports the JSON and saves it as a preset without applying it.
+     - **Save & apply**: Imports the JSON and immediately applies the preset to your current settings.
 5. After resolving any conflicts, your new presets will appear under the **Presets** tab.
 
 #### C. How to Apply a Preset
