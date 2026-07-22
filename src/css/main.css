@@ -1480,6 +1480,25 @@ body.is-mobile .style-manager-plugin .setting-item.style-manager-item-row .setti
 	white-space: nowrap;
 }
 
+/* Preset suggest modal — rich item layout */
+.style-manager-suggest-title-row {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	flex-wrap: wrap;
+}
+
+.style-manager-suggest-name {
+	font-weight: var(--font-medium);
+	color: var(--text-normal);
+}
+
+.style-manager-suggest-subtitle {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-muted);
+	margin-top: 2px;
+}
+
 .style-manager-badge-primary.dynamic {
 	background-color: oklch(from var(--sm-badge-dynamic-color) l c h / 0.1);
 	color: oklch(from var(--sm-badge-dynamic-color) 0.5 c h);
