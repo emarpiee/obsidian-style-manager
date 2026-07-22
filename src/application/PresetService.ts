@@ -352,6 +352,14 @@ export class PresetService {
 			this.plugin.settingsService.notifications.preset(
 				`Applied ${count} preset${count > 1 ? 's' : ''}${isolateOnly ? ' (isolated)' : ''}.`
 			);
+			for (const id of presetIds) {
+				const preset = this.getPresetById(id);
+				if (preset) {
+					this.plugin.settingsService.notifications.preset(
+						`Applied ${preset.name}.`
+					);
+				}
+			}
 		} catch (e) {
 			Logger.error('Style Manager | Preset Error:', e);
 			this.plugin.settingsService.notifications.error(
