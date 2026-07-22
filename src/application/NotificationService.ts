@@ -25,7 +25,7 @@ export class NotificationService {
 	public notify(
 		message: string,
 		type: NotificationType = NotificationType.UTILITY,
-		duration: number = 2000
+		duration: number = 3000
 	): void {
 		const settings = this.getSettings();
 		let show = false;
