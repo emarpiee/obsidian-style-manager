@@ -16,7 +16,7 @@ export interface ParsedCSSSettings {
 	sourceType?: 'Plugin' | 'Theme' | 'Snippet' | 'Unknown' | 'Style';
 	sourceId?: string;
 	metadata?: SnippetMetadata;
-	raw?: string;
+	fingerprint?: number;
 	isDuplicate?: boolean;
 }
 
