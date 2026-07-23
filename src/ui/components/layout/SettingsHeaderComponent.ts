@@ -25,6 +25,8 @@ export interface SettingsHeaderOptions {
  * Component for rendering the settings view header and toolbar.
  */
 export class SettingsHeaderComponent extends Component {
+	private accentSelector: { destroy: () => void } | null = null;
+
 	constructor(
 		private app: App,
 		private plugin: StyleManagerPlugin,
@@ -32,6 +34,13 @@ export class SettingsHeaderComponent extends Component {
 		private options: SettingsHeaderOptions
 	) {
 		super();
+	}
+
+	onunload(): void {
+		if (this.accentSelector) {
+			this.accentSelector.destroy();
+			this.accentSelector = null;
+		}
 	}
 
 	onload(): void {
@@ -56,6 +65,7 @@ export class SettingsHeaderComponent extends Component {
 		}
 
 		const updateFades = (): void => {
+			if (!scrollWrap.isConnected) return;
 			const scrollLeft = scrollWrap.scrollLeft;
 			const scrollRight =
 				scrollWrap.scrollWidth - scrollWrap.clientWidth - scrollLeft;
@@ -63,12 +73,13 @@ export class SettingsHeaderComponent extends Component {
 			scrollWrap.toggleClass('has-end-fade', scrollRight > 5);
 		};
 		this.registerDomEvent(scrollWrap, 'scroll', () => updateFades());
-		window.setTimeout(updateFades, 50);
+		const timer = window.setTimeout(updateFades, 50);
+		this.register(() => window.clearTimeout(timer));
 
 		tabContainer.createDiv('style-manager-tab-spacer');
 
 		const actionGroup = tabContainer.createDiv('style-manager-tab-actions');
-		renderAccentColorSelect(this.plugin, actionGroup, () =>
+		this.accentSelector = renderAccentColorSelect(this.plugin, actionGroup, () =>
 			this.options.onRerender()
 		);
 
@@ -149,13 +160,16 @@ export class SettingsHeaderComponent extends Component {
 
 	private scrollActiveTabIntoView(activeTabEl: HTMLElement): void {
 		// We use a small timeout to ensure the DOM is fully painted and dimensions are accurate
-		window.setTimeout(() => {
-			activeTabEl.scrollIntoView({
-				behavior: 'auto',
-				block: 'nearest',
-				inline: 'center',
-			});
+		const timer = window.setTimeout(() => {
+			if (activeTabEl.isConnected) {
+				activeTabEl.scrollIntoView({
+					behavior: 'auto',
+					block: 'nearest',
+					inline: 'center',
+				});
+			}
 		}, 50);
+		this.register(() => window.clearTimeout(timer));
 	}
 
 	private renderAppearanceToggle(containerEl: HTMLElement): void {

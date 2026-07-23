@@ -42,14 +42,18 @@ export class InfoTextField extends AbstractSettingComponent {
 		}
 		if (description) {
 			if (this.setting.markdown) {
+				const descEl = this.settingEl.descEl;
 				void MarkdownRenderer.render(
 					this.settingsService.plugin.app,
 					description,
-					this.settingEl.descEl,
+					descEl,
 					'',
 					this
-				);
-				this.settingEl.descEl.addClass('style-manager-markdown');
+				).then(() => {
+					if (descEl.isConnected) {
+						descEl.addClass('style-manager-markdown');
+					}
+				});
 			} else {
 				this.settingEl.setDesc(description);
 			}
@@ -59,6 +63,9 @@ export class InfoTextField extends AbstractSettingComponent {
 	}
 
 	destroy(): void {
-		this.settingEl?.settingEl.remove();
+		if (this.settingEl?.settingEl) {
+			this.settingEl.descEl.empty();
+			this.settingEl.settingEl.remove();
+		}
 	}
 }

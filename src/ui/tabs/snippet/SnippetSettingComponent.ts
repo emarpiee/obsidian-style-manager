@@ -143,7 +143,7 @@ export class SnippetSettingComponent extends Component {
 			this.onSelectionChange(e, true);
 		};
 
-		this.setting.settingEl.addEventListener('click', (e) => {
+		this.registerDomEvent(this.setting.settingEl, 'click', (e) => {
 			if (
 				(e.target as HTMLElement).closest(
 					'.setting-item-control, .style-manager-item-select-icon, .checkbox-container'

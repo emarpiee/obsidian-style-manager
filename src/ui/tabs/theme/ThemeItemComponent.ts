@@ -91,7 +91,7 @@ export class ThemeItemComponent extends Component {
 			});
 		}
 
-		this.setting.settingEl.addEventListener('click', (e) => {
+		this.registerDomEvent(this.setting.settingEl, 'click', (e) => {
 			if ((e.target as HTMLElement).closest('.setting-item-control, a')) return;
 			this.onEdit();
 		});

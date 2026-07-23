@@ -83,11 +83,11 @@ export class VariableTextField extends AbstractSettingComponent {
 					: this.setting.default
 			);
 
-			text.inputEl.addEventListener('blur', () => {
+			this.registerDomEvent(text.inputEl, 'blur', () => {
 				onCommit(text.getValue());
 			});
 
-			text.inputEl.addEventListener('keydown', (e: KeyboardEvent) => {
+			this.registerDomEvent(text.inputEl, 'keydown', (e: KeyboardEvent) => {
 				if (e.key === 'Enter') {
 					onCommit(text.getValue());
 				}
