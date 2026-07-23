@@ -110,25 +110,26 @@ export class SnippetsTab {
 		);
 		this.listContainer.tabIndex = 0;
 
-		setupListKeybindings({
+		const cleanupKeybindings = setupListKeybindings({
 			container: this.listContainer,
 			getItems: () => this.getVisibleSnippets(),
 			getId: (id) => id,
 			selectedIds: this.plugin.selectedSnippets,
 			onSelectionChange: () => this.onRerender(),
 		});
+		// Register cleanup through Obsidian's component lifecycle so the
+		// document keydown listener is removed when this tab is torn down.
+		const keybindingCleanup = new Component();
+		keybindingCleanup.register(cleanupKeybindings);
+		this.addChild(keybindingCleanup);
 
 		this.renderSnippetList();
 		this.renderBulkActions();
 	}
 
 	private getVisibleSnippets(): string[] {
-		// Wait, snippetComponents has setting which might be undefined if not rendered yet,
-		// but since we only call this after rendering, it's fine.
 		return this.snippetComponents
 			.filter((comp) => {
-				// The component has a setVisibility method that toggles the settingEl
-				// We can check the DOM node's style.display
 				const el = (comp as unknown as { setting: { settingEl: HTMLElement } })
 					.setting?.settingEl;
 				return el && el.style.display !== 'none';
