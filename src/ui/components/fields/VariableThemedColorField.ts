@@ -18,19 +18,19 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import ColorPicker from 'colorpicker/dist/colorpicker.js';
+import type ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
 import { VariableThemedColor, resetTooltip } from '../../../types';
-import { getColorPickerConfig, isColorValid } from '../../../utils/ColorUtils';
+import { getColorPickerConfig, isColorValid, SafeColorPicker } from '../../../utils/ColorUtils';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 
 export class VariableThemedColorField extends AbstractSettingComponent {
 	settingEl: Setting;
 	setting: VariableThemedColor;
-	pickerLight: ColorPicker | null;
-	pickerDark: ColorPicker | null;
+	pickerLight: SafeColorPicker | null;
+	pickerDark: SafeColorPicker | null;
 	themeLightWrapper: HTMLElement | null = null;
 	themeDarkWrapper: HTMLElement | null = null;
 
@@ -161,7 +161,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				: resolvedDefault;
 
 		const toggleElLight = this.themeLightWrapper.createEl('button');
-		const pickerLight = (this.pickerLight = new ColorPicker(
+		const pickerLight = (this.pickerLight = new SafeColorPicker(
 			toggleElLight,
 			getColorPickerConfig({
 				isView: this.isView,
@@ -224,7 +224,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 				: resolvedDefault;
 
 		const toggleElDark = this.themeDarkWrapper.createEl('button');
-		const pickerDark = (this.pickerDark = new ColorPicker(
+		const pickerDark = (this.pickerDark = new SafeColorPicker(
 			toggleElDark,
 			getColorPickerConfig({
 				isView: this.isView,
@@ -273,7 +273,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 	private onColorChange(
 		id: string,
 		color: InstanceType<typeof ColorPicker.Color> | null,
-		_instance: ColorPicker
+		_instance: SafeColorPicker
 	): void {
 		if (!color) {
 			void this.settingsService.clearSetting(this.sectionId, id, {
@@ -306,7 +306,7 @@ export class VariableThemedColorField extends AbstractSettingComponent {
 	private onSave(
 		id: string,
 		color: InstanceType<typeof ColorPicker.Color> | null,
-		instance: ColorPicker
+		instance: SafeColorPicker
 	): void {
 		this.onColorChange(id, color, instance);
 	}

@@ -1,13 +1,12 @@
-import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { App, Modal } from 'obsidian';
 
-import { getColorPickerConfig } from '../../utils/ColorUtils';
+import { getColorPickerConfig, SafeColorPicker } from '../../utils/ColorUtils';
 
 export class BoxOutlineColorPromptModal extends Modal {
 	resolve: (value: string | null) => void;
 	value: string | null = null;
 	resolved = false;
-	pickr: ColorPicker | null = null;
+	pickr: SafeColorPicker | null = null;
 
 	constructor(
 		app: App,
@@ -37,7 +36,7 @@ export class BoxOutlineColorPromptModal extends Modal {
 			cls: 'color-picker-reset',
 		});
 
-		this.pickr = new ColorPicker(
+		this.pickr = new SafeColorPicker(
 			pickrToggle,
 			getColorPickerConfig({
 				isView: false,

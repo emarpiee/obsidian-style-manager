@@ -18,7 +18,7 @@
     You should have received a copy of the GNU General Public License
     along with this program. If not, see <https://www.gnu.org/licenses/>.
 */
-import ColorPicker from 'colorpicker/dist/colorpicker.js';
+import type ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { ButtonComponent, Setting } from 'obsidian';
 
 import { VariableColor, resetTooltip } from '../../../types';
@@ -26,6 +26,7 @@ import {
 	getColorPickerConfig,
 	isColorValid,
 	isValidDefaultColor,
+	SafeColorPicker,
 } from '../../../utils/ColorUtils';
 import { getDescription, getTitle } from '../../../utils/CommonUtils';
 import { createDescription } from '../../../utils/UIUtils';
@@ -34,7 +35,7 @@ import { AbstractSettingComponent } from '../base/AbstractSettingComponent';
 export class VariableColorField extends AbstractSettingComponent {
 	settingEl: Setting;
 	setting: VariableColor;
-	picker: ColorPicker | null;
+	picker: SafeColorPicker | null;
 	singleColorWrapper: HTMLElement | null = null;
 
 	render(): void {
@@ -77,7 +78,7 @@ export class VariableColorField extends AbstractSettingComponent {
 			value !== undefined ? (value as string) : resolvedDefault;
 
 		const toggleEl = this.singleColorWrapper.createEl('button');
-		const picker = (this.picker = new ColorPicker(
+		const picker = (this.picker = new SafeColorPicker(
 			toggleEl,
 			getColorPickerConfig({
 				isView: this.isView,
