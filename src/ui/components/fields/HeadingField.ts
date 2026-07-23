@@ -220,6 +220,7 @@ export class HeadingField extends AbstractSettingComponent {
 	resultsEl: HTMLElement;
 	countEl: HTMLElement;
 	sectionEl: HTMLElement;
+	private isCollapsedState = true;
 
 	render(): void {
 		if (!this.containerEl) return;
@@ -244,7 +245,7 @@ export class HeadingField extends AbstractSettingComponent {
 				cls: 'style-manager-style-heading-description',
 				text: description,
 			});
-			descEl.addEventListener('click', () => {
+			this.registerDomEvent(descEl, 'click', () => {
 				this.toggleVisible();
 			});
 		}
@@ -293,7 +294,7 @@ export class HeadingField extends AbstractSettingComponent {
 
 			sourceBadge.addClass('is-clickable');
 
-			sourceBadge.addEventListener('click', (e) => {
+			this.registerDomEvent(sourceBadge, 'click', (e) => {
 				e.preventDefault();
 				e.stopPropagation();
 
@@ -327,10 +328,10 @@ export class HeadingField extends AbstractSettingComponent {
 			const warningMessage = `Duplicate @setting ID detected:\n${duplicateNames.join('\n')}`;
 			setTooltip(dupBadge, warningMessage);
 			if (Platform.isMobile) {
-				dupBadge.onclick = (e): void => {
+				this.registerDomEvent(dupBadge, 'click', (e) => {
 					e.stopPropagation();
 					this.settingsService.notifications.util(warningMessage);
-				};
+				});
 			}
 			rightBadgesContainer.prepend(dupBadge);
 		}
@@ -340,13 +341,13 @@ export class HeadingField extends AbstractSettingComponent {
 		});
 		this.updateCountBadge();
 
-		this.countEl.addEventListener('click', (e) => {
+		this.registerDomEvent(this.countEl, 'click', (e) => {
 			e.preventDefault();
 			e.stopPropagation();
 			this.openSectionStyleModal();
 		});
 
-		this.settingEl.settingEl.addEventListener('click', () => {
+		this.registerDomEvent(this.settingEl.settingEl, 'click', () => {
 			this.toggleVisible();
 		});
 
@@ -363,6 +364,7 @@ export class HeadingField extends AbstractSettingComponent {
 			? false
 			: (this.setting.collapsed ?? this.setting.level === 0);
 
+		this.isCollapsedState = initialCollapsed;
 		this.setCollapsed(initialCollapsed);
 	}
 
@@ -482,7 +484,7 @@ export class HeadingField extends AbstractSettingComponent {
 
 	private renderChildren(): void {
 		this.removeChildren();
-		if (this.setting.collapsed) {
+		if (this.isCollapsedState) {
 			return;
 		}
 		if (this.filterMode) {
@@ -502,8 +504,12 @@ export class HeadingField extends AbstractSettingComponent {
 		}
 	}
 
+	public isCollapsed(): boolean {
+		return this.isCollapsedState;
+	}
+
 	private toggleVisible(): void {
-		this.setCollapsed(!this.setting.collapsed);
+		this.setCollapsed(!this.isCollapsedState);
 	}
 
 	public setCollapsedRecursive(collapsed: boolean): void {
@@ -516,7 +522,7 @@ export class HeadingField extends AbstractSettingComponent {
 	}
 
 	public setCollapsed(collapsed: boolean): void {
-		this.setting.collapsed = collapsed;
+		this.isCollapsedState = collapsed;
 		this.settingEl?.settingEl.toggleClass('is-collapsed', collapsed);
 
 		const fullId = `${this.sectionId}:${this.setting.id}`;
