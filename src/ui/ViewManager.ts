@@ -26,8 +26,12 @@ export class ViewManager {
 		}
 	}
 
-	public registerSettingsTab(tab: StyleManagerSettingTab): void {
+	public registerSettingsTab(tab: StyleManagerSettingTab | null): void {
 		this.settingsTab = tab;
+	}
+
+	public clearExpandedHeadings(): void {
+		this.expandedHeadings.clear();
 	}
 
 	/**
