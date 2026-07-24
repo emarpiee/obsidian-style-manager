@@ -46,6 +46,7 @@ import { ImportPresetModal } from './ui/modals/ImportPresetModal';
 import { LoremIpsumModal } from './ui/modals/LoremIpsumModal';
 import { ReadmeModal } from './ui/modals/ReadmeModal';
 import { ResetSettingsModal } from './ui/modals/ResetSettingsModal';
+import { ToggleSnippetModal } from './ui/modals/ToggleSnippetModal';
 import { CSSEditorView, cssEditorViewType } from './ui/views/CSSEditorView';
 import {
 	ColorContrastCheckerView,
@@ -435,6 +436,14 @@ export default class StyleManagerPlugin extends Plugin {
 						);
 					}
 				).open();
+			},
+		});
+
+		this.addCommand({
+			id: 'toggle-snippet',
+			name: 'Toggle snippet',
+			callback: () => {
+				new ToggleSnippetModal(this.app, this).open();
 			},
 		});
 

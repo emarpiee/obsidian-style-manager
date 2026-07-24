@@ -1499,6 +1499,17 @@ body.is-mobile .style-manager-plugin .setting-item.style-manager-item-row .setti
 	margin-top: 2px;
 }
 
+.style-manager-snippet-suggest-status {
+	display: flex;
+	align-items: center;
+	color: var(--text-faint);
+	flex-shrink: 0;
+}
+
+.style-manager-snippet-suggest-status.is-enabled {
+	color: var(--interactive-accent);
+}
+
 .style-manager-badge-primary.dynamic {
 	background-color: oklch(from var(--sm-badge-dynamic-color) l c h / 0.1);
 	color: oklch(from var(--sm-badge-dynamic-color) 0.5 c h);
