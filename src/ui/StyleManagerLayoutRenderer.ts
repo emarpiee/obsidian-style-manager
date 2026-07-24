@@ -37,6 +37,8 @@ export class StyleManagerLayoutRenderer extends Component {
 	private savedScrollTop: number = 0;
 
 	private stylesTab: StylesTab | null = null;
+	private settingsHeader: SettingsHeaderComponent | null = null;
+	private presetsTab: PresetsTab | null = null;
 
 	constructor(
 		app: App,
@@ -77,6 +79,7 @@ export class StyleManagerLayoutRenderer extends Component {
 	}
 
 	onunload(): void {
+		this.plugin.settingsService.viewManager.clearExpandedHeadings();
 		this.cleanup();
 		this.clearSelections();
 		this.settingsComponentTrees = [];
@@ -95,11 +98,19 @@ export class StyleManagerLayoutRenderer extends Component {
 	cleanup(): void {
 		this.stylesTab?.cancelRender();
 		this.removeChildren();
+		this.settingsComponentTrees = [];
+		if (this.settingsHeader) {
+			this.removeChild(this.settingsHeader);
+			this.settingsHeader = null;
+		}
+		this.presetsTab?.destroy();
+		this.presetsTab = null;
 		this.settingsContainerEl?.empty();
 	}
 
 	public openTab(tab: ActiveTab): void {
 		if (this.activeTab !== tab) {
+			this.plugin.settingsService.viewManager.clearExpandedHeadings();
 			this.clearSelections();
 			this.activeTab = tab;
 			this.rerender(false);
@@ -126,6 +137,13 @@ export class StyleManagerLayoutRenderer extends Component {
 
 	generate(settings: ParsedCSSSettings[]): void {
 		const { containerEl } = this;
+
+		// Destroy old component trees BEFORE clearing the DOM so the Obsidian
+		// Component lifecycle (onunload → destroy → picker.destroy()) fires while
+		// elements are still accessible. This prevents ColorPicker instances and
+		// HeadingField trees from accumulating across re-renders.
+		this.cleanup();
+
 		containerEl.empty();
 
 		const masterContainer = containerEl.createDiv('style-manager-plugin');
@@ -134,9 +152,7 @@ export class StyleManagerLayoutRenderer extends Component {
 			masterContainer.addClass('is-mobile');
 		}
 
-		this.cleanup();
-
-		const header = new SettingsHeaderComponent(
+		const header = (this.settingsHeader = new SettingsHeaderComponent(
 			this.app,
 			this.plugin,
 			masterContainer,
@@ -146,13 +162,14 @@ export class StyleManagerLayoutRenderer extends Component {
 				onRerender: (): void => this.rerender(),
 				isolateModeHeader: this.isolateModeHeader,
 			}
-		);
+		));
 		this.addChild(header);
 
 		if (this.activeTab === 'presets') {
-			new PresetsTab(masterContainer, this.plugin, () =>
+			this.presetsTab = new PresetsTab(masterContainer, this.plugin, () =>
 				this.rerender()
-			).render();
+			);
+			this.presetsTab.render();
 			this.restoreScroll();
 			return;
 		}
@@ -195,7 +212,6 @@ export class StyleManagerLayoutRenderer extends Component {
 			return;
 		}
 
-		// Default: styles tab
 		this.stylesTab = new StylesTab(masterContainer, {
 			plugin: this.plugin,
 			isView: this.isView,

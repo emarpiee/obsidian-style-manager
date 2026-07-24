@@ -53,7 +53,10 @@ export class StyleManagerView extends ItemView {
 	}
 
 	onunload(): void {
-		this.settingsMarkup = null;
+		if (this.settingsMarkup) {
+			this.removeChild(this.settingsMarkup);
+			this.settingsMarkup = null;
+		}
 		this.contentEl.removeClass('is-style-manager-view');
 		this.contentEl.empty();
 	}

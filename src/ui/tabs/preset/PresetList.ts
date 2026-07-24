@@ -32,6 +32,7 @@ import { ImportPresetModal } from '../../modals/ImportPresetModal';
 export class PresetList {
 	private listContainer: HTMLElement;
 	private filteredPresets: Preset[] = [];
+	private cleanupKeybindings: (() => void) | null = null;
 
 	constructor(
 		private containerEl: HTMLElement,
@@ -126,7 +127,7 @@ export class PresetList {
 		);
 		this.listContainer.tabIndex = 0;
 
-		setupListKeybindings({
+		this.cleanupKeybindings = setupListKeybindings({
 			container: this.listContainer,
 			getItems: () =>
 				this.filterPresets(service.presets, service.presetSearchQuery),
@@ -136,6 +137,12 @@ export class PresetList {
 		});
 
 		this.renderPresetListItems();
+	}
+
+	/** Removes the document-level keydown listener registered by setupListKeybindings. */
+	destroy(): void {
+		this.cleanupKeybindings?.();
+		this.cleanupKeybindings = null;
 	}
 
 	private renderPresetListItems(): void {

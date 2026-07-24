@@ -98,7 +98,7 @@ export class StylesTab {
 					.setTooltip('Collapse/expand all')
 					.onClick(() => {
 						const trees = this.deps.getSettingsComponentTrees();
-						const anyExpanded = trees.some((t) => !t.setting.collapsed);
+						const anyExpanded = trees.some((t) => !t.isCollapsed());
 						trees.forEach((t) => t.setCollapsedRecursive(anyExpanded));
 					});
 			});

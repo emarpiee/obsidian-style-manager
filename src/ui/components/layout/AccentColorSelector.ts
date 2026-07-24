@@ -1,9 +1,8 @@
-import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { Menu, setTooltip } from 'obsidian';
 
 import { StorageKeys } from '../../../constants';
 import StyleManagerPlugin from '../../../main';
-import { getColorPickerConfig } from '../../../utils/ColorUtils';
+import { getColorPickerConfig, SafeColorPicker } from '../../../utils/ColorUtils';
 
 /**
  * Renders the accent color selector circle in the main toolbar.
@@ -13,7 +12,7 @@ export function renderAccentColorSelect(
 	plugin: StyleManagerPlugin,
 	containerEl: HTMLElement,
 	onRerender: () => void
-): void {
+): { destroy: () => void } {
 	const accentColor =
 		(plugin.settingsService.getSetting(StorageKeys.ACCENT_COLOR) as string) ||
 		'';
@@ -38,7 +37,7 @@ export function renderAccentColorSelect(
 
 	// We use jscolorpicker but we need to ensure it doesn't conflict with the circle's own styling
 	const pickerToggle = circle.createEl('button', { cls: 'color-picker-reset' });
-	const pickr = new ColorPicker(
+	const pickr = new SafeColorPicker(
 		pickerToggle,
 		getColorPickerConfig({
 			isView: false,
@@ -65,7 +64,7 @@ export function renderAccentColorSelect(
 	});
 
 	// Handle right-click for quick reset
-	triggerContainer.addEventListener('contextmenu', (e: MouseEvent) => {
+	const contextMenuHandler = (e: MouseEvent): void => {
 		e.preventDefault();
 		const menu = new Menu();
 		menu.addItem((item) => {
@@ -88,5 +87,13 @@ export function renderAccentColorSelect(
 				});
 		});
 		menu.showAtMouseEvent(e);
-	});
+	};
+	triggerContainer.addEventListener('contextmenu', contextMenuHandler);
+
+	return {
+		destroy: (): void => {
+			pickr.destroy();
+			triggerContainer.removeEventListener('contextmenu', contextMenuHandler);
+		},
+	};
 }

@@ -55,15 +55,16 @@ export class StyleSheetManager {
 			'css-settings-manager',
 			'style-manager-css'
 		);
+		this.clearCache();
+	}
+
+	public clearCache(): void {
 		this.cssVarCache.clear();
 		this.fileCache.clear();
 		this.diskMapCache.clear();
 		this.textContentToSourceMap.clear();
 		this.diskParseLogs = [];
-	}
-
-	public clearCache(): void {
-		this.cssVarCache.clear();
+		CSSParser.clearCache();
 	}
 
 	/**
@@ -124,7 +125,22 @@ export class StyleSheetManager {
 		{ sourceType: string; sourceId: string; sectionName: string }[]
 	> = new Map();
 
-	private textContentToSourceMap: Map<string, { sourceType: string; sourceId: string }> = new Map();
+	/**
+	 * Maps a djb2 hash of CSS text content → source attribution.
+	 * Using a hash instead of the raw string prevents multi-MB stylesheet
+	 * text from being retained as Map keys across parse cycles.
+	 */
+	private textContentToSourceMap: Map<number, { sourceType: string; sourceId: string }> = new Map();
+
+	/** djb2 hash — fast, zero-dependency, collision-resistant enough for source attribution. */
+	private hashString(str: string): number {
+		let hash = 5381;
+		for (let i = 0; i < str.length; i++) {
+			// hash * 33 + charCode, kept as a 32-bit unsigned int
+			hash = (((hash << 5) + hash) + str.charCodeAt(i)) >>> 0;
+		}
+		return hash;
+	}
 
 	private diskParseLogs: ParseLogList = [];
 
@@ -176,7 +192,9 @@ export class StyleSheetManager {
 			const content = await adapter.read(path);
 
 			if (content) {
-				this.textContentToSourceMap.set(content.trim(), { sourceType, sourceId });
+				// Store a hash of the trimmed content so the raw CSS string
+				// (potentially 1+ MB) is not retained as a Map key.
+				this.textContentToSourceMap.set(this.hashString(content.trim()), { sourceType, sourceId });
 			}
 
 			const newSections: {
@@ -204,9 +222,9 @@ export class StyleSheetManager {
 						existingId.push(data);
 					this.diskMapCache.set(s.id, existingId);
 
-					// Fingerprint-based (precise)
-					if (s.raw) {
-						const fingerprint = s.raw.trim();
+					// Fingerprint-based (precise) — store by hash number to avoid keeping raw string
+					if (s.fingerprint !== undefined) {
+						const fingerprint = String(s.fingerprint);
 						const existingFp = this.diskMapCache.get(fingerprint) || [];
 						if (
 							!existingFp.some(
@@ -350,7 +368,7 @@ export class StyleSheetManager {
 					section.sourceId = sourceId;
 
 					// Bulletproof attribution: Check our fingerprint map (precise) or disk map (id-based fallback)
-					const fingerprint = section.raw?.trim() || '';
+					const fingerprint = section.fingerprint !== undefined ? String(section.fingerprint) : '';
 					const candidates =
 						this.diskMapCache.get(fingerprint) ||
 						this.diskMapCache.get(section.id) ||
@@ -448,7 +466,8 @@ export class StyleSheetManager {
 					if ((sourceType === 'Unknown' || !sourceId) && sheet.ownerNode) {
 						const el = sheet.ownerNode as Element;
 						const nodeText = el.textContent?.trim() || '';
-						const mapped = nodeText ? this.textContentToSourceMap.get(nodeText) : undefined;
+						// Look up by hash to match how we stored it in buildDiskMap.
+						const mapped = nodeText ? this.textContentToSourceMap.get(this.hashString(nodeText)) : undefined;
 						if (mapped) {
 							errSourceType = mapped.sourceType;
 							errSourceId = mapped.sourceId;

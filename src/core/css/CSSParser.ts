@@ -34,9 +34,22 @@ import { isNumeric } from '../../utils/ValidationUtils';
 
 export class CSSParser {
 	private static parseCache: Map<
-		string,
+		number,
 		{ settingsList: ParsedCSSSettings[]; parseLogs: ParseLogList }
 	> = new Map();
+
+	/** djb2 hash — fast, zero-dependency, collision-resistant string hash. */
+	private static hashString(str: string): number {
+		let hash = 5381;
+		for (let i = 0; i < str.length; i++) {
+			hash = (((hash << 5) + hash) + str.charCodeAt(i)) >>> 0;
+		}
+		return hash;
+	}
+
+	public static clearCache(): void {
+		this.parseCache.clear();
+	}
 
 	/**
 	 * Parse css settings from a CSSStyleSheet.
@@ -59,15 +72,13 @@ export class CSSParser {
 	} {
 		if (!text) return { settingsList: [], parseLogs: [] };
 
-		// CACHE CHECK: If we've already parsed this exact CSS content, return the cached result.
-		// This significantly speeds up re-parsing when only one snippet or theme changed.
-		if (this.parseCache.has(text)) {
-			// LRU refresh: Delete and re-insert to move to end of map (most recently used)
-			const cached = this.parseCache.get(text);
-			this.parseCache.delete(text);
-			this.parseCache.set(text, cached);
+		const textHash = this.hashString(text);
 
-			// CACHE ISOLATION: Return a clone of the cached result to prevent mutation leaks
+		const cached = this.parseCache.get(textHash);
+		if (cached) {
+			// LRU refresh: move to end of insertion-order map
+			this.parseCache.delete(textHash);
+			this.parseCache.set(textHash, cached);
 			return this.cloneResult(cached);
 		}
 
@@ -95,7 +106,9 @@ export class CSSParser {
 						settings.settings &&
 						settings.settings.length
 					) {
-						settings.raw = str;
+						settings.name = (' ' + settings.name).slice(1);
+						settings.id = (' ' + settings.id).slice(1);
+						settings.fingerprint = this.hashString(str.trim());
 						settingsList.push(settings);
 					}
 				} catch (e) {
@@ -116,15 +129,14 @@ export class CSSParser {
 
 		const result = { settingsList, parseLogs };
 
-		// CACHE POPULATE: Limit cache size to prevent memory leaks in extreme cases
-		// LRU eviction: If cache exceeds 200, remove the oldest (first) element.
-		if (this.parseCache.size >= 200) {
+		// Cap cache at 20 entries (LRU eviction above)
+		if (this.parseCache.size >= 20) {
 			const firstKey = this.parseCache.keys().next().value;
 			if (firstKey !== undefined) {
 				this.parseCache.delete(firstKey);
 			}
 		}
-		this.parseCache.set(text, result);
+		this.parseCache.set(textHash, result);
 
 		return this.cloneResult(result);
 	}
@@ -159,8 +171,15 @@ export class CSSParser {
 	): ParsedCSSSettings | undefined {
 		const indent = detectIndent(str);
 
-		const settings: ParsedCSSSettings = yaml.parse(
-			str.replace(/\t/g, indent.type === 'space' ? indent.indent : '    ')
+		// JSON roundtrip severs V8 SlicedString pointers: yaml.parse() returns
+		// substrings of `str`, keeping the full CSS file (~1 MB) alive as long
+		// as any CSSSetting is referenced. Deep-cloning breaks that link.
+		const settings: ParsedCSSSettings = JSON.parse(
+			JSON.stringify(
+				yaml.parse(
+					str.replace(/\t/g, indent.type === 'space' ? indent.indent : '    ')
+				)
+			)
 		) as ParsedCSSSettings;
 
 		interface RawSetting {

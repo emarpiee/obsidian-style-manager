@@ -119,10 +119,6 @@ export class StyleGenerator {
 			.replace(/[\r\n\s]+/g, ' ');
 
 		void this.sheet.replace(css);
-
-		this.bridge.triggerEvent('css-change', {
-			source: 'style-manager',
-		});
 	}
 
 	/**

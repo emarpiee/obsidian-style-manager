@@ -1,9 +1,8 @@
 import chroma from 'chroma-js';
-import ColorPicker from 'colorpicker/dist/colorpicker.js';
 import { Notice, Setting, setIcon, setTooltip } from 'obsidian';
 
 import StyleManagerPlugin from '../../main';
-import { getColorPickerConfig } from '../../utils/ColorUtils';
+import { getColorPickerConfig, SafeColorPicker } from '../../utils/ColorUtils';
 
 interface RenderOptions {
 	plugin?: StyleManagerPlugin;
@@ -13,8 +12,8 @@ interface RenderOptions {
 export class ColorContrastChecker {
 	private fgColor = '#FFFFFF';
 	private bgColor = '#7A3198';
-	private fgPicker: ColorPicker | null = null;
-	private bgPicker: ColorPicker | null = null;
+	private fgPicker: SafeColorPicker | null = null;
+	private bgPicker: SafeColorPicker | null = null;
 	private fgSetting: Setting;
 	private bgSetting: Setting;
 	private fgSingle: HTMLElement;
@@ -109,7 +108,7 @@ export class ColorContrastChecker {
 		fgSuggestBtn.onclick = (): void => this.suggestForegroundColor();
 
 		const fgToggleEl = this.fgSingle.createEl('button');
-		this.fgPicker = new ColorPicker(
+		this.fgPicker = new SafeColorPicker(
 			fgToggleEl,
 			getColorPickerConfig({
 				isView: false,
@@ -141,7 +140,7 @@ export class ColorContrastChecker {
 		bgSuggestBtn.onclick = (): void => this.suggestBackgroundColor();
 
 		const bgToggleEl = this.bgSingle.createEl('button');
-		this.bgPicker = new ColorPicker(
+		this.bgPicker = new SafeColorPicker(
 			bgToggleEl,
 			getColorPickerConfig({
 				isView: false,

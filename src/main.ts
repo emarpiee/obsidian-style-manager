@@ -86,10 +86,15 @@ export default class StyleManagerPlugin extends Plugin {
 	lastSnippetSelectedIndex: number | null = null;
 
 	debounceTimer = 0;
+	private isParsing = false;
 	public isInitialLoading = true;
 
+	private mutationObserver: MutationObserver | null = null;
+	private settingsSearchEventRef: import('obsidian').EventRef | null = null;
+
 	setupMutationObserver(): void {
-		const observer = new MutationObserver((mutations) => {
+		this.mutationObserver?.disconnect();
+		const observer = (this.mutationObserver = new MutationObserver((mutations) => {
 			if (
 				activeDocument.body.querySelector('.style-settings-ref') &&
 				activeDocument.body.querySelector('.style-manager-ref')
@@ -146,7 +151,7 @@ export default class StyleManagerPlugin extends Plugin {
 					}
 				});
 			});
-		});
+		}));
 		observer.observe(activeDocument.body, { childList: true, subtree: true });
 	}
 
@@ -580,35 +585,42 @@ export default class StyleManagerPlugin extends Plugin {
 	parseCSS(): void {
 		window.clearTimeout(this.debounceTimer);
 		this.debounceTimer = window.setTimeout((): void => {
+			// If a parse cycle is already running, skip — it will have already
+			// captured any style changes that are currently in flight.
+			if (this.isParsing) return;
+			this.isParsing = true;
 			void (async (): Promise<void> => {
-				// Pre-fetch async metadata first
-				await this.parseAllSnippetMetadata();
+				try {
+					await this.parseAllSnippetMetadata();
 
-				this.styleSheetManager.clearCache();
-				await this.styleSheetManager.buildDiskMap();
+					this.styleSheetManager.clearCache();
+					await this.styleSheetManager.buildDiskMap();
 
-				Logger.time('StyleManager:Parsing');
-				const { settingsList, parseLogs } =
-					this.styleSheetManager.getSettingsFromStyles();
-				this.settingsList = settingsList;
-				this.parseLogs = parseLogs;
-				Logger.timeEnd('StyleManager:Parsing');
+					Logger.time('StyleManager:Parsing');
+					const { settingsList, parseLogs } =
+						this.styleSheetManager.getSettingsFromStyles();
+					this.settingsList = settingsList;
+					this.parseLogs = parseLogs;
+					Logger.timeEnd('StyleManager:Parsing');
 
-				this.isInitialLoading = false;
+					this.isInitialLoading = false;
 
-				this.refreshSettingsSearchIntegration();
-				this.settingsService.viewManager.updateData(
-					this.settingsList,
-					this.parseLogs
-				);
+					this.refreshSettingsSearchIntegration();
+					this.settingsService.viewManager.updateData(
+						this.settingsList,
+						this.parseLogs
+					);
 
-				this.settingsService.styleGenerator.setConfig(this.settingsList);
+					this.settingsService.styleGenerator.setConfig(this.settingsList);
 
-				void this.settingsService.refreshService.trigger(
-					RefreshLevel.FULL_VISUAL
-				);
+					void this.settingsService.refreshService.trigger(
+						RefreshLevel.FULL_VISUAL
+					);
 
-				this.refreshSettingCommands();
+					this.refreshSettingCommands();
+				} finally {
+					this.isParsing = false;
+				}
 			})();
 		}, 250);
 	}
@@ -672,7 +684,6 @@ export default class StyleManagerPlugin extends Plugin {
 
 		const settings = this.settingsService.settings;
 
-		// Apply core identity settings
 		const persist = !this.settingsService.isIsolateMode();
 
 		const theme = settings[StorageKeys.THEME];
@@ -745,11 +756,17 @@ export default class StyleManagerPlugin extends Plugin {
 		if (internalApp.plugins.plugins['settings-search']?.loaded) {
 			onSettingsSearchLoaded();
 		} else {
-			this.registerEvent(
-				this.app.workspace.on('settings-search-loaded', () =>
-					onSettingsSearchLoaded()
-				)
+			// Deregister the previous listener before adding a new one so that
+			// repeated parseCSS() calls don't accumulate duplicate handlers.
+			if (this.settingsSearchEventRef) {
+				this.app.workspace.offref(this.settingsSearchEventRef);
+				this.settingsSearchEventRef = null;
+			}
+			this.settingsSearchEventRef = this.app.workspace.on(
+				'settings-search-loaded',
+				() => onSettingsSearchLoaded()
 			);
+			this.registerEvent(this.settingsSearchEventRef);
 		}
 	}
 
@@ -808,11 +825,27 @@ export default class StyleManagerPlugin extends Plugin {
 			this.statusBarManager.cleanup();
 			this.unregisterSettingsFromSettingsSearch();
 
+			// Disconnect the body MutationObserver so it cannot keep the plugin alive.
+			this.mutationObserver?.disconnect();
+			this.mutationObserver = null;
+
 			// Clean up shared color picker wrapper div injected into the document body.
 			// Matches how it was created in ColorUtils.getColorPickerConfig.
 			activeDocument
 				.querySelectorAll('.style-manager-color-picker-wrapper')
 				.forEach((el) => el.remove());
+
+			// Detach all workspace leaves created by the plugin to avoid zombie leaves
+			// retaining references to the unloaded plugin.
+			this.deactivateView();
+			this.deactivateContrastView();
+			this.deactivateCSSEditorView();
+			this.deactivateLoremIpsumView();
+			this.deactivateReadmeView();
+
+			if (this.settingsService.viewManager) {
+				this.settingsService.viewManager.settingsTab = null;
+			}
 
 			this.selectedSnippets.clear();
 			this.snippetMetadataMap.clear();

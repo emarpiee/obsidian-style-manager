@@ -28,7 +28,7 @@ export function renderThemeSelect(
 	});
 
 	void plugin.settingsService.themeBuilderService.getThemes().then((themes) => {
-		if (currentValue !== 'default' && themes[currentValue]) {
+		if (triggerContainer.isConnected && currentValue !== 'default' && themes[currentValue]) {
 			nameEl.setText(themes[currentValue].name);
 		}
 	});
