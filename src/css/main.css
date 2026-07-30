@@ -229,8 +229,8 @@ body {
 	--sm-color-picker-bg: var(--background-secondary);
 	--sm-color-picker-themed-border-radius: var(--radius-m);
 	--sm-color-picker-border-radius: var(--button-radius);
-	--sm-color-picker-width: 2em;
-	--sm-color-picker-height: 2em;
+	--sm-color-picker-width: 24px;
+	--sm-color-picker-height: 24px;
 
 	/* --- Preset Item (selected state) --- */
 	--sm-item-selected-bg: var(--background-modifier-hover);
