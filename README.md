@@ -1010,6 +1010,7 @@ Style Manager registers several commands in the Obsidian command palette for qui
 | **Toggle garbled text** | Randomizes text characters for layout testing. |
 | **Toggle isolate mode** | Toggles whether your current device uses isolated or shared settings. |
 | **Toggle mobile emulation** | Switches Obsidian into a simulated mobile view. |
+| **Toggle snippet** | Opens a searchable list of all CSS snippets; selecting one instantly enables or disables it. |
 | **View active schedules** | Opens a modal to manage and view active preset schedules. |
 
 ---

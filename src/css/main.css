@@ -229,8 +229,8 @@ body {
 	--sm-color-picker-bg: var(--background-secondary);
 	--sm-color-picker-themed-border-radius: var(--radius-m);
 	--sm-color-picker-border-radius: var(--button-radius);
-	--sm-color-picker-width: 2em;
-	--sm-color-picker-height: 2em;
+	--sm-color-picker-width: 24px;
+	--sm-color-picker-height: 24px;
 
 	/* --- Preset Item (selected state) --- */
 	--sm-item-selected-bg: var(--background-modifier-hover);
@@ -423,8 +423,8 @@ body.is-style-manager-settings:not(.is-mobile) .modal .modal-close-button {
 }
 
 /* NOTE: add bottom spacing so that color picker component can adjust when the virtual keyboard is active in mobile devices */
-body.is-mobile .style-manager-wrapper {
-	padding-bottom: calc(var(--safe-area-inset-bottom) + 128px);
+.style-manager-wrapper {
+	padding-bottom: calc(var(--safe-area-inset-bottom) + 256px);
 }
 
 .style-manager-style-item-group {
@@ -1497,6 +1497,17 @@ body.is-mobile .style-manager-plugin .setting-item.style-manager-item-row .setti
 	font-size: var(--font-ui-smaller);
 	color: var(--text-muted);
 	margin-top: 2px;
+}
+
+.style-manager-snippet-suggest-status {
+	display: flex;
+	align-items: center;
+	color: var(--text-faint);
+	flex-shrink: 0;
+}
+
+.style-manager-snippet-suggest-status.is-enabled {
+	color: var(--interactive-accent);
 }
 
 .style-manager-badge-primary.dynamic {

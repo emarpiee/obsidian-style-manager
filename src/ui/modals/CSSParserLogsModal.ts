@@ -77,14 +77,14 @@ export class CSSParserLogsModal extends Modal {
 			if (lineMatch) {
 				startLine = parseInt(lineMatch[1]);
 				lineLabel = `Line ${lineMatch[1]}`;
+			} else if (log.settingId) {
+				searchStr = `id: ${log.settingId}`;
+				lineLabel = `@${log.settingId}`;
 			} else {
 				const quotedMatch = log.message.match(/'([^']+)'/);
 				if (quotedMatch) {
 					searchStr = quotedMatch[1];
 					lineLabel = `@${quotedMatch[1]}`;
-				} else if (log.settingId) {
-					searchStr = log.settingId;
-					lineLabel = `@${log.settingId}`;
 				}
 			}
 

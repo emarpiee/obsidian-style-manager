@@ -95,6 +95,17 @@ export class CSSParser {
 				const nameMatch = str.match(nameRegExp);
 				const name = nameMatch ? nameMatch[1] : 'Unknown';
 
+				// Compute the 1-based line number of the first line of `str`
+				// (the trimmed YAML content) within the full CSS text, so that
+				// YAML-reported line numbers can be mapped to the correct file line.
+				// match[1] starts after the "/* @settings\n" header; .trim() then
+				// skips any further leading whitespace — we account for all of it.
+				const match1Start = match.index + match[0].length - match[1].length - 2; // 2 = '*/'
+				const leadingSkip = match[1].length - match[1].trimStart().length;
+				const strStartPos = match1Start + leadingSkip;
+				const blockStartLine =
+					(text.slice(0, strStartPos).match(/\n/g)?.length ?? 0) + 1;
+
 				try {
 					const settings = this.parseCSSSettings(str, name, parseLogs);
 
@@ -112,14 +123,27 @@ export class CSSParser {
 						settingsList.push(settings);
 					}
 				} catch (e) {
+					let message =
+						e instanceof Error
+							? e.message
+							: typeof e === 'string'
+								? e
+								: JSON.stringify(e);
+
+					// yaml.parse() reports line numbers relative to the extracted
+					// @settings block, not the full CSS file. Rewrite them to the
+					// correct absolute line number so the log points to the right place.
+					message = message.replace(
+						/\bat line (\d+)\b/g,
+						(_match, yamlLine: string) => {
+							const absoluteLine = blockStartLine + parseInt(yamlLine, 10) - 1;
+							return `at line ${absoluteLine}`;
+						}
+					);
+
 					parseLogs.push({
 						name,
-						message:
-							e instanceof Error
-								? e.message
-								: typeof e === 'string'
-									? e
-									: JSON.stringify(e),
+						message,
 						type: 'error',
 						timestamp: Date.now(),
 					});

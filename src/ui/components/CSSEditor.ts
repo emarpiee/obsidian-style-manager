@@ -319,13 +319,15 @@ export class CSSEditor {
 			// Note: Obsidian prepends actions. The first one added appears furthest to the right.
 			// Desired visual order (L to R): [Enable Snippet] [Copy/Wrap] [Add Block] [Search] [Save]
 
-			// 1. Save (furthest right)
+			// 1. Save (furthest right) — write-mode only
 			if (!this.source.readOnly) {
 				options.addAction('save', 'Save', (): void => {
 					void this.handleSave();
 				});
-				options.addAction('search', 'Search', () => this.handleSearch());
 			}
+
+			// Search is always available, regardless of read-only state
+			options.addAction('search', 'Search', () => this.handleSearch());
 
 			// 2. Add Block
 			if (
