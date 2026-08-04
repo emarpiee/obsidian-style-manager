@@ -288,6 +288,95 @@ export class PresetService {
 		);
 	}
 
+	async mergeCurrentSettingsIntoPreset(
+		presetId: string,
+		targetPrefixes: string[] = ['All'],
+		discardOrphaned: boolean = false
+	): Promise<void> {
+		// Ensure fresh state before capture
+		(
+			this.plugin.settingsService as unknown as { updateMerged: () => void }
+		).updateMerged();
+
+		const data = this.getSettingsData();
+
+		let filteredData = data;
+		const isAll = targetPrefixes.includes('All');
+
+		if (!isAll) {
+			filteredData = {};
+			for (const key of Object.keys(data)) {
+				if (key.includes('@@')) {
+					const prefix = key.split('@@')[0];
+					if (targetPrefixes.includes(prefix)) {
+						filteredData[key] = data[key];
+					}
+				} else if (
+					key === StorageKeys.THEME &&
+					targetPrefixes.includes('__theme')
+				) {
+					filteredData[key] = data[key];
+				} else if (
+					key === StorageKeys.APPEARANCE &&
+					targetPrefixes.includes('__appearance')
+				) {
+					filteredData[key] = data[key];
+				} else if (
+					key === StorageKeys.SNIPPETS &&
+					targetPrefixes.includes('__snippets')
+				) {
+					filteredData[key] = data[key];
+				} else if (
+					key === StorageKeys.ACCENT_COLOR &&
+					targetPrefixes.includes('__accentColor')
+				) {
+					filteredData[key] = data[key];
+				}
+			}
+		}
+
+		if (discardOrphaned) {
+			for (const key of Object.keys(filteredData)) {
+				if (key.includes('@@')) {
+					const parts = key.split('@@');
+					const sectionId = parts[0];
+					const settingId = parts[1];
+					const isActive = this.plugin.settingsList.some((section) =>
+						section.id === sectionId &&
+						section.settings.some((setting) => setting.id === settingId)
+					);
+					if (!isActive) {
+						delete filteredData[key];
+					}
+				}
+			}
+		}
+
+		const currentPresets = this.presets;
+		const targetIndex = currentPresets.findIndex((p) => p.id === presetId);
+		if (targetIndex !== -1) {
+			const targetPreset = currentPresets[targetIndex];
+			targetPreset.data = {
+				...targetPreset.data,
+				...filteredData,
+			};
+			if (targetPreset.targetedPrefixes && !isAll) {
+				targetPreset.targetedPrefixes = Array.from(
+					new Set([...targetPreset.targetedPrefixes, ...targetPrefixes])
+				);
+			} else {
+				targetPreset.targetedPrefixes = undefined;
+			}
+			targetPreset.created = Date.now(); // Update timestamp
+
+			this.presets = currentPresets;
+			await this.savePresets();
+			this.plugin.settingsService.notifications.preset(
+				`Merged current styles into preset: ${targetPreset.name}`
+			);
+		}
+	}
+
 	private async mergePresets(
 		presetIds: string[]
 	): Promise<{ mergedData: Record<string, unknown> }> {
