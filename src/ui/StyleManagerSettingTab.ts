@@ -31,6 +31,7 @@ export class StyleManagerSettingTab extends PluginSettingTab {
 		this.plugin.settingsService.viewManager.registerSettingsTab(this);
 		activeDocument.body.classList.add('is-style-manager-settings');
 		this.containerEl.classList.add('is-style-manager-tab');
+
 		if (this.settingsMarkup) {
 			this.plugin.removeChild(this.settingsMarkup);
 		}

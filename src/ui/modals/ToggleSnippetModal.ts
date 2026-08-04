@@ -25,17 +25,15 @@ export class ToggleSnippetModal extends SuggestModal<string> {
 		).customCss;
 		const snippets = customCss?.snippets ?? [];
 
-		if (!query) return snippets;
+		const enabledSnippets = new Set(
+			(this.plugin.settingsService.settings[StorageKeys.SNIPPETS] as string[]) ?? []
+		);
 
-		const q = query.toLowerCase();
-		return snippets.filter((id) => {
-			if (id.toLowerCase().includes(q)) return true;
-			const meta = this.plugin.snippetMetadataMap.get(id);
-			return (
-				meta?.author?.toLowerCase().includes(q) ||
-				meta?.description?.toLowerCase().includes(q)
-			);
-		});
+		return this.plugin.settingsService.snippetService.filterSnippets(
+			snippets,
+			query,
+			enabledSnippets
+		);
 	}
 
 	renderSuggestion(id: string, el: HTMLElement): void {
@@ -45,26 +43,28 @@ export class ToggleSnippetModal extends SuggestModal<string> {
 		const isEnabled = enabledSnippets.includes(id);
 		const meta = this.plugin.snippetMetadataMap.get(id);
 
-		// — Title row: toggle icon + name —
-		const titleRow = el.createDiv({ cls: 'style-manager-suggest-title-row' });
+		el.addClass('style-manager-snippet-suggest-item');
 
-		const statusIcon = titleRow.createDiv({
-			cls: `style-manager-snippet-suggest-status${isEnabled ? ' is-enabled' : ''}`,
-		});
-		setIcon(statusIcon, isEnabled ? 'check-circle' : 'circle');
+		// — Left: name + author stacked —
+		const textBlock = el.createDiv({ cls: 'style-manager-snippet-suggest-text' });
 
-		titleRow.createSpan({
+		textBlock.createSpan({
 			cls: 'style-manager-suggest-name',
 			text: `${id}.css`,
 		});
 
-		// — Subtitle row: author only —
 		if (meta?.author) {
-			el.createDiv({
+			textBlock.createDiv({
 				cls: 'style-manager-suggest-subtitle suggestion-note',
 				text: `by ${meta.author}`,
 			});
 		}
+
+		// — Right: status icon —
+		const statusIcon = el.createDiv({
+			cls: `style-manager-snippet-suggest-status${isEnabled ? ' is-enabled' : ''}`,
+		});
+		setIcon(statusIcon, isEnabled ? 'check-circle' : 'circle');
 	}
 
 	onChooseSuggestion(id: string): void {

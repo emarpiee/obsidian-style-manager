@@ -523,6 +523,51 @@ export class PreferencesTab {
 			});
 
 		new Setting(uiContainer)
+			.setName('Panel open location')
+			.setDesc('Choose where the style manager panel will open.')
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption('left-sidebar', 'Left sidebar')
+					.addOption('right-sidebar', 'Right sidebar')
+					.addOption('main-tab', 'Main workspace tab')
+					.setValue(
+						(plugin.settingsService.sharedSettings[
+							PreferencesKeys.PANEL_OPEN_LOCATION
+						] as string) || 'left-sidebar'
+					)
+					.onChange((val): void => {
+						void (async (): Promise<void> => {
+							await plugin.settingsService.setSettings(
+								{ [PreferencesKeys.PANEL_OPEN_LOCATION]: val },
+								{ silentUI: true, target: 'shared' }
+							);
+						})();
+					});
+			});
+
+		new Setting(uiContainer)
+			.setName('Show tab badges')
+			.setDesc(
+				'Show active count badges on the styles and snippets tabs.'
+			)
+			.addToggle((toggle) => {
+				toggle
+					.setValue(
+						(plugin.settingsService.sharedSettings[
+							PreferencesKeys.SHOW_TAB_BADGE
+						] as boolean | undefined) !== false
+					)
+					.onChange((val): void => {
+						void (async (): Promise<void> => {
+							await plugin.settingsService.setSettings(
+								{ [PreferencesKeys.SHOW_TAB_BADGE]: val },
+								{ target: 'shared' }
+							);
+						})();
+					});
+			});
+
+		new Setting(uiContainer)
 			.setName('Show snippet metadata')
 			.setDesc(
 				'Display metadata (author, version, etc.) for CSS snippets if provided in a /* @metadata */ block.'
@@ -697,42 +742,28 @@ export class PreferencesTab {
 		new Setting(editorContainer)
 			.setName('Open editor after CSS file creation')
 			.setDesc(
-				'Automatically open the CSS editor modal when a new snippet is created.'
+				'Choose how to open the CSS editor when a new snippet is created.'
 			)
-			.addToggle((toggle) => {
-				toggle
+			.addDropdown((dropdown) => {
+				dropdown
+					.addOption('always-ask', 'Always ask')
+					.addOption('modal', 'Modal')
+					.addOption('tab', 'Tab view')
+					.addOption('default-app', 'Default app')
+					.addOption('none', "Don't open")
 					.setValue(
 						(plugin.settingsService.sharedSettings[
-							PreferencesKeys.OPEN_MODAL_ON_CREATE
-						] as boolean) !== false
+							PreferencesKeys.SNIPPET_CREATE_OPEN_MODE
+						] as string | undefined) ?? 'always-ask'
 					)
 					.onChange((val): void => {
 						void (async (): Promise<void> => {
 							await plugin.settingsService.setSettings(
-								{ [PreferencesKeys.OPEN_MODAL_ON_CREATE]: val },
+								{
+									[PreferencesKeys.SNIPPET_CREATE_OPEN_MODE]:
+										val,
+								},
 								{ silentUI: true, target: 'shared' }
-							);
-						})();
-					});
-			});
-
-		new Setting(editorContainer)
-			.setName('Open CSS files in default app')
-			.setDesc(
-				'Open CSS files like snippets and themes using your system default text editor instead of the built-in modal.'
-			)
-			.addToggle((toggle) => {
-				toggle
-					.setValue(
-						this.plugin.app.loadLocalStorage(
-							PreferencesKeys.OPEN_IN_DEFAULT_APP
-						) === 'true'
-					)
-					.onChange((val): void => {
-						void (async (): Promise<void> => {
-							this.plugin.app.saveLocalStorage(
-								PreferencesKeys.OPEN_IN_DEFAULT_APP,
-								String(val)
 							);
 						})();
 					});

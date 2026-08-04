@@ -223,7 +223,19 @@ Style Manager interface is structured into six functional tabs.
 2. Click **Create preset**.
 3. Select which elements to include in your snapshot (such as *Active theme*, *Appearance*, *Accent color*, *Snippets*, or specific theme/snippet configurations).
    *Tip: Use the **Select modified** button to automatically check only the settings you have explicitly changed.*
-4. Click **Save preset** and enter a **Name** to store your custom design state for quick access later.
+4. Save the configuration using one of two options:
+   - **Save preset**: Click this button and enter a **Name** to store your custom design state as a brand new preset.
+   - **Save to existing preset**: Click this button to select an existing preset and merge your current selections into it.
+
+     > [!NOTE]
+     > **Conflict Resolution during Merge:** If you choose to save to an existing preset, any conflicting keys (matching settings) will be overwritten with your current values. All other non-conflicting keys stored in the target preset are safely preserved.
+
+5. **Orphaned Settings Warning:** If the configurations you are saving contain style setting keys that are no longer active in your current stylesheets (e.g. leftovers from an old theme or inactive preset), a warning dialog listing these orphaned keys will appear:
+   - Click **Discard** to strip the inactive keys from the preset data to keep it clean.
+   - Click **Keep** if you prefer to retain the orphaned settings (e.g. if you plan to re-enable the theme or snippet later).
+
+> [!TIP]
+> **Single-Purpose Presets:** When creating a preset, try to give it a single clear purpose. For example, have one preset dedicated to an entire theme, and separate presets for specific active snippets or plugins, rather than mixing them all into one snapshot.
 
 #### B. How to Import Presets
 
@@ -270,7 +282,7 @@ Style Manager interface is structured into six functional tabs.
 
 *Plugin configuration, safety tools, and developer options. Includes a search filter to quickly find specific settings.*
 
-- **UI Customization:** Toggle sticky headings in the Styles tab, customize date formats for presets, and control status bar visibility.
+- **UI Customization:** Toggle sticky headings in the Styles tab, customize date formats for presets, toggle active count badges on tabs, choose the panel's open location (left sidebar, right sidebar, or main tab), and control status bar visibility.
 - **Confirmations:**
     - **Skip Toggles**: Quickly delete, export, or import presets and styles by bypassing confirmation dialogs.
     - **Apply Actions**: Define how the plugin handles preset application (Ask, Overwrite, or Merge) for single, bulk, or scheduled actions.
@@ -893,6 +905,8 @@ These keys store the internal preferences that control the Style Manager's UI, b
 | `data.json` key                                   | Description                                                           |
 | :------------------------------------------------ | :-------------------------------------------------------------------- |
 | `__style_manager_show_status_bar`                 | Toggles visibility of the Style Manager icon in status bar            |
+| `__style_manager_show_tab_badge`                  | Toggles visibility of active count badges on the Styles & Snippets tabs|
+| `__style_manager_panel_open_location`             | Workspace placement for the panel (left-sidebar/right-sidebar/main-tab)|
 | `__style_manager_show_snippet_metadata`           | Toggles display of metadata for CSS snippets                          |
 | `__style_manager_show_shared_notifications`       | Toggles notifications when shared settings change                     |
 | `__style_manager_show_preset_notifications`       | Toggles notifications when a preset is applied                        |
@@ -1028,3 +1042,4 @@ Donations are greatly appreciated and will be used to fund my sanity, and my cat
 <a href='https://ko-fi.com/emarpiee' target='_blank'>
 <img height='50' width='150' style='border:0px;height:36px;' src='https://storage.ko-fi.com/cdn/kofi6.png?v=6' border='0' alt='Buy Me a Coffee at ko-fi.com' />
 </a>
+

@@ -263,4 +263,69 @@ export class SnippetService {
 			RefreshLevel.PARSE_CSS
 		);
 	}
+
+	/**
+	 * Filters a list of snippet IDs by a query string supporting @keys:
+	 *   @active, @inactive, @author <x>, @name <x>, @description <x>,
+	 *   @license <x>, @settings true|false
+	 * Remainder text matches against id, author, and description.
+	 */
+	public filterSnippets(
+		snippetIds: string[],
+		query: string,
+		enabledSnippets: Set<string>
+	): string[] {
+		if (!query) return snippetIds;
+
+		const q = query.toLowerCase();
+
+		const authorMatch = q.match(/@author\s+([^\s@]+)/);
+		const nameMatch = q.match(/@name\s+([^\s@]+)/);
+		const descMatch = q.match(/@description\s+([^\s@]+)/);
+		const licenseMatch = q.match(/@license\s+([^\s@]+)/);
+		const settingsMatch = q.match(/@settings\s+(true|false)/);
+		const isActive = q.includes('@active');
+		const isInactive = q.includes('@inactive');
+
+		const cleanedQuery = q
+			.replace(/@author\s+[^\s@]+/g, '')
+			.replace(/@name\s+[^\s@]+/g, '')
+			.replace(/@description\s+[^\s@]+/g, '')
+			.replace(/@license\s+[^\s@]+/g, '')
+			.replace(/@settings\s+(true|false)/g, '')
+			.replace(/@active/g, '')
+			.replace(/@inactive/g, '')
+			.trim();
+
+		return snippetIds.filter((id) => {
+			const meta = this.options.plugin.snippetMetadataMap.get(id) ?? {};
+			const displayName = id + '.css';
+			const snippetActive = enabledSnippets.has(id);
+
+			if (isActive && !snippetActive) return false;
+			if (isInactive && snippetActive) return false;
+			if (authorMatch && !meta.author?.toLowerCase().includes(authorMatch[1])) return false;
+			if (nameMatch && !displayName.toLowerCase().includes(nameMatch[1])) return false;
+			if (descMatch && !meta.description?.toLowerCase().includes(descMatch[1])) return false;
+			if (licenseMatch && !meta.license?.toLowerCase().includes(licenseMatch[1])) return false;
+			if (settingsMatch) {
+				const expectsSettings = settingsMatch[1] === 'true';
+				const hasSettings = (meta as { styleSettings?: boolean }).styleSettings === true;
+				if (hasSettings !== expectsSettings) return false;
+			}
+
+			if (
+				cleanedQuery &&
+				!(
+					id.toLowerCase().includes(cleanedQuery) ||
+					displayName.toLowerCase().includes(cleanedQuery) ||
+					meta.author?.toLowerCase().includes(cleanedQuery) ||
+					meta.description?.toLowerCase().includes(cleanedQuery)
+				)
+			)
+				return false;
+
+			return true;
+		});
+	}
 }

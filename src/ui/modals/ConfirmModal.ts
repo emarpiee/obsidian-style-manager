@@ -8,6 +8,7 @@ export class ConfirmModal extends Modal {
 	isWarning: boolean;
 	secondaryCtaText?: string;
 	onSecondaryConfirm?: () => void;
+	listItems?: string[];
 
 	constructor(
 		app: App,
@@ -17,7 +18,8 @@ export class ConfirmModal extends Modal {
 		isWarning: boolean,
 		onConfirm: () => void,
 		secondaryCtaText?: string,
-		onSecondaryConfirm?: () => void
+		onSecondaryConfirm?: () => void,
+		listItems?: string[]
 	) {
 		super(app);
 		this.title = title;
@@ -27,6 +29,7 @@ export class ConfirmModal extends Modal {
 		this.isWarning = isWarning;
 		this.secondaryCtaText = secondaryCtaText;
 		this.onSecondaryConfirm = onSecondaryConfirm;
+		this.listItems = listItems;
 	}
 
 	onOpen(): void {
@@ -36,10 +39,16 @@ export class ConfirmModal extends Modal {
 		modalEl.addClass('style-manager-confirm-modal');
 
 		this.setTitle(this.title);
-		contentEl.createEl('p', {
-			text: this.message,
+		const descEl = contentEl.createEl('p', {
 			cls: 'style-manager-modal-description',
 		});
+		descEl.setCssStyles({ whiteSpace: 'pre-wrap' });
+		descEl.textContent = this.message;
+
+		if (this.listItems && this.listItems.length > 0) {
+			const pre = contentEl.createEl('pre', { cls: 'style-manager-modal-pre' });
+			pre.setText(this.listItems.join('\n'));
+		}
 
 		const buttonSetting = new Setting(contentEl).setClass(
 			'style-manager-modal-buttons'

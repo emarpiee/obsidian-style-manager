@@ -33,6 +33,7 @@ export class PresetList {
 	private listContainer: HTMLElement;
 	private filteredPresets: Preset[] = [];
 	private cleanupKeybindings: (() => void) | null = null;
+	private statsLeftEl: HTMLSpanElement;
 
 	constructor(
 		private containerEl: HTMLElement,
@@ -122,6 +123,11 @@ export class PresetList {
 			presetsConfigArea.addClass('is-mobile');
 		}
 
+		const statsBarEl = presetsConfigArea.createDiv(
+			'style-manager-snippets-stats-bar'
+		);
+		this.statsLeftEl = statsBarEl.createSpan('style-manager-stats-left');
+
 		this.listContainer = presetsConfigArea.createDiv(
 			'style-manager-presets-list'
 		);
@@ -130,7 +136,7 @@ export class PresetList {
 		this.cleanupKeybindings = setupListKeybindings({
 			container: this.listContainer,
 			getItems: () =>
-				this.filterPresets(service.presets, service.presetSearchQuery),
+				service.filterPresets(service.presets, service.presetSearchQuery),
 			getId: (p) => p.id,
 			selectedIds: service.selectedPresets,
 			onSelectionChange: () => this.renderPresetListItems(),
@@ -158,7 +164,7 @@ export class PresetList {
 			listContainer.removeClass('has-bulk-actions');
 		}
 
-		this.filteredPresets = this.filterPresets(
+		this.filteredPresets = service.filterPresets(
 			service.presets,
 			service.presetSearchQuery
 		).sort((a, b) => {
@@ -166,6 +172,46 @@ export class PresetList {
 			if (!a.isFavorite && b.isFavorite) return 1;
 			return b.created - a.created;
 		});
+
+		const totalPresets = service.presets.length;
+		const matchCount = this.filteredPresets.length;
+
+		if (service.presetSearchQuery) {
+			const query = service.presetSearchQuery.toLowerCase();
+			const themeMatch = query.match(/@theme\s+([^\s@]+)/);
+			const snippetMatch = query.match(/@snippet\s+([^\s@]+)/);
+			const nameMatch = query.match(/@name\s+([^\s@]+)/);
+			const isLight = query.includes('@light');
+			const isDark = query.includes('@dark');
+
+			const cleanedQuery = query
+				.replace(/@theme\s+[^\s@]+/g, '')
+				.replace(/@snippet\s+[^\s@]+/g, '')
+				.replace(/@name\s+[^\s@]+/g, '')
+				.replace(/@light/g, '')
+				.replace(/@dark/g, '')
+				.trim();
+
+			const modifiers: string[] = [];
+			if (themeMatch) modifiers.push(`with theme "${themeMatch[1]}"`);
+			if (snippetMatch) modifiers.push(`with snippet "${snippetMatch[1]}"`);
+			if (nameMatch) modifiers.push(`named "${nameMatch[1]}"`);
+			if (isLight) modifiers.push('in light appearance');
+			if (isDark) modifiers.push('in dark appearance');
+			if (cleanedQuery) modifiers.push(`matching "${cleanedQuery}"`);
+
+			const plural = matchCount === 1 ? 'preset' : 'presets';
+			let label = `${matchCount} ${plural}`;
+			if (modifiers.length > 0) {
+				label += ' ' + modifiers.join(' and ');
+			}
+
+			this.statsLeftEl.setText(label);
+		} else {
+			this.statsLeftEl.setText(
+				`You have ${totalPresets} preset${totalPresets !== 1 ? 's' : ''}`
+			);
+		}
 
 		if (service.presets.length === 0) {
 			listContainer.createEl('p', {
@@ -453,54 +499,5 @@ export class PresetList {
 		);
 	}
 
-	private filterPresets(presets: Preset[], query: string): Preset[] {
-		if (!query) return presets;
 
-		const lowerQuery = query.toLowerCase();
-
-		// Extract tags
-		const themeMatch = lowerQuery.match(/@theme\s+([^\s@]+)/);
-		const snippetMatch = lowerQuery.match(/@snippet\s+([^\s@]+)/);
-		const nameMatch = lowerQuery.match(/@name\s+([^\s@]+)/);
-		const isLight = lowerQuery.includes('@light');
-		const isDark = lowerQuery.includes('@dark');
-
-		// Remove tags from query to get the "remainder" search (if any)
-		const cleanedQuery = lowerQuery
-			.replace(/@theme\s+[^\s@]+/g, '')
-			.replace(/@snippet\s+[^\s@]+/g, '')
-			.replace(/@name\s+[^\s@]+/g, '')
-			.replace(/@light/g, '')
-			.replace(/@dark/g, '')
-			.trim();
-
-		return presets.filter((p) => {
-			// 1. Check Tags (AND logic)
-			if (
-				themeMatch &&
-				!(p.data[StorageKeys.THEME] as string | undefined)
-					?.toLowerCase()
-					.includes(themeMatch[1])
-			)
-				return false;
-
-			if (isLight && p.data[StorageKeys.APPEARANCE] !== 'light') return false;
-			if (isDark && p.data[StorageKeys.APPEARANCE] !== 'dark') return false;
-
-			if (snippetMatch) {
-				const snippets = (p.data[StorageKeys.SNIPPETS] as string[]) || [];
-				if (!snippets.some((s) => s.toLowerCase().includes(snippetMatch[1])))
-					return false;
-			}
-
-			if (nameMatch && !p.name.toLowerCase().includes(nameMatch[1]))
-				return false;
-
-			// 2. Check remainder query against name
-			if (cleanedQuery && !p.name.toLowerCase().includes(cleanedQuery))
-				return false;
-
-			return true;
-		});
-	}
 }

@@ -36,13 +36,13 @@ export class StyleSheetManager {
 	private darkEl: HTMLElement;
 
 	constructor(private bridge: ObsidianBridge) {
-		this.lightEl = activeDocument.body.createDiv(
+		this.lightEl = document.body.createDiv(
 			'theme-light style-manager-ref'
 		);
-		this.darkEl = activeDocument.body.createDiv('theme-dark style-manager-ref');
+		this.darkEl = document.body.createDiv('theme-dark style-manager-ref');
 
 		// Hide these elements from view
-		activeDocument.body.classList.add(
+		document.body.classList.add(
 			'css-settings-manager',
 			'style-manager-css'
 		);
@@ -51,7 +51,7 @@ export class StyleSheetManager {
 	public cleanup(): void {
 		this.lightEl?.remove();
 		this.darkEl?.remove();
-		activeDocument.body.classList.remove(
+		document.body.classList.remove(
 			'css-settings-manager',
 			'style-manager-css'
 		);
@@ -87,7 +87,7 @@ export class StyleSheetManager {
 		const dark = getComputedStyle(this.darkEl)
 			.getPropertyValue(`--${id}`)
 			.trim();
-		const current = getComputedStyle(activeDocument.body)
+		const current = getComputedStyle(document.body)
 			.getPropertyValue(`--${id}`)
 			.trim();
 
@@ -275,7 +275,7 @@ export class StyleSheetManager {
 	}
 
 	/**
-	 * Scans all activeDocument stylesheets for @settings blocks and parses them.
+	 * Scans all main document stylesheets for @settings blocks and parses them.
 	 */
 	public getSettingsFromStyles(): {
 		settingsList: ParsedCSSSettings[];
@@ -296,7 +296,7 @@ export class StyleSheetManager {
 				}
 				if (err.sourceId) diskSourceIds.add(err.sourceId);
 			}
-			const styleSheets = activeDocument.styleSheets;
+			const styleSheets = document.styleSheets;
 			const processedContent = new Set<string>();
 			const activeTheme = this.getStableActiveTheme();
 

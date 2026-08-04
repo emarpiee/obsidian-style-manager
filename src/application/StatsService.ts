@@ -119,11 +119,11 @@ export class StatsService {
 				id: s.id,
 				name:
 					s.id === '__theme'
-						? 'Active Theme'
+						? 'Active theme'
 						: s.id === '__appearance'
 							? 'Appearance'
 							: s.id === '__accentColor'
-								? 'Accent Color'
+								? 'Accent color'
 								: s.id === '__snippets'
 									? 'Snippets'
 									: this.options

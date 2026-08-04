@@ -10,12 +10,16 @@ export class ThemeBuilderTab {
 	private filterString: string = '';
 	private listContainer: HTMLElement;
 
+	private statsLeftEl: HTMLSpanElement;
+
 	constructor(
 		private containerEl: HTMLElement,
 		private app: App,
 		private plugin: StyleManagerPlugin,
 		private onRerender: () => void,
-		private addChild: (child: Component) => Component
+		private addChild: (child: Component) => Component,
+		private initialFilterString: string = '',
+		private onFilterChange: (value: string) => void = () => {}
 	) {}
 	async render(): Promise<void> {
 		const searchRow = this.containerEl.createDiv('style-manager-search-row');
@@ -27,13 +31,17 @@ export class ThemeBuilderTab {
 			.addSearch((search) => {
 				search
 					.setPlaceholder('Search themes...')
-					.setValue(this.filterString)
+					.setValue(this.initialFilterString)
 					.onChange(
 						debounce((value) => {
 							this.filterString = value.toLowerCase();
+							this.onFilterChange(value);
 							this.applyFilter();
 						}, 250)
 					);
+				if (this.initialFilterString) {
+					this.filterString = this.initialFilterString.toLowerCase();
+				}
 			})
 			.addExtraButton((btn) => {
 				btn
@@ -58,6 +66,11 @@ export class ThemeBuilderTab {
 						).showInFolder?.(`${this.app.vault.configDir}/themes`);
 					});
 			});
+
+		const statsBarEl = this.containerEl.createDiv(
+			'style-manager-snippets-stats-bar'
+		);
+		this.statsLeftEl = statsBarEl.createSpan('style-manager-stats-left');
 
 		this.listContainer = this.containerEl.createDiv(
 			'style-manager-theme-builder-list'
@@ -140,5 +153,43 @@ export class ThemeBuilderTab {
 
 			comp.setVisibility(matches);
 		});
+
+		let matchCount = 0;
+		this.themeComponents.forEach((comp) => {
+			const el = (comp as unknown as { setting: { settingEl: HTMLElement } })
+				.setting?.settingEl;
+			const isVisible = el && el.style.display !== 'none';
+			if (isVisible) {
+				matchCount++;
+			}
+		});
+
+		const totalThemes = this.themeComponents.length;
+
+		if (query.trim()) {
+			const modifiers: string[] = [];
+			if (authorMatch) modifiers.push(`by ${authorMatch[1]}`);
+			if (nameMatch) modifiers.push(`named ${nameMatch[1]}`);
+			if (settingsMatch) {
+				modifiers.push(
+					settingsMatch[1] === 'true'
+						? 'with settings'
+						: 'without settings'
+				);
+			}
+			if (cleanedQuery) modifiers.push(`matching "${cleanedQuery}"`);
+
+			const plural = matchCount === 1 ? 'theme' : 'themes';
+			let label = `${matchCount} ${plural}`;
+			if (modifiers.length > 0) {
+				label += ' ' + modifiers.join(' and ');
+			}
+
+			this.statsLeftEl.setText(label);
+		} else {
+			this.statsLeftEl.setText(
+				`You have ${totalThemes} theme${totalThemes !== 1 ? 's' : ''}`
+			);
+		}
 	}
 }

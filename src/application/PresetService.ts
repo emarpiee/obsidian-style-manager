@@ -209,7 +209,8 @@ export class PresetService {
 
 	async saveCurrentSettingsAsPreset(
 		presetName: string,
-		targetPrefixes: string[] = ['All']
+		targetPrefixes: string[] = ['All'],
+		discardOrphaned: boolean = false
 	): Promise<void> {
 		// Ensure fresh state before capture
 		(
@@ -253,6 +254,23 @@ export class PresetService {
 			}
 		}
 
+		if (discardOrphaned) {
+			for (const key of Object.keys(filteredData)) {
+				if (key.includes('@@')) {
+					const parts = key.split('@@');
+					const sectionId = parts[0];
+					const settingId = parts[1];
+					const isActive = this.plugin.settingsList.some((section) =>
+						section.id === sectionId &&
+						section.settings.some((setting) => setting.id === settingId)
+					);
+					if (!isActive) {
+						delete filteredData[key];
+					}
+				}
+			}
+		}
+
 		const newPreset: Preset = {
 			id: crypto.randomUUID(),
 			name: presetName,
@@ -268,6 +286,95 @@ export class PresetService {
 		this.plugin.settingsService.notifications.preset(
 			`Saved preset: ${presetName}`
 		);
+	}
+
+	async mergeCurrentSettingsIntoPreset(
+		presetId: string,
+		targetPrefixes: string[] = ['All'],
+		discardOrphaned: boolean = false
+	): Promise<void> {
+		// Ensure fresh state before capture
+		(
+			this.plugin.settingsService as unknown as { updateMerged: () => void }
+		).updateMerged();
+
+		const data = this.getSettingsData();
+
+		let filteredData = data;
+		const isAll = targetPrefixes.includes('All');
+
+		if (!isAll) {
+			filteredData = {};
+			for (const key of Object.keys(data)) {
+				if (key.includes('@@')) {
+					const prefix = key.split('@@')[0];
+					if (targetPrefixes.includes(prefix)) {
+						filteredData[key] = data[key];
+					}
+				} else if (
+					key === StorageKeys.THEME &&
+					targetPrefixes.includes('__theme')
+				) {
+					filteredData[key] = data[key];
+				} else if (
+					key === StorageKeys.APPEARANCE &&
+					targetPrefixes.includes('__appearance')
+				) {
+					filteredData[key] = data[key];
+				} else if (
+					key === StorageKeys.SNIPPETS &&
+					targetPrefixes.includes('__snippets')
+				) {
+					filteredData[key] = data[key];
+				} else if (
+					key === StorageKeys.ACCENT_COLOR &&
+					targetPrefixes.includes('__accentColor')
+				) {
+					filteredData[key] = data[key];
+				}
+			}
+		}
+
+		if (discardOrphaned) {
+			for (const key of Object.keys(filteredData)) {
+				if (key.includes('@@')) {
+					const parts = key.split('@@');
+					const sectionId = parts[0];
+					const settingId = parts[1];
+					const isActive = this.plugin.settingsList.some((section) =>
+						section.id === sectionId &&
+						section.settings.some((setting) => setting.id === settingId)
+					);
+					if (!isActive) {
+						delete filteredData[key];
+					}
+				}
+			}
+		}
+
+		const currentPresets = this.presets;
+		const targetIndex = currentPresets.findIndex((p) => p.id === presetId);
+		if (targetIndex !== -1) {
+			const targetPreset = currentPresets[targetIndex];
+			targetPreset.data = {
+				...targetPreset.data,
+				...filteredData,
+			};
+			if (targetPreset.targetedPrefixes && !isAll) {
+				targetPreset.targetedPrefixes = Array.from(
+					new Set([...targetPreset.targetedPrefixes, ...targetPrefixes])
+				);
+			} else {
+				targetPreset.targetedPrefixes = undefined;
+			}
+			targetPreset.created = Date.now(); // Update timestamp
+
+			this.presets = currentPresets;
+			await this.savePresets();
+			this.plugin.settingsService.notifications.preset(
+				`Merged current styles into preset: ${targetPreset.name}`
+			);
+		}
 	}
 
 	private async mergePresets(
@@ -533,5 +640,56 @@ export class PresetService {
 
 	public getFormattedTimestamp(format: string = 'YYYYMMDDHHmmss'): string {
 		return getFormattedTimestamp(format);
+	}
+
+	public filterPresets(presets: Preset[], query: string): Preset[] {
+		if (!query) return presets;
+
+		const lowerQuery = query.toLowerCase();
+
+		// Extract tags
+		const themeMatch = lowerQuery.match(/@theme\s+([^\s@]+)/);
+		const snippetMatch = lowerQuery.match(/@snippet\s+([^\s@]+)/);
+		const nameMatch = lowerQuery.match(/@name\s+([^\s@]+)/);
+		const isLight = lowerQuery.includes('@light');
+		const isDark = lowerQuery.includes('@dark');
+
+		// Remove tags from query to get the "remainder" search (if any)
+		const cleanedQuery = lowerQuery
+			.replace(/@theme\s+[^\s@]+/g, '')
+			.replace(/@snippet\s+[^\s@]+/g, '')
+			.replace(/@name\s+[^\s@]+/g, '')
+			.replace(/@light/g, '')
+			.replace(/@dark/g, '')
+			.trim();
+
+		return presets.filter((p) => {
+			// 1. Check Tags (AND logic)
+			if (
+				themeMatch &&
+				!(p.data[StorageKeys.THEME] as string | undefined)
+					?.toLowerCase()
+					.includes(themeMatch[1])
+			)
+				return false;
+
+			if (isLight && p.data[StorageKeys.APPEARANCE] !== 'light') return false;
+			if (isDark && p.data[StorageKeys.APPEARANCE] !== 'dark') return false;
+
+			if (snippetMatch) {
+				const snippets = (p.data[StorageKeys.SNIPPETS] as string[]) || [];
+				if (!snippets.some((s) => s.toLowerCase().includes(snippetMatch[1])))
+					return false;
+			}
+
+			if (nameMatch && !p.name.toLowerCase().includes(nameMatch[1]))
+				return false;
+
+			// 2. Check remainder query against name
+			if (cleanedQuery && !p.name.toLowerCase().includes(cleanedQuery))
+				return false;
+
+			return true;
+		});
 	}
 }

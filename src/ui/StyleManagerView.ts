@@ -66,7 +66,7 @@ export class StyleManagerView extends ItemView {
 	}
 
 	getIcon(): string {
-		return 'gear';
+		return 'paintbrush';
 	}
 
 	getDisplayText(): string {

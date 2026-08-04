@@ -30,11 +30,7 @@ export abstract class PresetSuggestModal extends SuggestModal<Preset> {
 	}
 
 	getSuggestions(query: string): Preset[] {
-		if (!query) return this.presetService.presets;
-
-		return this.presetService.presets.filter((preset) =>
-			preset.name.toLowerCase().includes(query.toLowerCase())
-		);
+		return this.presetService.filterPresets(this.presetService.presets, query);
 	}
 
 	renderSuggestion(preset: Preset, el: HTMLElement): void {

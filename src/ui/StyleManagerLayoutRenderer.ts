@@ -39,6 +39,8 @@ export class StyleManagerLayoutRenderer extends Component {
 	private stylesTab: StylesTab | null = null;
 	private settingsHeader: SettingsHeaderComponent | null = null;
 	private presetsTab: PresetsTab | null = null;
+	private snippetsFilterString: string = '';
+	private themesFilterString: string = '';
 
 	constructor(
 		app: App,
@@ -188,7 +190,11 @@ export class StyleManagerLayoutRenderer extends Component {
 				this.app,
 				this.plugin,
 				() => this.rerender(),
-				(child) => this.addChild(child)
+				(child) => this.addChild(child),
+				this.snippetsFilterString,
+				(value) => {
+					this.snippetsFilterString = value;
+				}
 			).render();
 			this.restoreScroll();
 			return;
@@ -200,7 +206,11 @@ export class StyleManagerLayoutRenderer extends Component {
 				this.app,
 				this.plugin,
 				() => this.rerender(),
-				(child) => this.addChild(child)
+				(child) => this.addChild(child),
+				this.themesFilterString,
+				(value) => {
+					this.themesFilterString = value;
+				}
 			).render();
 			this.restoreScroll();
 			return;

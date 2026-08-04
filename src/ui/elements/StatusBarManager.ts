@@ -58,7 +58,7 @@ export class StatusBarManager {
 		}
 
 		const isIsolate = this.plugin.settingsService.isIsolateMode();
-		const modifiedCount = this.plugin.settingsService.getTotalModifiedCount();
+		const activeStylesCount = this.getActiveStylesCount();
 		const enabledSnippets =
 			(this.plugin.settingsService.settings[
 				StorageKeys.SNIPPETS
@@ -81,9 +81,9 @@ export class StatusBarManager {
 				? '1 snippet'
 				: `${enabledSnippets.length} snippets`;
 		const modifiedText =
-			modifiedCount === 1
-				? '1 setting modified'
-				: `${modifiedCount} settings modified`;
+			activeStylesCount === 1
+				? '1 active style'
+				: `${activeStylesCount} active styles`;
 
 		setTooltip(
 			this.statusBarItem,
@@ -100,7 +100,7 @@ export class StatusBarManager {
 	private showMenu(e: MouseEvent): void {
 		const menu = new Menu();
 		const isIsolate = this.plugin.settingsService.isIsolateMode();
-		const modifiedCount = this.plugin.settingsService.getTotalModifiedCount();
+		const activeStylesCount = this.getActiveStylesCount();
 		const enabledSnippets =
 			(this.plugin.settingsService.settings[
 				StorageKeys.SNIPPETS
@@ -186,7 +186,7 @@ export class StatusBarManager {
 		// 4. Stats (Modified)
 		menu.addItem((item) => {
 			item
-				.setTitle(`${modifiedCount} customized settings`)
+				.setTitle(`${activeStylesCount} active style${activeStylesCount !== 1 ? 's' : ''}`)
 				.setIcon('check-circle')
 				.onClick(() => {
 					void this.plugin.activateView('styles');
@@ -234,5 +234,21 @@ export class StatusBarManager {
 		});
 
 		menu.showAtMouseEvent(e);
+	}
+	private getActiveStylesCount(): number {
+		const activeSectionIds = new Set(
+			this.plugin.settingsList.map((s) => s.id)
+		);
+		const settings = this.plugin.settingsService.settings;
+		let count = 0;
+		for (const key of Object.keys(settings)) {
+			if (key.includes('@@')) {
+				const sectionId = key.split('@@')[0];
+				if (activeSectionIds.has(sectionId)) {
+					count++;
+				}
+			}
+		}
+		return count;
 	}
 }
