@@ -14,6 +14,7 @@ import { RenameModal } from '../../modals/RenameModal';
  */
 export class SnippetSettingComponent extends Component {
 	private setting: Setting;
+	private selectIconEl: HTMLDivElement;
 
 	public supportsStyleSettings: boolean | null = null;
 
@@ -125,6 +126,7 @@ export class SnippetSettingComponent extends Component {
 		}
 
 		const selectIcon = activeWindow.createDiv();
+		this.selectIconEl = selectIcon;
 		selectIcon.classList.add(
 			'clickable-icon',
 			'style-manager-item-select-icon'
@@ -251,6 +253,19 @@ export class SnippetSettingComponent extends Component {
 	public setVisibility(visible: boolean): void {
 		if (this.setting !== undefined) {
 			this.setting.settingEl.toggle(visible);
+		}
+	}
+
+	public updateSelection(isSelected: boolean): void {
+		this.isSelected = isSelected;
+		if (this.setting !== undefined && this.selectIconEl !== undefined) {
+			if (isSelected) {
+				this.setting.settingEl.addClass('is-selected');
+				setIcon(this.selectIconEl, 'check-circle');
+			} else {
+				this.setting.settingEl.removeClass('is-selected');
+				setIcon(this.selectIconEl, 'circle');
+			}
 		}
 	}
 
