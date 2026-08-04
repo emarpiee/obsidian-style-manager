@@ -223,7 +223,17 @@ Style Manager interface is structured into six functional tabs.
 2. Click **Create preset**.
 3. Select which elements to include in your snapshot (such as *Active theme*, *Appearance*, *Accent color*, *Snippets*, or specific theme/snippet configurations).
    *Tip: Use the **Select modified** button to automatically check only the settings you have explicitly changed.*
-4. Click **Save preset** and enter a **Name** to store your custom design state for quick access later.
+4. Save the configuration using one of two options:
+   - **Save preset**: Click this button and enter a **Name** to store your custom design state as a brand new preset.
+   - **Save to existing preset**: Click this button to select an existing preset and merge your current selections into it.
+     > [!NOTE]
+     > **Conflict Resolution during Merge:** If you choose to save to an existing preset, any conflicting keys (matching settings) will be overwritten with your current values. All other non-conflicting keys stored in the target preset are safely preserved.
+5. **Orphaned Settings Warning:** If the configurations you are saving contain style setting keys that are no longer active in your current stylesheets (e.g. leftovers from an old theme or inactive preset), a warning dialog listing these orphaned keys will appear:
+   - Click **Discard** to strip the inactive keys from the preset data to keep it clean.
+   - Click **Keep** if you prefer to retain the orphaned settings (e.g. if you plan to re-enable the theme or snippet later).
+
+> [!TIP]
+> **Single-Purpose Presets:** When creating a preset, try to give it a single clear purpose. For example, have one preset dedicated to an entire theme, and separate presets for specific active snippets or plugins, rather than mixing them all into one snapshot.
 
 #### B. How to Import Presets
 

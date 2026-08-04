@@ -42,7 +42,7 @@ export class ConfirmModal extends Modal {
 		const descEl = contentEl.createEl('p', {
 			cls: 'style-manager-modal-description',
 		});
-		descEl.style.whiteSpace = 'pre-wrap';
+		descEl.setCssStyles({ whiteSpace: 'pre-wrap' });
 		descEl.textContent = this.message;
 
 		if (this.listItems && this.listItems.length > 0) {

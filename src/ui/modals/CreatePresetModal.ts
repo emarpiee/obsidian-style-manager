@@ -119,14 +119,16 @@ export class CreatePresetModal extends Modal {
 							new SaveToExistingSuggestModal(
 								this.app,
 								this.service,
-								async (preset) => {
-									await this.service.mergeCurrentSettingsIntoPreset(
-										preset.id,
-										check.savedPrefixes,
-										discard
-									);
-									this.onSave();
-									this.close();
+								(preset): void => {
+									void (async (): Promise<void> => {
+										await this.service.mergeCurrentSettingsIntoPreset(
+											preset.id,
+											check.savedPrefixes,
+											discard
+										);
+										this.onSave();
+										this.close();
+									})();
 								}
 							).open();
 						};
@@ -138,12 +140,12 @@ export class CreatePresetModal extends Modal {
 								`This preset contains ${check.orphanedKeys.length} settings key(s) that are no longer active in your current style settings config. Do you want to keep these orphaned settings in the new preset, or discard them?`,
 								'Discard',
 								true, // isWarning
-								async () => {
-									await saveToPreset(true);
+								() => {
+									void saveToPreset(true);
 								},
 								'Keep',
-								async () => {
-									await saveToPreset(false);
+								() => {
+									void saveToPreset(false);
 								},
 								check.orphanedKeys
 							).open();
@@ -180,12 +182,12 @@ export class CreatePresetModal extends Modal {
 								`This preset contains ${check.orphanedKeys.length} settings key(s) that are no longer active in your current style settings config. Do you want to keep these orphaned settings in the new preset, or discard them?`,
 								'Discard',
 								true, // isWarning
-								async () => {
-									await saveNewPreset(true);
+								() => {
+									void saveNewPreset(true);
 								},
 								'Keep',
-								async () => {
-									await saveNewPreset(false);
+								() => {
+									void saveNewPreset(false);
 								},
 								check.orphanedKeys
 							).open();
