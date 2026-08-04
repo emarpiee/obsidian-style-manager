@@ -11,6 +11,7 @@ import {
 } from '../../../utils/UIUtils';
 import { CSSEditorModal } from '../../modals/CSSEditorModal';
 import { ConfirmModal } from '../../modals/ConfirmModal';
+import { SnippetOpenModeModal } from '../../modals/SnippetOpenModeModal';
 
 /**
  * Renders the Snippets tab: search, folder actions, and the list of snippets.
@@ -19,34 +20,43 @@ export class SnippetsTab {
 	private snippetComponents: SnippetSettingComponent[] = [];
 	private filterString: string = '';
 	private listContainer: HTMLElement;
+	private statsLeftEl: HTMLSpanElement;
+	private statsRightEl: HTMLSpanElement;
 
 	constructor(
 		private containerEl: HTMLElement,
 		private app: App,
 		private plugin: StyleManagerPlugin,
 		private onRerender: () => void,
-		private addChild: (child: Component) => Component
+		private addChild: (child: Component) => Component,
+		private initialFilterString: string = '',
+		private onFilterChange: (value: string) => void = () => {}
 	) {}
 
 	render(): void {
 		const searchRow = this.containerEl.createDiv('style-manager-search-row');
 		searchRow.addClass('style-manager-snippets-search-row');
 
-		new Setting(searchRow)
+		const setting = new Setting(searchRow)
 			.setClass('style-manager-search-container')
 			.setClass('style-manager-snippets-filter')
 			.addSearch((search) => {
 				search
 					.setPlaceholder('Search snippets...')
-					.setValue(this.filterString)
+					.setValue(this.initialFilterString)
 					.onChange(
 						debounce((value) => {
 							this.filterString = value.toLowerCase();
+							this.onFilterChange(value);
 							this.applyFilter();
 						}, 250)
 					);
-			})
-			.addExtraButton((btn) => {
+				if (this.initialFilterString) {
+					this.filterString = this.initialFilterString.toLowerCase();
+				}
+			});
+
+		setting.addExtraButton((btn) => {
 				btn
 					.setIcon('plus')
 					.setTooltip('Create snippet')
@@ -55,29 +65,49 @@ export class SnippetsTab {
 							const id =
 								await this.plugin.settingsService.snippetService.createSnippet();
 
-							const openModal =
-								this.plugin.settingsService.settings[
-									PreferencesKeys.OPEN_MODAL_ON_CREATE
-								] !== false;
-							if (openModal) {
-								const useDefaultApp =
-									this.plugin.app.loadLocalStorage(
-										PreferencesKeys.OPEN_IN_DEFAULT_APP
-									) === 'true';
-								if (useDefaultApp) {
+							const openMode =
+								(this.plugin.settingsService.settings[
+									PreferencesKeys.SNIPPET_CREATE_OPEN_MODE
+								] as string | undefined) ?? 'always-ask';
+
+							const openInMode = async (
+								mode: 'modal' | 'tab' | 'default-app' | 'none'
+							): Promise<void> => {
+								if (mode === 'none') return;
+								if (mode === 'default-app') {
 									const path =
-										this.plugin.settingsService.bridge.getSnippetPath(id);
+										this.plugin.settingsService.bridge.getSnippetPath(
+											id
+										);
 									(
 										this.app as unknown as {
 											openWithDefaultApp: (path: string) => void;
 										}
 									).openWithDefaultApp(path);
+								} else if (mode === 'tab') {
+									await this.plugin.activateCSSEditorView({
+										type: 'Snippet',
+										id,
+									});
 								} else {
 									new CSSEditorModal(this.app, this.plugin, {
 										type: 'Snippet',
 										id,
 									}).open();
 								}
+							};
+
+							if (openMode === 'always-ask') {
+								new SnippetOpenModeModal(
+									this.app,
+									(mode) => {
+										void openInMode(mode);
+									}
+								).open();
+							} else {
+								await openInMode(
+									openMode as 'modal' | 'tab' | 'default-app' | 'none'
+								);
 							}
 
 							this.onRerender();
@@ -105,6 +135,12 @@ export class SnippetsTab {
 					});
 			});
 
+		const statsBarEl = this.containerEl.createDiv(
+			'style-manager-snippets-stats-bar'
+		);
+		this.statsLeftEl = statsBarEl.createSpan('style-manager-stats-left');
+		this.statsRightEl = statsBarEl.createSpan('style-manager-stats-right');
+
 		this.listContainer = this.containerEl.createDiv(
 			'style-manager-snippets-list'
 		);
@@ -115,7 +151,7 @@ export class SnippetsTab {
 			getItems: () => this.getVisibleSnippets(),
 			getId: (id) => id,
 			selectedIds: this.plugin.selectedSnippets,
-			onSelectionChange: () => this.onRerender(),
+			onSelectionChange: () => this.handleSelectionUpdate(),
 		});
 		// Register cleanup through Obsidian's component lifecycle so the
 		// document keydown listener is removed when this tab is torn down.
@@ -179,11 +215,19 @@ export class SnippetsTab {
 	private applyFilter(): void {
 		const query = this.filterString.toLowerCase();
 
+		const enabledSnippets = new Set(
+			(this.plugin.settingsService.settings[
+				StorageKeys.SNIPPETS
+			] as string[]) || []
+		);
+
 		const authorMatch = query.match(/@author\s+([^\s@]+)/);
 		const nameMatch = query.match(/@name\s+([^\s@]+)/);
 		const descMatch = query.match(/@description\s+([^\s@]+)/);
 		const licenseMatch = query.match(/@license\s+([^\s@]+)/);
 		const settingsMatch = query.match(/@settings\s+(true|false)/);
+		const isActive = query.includes('@active');
+		const isInactive = query.includes('@inactive');
 
 		const cleanedQuery = query
 			.replace(/@author\s+[^\s@]+/g, '')
@@ -191,6 +235,8 @@ export class SnippetsTab {
 			.replace(/@description\s+[^\s@]+/g, '')
 			.replace(/@license\s+[^\s@]+/g, '')
 			.replace(/@settings\s+(true|false)/g, '')
+			.replace(/@active/g, '')
+			.replace(/@inactive/g, '')
 			.trim();
 
 		this.snippetComponents.forEach((comp) => {
@@ -234,8 +280,65 @@ export class SnippetsTab {
 				matches = false;
 			}
 
+			const isSnippetActive = enabledSnippets.has(comp.snippetId);
+			if (isActive && !isSnippetActive) matches = false;
+			if (isInactive && isSnippetActive) matches = false;
+
 			comp.setVisibility(matches);
 		});
+
+
+
+		let matchCount = 0;
+		let activeMatchCount = 0;
+
+		this.snippetComponents.forEach((comp) => {
+			const el = (comp as unknown as { setting: { settingEl: HTMLElement } })
+				.setting?.settingEl;
+			const isVisible = el && el.style.display !== 'none';
+			if (isVisible) {
+				matchCount++;
+				if (enabledSnippets.has(comp.snippetId)) {
+					activeMatchCount++;
+				}
+			}
+		});
+
+		const totalSnippets = this.snippetComponents.length;
+		const totalActive = this.snippetComponents.filter((comp) =>
+			enabledSnippets.has(comp.snippetId)
+		).length;
+
+		if (query.trim()) {
+			const modifiers: string[] = [];
+			if (authorMatch) modifiers.push(`by ${authorMatch[1]}`);
+			if (nameMatch) modifiers.push(`named ${nameMatch[1]}`);
+			if (descMatch) modifiers.push(`describing ${descMatch[1]}`);
+			if (licenseMatch) modifiers.push(`under ${licenseMatch[1].toUpperCase()}`);
+			if (settingsMatch) {
+				modifiers.push(
+					settingsMatch[1] === 'true'
+						? 'with settings'
+						: 'without settings'
+				);
+			}
+			if (cleanedQuery) modifiers.push(`matching "${cleanedQuery}"`);
+
+			const status = isActive ? 'active' : (isInactive ? 'inactive' : '');
+			const plural = matchCount === 1 ? 'snippet' : 'snippets';
+			let label = `${matchCount} ${status ? status + ' ' : ''}${plural}`;
+			if (modifiers.length > 0) {
+				label += ' ' + modifiers.join(' and ');
+			}
+
+			this.statsLeftEl.setText(label);
+			this.statsRightEl.setText(`${activeMatchCount} active`);
+		} else {
+			this.statsLeftEl.setText(
+				`You have ${totalSnippets} snippet${totalSnippets !== 1 ? 's' : ''}`
+			);
+			this.statsRightEl.setText(`${totalActive} active`);
+		}
 	}
 
 	private handleSelectionChange(
@@ -263,13 +366,24 @@ export class SnippetsTab {
 				lastSelectedIndexSetter: (idx) => {
 					this.plugin.lastSnippetSelectedIndex = idx;
 				},
-				onSelectionChange: () => this.onRerender(),
+				onSelectionChange: () => this.handleSelectionUpdate(),
 			},
 			forceToggle
 		);
 	}
 
+	private handleSelectionUpdate(): void {
+		this.renderBulkActions();
+		this.snippetComponents.forEach((comp) => {
+			comp.updateSelection(
+				this.plugin.selectedSnippets.has(comp.snippetId)
+			);
+		});
+	}
+
 	private renderBulkActions(): void {
+		this.containerEl.querySelector('.style-manager-bulk-actions')?.remove();
+
 		if (this.plugin.selectedSnippets.size === 0) {
 			this.listContainer.removeClass('has-bulk-actions');
 			return;
@@ -290,7 +404,7 @@ export class SnippetsTab {
 			visibleSnippets.forEach((id: string) =>
 				this.plugin.selectedSnippets.add(id)
 			);
-			this.onRerender();
+			this.handleSelectionUpdate();
 		});
 
 		new ButtonComponent(actions)
@@ -314,7 +428,7 @@ export class SnippetsTab {
 			.setTooltip('Clear selection')
 			.onClick(() => {
 				this.plugin.selectedSnippets.clear();
-				this.onRerender();
+				this.handleSelectionUpdate();
 			});
 	}
 
