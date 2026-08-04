@@ -900,7 +900,7 @@ export default class StyleManagerPlugin extends Plugin {
 		this.deactivateView();
 		let leaf;
 		try {
-			leaf = this.app.workspace.getLeaf('tab');
+			leaf = this.app.workspace.getLeftLeaf(false);
 		} catch (_e) {
 			window.focus();
 			await new Promise((resolve) => window.setTimeout(resolve, 50));
@@ -913,7 +913,7 @@ export default class StyleManagerPlugin extends Plugin {
 			if (mainLeaves.length > 0) {
 				this.app.workspace.setActiveLeaf(mainLeaves[0], { focus: true });
 			}
-			leaf = this.app.workspace.getLeaf('tab');
+			leaf = this.app.workspace.getLeftLeaf(false);
 		}
 
 		await leaf.setViewState({
@@ -927,6 +927,8 @@ export default class StyleManagerPlugin extends Plugin {
 		if (tab && view.settingsMarkup) {
 			view.settingsMarkup.openTab(tab);
 		}
+
+		void this.app.workspace.revealLeaf(leaf);
 	}
 
 	async activateContrastView(): Promise<void> {
