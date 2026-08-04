@@ -32,6 +32,7 @@ export const BackupKeys = {
 } as const;
 export const PreferencesKeys = {
 	OPEN_MODAL_ON_CREATE: '__style_manager_open_modal_on_create',
+	SNIPPET_CREATE_OPEN_MODE: '__style_manager_snippet_create_open_mode',
 	EDITOR_TAB_SIZE: '__style_manager_editor_tab_size',
 	ENABLE_CONSOLE_LOGGING: '__style_manager_enable_console_logging',
 	SEPARATE_BULK_PRESETS: '__style_manager_separate_bulk_presets',
@@ -47,4 +48,6 @@ export const PreferencesKeys = {
 	SHOW_PARSE_LOGS_ICON: '__style_manager_show_parse_logs_icon',
 	SHOW_STATUS_BAR: '__style_manager_show_status_bar',
 	SHOW_SNIPPET_METADATA: '__style_manager_show_snippet_metadata',
+	SHOW_TAB_BADGE: '__style_manager_show_tab_badge',
+	PANEL_OPEN_LOCATION: '__style_manager_panel_open_location',
 } as const;

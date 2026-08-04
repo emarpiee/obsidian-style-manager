@@ -145,6 +145,50 @@ export class SettingsHeaderComponent extends Component {
 			setIcon(tab.createSpan('style-manager-tab-icon'), icon);
 			tab.createSpan({ text: label, cls: 'style-manager-tab-text' });
 
+			if (id === 'styles') {
+				const showBadge =
+					(this.plugin.settingsService.sharedSettings[
+						PreferencesKeys.SHOW_TAB_BADGE
+					] as boolean | undefined) !== false;
+				if (showBadge) {
+					const activeSectionIds = new Set(
+						this.plugin.settingsList.map((s) => s.id)
+					);
+					const settings = this.plugin.settingsService.settings;
+					let count = 0;
+					for (const key of Object.keys(settings)) {
+						if (key.includes('@@')) {
+							const sectionId = key.split('@@')[0];
+							if (activeSectionIds.has(sectionId)) {
+								count++;
+							}
+						}
+					}
+					if (count > 0) {
+						const badge = tab.createSpan('style-manager-tab-badge');
+						badge.setText(count.toString());
+						setTooltip(badge, `${count} active style${count !== 1 ? 's' : ''}`);
+					}
+				}
+			} else if (id === 'snippets') {
+				const showBadge =
+					(this.plugin.settingsService.sharedSettings[
+						PreferencesKeys.SHOW_TAB_BADGE
+					] as boolean | undefined) !== false;
+				if (showBadge) {
+					const count =
+						this.plugin.settingsService.bridge.getEnabledSnippets().length;
+					if (count > 0) {
+						const badge = tab.createSpan('style-manager-tab-badge');
+						badge.setText(count.toString());
+						setTooltip(
+							badge,
+							`${count} active snippet${count !== 1 ? 's' : ''}`
+						);
+					}
+				}
+			}
+
 			if (this.options.activeTab === id) {
 				tab.addClass('is-active');
 				activeTabEl = tab;
@@ -291,16 +335,16 @@ export class SettingsHeaderComponent extends Component {
 						const id =
 							await this.plugin.settingsService.snippetService.createSnippet();
 
-						const openModal =
-							this.plugin.settingsService.settings[
-								PreferencesKeys.OPEN_MODAL_ON_CREATE
-							] !== false;
-						if (openModal) {
-							const useDefaultApp =
-								this.plugin.app.loadLocalStorage(
-									PreferencesKeys.OPEN_IN_DEFAULT_APP
-								) === 'true';
-							if (useDefaultApp) {
+						const openMode =
+							(this.plugin.settingsService.settings[
+								PreferencesKeys.SNIPPET_CREATE_OPEN_MODE
+							] as string | undefined) ?? 'always-ask';
+
+						const openInMode = async (
+							mode: 'modal' | 'tab' | 'default-app' | 'none'
+						): Promise<void> => {
+							if (mode === 'none') return;
+							if (mode === 'default-app') {
 								const path =
 									this.plugin.settingsService.bridge.getSnippetPath(id);
 								(
@@ -308,12 +352,30 @@ export class SettingsHeaderComponent extends Component {
 										openWithDefaultApp: (path: string) => void;
 									}
 								).openWithDefaultApp(path);
+							} else if (mode === 'tab') {
+								await this.plugin.activateCSSEditorView({
+									type: 'Snippet',
+									id,
+								});
 							} else {
 								new CSSEditorModal(this.app, this.plugin, {
 									type: 'Snippet',
 									id,
 								}).open();
 							}
+						};
+
+						if (openMode === 'always-ask') {
+							const { SnippetOpenModeModal } = await import(
+								'../../modals/SnippetOpenModeModal'
+							);
+							new SnippetOpenModeModal(this.app, (mode) => {
+								void openInMode(mode);
+							}).open();
+						} else {
+							await openInMode(
+								openMode as 'modal' | 'tab' | 'default-app' | 'none'
+							);
 						}
 
 						this.options.onTabChange('snippets');

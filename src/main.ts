@@ -1,6 +1,6 @@
 import { Command, Notice, Plugin, normalizePath } from 'obsidian';
 
-import { StorageKeys, ToolKeys } from './constants';
+import { PreferencesKeys, StorageKeys, ToolKeys } from './constants';
 import {
 	ClassToggle,
 	ParseLogList,
@@ -899,8 +899,19 @@ export default class StyleManagerPlugin extends Plugin {
 	async activateView(tab?: ActiveTab): Promise<void> {
 		this.deactivateView();
 		let leaf;
+		const openLocation =
+			(this.settingsService.sharedSettings[
+				PreferencesKeys.PANEL_OPEN_LOCATION
+			] as string | undefined) ?? 'left-sidebar';
+
 		try {
-			leaf = this.app.workspace.getLeftLeaf(false);
+			if (openLocation === 'right-sidebar') {
+				leaf = this.app.workspace.getRightLeaf(false);
+			} else if (openLocation === 'main-tab') {
+				leaf = this.app.workspace.getLeaf('tab');
+			} else {
+				leaf = this.app.workspace.getLeftLeaf(false);
+			}
 		} catch (_e) {
 			window.focus();
 			await new Promise((resolve) => window.setTimeout(resolve, 50));
@@ -913,7 +924,13 @@ export default class StyleManagerPlugin extends Plugin {
 			if (mainLeaves.length > 0) {
 				this.app.workspace.setActiveLeaf(mainLeaves[0], { focus: true });
 			}
-			leaf = this.app.workspace.getLeftLeaf(false);
+			if (openLocation === 'right-sidebar') {
+				leaf = this.app.workspace.getRightLeaf(false);
+			} else if (openLocation === 'main-tab') {
+				leaf = this.app.workspace.getLeaf('tab');
+			} else {
+				leaf = this.app.workspace.getLeftLeaf(false);
+			}
 		}
 
 		await leaf.setViewState({
