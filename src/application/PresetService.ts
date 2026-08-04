@@ -641,4 +641,55 @@ export class PresetService {
 	public getFormattedTimestamp(format: string = 'YYYYMMDDHHmmss'): string {
 		return getFormattedTimestamp(format);
 	}
+
+	public filterPresets(presets: Preset[], query: string): Preset[] {
+		if (!query) return presets;
+
+		const lowerQuery = query.toLowerCase();
+
+		// Extract tags
+		const themeMatch = lowerQuery.match(/@theme\s+([^\s@]+)/);
+		const snippetMatch = lowerQuery.match(/@snippet\s+([^\s@]+)/);
+		const nameMatch = lowerQuery.match(/@name\s+([^\s@]+)/);
+		const isLight = lowerQuery.includes('@light');
+		const isDark = lowerQuery.includes('@dark');
+
+		// Remove tags from query to get the "remainder" search (if any)
+		const cleanedQuery = lowerQuery
+			.replace(/@theme\s+[^\s@]+/g, '')
+			.replace(/@snippet\s+[^\s@]+/g, '')
+			.replace(/@name\s+[^\s@]+/g, '')
+			.replace(/@light/g, '')
+			.replace(/@dark/g, '')
+			.trim();
+
+		return presets.filter((p) => {
+			// 1. Check Tags (AND logic)
+			if (
+				themeMatch &&
+				!(p.data[StorageKeys.THEME] as string | undefined)
+					?.toLowerCase()
+					.includes(themeMatch[1])
+			)
+				return false;
+
+			if (isLight && p.data[StorageKeys.APPEARANCE] !== 'light') return false;
+			if (isDark && p.data[StorageKeys.APPEARANCE] !== 'dark') return false;
+
+			if (snippetMatch) {
+				const snippets = (p.data[StorageKeys.SNIPPETS] as string[]) || [];
+				if (!snippets.some((s) => s.toLowerCase().includes(snippetMatch[1])))
+					return false;
+			}
+
+			if (nameMatch && !p.name.toLowerCase().includes(nameMatch[1]))
+				return false;
+
+			// 2. Check remainder query against name
+			if (cleanedQuery && !p.name.toLowerCase().includes(cleanedQuery))
+				return false;
+
+			return true;
+		});
+	}
 }
