@@ -1,6 +1,7 @@
 import { App, Modal, Setting, setIcon } from 'obsidian';
 
 import { PresetNamePromptModal } from './PresetNamePromptModal';
+import { ConfirmModal } from './ConfirmModal';
 
 import { PresetService } from '../../application/PresetService';
 import { PrefixMetadata } from '../../types';
@@ -138,15 +139,66 @@ export class CreatePresetModal extends Modal {
 							? ['All']
 							: Array.from(this.selectedPrefixes);
 
+						// Gather keys to save and check for orphaned ones
+						const data = this.service.getSettingsData();
+						const orphanedKeys: string[] = [];
+						for (const key of Object.keys(data)) {
+							if (key.includes('@@')) {
+								const prefix = key.split('@@')[0];
+								if (isAll || savedPrefixes.includes(prefix)) {
+									const parts = key.split('@@');
+									const sectionId = parts[0];
+									const settingId = parts[1];
+									const isActive = this.service.plugin.settingsList.some((section) =>
+										section.id === sectionId &&
+										section.settings.some((setting) => setting.id === settingId)
+									);
+									if (!isActive) {
+										orphanedKeys.push(key);
+									}
+								}
+							}
+						}
+
 						const presetName = await this.promptForName();
 						if (!presetName) return;
 
-						await this.service.saveCurrentSettingsAsPreset(
-							presetName,
-							savedPrefixes
-						);
-						this.onSave();
-						this.close();
+						if (orphanedKeys.length > 0) {
+							new ConfirmModal(
+								this.app,
+								'Orphaned settings detected',
+								`This preset contains ${orphanedKeys.length} settings key(s) that are no longer active in your current style settings config. Do you want to keep these orphaned settings in the new preset, or discard them?`,
+								'Discard',
+								true, // isWarning
+								async () => {
+									await this.service.saveCurrentSettingsAsPreset(
+										presetName,
+										savedPrefixes,
+										true
+									);
+									this.onSave();
+									this.close();
+								},
+								'Keep',
+								async () => {
+									await this.service.saveCurrentSettingsAsPreset(
+										presetName,
+										savedPrefixes,
+										false
+									);
+									this.onSave();
+									this.close();
+								},
+								orphanedKeys
+							).open();
+						} else {
+							await this.service.saveCurrentSettingsAsPreset(
+								presetName,
+								savedPrefixes
+							);
+							this.onSave();
+							this.close();
+						}
 					})
 			);
 	}

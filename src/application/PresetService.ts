@@ -209,7 +209,8 @@ export class PresetService {
 
 	async saveCurrentSettingsAsPreset(
 		presetName: string,
-		targetPrefixes: string[] = ['All']
+		targetPrefixes: string[] = ['All'],
+		discardOrphaned: boolean = false
 	): Promise<void> {
 		// Ensure fresh state before capture
 		(
@@ -249,6 +250,23 @@ export class PresetService {
 					targetPrefixes.includes('__accentColor')
 				) {
 					filteredData[key] = data[key];
+				}
+			}
+		}
+
+		if (discardOrphaned) {
+			for (const key of Object.keys(filteredData)) {
+				if (key.includes('@@')) {
+					const parts = key.split('@@');
+					const sectionId = parts[0];
+					const settingId = parts[1];
+					const isActive = this.plugin.settingsList.some((section) =>
+						section.id === sectionId &&
+						section.settings.some((setting) => setting.id === settingId)
+					);
+					if (!isActive) {
+						delete filteredData[key];
+					}
 				}
 			}
 		}
