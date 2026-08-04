@@ -15,7 +15,8 @@ export class BoxOutlineTool {
 			const cssToApply = `* {outline: ${color as string} 1px solid !important}`;
 
 			if (!this.sheet) {
-				this.sheet = new CSSStyleSheet();
+				const win = activeDocument.defaultView || window;
+				this.sheet = new win.CSSStyleSheet();
 				activeDocument.adoptedStyleSheets = [
 					...activeDocument.adoptedStyleSheets,
 					this.sheet,

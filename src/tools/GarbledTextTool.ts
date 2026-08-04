@@ -12,7 +12,8 @@ export class GarbledTextTool {
 				'body *:not(:hover) { font-family: Flow Circular !important; }';
 
 			if (!this.sheet) {
-				this.sheet = new CSSStyleSheet();
+				const win = activeDocument.defaultView || window;
+				this.sheet = new win.CSSStyleSheet();
 				activeDocument.adoptedStyleSheets = [
 					...activeDocument.adoptedStyleSheets,
 					this.sheet,

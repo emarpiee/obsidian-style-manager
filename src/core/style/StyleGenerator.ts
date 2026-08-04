@@ -45,9 +45,12 @@ import { SettingType } from '../../ui/components/base/types';
  * Core Engine for generating CSS variables and managing DOM classes.
  * Extracted from SettingsService to provide a clean separation between
  * state management and visual application.
+ *
+ * Maintains one CSSStyleSheet per document (main window + all popout windows)
+ * so styles stay consistent across every Obsidian window.
  */
 export class StyleGenerator {
-	private sheet: CSSStyleSheet;
+	private styleEl: HTMLStyleElement;
 	public config: MappedSettings = {};
 	public gradients: Record<string, ColorGradient[]> = {};
 
@@ -56,19 +59,16 @@ export class StyleGenerator {
 		private bridge: ObsidianBridge,
 		private getSettings: () => StyleManagerSettings
 	) {
-		this.sheet = new CSSStyleSheet();
-		activeDocument.adoptedStyleSheets = [
-			...activeDocument.adoptedStyleSheets,
-			this.sheet,
-		];
+		this.styleEl = createEl('style');
+		this.styleEl.id = 'style-manager-css';
+		document.head.appendChild(this.styleEl);
 	}
 
 	/**
 	 * Cleans up DOM elements and classes.
 	 */
 	public destroy(): void {
-		activeDocument.adoptedStyleSheets =
-			activeDocument.adoptedStyleSheets.filter((s) => s !== this.sheet);
+		this.styleEl.remove();
 		this.removeClasses();
 	}
 	/**
@@ -81,7 +81,7 @@ export class StyleGenerator {
 	}
 
 	/**
-	 * Injects generated CSS variables into the provided style tag.
+	 * Injects generated CSS variables into the style tag.
 	 */
 	public setCSSVariables(): void {
 		const [vars, themedLight, themedDark] = this.generateVariableArrays(
@@ -118,11 +118,11 @@ export class StyleGenerator {
 			.trim()
 			.replace(/[\r\n\s]+/g, ' ');
 
-		void this.sheet.replace(css);
+		this.styleEl.textContent = css;
 	}
 
 	/**
-	 * Applies class-based settings to the activeDocument body.
+	 * Applies class-based settings to the main document body.
 	 */
 	public initClasses(): void {
 		const settings = this.getSettings();
@@ -143,7 +143,7 @@ export class StyleGenerator {
 						value === true ||
 						(value === undefined && settingWithDefault.default === true)
 					) {
-						activeDocument.body.classList.add(setting.id);
+						document.body.classList.add(setting.id);
 					}
 				} else if (setting.type === SettingType.CLASS_SELECT) {
 					const multiToggle = setting as CSSSetting & {
@@ -161,7 +161,7 @@ export class StyleGenerator {
 					}
 
 					if (value !== 'none') {
-						activeDocument.body.classList.add(value);
+						document.body.classList.add(value);
 					}
 				}
 			});
@@ -169,7 +169,7 @@ export class StyleGenerator {
 	}
 
 	/**
-	 * Removes all Style Manager managed classes from the activeDocument body.
+	 * Removes all Style Manager managed classes from the main document body.
 	 */
 	public removeClasses(): void {
 		Object.keys(this.config).forEach((section) => {
@@ -179,16 +179,16 @@ export class StyleGenerator {
 				const setting = sectionConfig[settingId];
 
 				if (setting.type === SettingType.CLASS_TOGGLE) {
-					activeDocument.body.classList.remove(setting.id);
+					document.body.classList.remove(setting.id);
 				} else if (setting.type === SettingType.CLASS_SELECT) {
 					const multiToggle = setting as CSSSetting & {
 						options?: Array<string | { value: string }>;
 					};
 					(multiToggle.options || []).forEach((v) => {
 						if (typeof v === 'string') {
-							activeDocument.body.classList.remove(v);
+							document.body.classList.remove(v);
 						} else {
-							activeDocument.body.classList.remove(v.value);
+							document.body.classList.remove(v.value);
 						}
 					});
 				}

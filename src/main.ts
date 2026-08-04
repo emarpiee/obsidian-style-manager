@@ -898,7 +898,23 @@ export default class StyleManagerPlugin extends Plugin {
 
 	async activateView(tab?: ActiveTab): Promise<void> {
 		this.deactivateView();
-		const leaf = this.app.workspace.getLeaf('tab');
+		let leaf;
+		try {
+			leaf = this.app.workspace.getLeaf('tab');
+		} catch (_e) {
+			window.focus();
+			await new Promise((resolve) => window.setTimeout(resolve, 50));
+			const mainLeaves: import('obsidian').WorkspaceLeaf[] = [];
+			this.app.workspace.iterateAllLeaves((l) => {
+				if (l.view.containerEl.ownerDocument === document) {
+					mainLeaves.push(l);
+				}
+			});
+			if (mainLeaves.length > 0) {
+				this.app.workspace.setActiveLeaf(mainLeaves[0], { focus: true });
+			}
+			leaf = this.app.workspace.getLeaf('tab');
+		}
 
 		await leaf.setViewState({
 			type: viewType,
