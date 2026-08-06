@@ -457,10 +457,24 @@ body.is-style-manager-settings:not(.is-mobile) .modal .modal-close-button {
 	background-color: var(--sm-heading-bg);
 	z-index: 10;
 	height: var(--sm-sticky-heading-height);
-	display: flex;
-	align-items: center;
 	overflow: hidden;
 	border: unset;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	align-items: center;
+	justify-content: space-between;
+}
+
+.style-manager-plugin .style-manager-style-wrapper .setting-item.style-manager-style-heading .setting-item-info {
+	flex: 1 1 auto;
+	width: auto;
+}
+
+.style-manager-plugin .style-manager-style-wrapper .setting-item.style-manager-style-heading .setting-item-control {
+	display: flex;
+	flex-shrink: 0;
+	align-items: center;
 }
 
 .style-manager-style-wrapper .style-manager-style-heading {
