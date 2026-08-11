@@ -2348,6 +2348,7 @@ body.is-mobile .style-manager-plugin .style-manager-wrapper .setting-item-contro
 }
 
 .style-manager-plugin .cp_format {
+	background: var(--background-primary-alt);
 	border-radius: var(--input-radius);
 	font-size: unset;
 }
