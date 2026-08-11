@@ -207,18 +207,11 @@ export class PresetService {
 		return data;
 	}
 
-	async saveCurrentSettingsAsPreset(
-		presetName: string,
+	public getFilteredSettingsData(
 		targetPrefixes: string[] = ['All'],
 		discardOrphaned: boolean = false
-	): Promise<void> {
-		// Ensure fresh state before capture
-		(
-			this.plugin.settingsService as unknown as { updateMerged: () => void }
-		).updateMerged();
-
+	): Record<string, unknown> {
 		const data = this.getSettingsData();
-
 		let filteredData = data;
 		const isAll = targetPrefixes.includes('All');
 
@@ -270,6 +263,117 @@ export class PresetService {
 				}
 			}
 		}
+
+		return filteredData;
+	}
+
+	public getPresetDiffSummary(
+		preset: Preset,
+		targetPrefixes: string[] = ['All']
+	): {
+		added: number;
+		updated: number;
+		deleted: number;
+		orphanedKeys: string[];
+		addedKeys: string[];
+		updatedKeys: string[];
+		deletedKeys: string[];
+		addedEntries: Record<string, unknown>;
+		updatedEntries: Record<string, unknown>;
+		updatedOldEntries: Record<string, unknown>;
+		deletedEntries: Record<string, unknown>;
+	} {
+		const currentData = this.getFilteredSettingsData(targetPrefixes, false);
+		const isAll = targetPrefixes.includes('All');
+
+		const addedKeys: string[] = [];
+		const updatedKeys: string[] = [];
+		const deletedKeys: string[] = [];
+		const orphanedKeys: string[] = [];
+		const addedEntries: Record<string, unknown> = {};
+		const updatedEntries: Record<string, unknown> = {};
+		const updatedOldEntries: Record<string, unknown> = {};
+		const deletedEntries: Record<string, unknown> = {};
+
+		const displayKey = (key: string): string =>
+			key.includes('@@') ? key.split('@@')[1] : key;
+
+		for (const [key, val] of Object.entries(currentData)) {
+			if (preset.data[key] === undefined) {
+				addedKeys.push(key);
+				addedEntries[displayKey(key)] = val;
+			} else if (JSON.stringify(preset.data[key]) !== JSON.stringify(val)) {
+				updatedKeys.push(key);
+				updatedEntries[displayKey(key)] = val;
+				updatedOldEntries[displayKey(key)] = preset.data[key];
+			}
+		}
+
+		for (const key of Object.keys(preset.data)) {
+			let matchesPrefix = false;
+			if (isAll) {
+				matchesPrefix = true;
+			} else if (key.includes('@@')) {
+				const prefix = key.split('@@')[0];
+				if (targetPrefixes.includes(prefix)) {
+					matchesPrefix = true;
+				}
+			} else if (
+				(key === StorageKeys.THEME && targetPrefixes.includes('__theme')) ||
+				(key === StorageKeys.APPEARANCE && targetPrefixes.includes('__appearance')) ||
+				(key === StorageKeys.SNIPPETS && targetPrefixes.includes('__snippets')) ||
+				(key === StorageKeys.ACCENT_COLOR && targetPrefixes.includes('__accentColor'))
+			) {
+				matchesPrefix = true;
+			}
+
+			if (matchesPrefix) {
+				if (currentData[key] === undefined) {
+					deletedKeys.push(key);
+					deletedEntries[displayKey(key)] = preset.data[key];
+				}
+				if (key.includes('@@')) {
+					const parts = key.split('@@');
+					const sectionId = parts[0];
+					const settingId = parts[1];
+					const isActive = this.plugin.settingsList.some((section) =>
+						section.id === sectionId &&
+						section.settings.some((setting) => setting.id === settingId)
+					);
+					if (!isActive) {
+						orphanedKeys.push(key);
+					}
+				}
+			}
+		}
+
+		return {
+			added: addedKeys.length,
+			updated: updatedKeys.length,
+			deleted: deletedKeys.length,
+			orphanedKeys,
+			addedKeys,
+			updatedKeys,
+			deletedKeys,
+			addedEntries,
+			updatedEntries,
+			updatedOldEntries,
+			deletedEntries,
+		};
+	}
+
+	async saveCurrentSettingsAsPreset(
+		presetName: string,
+		targetPrefixes: string[] = ['All'],
+		discardOrphaned: boolean = false
+	): Promise<void> {
+		// Ensure fresh state before capture
+		(
+			this.plugin.settingsService as unknown as { updateMerged: () => void }
+		).updateMerged();
+
+		const filteredData = this.getFilteredSettingsData(targetPrefixes, discardOrphaned);
+		const isAll = targetPrefixes.includes('All');
 
 		const newPreset: Preset = {
 			id: crypto.randomUUID(),
@@ -291,75 +395,67 @@ export class PresetService {
 	async mergeCurrentSettingsIntoPreset(
 		presetId: string,
 		targetPrefixes: string[] = ['All'],
-		discardOrphaned: boolean = false
+		discardOrphaned: boolean = false,
+		action: 'overwrite' | 'merge' = 'merge'
 	): Promise<void> {
 		// Ensure fresh state before capture
 		(
 			this.plugin.settingsService as unknown as { updateMerged: () => void }
 		).updateMerged();
 
-		const data = this.getSettingsData();
-
-		let filteredData = data;
+		const filteredData = this.getFilteredSettingsData(targetPrefixes, discardOrphaned);
 		const isAll = targetPrefixes.includes('All');
-
-		if (!isAll) {
-			filteredData = {};
-			for (const key of Object.keys(data)) {
-				if (key.includes('@@')) {
-					const prefix = key.split('@@')[0];
-					if (targetPrefixes.includes(prefix)) {
-						filteredData[key] = data[key];
-					}
-				} else if (
-					key === StorageKeys.THEME &&
-					targetPrefixes.includes('__theme')
-				) {
-					filteredData[key] = data[key];
-				} else if (
-					key === StorageKeys.APPEARANCE &&
-					targetPrefixes.includes('__appearance')
-				) {
-					filteredData[key] = data[key];
-				} else if (
-					key === StorageKeys.SNIPPETS &&
-					targetPrefixes.includes('__snippets')
-				) {
-					filteredData[key] = data[key];
-				} else if (
-					key === StorageKeys.ACCENT_COLOR &&
-					targetPrefixes.includes('__accentColor')
-				) {
-					filteredData[key] = data[key];
-				}
-			}
-		}
-
-		if (discardOrphaned) {
-			for (const key of Object.keys(filteredData)) {
-				if (key.includes('@@')) {
-					const parts = key.split('@@');
-					const sectionId = parts[0];
-					const settingId = parts[1];
-					const isActive = this.plugin.settingsList.some((section) =>
-						section.id === sectionId &&
-						section.settings.some((setting) => setting.id === settingId)
-					);
-					if (!isActive) {
-						delete filteredData[key];
-					}
-				}
-			}
-		}
 
 		const currentPresets = this.presets;
 		const targetIndex = currentPresets.findIndex((p) => p.id === presetId);
 		if (targetIndex !== -1) {
 			const targetPreset = currentPresets[targetIndex];
-			targetPreset.data = {
-				...targetPreset.data,
-				...filteredData,
-			};
+
+			if (action === 'overwrite') {
+				if (isAll) {
+					targetPreset.data = filteredData;
+				} else {
+					for (const key of Object.keys(targetPreset.data)) {
+						if (key.includes('@@')) {
+							const prefix = key.split('@@')[0];
+							if (targetPrefixes.includes(prefix)) {
+								delete targetPreset.data[key];
+							}
+						} else if (
+							key === StorageKeys.THEME &&
+							targetPrefixes.includes('__theme')
+						) {
+							delete targetPreset.data[key];
+						} else if (
+							key === StorageKeys.APPEARANCE &&
+							targetPrefixes.includes('__appearance')
+						) {
+							delete targetPreset.data[key];
+						} else if (
+							key === StorageKeys.SNIPPETS &&
+							targetPrefixes.includes('__snippets')
+						) {
+							delete targetPreset.data[key];
+						} else if (
+							key === StorageKeys.ACCENT_COLOR &&
+							targetPrefixes.includes('__accentColor')
+						) {
+							delete targetPreset.data[key];
+						}
+					}
+					targetPreset.data = {
+						...targetPreset.data,
+						...filteredData,
+					};
+				}
+			} else {
+				// merge mode
+				targetPreset.data = {
+					...targetPreset.data,
+					...filteredData,
+				};
+			}
+
 			if (targetPreset.targetedPrefixes && !isAll) {
 				targetPreset.targetedPrefixes = Array.from(
 					new Set([...targetPreset.targetedPrefixes, ...targetPrefixes])
@@ -367,7 +463,7 @@ export class PresetService {
 			} else {
 				targetPreset.targetedPrefixes = undefined;
 			}
-			targetPreset.created = Date.now(); // Update timestamp
+			targetPreset.updated = Date.now(); // Update modification timestamp instead of created
 
 			this.presets = currentPresets;
 			await this.savePresets();

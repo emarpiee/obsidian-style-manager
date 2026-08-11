@@ -24,6 +24,7 @@ export interface Preset {
 	id: string;
 	name: string;
 	created: number;
+	updated?: number;
 	data: Record<string, unknown>;
 	targetedPrefixes?: string[];
 	isFavorite?: boolean;

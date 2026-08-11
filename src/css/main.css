@@ -2171,6 +2171,60 @@ body.is-phone .style-manager-editor-toggle-container {
 	margin-right: auto;
 }
 
+/* Diff Summary Modal Styles */
+.style-manager-diff-summary-container {
+	display: flex;
+	gap: 12px;
+	margin: 16px 0;
+	justify-content: flex-start;
+	flex-wrap: wrap;
+}
+.style-manager-diff-card {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	border-radius: var(--radius-m);
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	font-size: var(--font-ui-small);
+	font-weight: 500;
+	min-width: 100px;
+}
+.style-manager-diff-card.is-added {
+	border-color: var(--text-success);
+	background: color-mix(in oklch, var(--text-success), transparent 92%);
+	color: var(--text-success);
+}
+.style-manager-diff-card.is-updated {
+	border-color: var(--interactive-accent);
+	background: color-mix(in oklch, var(--interactive-accent), transparent 92%);
+	color: var(--interactive-accent);
+}
+.style-manager-diff-card.is-deleted {
+	border-color: var(--text-error);
+	background: color-mix(in oklch, var(--text-error), transparent 92%);
+	color: var(--text-error);
+}
+.style-manager-diff-card.is-unchanged {
+	border-color: var(--text-muted);
+	color: var(--text-muted);
+	opacity: 0.8;
+}
+.style-manager-diff-card-icon {
+	font-size: var(--font-ui-medium);
+	font-weight: bold;
+}
+.style-manager-diff-card-count {
+	font-size: var(--font-ui-medium);
+	font-weight: 700;
+}
+.style-manager-diff-card-label {
+	font-size: var(--font-ui-smaller);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	opacity: 0.9;
+}
+
 /* Status Bar Integration */
 .style-manager-status-bar-item {
 	cursor: var(--cursor);
@@ -2630,4 +2684,160 @@ body.sm-conflict-warning::before {
 .style-manager-parser-error-icon svg {
 	fill: currentColor;
 	stroke: var(--background-primary);
+}
+
+/* Diff Summary Modal Styles */
+.style-manager-diff-summary-header {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	margin-bottom: 8px;
+	margin-top: 16px;
+}
+
+.style-manager-diff-summary-title {
+	font-size: var(--font-ui-smaller);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	color: var(--text-muted);
+	font-weight: 600;
+}
+
+.style-manager-diff-toggle-btn {
+	font-size: var(--font-ui-smaller);
+	color: var(--text-accent);
+	background: none;
+	border: none;
+	padding: 2px 6px;
+	cursor: pointer;
+	box-shadow: none;
+	text-decoration: underline;
+	text-underline-offset: 2px;
+	white-space: nowrap;
+	flex-shrink: 0;
+}
+
+.style-manager-diff-toggle-btn:hover {
+	color: var(--interactive-accent);
+}
+
+.style-manager-diff-summary-container {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	justify-content: flex-start;
+	margin-bottom: 16px;
+}
+
+.style-manager-diff-card {
+	border-radius: var(--radius-m);
+	background: var(--background-secondary);
+	border: 1px solid var(--background-modifier-border);
+	font-size: var(--font-ui-small);
+	font-weight: 500;
+	width: 100%;
+	max-height: 250px;
+	overflow: hidden;
+}
+
+.style-manager-diff-card details {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+}
+
+.style-manager-diff-card summary {
+	display: flex;
+	align-items: center;
+	padding: 12px;
+	cursor: pointer;
+	list-style: none;
+	user-select: none;
+	gap: 4px;
+}
+
+.style-manager-diff-card summary::-webkit-details-marker {
+	display: none;
+}
+
+/* Chevron indicator */
+.style-manager-diff-card summary::after {
+	content: '';
+	display: inline-block;
+	width: 0;
+	height: 0;
+	border-left: 4px solid transparent;
+	border-right: 4px solid transparent;
+	border-top: 5px solid currentColor;
+	opacity: 0.6;
+	transition: transform 0.15s ease;
+	transform: rotate(-90deg);
+	margin-left: auto;
+	flex-shrink: 0;
+}
+
+.style-manager-diff-card details[open] > summary::after {
+	transform: rotate(0deg);
+}
+
+.style-manager-diff-card.is-added {
+	border-color: var(--text-success);
+	background: color-mix(in oklch, var(--text-success), transparent 94%);
+}
+.style-manager-diff-card.is-added summary {
+	color: var(--text-success);
+}
+
+.style-manager-diff-card.is-updated {
+	border-color: var(--interactive-accent);
+	background: color-mix(in oklch, var(--interactive-accent), transparent 94%);
+}
+.style-manager-diff-card.is-updated summary {
+	color: var(--interactive-accent);
+}
+
+.style-manager-diff-card.is-deleted {
+	border-color: var(--text-error);
+	background: color-mix(in oklch, var(--text-error), transparent 94%);
+}
+.style-manager-diff-card.is-deleted summary {
+	color: var(--text-error);
+}
+
+.style-manager-diff-card.is-unchanged {
+	border-color: var(--text-muted);
+	opacity: 0.8;
+}
+.style-manager-diff-card.is-unchanged summary {
+	color: var(--text-muted);
+}
+
+.style-manager-diff-card-title-span {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	width: 100%;
+}
+
+.style-manager-diff-card-icon {
+	font-size: var(--font-ui-medium);
+	font-weight: bold;
+}
+
+.style-manager-diff-card-count {
+	font-size: var(--font-ui-medium);
+	font-weight: 700;
+}
+
+.style-manager-diff-card-label {
+	font-size: var(--font-ui-smaller);
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+	opacity: 0.9;
+}
+
+.style-manager-plugin .style-manager-diff-keys-code {
+	border-radius: 0;
+	border-inline: unset;
 }
