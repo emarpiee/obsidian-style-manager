@@ -103,55 +103,27 @@ export class CreatePresetModal extends Modal {
 
 		this.renderToggles(togglesContainer);
 
-		new Setting(contentEl)
+		const buttonSetting = new Setting(contentEl)
 			.setClass('style-manager-modal-buttons')
 			.addButton((btn) =>
 				btn.setButtonText('Cancel').onClick(() => this.close())
-			)
+			);
+
+		buttonSetting
 			.addButton((btn) =>
 				btn
 					.setButtonText('Save to existing preset')
-					.onClick(async () => {
+					.onClick(() => {
 						const check = this.getSaveDataAndOrphanedKeys();
 						if (check.hasError) return;
 
-						const saveToPreset = async (discard: boolean): Promise<void> => {
-							new SaveToExistingSuggestModal(
-								this.app,
-								this.service,
-								(preset): void => {
-									void (async (): Promise<void> => {
-										await this.service.mergeCurrentSettingsIntoPreset(
-											preset.id,
-											check.savedPrefixes,
-											discard
-										);
-										this.onSave();
-										this.close();
-									})();
-								}
-							).open();
-						};
-
-						if (check.orphanedKeys.length > 0) {
-							new ConfirmModal(
-								this.app,
-								'Orphaned settings detected',
-								`This preset contains ${check.orphanedKeys.length} settings key(s) that are no longer active in your current style settings config. Do you want to keep these orphaned settings in the new preset, or discard them?`,
-								'Discard',
-								true, // isWarning
-								() => {
-									void saveToPreset(true);
-								},
-								'Keep',
-								() => {
-									void saveToPreset(false);
-								},
-								check.orphanedKeys
-							).open();
-						} else {
-							await saveToPreset(false);
-						}
+						new SaveToExistingSuggestModal(
+							this.app,
+							this.service,
+							(preset): void => {
+								this.promptSaveToPreset(preset, check.savedPrefixes);
+							}
+						).open();
 					})
 			)
 			.addButton((btn) =>
@@ -398,6 +370,60 @@ export class CreatePresetModal extends Modal {
 				}
 			};
 		}
+	}
+
+	private promptSaveToPreset(preset: Preset, savedPrefixes: string[]): void {
+		const diff = this.service.getPresetDiffSummary(preset, savedPrefixes);
+
+		const message = `Your current settings will overwrite "${preset.name}".`;
+
+		const proceedSave = async (discardOrphaned: boolean): Promise<void> => {
+			await this.service.mergeCurrentSettingsIntoPreset(
+				preset.id,
+				savedPrefixes,
+				discardOrphaned,
+				'overwrite'
+			);
+			this.onSave();
+			this.close();
+		};
+
+		const handleOrphans = (): void => {
+			if (diff.orphanedKeys.length > 0) {
+				new ConfirmModal(
+					this.app,
+					'Inactive settings detected',
+					`This preset contains ${diff.orphanedKeys.length} setting(s) that are no longer active in your current stylesheets. Do you want to keep or discard them?`,
+					'Discard',
+					true,
+					() => {
+						void proceedSave(true);
+					},
+					'Keep',
+					() => {
+						void proceedSave(false);
+					},
+					diff.orphanedKeys
+				).open();
+			} else {
+				void proceedSave(false);
+			}
+		};
+
+		new ConfirmModal(
+			this.app,
+			`Save to "${preset.name}"`,
+			message,
+			'Save',
+			false,
+			() => {
+				handleOrphans();
+			},
+			undefined,
+			undefined,
+			undefined,
+			diff
+		).open();
 	}
 
 	private promptForName(): Promise<string | null> {
