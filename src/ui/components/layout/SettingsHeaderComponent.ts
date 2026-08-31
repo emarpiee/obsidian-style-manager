@@ -221,8 +221,8 @@ export class SettingsHeaderComponent extends Component {
 			(this.plugin.settingsService.getSetting(
 				StorageKeys.APPEARANCE
 			) as string) || 'system';
-		let icon = '';
-		let label = '';
+		let icon = 'sun-moon';
+		let label = 'Adapt to system mode';
 		if (appearance === 'light') {
 			icon = 'sun';
 			label = 'Light mode';
@@ -236,10 +236,16 @@ export class SettingsHeaderComponent extends Component {
 		});
 		if (appearance === 'light') toggleBtn.addClass('sun-toggle');
 		else if (appearance === 'dark') toggleBtn.addClass('moon-toggle');
+		else toggleBtn.addClass('system-toggle');
 		setIcon(toggleBtn, icon);
 		setTooltip(toggleBtn, label);
 		toggleBtn.onclick = async (): Promise<void> => {
-			const next = appearance === 'light' ? 'dark' : 'light';
+			const next =
+				appearance === 'light'
+					? 'dark'
+					: appearance === 'dark'
+					? 'system'
+					: 'light';
 			void this.plugin.settingsService.setSetting(
 				StorageKeys.APPEARANCE,
 				next,

@@ -84,8 +84,17 @@ export class ThemeService {
 			if (!isIsolate) {
 				body.classList.remove('theme-light', 'theme-dark');
 			}
-			const nativeTheme = this.deps.bridge.getNativeConfig('theme');
-			targetMode = nativeTheme === 'moonstone' ? 'light' : 'dark';
+			const nativeTheme = this.deps.bridge.getNativeConfig('theme') as string;
+			if (nativeTheme === 'moonstone') {
+				targetMode = 'light';
+			} else if (nativeTheme === 'obsidian') {
+				targetMode = 'dark';
+			} else {
+				// Native theme is '' (system mode): check matchMedia OS preference
+				targetMode = window.matchMedia('(prefers-color-scheme: dark)').matches
+					? 'dark'
+					: 'light';
+			}
 		}
 
 		if (targetMode === 'dark') {
@@ -284,7 +293,12 @@ export class ThemeService {
 				return this.deps.bridge.getNativeConfig('theme') as string;
 			},
 			(appearance: string) => {
-				const val = appearance === 'obsidian' ? 'dark' : 'light';
+				const val =
+					appearance === 'obsidian'
+						? 'dark'
+						: appearance === 'moonstone'
+						? 'light'
+						: 'system';
 				this.deps.setSetting(StorageKeys.APPEARANCE, val, { silentUI: true });
 				this.applyAppearance(val);
 			},

@@ -90,8 +90,10 @@ export class ObsidianBridge {
 	 * Robustly retrieve the current appearance mode (dark/light), bypassing stale cache.
 	 */
 	public getActiveAppearance(): string {
-		const nativeAppearanceRaw = this.getNativeConfig('theme'); // 'obsidian' or 'moonstone'
-		return nativeAppearanceRaw === 'moonstone' ? 'light' : 'dark';
+		const nativeAppearanceRaw = this.getNativeConfig('theme'); // 'obsidian', 'moonstone', or ''
+		if (nativeAppearanceRaw === 'moonstone') return 'light';
+		if (nativeAppearanceRaw === 'obsidian') return 'dark';
+		return 'system';
 	}
 
 	/**
