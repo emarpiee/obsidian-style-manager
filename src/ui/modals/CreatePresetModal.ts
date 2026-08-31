@@ -422,7 +422,8 @@ export class CreatePresetModal extends Modal {
 			undefined,
 			undefined,
 			undefined,
-			diff
+			diff,
+			this.service.plugin
 		).open();
 	}
 

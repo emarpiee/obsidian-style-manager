@@ -1,4 +1,6 @@
 import { App, Modal, Setting } from 'obsidian';
+import type StyleManagerPlugin from '../../main';
+import type { CSSSetting } from '../../types';
 
 export class ConfirmModal extends Modal {
 	title: string;
@@ -21,6 +23,7 @@ export class ConfirmModal extends Modal {
 		updatedOldEntries?: Record<string, unknown>;
 		deletedEntries?: Record<string, unknown>;
 	};
+	plugin?: StyleManagerPlugin;
 
 	constructor(
 		app: App,
@@ -43,7 +46,8 @@ export class ConfirmModal extends Modal {
 			updatedEntries?: Record<string, unknown>;
 			updatedOldEntries?: Record<string, unknown>;
 			deletedEntries?: Record<string, unknown>;
-		}
+		},
+		plugin?: StyleManagerPlugin
 	) {
 		super(app);
 		this.title = title;
@@ -55,6 +59,7 @@ export class ConfirmModal extends Modal {
 		this.onSecondaryConfirm = onSecondaryConfirm;
 		this.listItems = listItems;
 		this.diffSummary = diffSummary;
+		this.plugin = plugin;
 	}
 
 	onOpen(): void {
@@ -82,19 +87,32 @@ export class ConfirmModal extends Modal {
 
 			const allDetailsEls: HTMLDetailsElement[] = [];
 			let allExpanded = false;
+			let showNames = false;
 
-			let toggleBtn: HTMLButtonElement | null = null;
 			if (hasExpandable) {
-				toggleBtn = diffHeader.createEl('button', {
+				const diffHeaderActions = diffHeader.createDiv({ cls: 'style-manager-diff-header-actions' });
+				diffHeaderActions.setCssStyles({ display: 'flex', alignItems: 'center', gap: '8px' });
+
+				const nameBtn = diffHeaderActions.createEl('button', {
+					cls: 'style-manager-diff-toggle-btn',
+					text: 'Show names',
+				});
+				nameBtn.addEventListener('click', () => {
+					showNames = !showNames;
+					nameBtn.textContent = showNames ? 'Show IDs' : 'Show names';
+					renderDiffSummary();
+				});
+
+				const tBtn = diffHeaderActions.createEl('button', {
 					cls: 'style-manager-diff-toggle-btn',
 					text: 'Expand all',
 				});
-				toggleBtn.addEventListener('click', () => {
+				tBtn.addEventListener('click', () => {
 					allExpanded = !allExpanded;
 					for (const d of allDetailsEls) {
 						d.open = allExpanded;
 					}
-					if (toggleBtn) toggleBtn.textContent = allExpanded ? 'Collapse all' : 'Expand all';
+					tBtn.textContent = allExpanded ? 'Collapse all' : 'Expand all';
 				});
 			}
 
@@ -126,16 +144,95 @@ export class ConfirmModal extends Modal {
 						// Render as "key": value pairs matching the preset viewer style
 						code.textContent = Object.entries(entries)
 							.map(([k, v]) => {
-								const newVal = JSON.stringify(v);
-								if (oldEntries && oldEntries[k] !== undefined) {
-									const oldVal = JSON.stringify(oldEntries[k]);
-									return `"${k}": ${oldVal} → ${newVal}`;
+								const rawKey = keys.find(x => (x.includes('@@') ? x.split('@@')[1] : x) === k) || k;
+								let displayName = k;
+								let setting: CSSSetting | null = null;
+								if (rawKey.includes('@@')) {
+									const parts = rawKey.split('@@');
+									const settingId = parts[1];
+									const appWithPlugins = this.app as App & {
+										plugins?: {
+											plugins?: Record<string, StyleManagerPlugin>;
+										};
+									};
+									const p = this.plugin || appWithPlugins.plugins?.plugins?.['obsidian-style-manager'];
+									if (p && p.settingsList) {
+										for (const section of p.settingsList) {
+											const st = section.settings?.find((s) => s.id === settingId);
+											if (st) {
+												setting = st;
+												break;
+											}
+										}
+									}
 								}
-								return `"${k}": ${newVal}`;
+
+								if (showNames) {
+									if (rawKey === '__theme') displayName = 'Active theme';
+									else if (rawKey === '__appearance') displayName = 'Appearance';
+									else if (rawKey === '__snippets') displayName = 'Snippets';
+									else if (rawKey === '__accentColor') displayName = 'Accent color';
+									else if (setting && setting.title) {
+										displayName = setting.title;
+									}
+								}
+
+								const getValueDisplay = (val: unknown): unknown => {
+									if (showNames && setting) {
+										const options = (setting as { options?: Array<string | { label: string; value: string }> }).options;
+										if (options && Array.isArray(options)) {
+											const option = options.find((opt) => {
+												if (typeof opt === 'object' && opt !== null) {
+													return opt.value === val;
+												}
+												return opt === val;
+											});
+											if (option && typeof option === 'object' && 'label' in option && option.label !== undefined) {
+												return option.label;
+											}
+										}
+									}
+									return val;
+								};
+
+								const displayedVal = getValueDisplay(v);
+								const newVal = JSON.stringify(displayedVal);
+								if (oldEntries && oldEntries[k] !== undefined) {
+									const displayedOldVal = getValueDisplay(oldEntries[k]);
+									const oldVal = JSON.stringify(displayedOldVal);
+									return `"${displayName}": ${oldVal} → ${newVal}`;
+								}
+								return `"${displayName}": ${newVal}`;
 							})
 							.join('\n');
 					} else {
-						code.textContent = keys.map(key => key.includes('@@') ? key.split('@@')[1] : key).join('\n');
+						code.textContent = keys.map(key => {
+							if (showNames) {
+								if (key === '__theme') return 'Active theme';
+								if (key === '__appearance') return 'Appearance';
+								if (key === '__snippets') return 'Snippets';
+								if (key === '__accentColor') return 'Accent color';
+								if (key.includes('@@')) {
+									const parts = key.split('@@');
+									const settingId = parts[1];
+									const appWithPlugins = this.app as App & {
+										plugins?: {
+											plugins?: Record<string, StyleManagerPlugin>;
+										};
+									};
+									const p = this.plugin || appWithPlugins.plugins?.plugins?.['obsidian-style-manager'];
+									if (p && p.settingsList) {
+										for (const section of p.settingsList) {
+											const st = section.settings?.find((st) => st.id === settingId);
+											if (st && st.title) {
+												return st.title;
+											}
+										}
+									}
+								}
+							}
+							return key.includes('@@') ? key.split('@@')[1] : key;
+						}).join('\n');
 					}
 				} else {
 					// No keys to show — flat summary row
@@ -151,13 +248,45 @@ export class ConfirmModal extends Modal {
 				}
 			};
 
-			if (added === 0 && updated === 0 && deleted === 0) {
-				createCard('unchanged', 0, 'No changes to apply');
-			} else {
-				if (added > 0) createCard('added', added, 'Added', addedKeys, addedEntries);
-				if (updated > 0) createCard('updated', updated, 'Updated', updatedKeys, updatedEntries, updatedOldEntries);
-				if (deleted > 0) createCard('deleted', deleted, 'Removed', deletedKeys, deletedEntries);
-			}
+			const renderDiffSummary = (): void => {
+				const states: Record<string, boolean> = {};
+				for (const d of allDetailsEls) {
+					const card = d.closest('.style-manager-diff-card');
+					if (card) {
+						if (card.classList.contains('is-added')) states['added'] = d.open;
+						else if (card.classList.contains('is-updated')) states['updated'] = d.open;
+						else if (card.classList.contains('is-deleted')) states['deleted'] = d.open;
+					}
+				}
+
+				diffContainer.empty();
+				allDetailsEls.length = 0;
+				if (added === 0 && updated === 0 && deleted === 0) {
+					createCard('unchanged', 0, 'No changes to apply');
+				} else {
+					if (added > 0) createCard('added', added, 'Added', addedKeys, addedEntries);
+					if (updated > 0) createCard('updated', updated, 'Updated', updatedKeys, updatedEntries, updatedOldEntries);
+					if (deleted > 0) createCard('deleted', deleted, 'Removed', deletedKeys, deletedEntries);
+				}
+
+				for (const d of allDetailsEls) {
+					const card = d.closest('.style-manager-diff-card');
+					if (card) {
+						let type = '';
+						if (card.classList.contains('is-added')) type = 'added';
+						else if (card.classList.contains('is-updated')) type = 'updated';
+						else if (card.classList.contains('is-deleted')) type = 'deleted';
+
+						if (type && states[type] !== undefined) {
+							d.open = states[type];
+						} else {
+							d.open = allExpanded;
+						}
+					}
+				}
+			};
+
+			renderDiffSummary();
 		}
 
 		if (this.listItems && this.listItems.length > 0) {
