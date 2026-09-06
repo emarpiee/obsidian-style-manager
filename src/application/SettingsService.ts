@@ -494,8 +494,13 @@ export class SettingsService extends Events {
 				this.bridge.getNativeConfig('cssTheme') || 'default';
 		}
 		if (data[StorageKeys.APPEARANCE] === undefined) {
+			const nativeApp = this.bridge.getNativeConfig('theme');
 			data[StorageKeys.APPEARANCE] =
-				this.bridge.getNativeConfig('theme') === 'moonstone' ? 'light' : 'dark';
+				nativeApp === 'moonstone'
+					? 'light'
+					: nativeApp === 'obsidian'
+					? 'dark'
+					: 'system';
 		}
 		if (data[StorageKeys.ACCENT_COLOR] === undefined) {
 			data[StorageKeys.ACCENT_COLOR] =

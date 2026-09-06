@@ -2840,4 +2840,7 @@ body.sm-conflict-warning::before {
 .style-manager-plugin .style-manager-diff-keys-code {
 	border-radius: 0;
 	border-inline: unset;
+	margin: 0;
+	max-height: 190px;
+	overflow-y: auto;
 }
